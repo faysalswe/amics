@@ -1,0 +1,87 @@
+<div
+  class="amics-bar py-1 px-2"
+  role="region"
+  aria-label="University of Iowa global header"
+>
+  <div class="d-flex navbar navbar-expand p-0">
+    <div class="">
+      <a
+        href="https://amics.net/"
+        title="Amics"
+        class="wordmark-link"
+        target="_blank"
+        rel="noopener"
+      >
+         AMICS
+      </a>
+    </div>    
+    <div class="">
+      <div #otherContent>
+        <ng-content select="[slot=userMenu]"></ng-content>
+      </div>
+      <ul class="navbar-nav pt-2" *ngIf="otherContent.children.length == 0">
+         
+        <li class="nav-item dropdown ml-3" *ngIf="user">
+          <div ngbDropdown role="menu">
+            <button
+              class="btn btn-link user-button p-0"
+              id="dropdownBasic1"
+              ngbDropdownToggle
+            >
+              <svg
+                aria-hidden="true"
+                role="icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                style="height: 0.8rem; width: 1rem; vertical-align: baseline"
+              >
+                <path
+                  fill="currentColor"
+                  d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"
+                ></path>
+              </svg>
+              <span class="user-name">{{ user }} </span>
+            </button>
+            <div
+              ngbDropdownMenu
+              aria-labelledby="dropdownBasic1"
+              role="menuitem"
+              class="logout-dropdown dropdown-menu-right"
+            >
+             
+              <div
+                *ngIf="user"
+                class="dropdown-divider"
+              ></div>
+              <a href="javascript:void(0)" (click)="logout()">
+                <svg
+                  aria-hidden="true"
+                  role="icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  style="height: 1rem; width: 1rem"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z"
+                  ></path>
+                </svg>
+                <span style="vertical-align: middle"> Logout</span>
+              </a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item ml-3" *ngIf="!user">
+          <button
+            class="btn btn-link user-button py-0"
+            id="dropdownBasic1"
+            role="button"
+            (click)="login()"
+          >
+            Login
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

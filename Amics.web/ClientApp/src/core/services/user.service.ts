@@ -1,0 +1,33 @@
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { ApplicationUser } from "../models/application-user";
+import { Observable, BehaviorSubject } from "rxjs";
+
+@Injectable({
+  providedIn: "root",
+})
+export class UserService {
+  private _user = new BehaviorSubject<ApplicationUser>(new ApplicationUser());
+  user$: Observable<ApplicationUser> = this._user.asObservable();
+
+  constructor(private readonly httpClient: HttpClient) {}
+
+  getUser(): Promise<ApplicationUser> {
+    let user = new ApplicationUser();   
+    return this.httpClient
+      .get<ApplicationUser>("user")
+      .toPromise()
+      .then((x) => {
+        if (x) {
+          user = new ApplicationUser(x.userId,x.fullName, x.role, x.dB);
+        }
+        this._user.next(user);
+        return user;
+      })
+      .catch(() => {
+        this._user.next(user);
+        return user;
+      });
+  
+  }
+}

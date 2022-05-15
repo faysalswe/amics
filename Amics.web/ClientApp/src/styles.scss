@@ -1,0 +1,284 @@
+/* You can add global styles to this file, and also import other style files */
+
+.bootstrap-scope {
+  $enable-print-styles: false;
+
+  @import "~bootstrap/scss/bootstrap.scss";
+
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+  background-color: #fff;
+}
+
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome.scss";
+@import "~ngx-toastr/toastr.css";
+// @import '~@angular/material/prebuilt-themes/deeppurple-amber.scss';
+
+@import "~@angular/material/theming";
+
+$mat-theme-ignore-duplication-warnings: true;
+
+$config: mat-typography-config();
+
+@include mat-core($config);
+
+$my-app-primary: mat-palette($mat-light-blue, 900);
+$my-app-accent: mat-palette($mat-yellow, 400);
+$my-app-warn: mat-palette($mat-deep-orange);
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent);
+@include angular-material-theme($my-app-theme);
+
+// .alternate-theme {
+//   $alternate-primary: mat-palette($mat-light-blue);
+//   $alternate-accent: mat-palette($mat-pink, 500, 900, A100);
+//   $alternate-theme: mat-light-theme($alternate-primary, $alternate-accent);
+//   @include angular-material-theme($alternate-theme);
+// }
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+mat-form-field.mat-form-field-should-float label,
+.mat-header-cell,
+mat-form-field.mat-form-field,
+mat-form-field-flex label {
+  font-size: 18px;
+}
+
+.mat-chip.mat-standard-chip {
+  background-color: #fff;
+}
+
+.mat-card-header {
+  background-color: #e0e0e0 !important;
+  border-top: 2px solid mat-color($my-app-accent, default) !important;
+}
+
+.selected-header {
+  background-color: mat-color($my-app-primary, default) !important;
+  color: white !important;
+}
+
+.selected-mat-header {
+  background-color: mat-color($my-app-primary, default) !important;
+  border-top: 2px solid mat-color($my-app-accent, default) !important;
+  color: white !important;
+}
+.mat-card {
+  background-color: white;
+}
+
+mat-form-field {
+  margin-left: 2.5rem;
+  width: calc(100% - 2.5rem);
+}
+
+// .mat-row:nth-child(even) {
+//   background-color: #f2f2f2;
+// }
+
+/* input color class */
+::ng-deep input.mat-input-element {
+  color: #484a4c;
+}
+
+::ng-deep .mat-toolbar {
+  background-color: #e0e0e0;
+}
+// .mat-form-field.mat-focused .mat-form-field-label {
+//   color: black;
+// }
+// .mat-focused .mat-form-field-underline .mat-form-field-ripple {
+//   background: #ffe100;
+// }
+
+// .mat-select:focus:not(.mat-select-disabled).mat-primary .mat-select-arrow,
+// .mat-select-underline,
+// .mat-select-trigger {
+//   color: black;
+// }
+
+// /* to change selected item color in the select list */
+// .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+//   color: black;
+// }
+
+.uiMaterialButton {
+  color: #34495e;
+  background-color: #ffe100;
+  border-color: #e6cb00;
+}
+
+.mt5 {
+  margin-top: 5px;
+}
+
+.mt10 {
+  margin-top: 10px;
+}
+
+.mt15 {
+  margin-top: 15px;
+}
+
+.mt20 {
+  margin-top: 20px;
+}
+
+.mb5 {
+  margin-bottom: 5px;
+}
+
+.mb10 {
+  margin-bottom: 10px;
+}
+
+.mb15 {
+  margin-bottom: 15px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.ml5 {
+  margin-left: 5px;
+}
+
+.ml10 {
+  margin-left: 10px;
+}
+
+.ml15 {
+  margin-left: 15px;
+}
+
+.ml20 {
+  margin-left: 20px;
+}
+
+.mr5 {
+  margin-right: 5px;
+}
+
+.mr10 {
+  margin-right: 10px;
+}
+
+.mr15 {
+  margin-right: 15px;
+}
+
+.mr20 {
+  margin-right: 20px;
+}
+
+.pt5 {
+  padding-top: 5px;
+}
+
+.pt10 {
+  padding-top: 10px;
+}
+
+.pt15 {
+  padding-top: 15px;
+}
+
+.pt20 {
+  padding-top: 20px;
+}
+
+.pb5 {
+  padding-bottom: 5px;
+}
+
+.pb10 {
+  padding-bottom: 10px;
+}
+
+.pb15 {
+  padding-bottom: 15px;
+}
+
+.pb20 {
+  padding-bottom: 20px;
+}
+
+.pl5 {
+  padding-left: 5px;
+}
+
+.pl10 {
+  padding-left: 10px;
+}
+
+.pl15 {
+  padding-left: 15px;
+}
+
+.pl20 {
+  padding-left: 20px;
+}
+
+.pr5 {
+  padding-right: 5px;
+}
+
+.pr10 {
+  padding-right: 10px;
+}
+
+.pr15 {
+  padding-right: 15px;
+}
+
+.pr20 {
+  padding-right: 20px;
+}
+
+.px20 {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+::ng-deep .mat-tooltip {
+  font-size: 16px;
+}
+::ng-deep .mat-select-disabled .mat-select-value {
+    color: black;
+}
+
+::ng-deep  input:disabled {
+  color: black;
+}
