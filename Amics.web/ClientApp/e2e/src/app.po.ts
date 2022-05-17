@@ -5,7 +5,7 @@ export class AppPage {
     return browser.get('/');
   }
 
-  getMainHeading() {
-    return element(by.css('app-root h1')).getText();
+  getParagraphText() {
+    return element(by.css('app-root .dx-drawer-content .dx-card p:nth-child(2)')).getText();
   }
 }

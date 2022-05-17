@@ -1,9 +1,14 @@
- <header role="banner" class="bootstrap-scope">
-  <amics-header [internalRoutes]="internalRoutes" [user]="user" > </amics-header>
-</header>
-<main fxFlex role="main" class="h-100 mat-typography" style="overflow: auto;background-color: whitesmoke;">
-  <router-outlet></router-outlet>
-</main>
-<footer role="contentinfo" class="bootstrap-scope">
-  <app-footer></app-footer>
-</footer>
+<ng-container *ngIf="isAuthenticated(); else unauthenticated">
+  <app-side-nav-outer-toolbar title="{{appInfo.title}}">
+    <router-outlet></router-outlet>
+    <app-footer>
+      Copyright © 2011-{{appInfo.currentYear}} {{appInfo.title}} Inc.
+      <br/>
+      All trademarks or registered trademarks are property of their respective owners.
+    </app-footer>
+  </app-side-nav-outer-toolbar>
+</ng-container>
+
+<ng-template #unauthenticated>
+  <app-unauthenticated-content></app-unauthenticated-content>
+</ng-template>
