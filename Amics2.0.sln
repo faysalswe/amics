@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amics.web", "Amics.web\Amic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amics.Lookup", "Lookup.Dapper\Amics.Lookup.csproj", "{FA006BC5-7F67-4745-B3FC-FF557A118C03}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aims.PartMaster", "Aims.PartMaster\Aims.PartMaster.csproj", "{ACB12874-D73D-4392-822A-91F884BC4B69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FA006BC5-7F67-4745-B3FC-FF557A118C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA006BC5-7F67-4745-B3FC-FF557A118C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA006BC5-7F67-4745-B3FC-FF557A118C03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACB12874-D73D-4392-822A-91F884BC4B69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACB12874-D73D-4392-822A-91F884BC4B69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACB12874-D73D-4392-822A-91F884BC4B69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACB12874-D73D-4392-822A-91F884BC4B69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
