@@ -1,5 +1,7 @@
-import { Component, enableProdMode } from '@angular/core';
+import { Component, enableProdMode, OnInit } from '@angular/core';
+import { TabInfo } from './models/tabInfo';
 import { AppTask, Employee, HomeService } from './services/home.service'; 
+import { TabService } from './services/tab.service';
  
 @Component({
   templateUrl: 'home.component.html',
@@ -7,7 +9,7 @@ import { AppTask, Employee, HomeService } from './services/home.service';
   preserveWhitespaces: true,
 })
 
-export class HomeComponent {
+export class HomeComponent implements OnInit{
   allEmployees: Employee[];
 
   employees: Employee[];
@@ -18,12 +20,25 @@ export class HomeComponent {
 
   tasksDataSourceStorage: any;
 
-  constructor(private service: HomeService) {
-    this.allEmployees = service.getEmployees();
-    this.employees = service.getEmployees().slice(0, 3);
+  tabs: TabInfo[] = [];
+  
+  constructor(private homeService: HomeService, private tabService: TabService) {
+    this.allEmployees = homeService.getEmployees();
+    this.employees = homeService.getEmployees().slice(0, 3);
     this.selectedIndex = 0;
-    this.tasks = service.getTasks();
+    this.tasks = homeService.getTasks();
     this.tasksDataSourceStorage = [];
+    this.tabs = [];
+  }
+
+  ngOnInit(): void{
+    this.tabService.addTabObservable$.subscribe((tab: any) => { 
+      this.tabs.push(tab);
+    });
+    this.tabService.removeTabObservable$.subscribe((tabToRemove: any) => { 
+      const index = this.tabs.indexOf(tabToRemove);
+      this.tabs.splice(index, 1);
+    });
   }
 
   onTabDragStart(e:any) {
@@ -47,6 +62,8 @@ export class HomeComponent {
 
     this.employees.splice(index, 1);
     if (index >= this.employees.length && index > 0) this.selectedIndex = index - 1;
+    
+    this.tabService.removeTab(itemData);
   }
 
   showCloseButton() {

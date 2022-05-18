@@ -2,7 +2,7 @@ export const navigation = [
   {
     text: 'Home',
     path: '/home',
-    icon: 'home'
+    icon: 'home',
   },
   {
     text: 'Inventory',
@@ -10,11 +10,17 @@ export const navigation = [
     items: [
       {
         text: 'Part Master',
-        path: '/profile'
+        path: '/profile',
+        title: 'Part Master',
+        component: 'Part Master',
+        selector: ''
       },
       {
         text: 'Tasks',
-        path: '/tasks'
+        path: '/tasks',
+        title: 'Tasks',
+        component: 'Tasks',
+        aelector: ''
       }
     ]
   }
