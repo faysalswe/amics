@@ -21,9 +21,38 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\dist\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\dist\**" />
+    <EmbeddedResource Remove="ClientApp\dist\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\dist\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\dist\app-name\3rdpartylicenses.txt" />
+    <None Remove="ClientApp\dist\app-name\dxiconsmaterial.4fbd12445891f41b.woff2" />
+    <None Remove="ClientApp\dist\app-name\dxiconsmaterial.c736714c16d6fe9a.woff" />
+    <None Remove="ClientApp\dist\app-name\dxiconsmaterial.f183073a68647ffc.ttf" />
+    <None Remove="ClientApp\dist\app-name\favicon.ico" />
+    <None Remove="ClientApp\dist\app-name\index.html" />
+    <None Remove="ClientApp\dist\app-name\main.d279ed608124b429.js" />
+    <None Remove="ClientApp\dist\app-name\polyfills.fddd7abe5bc3f974.js" />
+    <None Remove="ClientApp\dist\app-name\Roboto-300.0e01b6cd13b3857f.woff2" />
+    <None Remove="ClientApp\dist\app-name\Roboto-300.603ca9a537b88428.woff" />
+    <None Remove="ClientApp\dist\app-name\Roboto-300.6c0fea71d0542cdb.ttf" />
+    <None Remove="ClientApp\dist\app-name\Roboto-400.475ba9e4e2d63456.woff2" />
+    <None Remove="ClientApp\dist\app-name\Roboto-400.83f6acca8a27a93c.ttf" />
+    <None Remove="ClientApp\dist\app-name\Roboto-400.bcefbfee882bc1cb.woff" />
+    <None Remove="ClientApp\dist\app-name\Roboto-500.457532032ceb0168.woff2" />
+    <None Remove="ClientApp\dist\app-name\Roboto-500.6e1ae5f0b324a0aa.woff" />
+    <None Remove="ClientApp\dist\app-name\Roboto-500.de4cbf7a2334c617.ttf" />
+    <None Remove="ClientApp\dist\app-name\Roboto-700.447291a88c067396.woff2" />
+    <None Remove="ClientApp\dist\app-name\Roboto-700.f7aa49713d0a54c5.ttf" />
+    <None Remove="ClientApp\dist\app-name\Roboto-700.fc482e6133cf5e26.woff" />
+    <None Remove="ClientApp\dist\app-name\runtime.8d04fb1dda83bc0a.js" />
+    <None Remove="ClientApp\dist\app-name\styles.c9a54c1d1cd81c42.css" />
   </ItemGroup>
 
   <ItemGroup>
