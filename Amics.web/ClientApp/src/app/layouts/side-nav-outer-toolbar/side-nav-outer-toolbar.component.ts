@@ -75,7 +75,7 @@ export class SideNavOuterToolbarComponent implements OnInit {
         const component = (event.itemData as any).component;
         const selector = (event.itemData as any).selector;
         this.tabService.addTab(title,component,selector);
-        this.router.navigate([path]);
+       // this.router.navigate([path]);
         this.scrollView.instance.scrollTo(0);
       }
 

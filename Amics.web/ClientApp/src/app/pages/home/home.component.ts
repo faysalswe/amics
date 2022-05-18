@@ -58,10 +58,10 @@ export class HomeComponent implements OnInit{
   }
 
   closeButtonHandler(itemData:any) {
-    const index = this.employees.indexOf(itemData);
+    // const index = this.employees.indexOf(itemData);
 
-    this.employees.splice(index, 1);
-    if (index >= this.employees.length && index > 0) this.selectedIndex = index - 1;
+    // this.employees.splice(index, 1);
+    // if (index >= this.employees.length && index > 0) this.selectedIndex = index - 1;
     
     this.tabService.removeTab(itemData);
   }

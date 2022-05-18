@@ -1,12 +1,3 @@
-<div id="homeAddButtoncontainer">
-  <dx-button
-    [disabled]="disableButton()"
-    text="Add Tab"
-    icon="add"
-    type="default"
-    (onClick)="addButtonHandler()"
-  ></dx-button>
-</div>
 <dx-sortable
   filter=".dx-tab"
   [data]="employees"
@@ -16,7 +7,7 @@
   (onReorder)="onTabDrop($event)"
 >
   <dx-tab-panel
-    [dataSource]="employees"
+    [dataSource]="tabs"
     [height]="410"
     itemTitleTemplate="title"
     itemTemplate="item"
@@ -26,34 +17,19 @@
     [selectedIndex]="selectedIndex"
   >
     <div *dxTemplate="let content of 'title'">
-      <span>{{ content.FirstName }} {{ content.LastName }}</span
+      <span>{{ content.title }}</span
       ><i 
         class="dx-icon dx-icon-close"
         (click)="closeButtonHandler(content)"
       ></i>
     </div>
-    <div *dxTemplate="let employee of 'item'">
+    <div *dxTemplate="let tab of 'item'">
       <div class="employeeInfo">
-        <img class="employeePhoto" [src]="employee.Picture" />
-        <p class="employeeNotes"
-          ><b>Position: {{ employee.Position }}</b
-          ><br />{{ employee.Notes }}</p
+        
+        <p class="employeeNotes" 
+          ><br />{{ tab.component }}</p
         >
-      </div>
-      <div class="caption">{{
-        employee.FirstName + " " + employee.LastName + "'s Tasks:"
-      }}</div>
-      <div class="task-list">
-        <dx-list
-          [dataSource]="getTasks(employee.ID)"
-          [showSelectionControls]="true"            
-          selectionMode="multiple"
-        >
-          <div *dxTemplate="let item of 'item'">
-            <div>{{ item.Subject }}</div>
-          </div>
-        </dx-list>
-      </div>
+      </div>      
     </div>
   </dx-tab-panel>
 </dx-sortable>
