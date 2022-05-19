@@ -30,7 +30,8 @@ export class AuthService {
 
   async logIn(userName: string, password: string): Promise<any> {
     try {
-      // Send request  
+      // Send request
+      password = btoa(password); 
       let user = new ApplicationUser();
       return this.httpClient
         .get<ApplicationUser>(`login?userName=${userName}&password=${password}`)
