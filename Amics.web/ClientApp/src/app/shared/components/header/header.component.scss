@@ -29,6 +29,9 @@
   padding: 0;
   margin: 0;
 }
+::ng-deep .header-center-title .dx-item-content {
+  font-size: 15px; 
+}
 
 :host-context(.dx-theme-generic) {
   .dx-toolbar {

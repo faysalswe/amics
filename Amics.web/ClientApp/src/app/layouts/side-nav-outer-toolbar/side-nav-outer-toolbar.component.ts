@@ -29,7 +29,7 @@ export class SideNavOuterToolbarComponent implements OnInit {
   minMenuSize = 0;
   shaderEnabled = false;
 
-  constructor(private screen: ScreenService, private router: Router, private tabService:TabService) { }
+  constructor(private screen: ScreenService, private router: Router, private tabService: TabService) { }
 
   ngOnInit() {
     this.menuOpened = this.screen.sizes['screen-large'];
@@ -74,8 +74,10 @@ export class SideNavOuterToolbarComponent implements OnInit {
         const title = (event.itemData as any).title;
         const component = (event.itemData as any).component;
         const selector = (event.itemData as any).selector;
-        this.tabService.addTab(title,component,selector);
-       // this.router.navigate([path]);
+        if (path !== '/home') {
+          this.tabService.addTab(title, component, selector);
+        }
+        // this.router.navigate([path]);
         this.scrollView.instance.scrollTo(0);
       }
 
@@ -98,8 +100,8 @@ export class SideNavOuterToolbarComponent implements OnInit {
 }
 
 @NgModule({
-  imports: [ SideNavigationMenuModule, DxDrawerModule, HeaderModule, DxScrollViewModule, CommonModule ],
-  exports: [ SideNavOuterToolbarComponent ],
-  declarations: [ SideNavOuterToolbarComponent ]
+  imports: [SideNavigationMenuModule, DxDrawerModule, HeaderModule, DxScrollViewModule, CommonModule],
+  exports: [SideNavOuterToolbarComponent],
+  declarations: [SideNavOuterToolbarComponent]
 })
 export class SideNavOuterToolbarModule { }

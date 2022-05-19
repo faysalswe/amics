@@ -7,6 +7,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { TasksComponent } from './pages/tasks/tasks.component';
 import { DxDataGridModule, DxFormModule } from 'devextreme-angular';
 import { DevExpressModule } from './devexpress.module';
+import { CommonModule } from '@angular/common';
 
 const routes: Routes = [
   {
@@ -51,7 +52,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true }),DevExpressModule],
+  imports: [RouterModule.forRoot(routes, { useHash: true }),DevExpressModule,CommonModule ],
   providers: [AuthGuardService],
   exports: [RouterModule],
   declarations: [
