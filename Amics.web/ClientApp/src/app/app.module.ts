@@ -9,6 +9,7 @@ import { UnauthenticatedContentModule } from './unauthenticated-content';
 import { AppRoutingModule } from './app-routing.module';
 import { DevExpressModule } from './devexpress.module';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { CommonModule } from '@angular/common';
     LoginFormModule,
     UnauthenticatedContentModule,
     AppRoutingModule,
-    DevExpressModule
+    DevExpressModule,
+    HttpClientModule
   ],
   providers: [
     AuthService,

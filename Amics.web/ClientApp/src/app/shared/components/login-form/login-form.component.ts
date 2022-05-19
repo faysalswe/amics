@@ -20,13 +20,13 @@ export class LoginFormComponent {
 
   async onSubmit(e: Event) {
     e.preventDefault();
-    const { email, password } = this.formData;
+    const { userName: userName, password } = this.formData;
     this.loading = true;
 
-    const result = await this.authService.logIn(email, password);
-    if (!result.isOk) {
+    const result = await this.authService.logIn(userName, password);
+    if (!result) {
       this.loading = false;
-      notify(result.message, 'error', 2000);
+      notify("Incorrect credentails, please re-enter", 'error', 2000);
     }
   }
 

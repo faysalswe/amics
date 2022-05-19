@@ -1,8 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { ApplicationUser } from '../models/application-user';
 
 export interface IUser {
-  email: string;
+  userName: string;
   avatarUrl?: string
 }
 
@@ -24,20 +26,33 @@ export class AuthService {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private readonly httpClient: HttpClient) { }
 
-  async logIn(email: string, password: string) {
-
+  async logIn(userName: string, password: string): Promise<any> {
     try {
       // Send request
-      console.log(email, password);
-      this._user = { ...defaultUser, email };
-      this.router.navigate([this._lastAuthenticatedPath]);
+      console.log(userName, password);
 
-      return {
-        isOk: true,
-        data: this._user
-      };
+      let user = new ApplicationUser();
+      return this.httpClient
+        .get<ApplicationUser>(`login?userName=${userName}&password=${password}`)
+        .toPromise()
+        .then((result) => {
+          if (!!result) {
+            this._user = { ...defaultUser, userName: userName };
+            this.router.navigate([this._lastAuthenticatedPath]);
+            return {
+              isOk: true,
+              data: this._user
+            };
+          }
+          console.log("error logged in");
+          return null;
+        })
+        .catch((e) => {
+          console.log("error", e);
+          return null;
+        });
     }
     catch {
       return {
