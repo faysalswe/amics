@@ -30,9 +30,7 @@ export class AuthService {
 
   async logIn(userName: string, password: string): Promise<any> {
     try {
-      // Send request
-      console.log(userName, password);
-
+      // Send request  
       let user = new ApplicationUser();
       return this.httpClient
         .get<ApplicationUser>(`login?userName=${userName}&password=${password}`)

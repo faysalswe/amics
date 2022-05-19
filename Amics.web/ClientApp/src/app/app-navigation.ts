@@ -9,18 +9,25 @@ export const navigation = [
     icon: 'folder',
     items: [
       {
-        text: 'Part Master',
+        text: 'Part Master & BOM',
         path: '/profile',
         title: 'Part Master',
         component: 'Part Master',
         selector: ''
       },
       {
-        text: 'Tasks',
-        path: '/tasks',
-        title: 'Tasks',
-        component: 'Tasks',
-        aelector: ''
+        text: 'Adjust Inventory',
+        path: '/adjustInventory',
+        title: 'Adjust Inventory',
+        component: 'Adjust Inventory',
+        selector: ''
+      },
+      {
+        text: 'Change Location',
+        path: '/changeLocation',
+        title: 'Change Location',
+        component: 'Change Location',
+        selector: ''
       }
     ]
   }
