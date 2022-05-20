@@ -24,9 +24,9 @@ export class LoginFormComponent {
     this.loading = true;
 
     const result = await this.authService.logIn(userName, password);
-    if (!result) {
+    if (!result.isOk) {
       this.loading = false;
-      notify("Incorrect credentails, please re-enter", 'error', 2000);
+      notify("Incorrect credentails, please re-enter", 'error', 5000);
     }
   }
 

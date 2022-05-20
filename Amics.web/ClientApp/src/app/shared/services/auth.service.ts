@@ -1,24 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ApplicationUser } from '../models/application-user';
 
-export interface IUser {
-  userName: string;
-  avatarUrl?: string
-}
-
 const defaultPath = '/';
-const defaultUser = {
-  email: 'sandra@example.com',
-  avatarUrl: 'https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/06.png'
-};
-
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class AuthService {
-  private _user: IUser | null = null;
+
+  private _appUser = new BehaviorSubject<ApplicationUser>(new ApplicationUser());
+  user$: Observable<ApplicationUser> = this._appUser.asObservable();
+  user?: string;
+
   get loggedIn(): boolean {
-    return !!this._user;
+    return !!this.user;
   }
 
   private _lastAuthenticatedPath: string = defaultPath;
@@ -31,26 +28,49 @@ export class AuthService {
   async logIn(userName: string, password: string): Promise<any> {
     try {
       // Send request
-      password = btoa(password); 
-      let user = new ApplicationUser();
+      password = btoa(password);
       return this.httpClient
         .get<ApplicationUser>(`login?userName=${userName}&password=${password}`)
         .toPromise()
         .then((result) => {
           if (!!result) {
-            this._user = { ...defaultUser, userName: userName };
-            this.router.navigate([this._lastAuthenticatedPath]);
+            this.getUser().then(x => {
+              this.user = x.userId;
+              if (!!x.userId) {
+                this.router.navigate([this._lastAuthenticatedPath])
+                return {
+                  isOk: true,
+                  message: "Authentication success"
+                };
+              }
+              else {
+                this.router.navigate(['/login-form']);
+                return {
+                  isOk: false,
+                  message: "Authentication failed"
+                };
+              }
+            });
             return {
               isOk: true,
-              data: this._user
+              message: "Authentication success"
             };
           }
-          console.log("error logged in");
-          return null;
+          else {
+            console.log("error logged in");
+            return {
+              isOk: false,
+              message: "Authentication failed"
+            };
+          }
         })
         .catch((e) => {
+          this.router.navigate(['/login-form']);
           console.log("error", e);
-          return null;
+          return {
+            isOk: false,
+            message: "Authentication failed"
+          };
         });
     }
     catch {
@@ -61,21 +81,24 @@ export class AuthService {
     }
   }
 
-  async getUser() {
-    try {
-      // Send request
+  getUser(): Promise<ApplicationUser> {
+    let user = new ApplicationUser();
 
-      return {
-        isOk: true,
-        data: this._user
-      };
-    }
-    catch {
-      return {
-        isOk: false,
-        data: null
-      };
-    }
+    return this.httpClient
+      .get<ApplicationUser>("user")
+      .toPromise()
+      .then((x) => {
+        if (x) {
+          user = new ApplicationUser(x.userId, x.userName, x.firstName, x.password, x.warehouse, x.lastName, x.email, x.userDataBase, x.buyer, x.salesPerson, x.webAccess, x.amicsUser, x.empList, x.invTrans, x.forgotPwdAns);
+        }
+        this._appUser.next(user);
+
+        return user;
+      })
+      .catch(() => {
+        this._appUser.next(user);
+        return user;
+      });
   }
 
   async createAccount(email: string, password: string) {
@@ -130,13 +153,23 @@ export class AuthService {
     }
   }
 
-  async logOut() {
-    this._user = null;
-    this.router.navigate(['/login-form']);
+  logOut(): void {
+    let url = `logout`;
+    if ((document as any).documentMode) {
+      const base = document.getElementsByTagName('base')[0].href;
+      url = base + url;
+    }
+    try {
+      window.location.replace(url);
+    } catch {
+      window.location.href = url;
+    }
   }
 }
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class AuthGuardService implements CanActivate {
   constructor(private router: Router, private authService: AuthService) { }
 

@@ -1,6 +1,5 @@
 import { Component, NgModule, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IUser } from '../../services/auth.service';
+import { CommonModule } from '@angular/common'; 
 import { DevExpressModule } from 'src/app/devexpress.module';
 
 @Component({
@@ -17,7 +16,7 @@ export class UserPanelComponent {
   menuMode!: string;
 
   @Input()
-  user!: IUser | null;
+  user?: string ;
 
   constructor() {}
 }

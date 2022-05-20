@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
@@ -9,7 +9,12 @@ import { UnauthenticatedContentModule } from './unauthenticated-content';
 import { AppRoutingModule } from './app-routing.module';
 import { DevExpressModule } from './devexpress.module';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpCacheControlService } from './shared/services/http-cache-control.service';
+
+export function appUserServiceFactory(authService: AuthService): Function {
+  return () => authService.getUser();
+}
 
 @NgModule({
   declarations: [
@@ -31,10 +36,18 @@ import { HttpClientModule } from '@angular/common/http';
     DevExpressModule,
     HttpClientModule
   ],
-  providers: [
-    AuthService,
-    ScreenService,
-    AppInfoService
+  providers: [ 
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appUserServiceFactory,
+      deps: [AuthService],
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpCacheControlService,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

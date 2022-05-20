@@ -3,10 +3,21 @@ export class ApplicationUser {
    * Application User View Model.
    */
   constructor(
-    public userId: string = "",
-    public fullName?: string | null,
-    public role: string = "",
-    public dB: string =""
+    public userId?: string,
+    public userName?: string,
+    public firstName?: string,
+    public password?: string,
+    public warehouse?: string,
+    public lastName?: string,
+    public email?: string,
+    public userDataBase?: string,
+    public buyer?: string,
+    public salesPerson?: string,
+    public webAccess?: string,
+    public amicsUser?: string,
+    public empList?: string,
+    public invTrans?: string,
+    public forgotPwdAns?: string
   ) {}
 
   isAuthenticated(): boolean {
@@ -14,20 +25,15 @@ export class ApplicationUser {
   }
  
   isBasicUser(): boolean {
-    return (
-      this.role === "Basic" ||
-      this.role === "Admin"      
-    );
+    return  true;
   }
 
   isAdmin(): boolean {
-    return (
-      this.role === "Admin"  
-    );
+    return false;
   }
 
   isWebMaster(): boolean {
-    return this.role === "WebMaster";
+    return false;
   }
  
 }

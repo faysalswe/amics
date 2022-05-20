@@ -1,4 +1,5 @@
-﻿using Amics.web.Infrastructure;
+﻿using Amics.Lookup.Models;
+using Amics.web.Infrastructure;
 using Amics.web.utils;
 using Lookup.Dapper;
 using Microsoft.AspNetCore.Authentication;
@@ -58,26 +59,23 @@ namespace Amics.web.Controllers
             return Redirect(Url.Content("~/"));
         }
  
-        [HttpGet, Route("user"), ProducesResponseType(typeof(ApplicationUserViewModel), StatusCodes.Status200OK)]
-        public async Task<ApplicationUserViewModel> GetUser()
+        [HttpGet, Route("user"), ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status200OK)]
+        public async Task<ApplicationUser> GetUser()
         {
-            var userId = User.Identity?.Name;
+                var userId = User.Identity?.Name;
             if(string.IsNullOrEmpty(userId))
             {
-                return await Task.FromResult<ApplicationUserViewModel>(null);
+                return await Task.FromResult<ApplicationUser>(null);
             }
 
             var userAgent = Request.Headers[HeaderNames.UserAgent].ToString();
             _logger.LogInformation($"[{userId}] User-Agent: {userAgent}");
+
+            var user =  await _lookupDbRepository.GetUsersInfo(userId);
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
             var db = User.FindFirst("DB")?.Value;
 
-            return new ApplicationUserViewModel
-            {
-                UserId = userId,
-                Role = userRole,
-                DB = db
-            };
+            return user;
 
         }
 
@@ -91,11 +89,5 @@ namespace Amics.web.Controllers
         }
     }
 
-    public class ApplicationUserViewModel
-    {
-        public string UserId { get; set; }
-        public string Role { get; set; }
-        public string DB { get; set; } 
-        public string FullName { get; set; }
-    }
+    
 }
