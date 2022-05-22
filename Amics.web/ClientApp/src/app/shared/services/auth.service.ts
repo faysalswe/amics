@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApplicationUser } from '../models/application-user';
-
+import { AppSettingsService } from './app-settings.service';
+import { OnInit } from '@angular/core';
 const defaultPath = '/';
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-
   private _appUser = new BehaviorSubject<ApplicationUser>(new ApplicationUser());
   user$: Observable<ApplicationUser> = this._appUser.asObservable();
   user?: string;
@@ -23,14 +23,16 @@ export class AuthService {
     this._lastAuthenticatedPath = value;
   }
 
-  constructor(private router: Router, private readonly httpClient: HttpClient) { }
+  constructor(private router: Router, private readonly httpClient: HttpClient) {
+    
+  }
 
   async logIn(userName: string, password: string): Promise<any> {
     try {
       // Send request
       password = btoa(password);
       return this.httpClient
-        .get<ApplicationUser>(`login?userName=${userName}&password=${password}`)
+        .get<ApplicationUser>(`{apiUrl}/login?userName=${userName}&password=${password}`)
         .toPromise()
         .then((result) => {
           if (!!result) {
@@ -85,7 +87,7 @@ export class AuthService {
     let user = new ApplicationUser();
 
     return this.httpClient
-      .get<ApplicationUser>("user")
+      .get<ApplicationUser>("{apiUrl}/user")
       .toPromise()
       .then((x) => {
         if (x) {
@@ -171,7 +173,10 @@ export class AuthService {
   providedIn: "root",
 })
 export class AuthGuardService implements CanActivate {
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService, private readonly environmentService: AppSettingsService) {
+
+  }
+
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const isLoggedIn = this.authService.loggedIn;

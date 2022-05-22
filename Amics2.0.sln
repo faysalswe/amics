@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amics.Lookup", "Lookup.Dapp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aims.Core", "Aims.PartMaster\Aims.Core.csproj", "{ACB12874-D73D-4392-822A-91F884BC4B69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amics.Api", "Amics.Api\Amics.Api.csproj", "{03B3CC12-30FF-42F2-9593-D4C0AD9EAEA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{ACB12874-D73D-4392-822A-91F884BC4B69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACB12874-D73D-4392-822A-91F884BC4B69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACB12874-D73D-4392-822A-91F884BC4B69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03B3CC12-30FF-42F2-9593-D4C0AD9EAEA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03B3CC12-30FF-42F2-9593-D4C0AD9EAEA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03B3CC12-30FF-42F2-9593-D4C0AD9EAEA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03B3CC12-30FF-42F2-9593-D4C0AD9EAEA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

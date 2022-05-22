@@ -1,6 +1,6 @@
 using System;
 
-namespace Amics.web
+namespace Amics.Api
 {
     public class WeatherForecast
     {

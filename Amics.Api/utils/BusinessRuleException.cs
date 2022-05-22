@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Amics.web.utils
+namespace Amics.Api.utils
 {
     public class BusinessRuleException : Exception
     {

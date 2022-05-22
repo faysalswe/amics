@@ -11,9 +11,18 @@ import { DevExpressModule } from './devexpress.module';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpCacheControlService } from './shared/services/http-cache-control.service';
+import { DomainReplaceIterceptor } from './shared/services/DomainReplaceInterceptor';
+import { AppSettingsService } from './shared/services/app-settings.service';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
+}
+
+
+export function appEnvironmentFactory(
+  environmentService: AppSettingsService
+): Function {
+  return () => environmentService.getAppSettings();
 }
 
 @NgModule({
@@ -39,10 +48,21 @@ export function appUserServiceFactory(authService: AuthService): Function {
   providers: [ 
     {
       provide: APP_INITIALIZER,
+      useFactory: appEnvironmentFactory,
+      deps: [AppSettingsService],
+      multi: true,
+    },    
+    {
+      provide: APP_INITIALIZER,
       useFactory: appUserServiceFactory,
       deps: [AuthService],
       multi: true,
     },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: DomainReplaceIterceptor,
+      multi: true,
+    },    
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpCacheControlService,

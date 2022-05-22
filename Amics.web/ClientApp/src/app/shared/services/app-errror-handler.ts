@@ -1,8 +1,8 @@
 import { ErrorHandler, Inject, Injector, Injectable } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http"; 
-import { Router } from "@angular/router";
-import { UserService } from "./user.service";
+import { Router } from "@angular/router"; 
 import notify from "devextreme/ui/notify";
+import { AuthService } from "./auth.service";
 
 @Injectable({
   providedIn: "root",
@@ -13,8 +13,8 @@ export class AppErrorHandler extends ErrorHandler {
   }
  
 
-  private get userService(): UserService {
-    return this.injector.get(UserService);
+  private get userService(): AuthService {
+    return this.injector.get(AuthService);
   }
   private get router(): Router {
     return this.injector.get(Router);

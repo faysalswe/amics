@@ -1,6 +1,6 @@
-﻿using Amics.Lookup.Models;
-using Amics.web.Infrastructure;
-using Amics.web.utils;
+﻿using Amics.Api.Infrastructure;
+using Amics.Api.utils;
+using Amics.Lookup.Models; 
 using Lookup.Dapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

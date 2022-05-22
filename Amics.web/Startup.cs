@@ -1,19 +1,10 @@
-using Amics.web.Infrastructure;
-using DocumentFormat.OpenXml.EMMA;
-using Lookup.Dapper;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Hosting; 
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using System;
-using AuthorizationPolicy = Amics.web.Infrastructure.AuthorizationPolicy;
-
+using Microsoft.OpenApi.Models; 
 namespace Amics.web
 {
     public class Startup
@@ -27,8 +18,7 @@ namespace Amics.web
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            var connectionString = Configuration.GetValue<string>("ConnectionStrings:LookUpDB");
+        {       
 
             services.AddSwaggerGen(options =>
             {
@@ -51,32 +41,17 @@ namespace Amics.web
                     //}
                 });
             });
-
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-            services.AddMemoryCache();
             services.AddControllersWithViews();
-            var origins = new[] { Configuration.GetValue<string>("PrintOrderSettings:SiteUrl") };
+            services.AddHealthChecks();            
 
-            services.AddCors(options => { options.AddPolicy("AllowSelf", x => { x.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod().AllowCredentials(); }); });
-            services.AddHealthChecks();
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(60);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
-          
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
-            });
-            services.AddScoped<IAuthorizationPolicy, AuthorizationPolicy>();
-            services.AddScoped<ILookupDbRepositoryService, LookupDbRepositoryService>();
+            }); 
             services.AddMvc();
-            
-            
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -107,8 +82,7 @@ namespace Amics.web
 
             app.UseRouting();
             app.UseAuthentication();
-            app.UseAuthorization();
-            app.UseErrorHandling();
+            app.UseAuthorization(); 
 
             app.UseEndpoints(endpoints =>
             {

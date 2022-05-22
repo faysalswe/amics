@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Amics.web.Infrastructure
+namespace Amics.Api.Infrastructure
 {
     public interface IAuthorizationPolicy
     {

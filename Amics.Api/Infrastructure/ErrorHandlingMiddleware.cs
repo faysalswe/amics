@@ -1,4 +1,4 @@
-﻿using Amics.web.utils;
+﻿using Amics.Api.utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
-namespace Amics.web.Infrastructure
+namespace Amics.Api.Infrastructure
 {
 
     public class ErrorHandlingMiddleware

@@ -28,7 +28,8 @@ export class HttpCacheControlService implements HttpInterceptor {
         .set('Cache-Control', 'no-cache')
         .set('Pragma', 'no-cache')
         .set('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT')
-        .set('If-Modified-Since', '0')
+        .set('If-Modified-Since', '0'),
+      withCredentials: true
     });
 
     return next.handle(nextReq);

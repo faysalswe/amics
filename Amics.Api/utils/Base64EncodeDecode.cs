@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Amics.web.utils
+namespace Amics.Api.utils
 {
     public static class Base64EncodeDecode
     {
