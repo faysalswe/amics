@@ -1,3 +1,4 @@
+using Aims.Core.Models;
 using Amics.Api.Infrastructure;
 using Lookup.Dapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,6 +16,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using Aims.PartMaster.Services;
 
 namespace Amics.Api
 {
@@ -30,8 +34,11 @@ namespace Amics.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+       options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())); 
             var connectionString = Configuration.GetValue<string>("ConnectionStrings:LookUpDB");
+            services.AddDbContext<AmicsDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LookUpDB")));
+
             var origins = Configuration.GetValue<string>("CORS:origins");
             services
                .AddCors(options => {
@@ -65,10 +72,11 @@ namespace Amics.Api
                     //}
                 });
             });
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             services.AddMemoryCache();
             services.AddControllersWithViews();
-           
+            services.AddScoped<IPartMasterService, PartMasterService>();           
 
     
             services.AddHealthChecks();
