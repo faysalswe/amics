@@ -7,7 +7,10 @@ namespace Aims.Core.Models
 {
     public class AmicsDbContext : DbContext
     {
-        public DbSet<AimcsSpLookUp> amicsSpLookups { get; set; }
+        public DbSet<AimcsSpLookUp> AmicsSpLookups { get; set; }
+        public DbSet<LstWarehouse> LstWarehouses { get; set; }
+        public DbSet<LstLocation> LstLocations { get; set; }
+
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)
         {
