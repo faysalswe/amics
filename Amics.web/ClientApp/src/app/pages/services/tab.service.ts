@@ -17,7 +17,7 @@ import { TabInfo } from "../models/tabInfo";
     
     addTab(title:string, component:string, selector:string, type: ComponentType)
     {
-        const tab = new TabInfo(title, component, selector,type);    
+        const tab = new TabInfo(title,type);    
         this.tabs.push(tab);
         console.log(`added Tab with title ${title}`)
         this.addTabSource.next(tab);
