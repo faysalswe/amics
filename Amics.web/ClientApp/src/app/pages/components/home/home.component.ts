@@ -1,7 +1,7 @@
 import { Component, enableProdMode, OnInit } from '@angular/core';
-import { TabInfo } from './models/tabInfo';
-import { AppTask, Employee, HomeService } from './services/home.service'; 
-import { TabService } from './services/tab.service';
+import { TabInfo } from '../../models/tabInfo';
+import { AppTask, Employee, HomeService } from '../../services/home.service'; 
+import { TabService } from '../../services/tab.service';
  
 @Component({
   templateUrl: 'home.component.html',

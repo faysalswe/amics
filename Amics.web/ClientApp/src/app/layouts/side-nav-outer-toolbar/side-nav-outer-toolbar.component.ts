@@ -5,9 +5,8 @@ import { ItemClickEvent } from 'devextreme/ui/tree_view';
 import { DxDrawerModule } from 'devextreme-angular/ui/drawer';
 import { DxScrollViewModule, DxScrollViewComponent } from 'devextreme-angular/ui/scroll-view';
 import { CommonModule } from '@angular/common';
-
 import { Router, NavigationEnd } from '@angular/router';
-import { TabService } from 'src/app/pages/home/services/tab.service';
+import { TabService } from 'src/app/pages/services/tab.service';
 
 @Component({
   selector: 'app-side-nav-outer-toolbar',
