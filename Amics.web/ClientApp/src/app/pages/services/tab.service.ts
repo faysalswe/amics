@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
+import { ComponentType } from "../models/componentType";
 import { TabInfo } from "../models/tabInfo";
 
 @Injectable({
@@ -14,9 +15,9 @@ import { TabInfo } from "../models/tabInfo";
     private removeTabSource = new Subject();
     removeTabObservable$ = this.removeTabSource.asObservable();
     
-    addTab(title:string, component:string, selector:string)
+    addTab(title:string, component:string, selector:string, type: ComponentType)
     {
-        const tab = new TabInfo(title, component, selector);    
+        const tab = new TabInfo(title, component, selector,type);    
         this.tabs.push(tab);
         console.log(`added Tab with title ${title}`)
         this.addTabSource.next(tab);

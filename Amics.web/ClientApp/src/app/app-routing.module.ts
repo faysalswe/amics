@@ -9,6 +9,7 @@ import { DxDataGridModule, DxFormModule } from 'devextreme-angular';
 import { DevExpressModule } from './devexpress.module';
 import { CommonModule } from '@angular/common';
 import { PartMasterComponent } from './pages/components/PartMaster/partmaster.component';
+import { HostComponent } from './pages/components/host/host.component';
 
 const routes: Routes = [
   {
@@ -60,7 +61,8 @@ const routes: Routes = [
     HomeComponent,
     ProfileComponent,
     TasksComponent,
-    PartMasterComponent
+    PartMasterComponent,
+    HostComponent
   ]
 })
 export class AppRoutingModule { }

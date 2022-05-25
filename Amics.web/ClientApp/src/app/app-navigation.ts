@@ -1,3 +1,5 @@
+import { ComponentType } from "./pages/models/componentType";
+
 export const navigation = [
   {
     text: 'Home',
@@ -13,21 +15,24 @@ export const navigation = [
         path: '/profile',
         title: 'Part Master',
         component: 'Part Master',
-        selector: ''
+        selector: '',
+        type: ComponentType.PartMaster
       },
       {
         text: 'Adjust Inventory',
         path: '/adjustInventory',
         title: 'Adjust Inventory',
         component: 'Adjust Inventory',
-        selector: ''
+        selector: '',
+        type: ComponentType.ProfileComponent
       },
       {
         text: 'Change Location',
         path: '/changeLocation',
         title: 'Change Location',
         component: 'Change Location',
-        selector: ''
+        selector: '',
+        type: ComponentType.TasksComponent
       }
     ]
   }
