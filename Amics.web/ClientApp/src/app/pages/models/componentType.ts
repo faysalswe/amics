@@ -1,5 +1,5 @@
 export enum ComponentType {
-    PartMaster,
-    ProfileComponent,
-    TasksComponent
+    PartMaster = 'PartMaster',
+    Profile = 'Profile',
+    Tasks = 'Tasks'
   }

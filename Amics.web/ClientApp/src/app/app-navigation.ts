@@ -24,7 +24,7 @@ export const navigation = [
         title: 'Adjust Inventory',
         component: 'Adjust Inventory',
         selector: '',
-        type: ComponentType.ProfileComponent
+        type: ComponentType.Profile
       },
       {
         text: 'Change Location',
@@ -32,7 +32,7 @@ export const navigation = [
         title: 'Change Location',
         component: 'Change Location',
         selector: '',
-        type: ComponentType.TasksComponent
+        type: ComponentType.Tasks
       }
     ]
   }

@@ -34,10 +34,11 @@ export class HomeComponent implements OnInit{
   ngOnInit(): void{
     this.tabService.addTabObservable$.subscribe((tab: any) => { 
       this.tabs.push(tab);
+      this.selectedIndex = this.tabs.length-1;
     });
     this.tabService.removeTabObservable$.subscribe((tabToRemove: any) => { 
       const index = this.tabs.indexOf(tabToRemove);
-      this.tabs.splice(index, 1);
+      this.tabs.splice(index, 1); 
     });
   }
 
