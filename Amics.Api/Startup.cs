@@ -76,6 +76,7 @@ namespace Amics.Api
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             services.AddMemoryCache();
             services.AddControllersWithViews();
+            services.AddApiVersioningConfigured();
             services.AddScoped<IPartMasterService, PartMasterService>();           
 
     

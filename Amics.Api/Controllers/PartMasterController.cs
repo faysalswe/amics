@@ -1,5 +1,6 @@
 ﻿using Aims.Core.Models;
 using Aims.PartMaster.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -8,7 +9,10 @@ using System.Collections.Generic;
 namespace Amics.Api.Controllers
 {
     [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")] 
     [ApiController]
+    [ApiVersion("1.0")]
+    [Authorize]
     public class PartMasterController : ControllerBase
     {
         private readonly IPartMasterService _partMasterService;
