@@ -41,12 +41,21 @@ namespace Amics.Api.Controllers
         }
 
         [HttpGet, Route("LocationLookup")]
-        public IList<LstLocation> GetLocationLookUp([FromQuery] string searchLocation, [FromQuery] string warehouseId)
+        public IList<LstLocaton> GetLocationLookUp([FromQuery] string searchLocation, [FromQuery] string warehouseId)
         {
           
             var resultLoc = _partMasterService.LocationLookup(searchLocation, warehouseId);
 
             return resultLoc;
+        }
+
+        [HttpGet, Route("ItemNumberSearch")]
+        public IList<LstItemSearch> GetItemNumberSearch([FromQuery] string itemnumber, [FromQuery] string description, [FromQuery] string itemtype, [FromQuery] string itemcode, [FromQuery] string itemclass)
+        {
+
+            var itemSearchResult = _partMasterService.ItemNumberSearch(itemnumber, description, itemtype, itemcode, itemclass);
+
+            return itemSearchResult;
         }
     }
 }

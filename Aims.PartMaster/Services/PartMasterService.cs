@@ -14,8 +14,8 @@ namespace Aims.PartMaster.Services
     {
         List<AimcsSpLookUp> CommonLookup(FieldNameSearch fieldName, string search_col1, string search_col2);
         List<LstWarehouse> WarehouseLookup(string searchWarehouse);
-        List<LstLocation> LocationLookup(string searchLocation, string warehouseId);
-
+        List<LstLocaton> LocationLookup(string searchLocation, string warehouseId);
+        List<LstItemSearch> ItemNumberSearch(string itemnumber, string description, string itemtype, string itemcode, string itemclass);
     }
 
     public class PartMasterService:IPartMasterService
@@ -44,16 +44,25 @@ namespace Aims.PartMaster.Services
             return result;
         }
 
-        public List<LstLocation> LocationLookup(string searchLocation,string warehouseId)
+        public List<LstLocaton> LocationLookup(string searchLocation,string warehouseId)
         {
             var whouseId = new Guid(warehouseId.ToString());
             var result = _amicsDbContext.LstLocations
-                .FromSqlInterpolated($"select id,location,,isnull(list_locations.invalid,0) as invalid,isnull(list_locations.sequenceno,'') as sequenceno,isnull(list_locations.route,'') as route from list_locations where warehousesid={whouseId} and location like  {"%" + searchLocation + "%"} and isnull(flag_delete,0)=0 order by location")
+                .FromSqlInterpolated($"select id,location,isnull(list_locations.invalid,0) as invalid,isnull(list_locations.sequenceno,'') as sequenceno,isnull(list_locations.route,'') as route from list_locations where warehousesid={whouseId} and location like  {"%" + searchLocation + "%"} and isnull(flag_delete,0)=0 order by location")
                 .ToList();
 
             return result;
         }
 
+        public List<LstItemSearch> ItemNumberSearch(string itemnumber, string description, string itemtype, string itemcode, string itemclass)
+        {
+          //  var whouseId = new Guid(warehouseId.ToString());
+            var searchresult = _amicsDbContext.LstItemSearchs
+                .FromSqlRaw($"exec sp_webservice_search_items5 @item='{itemnumber}',@description='{description}',@itemtype='{itemtype }',@itemclass='{itemclass }',@itemcode='{itemcode }'")
+                .ToList<LstItemSearch>();
+
+            return searchresult;
+        }
     }
 
 }
