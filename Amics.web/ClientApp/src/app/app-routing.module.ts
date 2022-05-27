@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginFormComponent, ResetPasswordFormComponent, CreateAccountFormComponent, ChangePasswordFormComponent } from './shared/components';
 import { AuthGuardService } from './shared/services';
-import { HomeComponent } from './pages/home/home.component';
-import { ProfileComponent } from './pages/profile/profile.component';
-import { TasksComponent } from './pages/tasks/tasks.component';
+import { HomeComponent } from './pages/components/home/home.component';
+import { ProfileComponent } from './pages/components/profile/profile.component';
+import { TasksComponent } from './pages/components/tasks/tasks.component';
 import { DxDataGridModule, DxFormModule } from 'devextreme-angular';
 import { DevExpressModule } from './devexpress.module';
 import { CommonModule } from '@angular/common';
+import { PartMasterComponent } from './pages/components/PartMaster/partmaster.component';
+import { HostComponent } from './pages/components/host/host.component';
 
 const routes: Routes = [
   {
@@ -58,7 +60,9 @@ const routes: Routes = [
   declarations: [
     HomeComponent,
     ProfileComponent,
-    TasksComponent
+    TasksComponent,
+    PartMasterComponent,
+    HostComponent
   ]
 })
 export class AppRoutingModule { }

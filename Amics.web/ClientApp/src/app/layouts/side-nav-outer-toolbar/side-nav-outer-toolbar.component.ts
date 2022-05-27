@@ -5,9 +5,8 @@ import { ItemClickEvent } from 'devextreme/ui/tree_view';
 import { DxDrawerModule } from 'devextreme-angular/ui/drawer';
 import { DxScrollViewModule, DxScrollViewComponent } from 'devextreme-angular/ui/scroll-view';
 import { CommonModule } from '@angular/common';
-
 import { Router, NavigationEnd } from '@angular/router';
-import { TabService } from 'src/app/pages/home/services/tab.service';
+import { TabService } from 'src/app/pages/services/tab.service';
 
 @Component({
   selector: 'app-side-nav-outer-toolbar',
@@ -74,8 +73,9 @@ export class SideNavOuterToolbarComponent implements OnInit {
         const title = (event.itemData as any).title;
         const component = (event.itemData as any).component;
         const selector = (event.itemData as any).selector;
+        const type = (event.itemData as any).type;
         if (path !== '/home') {
-          this.tabService.addTab(title, component, selector);
+          this.tabService.addTab(title, component, selector,type);
         }
         // this.router.navigate([path]);
         this.scrollView.instance.scrollTo(0);
