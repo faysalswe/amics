@@ -99,12 +99,7 @@ namespace Amics.Api
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Amics 2.0");
-                });
+                app.UseDeveloperExceptionPage();              
             }
             else
             {
@@ -112,16 +107,20 @@ namespace Amics.Api
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Amics 2.0");
+            });
             app.UseHttpsRedirection();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
-            app.UseRouting();
-            app.UseRouting();
+            app.UseRouting(); 
             app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseErrorHandling();
-           
+            app.UseErrorHandling(); 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

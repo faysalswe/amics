@@ -17,5 +17,9 @@
     <ProjectReference Include="..\Lookup.Dapper\Amics.Lookup.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\index.html" />
+  </ItemGroup>
+
 
 </Project>
