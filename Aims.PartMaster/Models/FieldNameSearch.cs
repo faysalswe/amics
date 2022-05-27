@@ -34,6 +34,9 @@ namespace Aims.Core.Models
         Salesperson,
 
         [Description("Userid")]
-        Userid
+        Userid,
+
+        [Description("Uom")]
+        Uom
     }
 }
