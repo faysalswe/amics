@@ -1,13 +1,36 @@
 import { Component, OnInit } from "@angular/core"; 
+import { Company, PartMasterService } from "../../services/partmaster.service";
 
 @Component({
   selector: "app-partmaster",
   templateUrl: "./partmaster.component.html",
+  styleUrls: ['./partmaster.component.scss']
 })
-export class PartMasterComponent implements OnInit {
-  constructor() {}
+export class PartMasterComponent  {
+  companies: Company[];
 
-  ngOnInit() {
-    
+  labelMode: string;
+  labelLocation: string;
+  readOnly: boolean;
+  showColon: boolean;
+  minColWidth: number;
+  colCount: number;
+  width: any;
+
+  constructor(service: PartMasterService) {
+    this.labelMode = 'static';
+    this.labelLocation = 'left';
+    this.readOnly = false;
+    this.showColon = true;
+    this.minColWidth = 300;
+    this.colCount = 2;
+    this.companies = service.getCompanies();
+  }
+   
+
+  getCompanySelectorLabelMode() {
+    return this.labelMode === 'outside'
+      ? 'hidden'
+      : this.labelMode;
   }
 }

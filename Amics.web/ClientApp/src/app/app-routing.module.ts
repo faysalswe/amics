@@ -10,6 +10,7 @@ import { DevExpressModule } from './devexpress.module';
 import { CommonModule } from '@angular/common';
 import { PartMasterComponent } from './pages/components/PartMaster/partmaster.component';
 import { HostComponent } from './pages/components/host/host.component';
+import { PMSearchComponent } from './pages/components/PartMaster/search/pmsearch.component';
 
 const routes: Routes = [
   {
@@ -62,6 +63,7 @@ const routes: Routes = [
     ProfileComponent,
     TasksComponent,
     PartMasterComponent,
+    PMSearchComponent,
     HostComponent
   ]
 })
