@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core"; 
-import { Company, PartMasterService } from "../../services/partmaster.service";
+import { Company } from "../../models/company";
+import { PartMasterService } from "../../services/partmaster.service";
 
 @Component({
   selector: "app-partmaster",

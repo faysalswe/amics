@@ -1,23 +1,24 @@
 import { Component, OnInit } from "@angular/core";
+import { pmDetails } from "src/app/pages/models/pmdetails";
+import { PMPOView } from "src/app/pages/models/pmpoview";
 import { pmSearch, pmSearchResult } from "src/app/pages/models/pmsearch";
 import { PartMasterService } from "../../../services/partmaster.service";
 
 @Component({
-    selector: "app-pmsearch",
-    templateUrl: "./pmsearch.component.html",
-    styleUrls: ['./pmsearch.component.scss']
+    selector: "app-pmdetails",
+    templateUrl: "./pmdetails.component.html",
+    styleUrls: ['./pmdetails.component.scss']
 })
-export class PMSearchComponent {
+export class PMDetailsComponent {
     submitButtonOptions = {
         text: "Search",
         useSubmitBehavior: true,
         width: "100%",
         type: "default"
     }
-
-    pmsearch: pmSearch | undefined;
-    pmSearchResults: pmSearchResult[] = [];
-    constructor(service: PartMasterService) { }
+    pmDetails: pmDetails|undefined;
+    pmpoviewArray: PMPOView[] =[];
+    invTypes: string[] =["Basic" ,"Serial"];
     handleSubmit = function (e:any) {
         setTimeout(() => {
             alert("Submitted");
@@ -25,4 +26,5 @@ export class PMSearchComponent {
 
         e.preventDefault();
     }
+
 }

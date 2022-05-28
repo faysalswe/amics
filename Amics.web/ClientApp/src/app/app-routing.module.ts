@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { PartMasterComponent } from './pages/components/PartMaster/partmaster.component';
 import { HostComponent } from './pages/components/host/host.component';
 import { PMSearchComponent } from './pages/components/PartMaster/search/pmsearch.component';
+import { PMDetailsComponent } from './pages/components/PartMaster/details/pmdetails.component';
 
 const routes: Routes = [
   {
@@ -64,6 +65,7 @@ const routes: Routes = [
     TasksComponent,
     PartMasterComponent,
     PMSearchComponent,
+    PMDetailsComponent,
     HostComponent
   ]
 })

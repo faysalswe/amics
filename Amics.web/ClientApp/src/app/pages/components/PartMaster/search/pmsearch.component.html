@@ -1,11 +1,26 @@
-<div class="pmsearch-container">
-    <dx-form [(formData)]="pmsearch" [colCount]="1"> 
-        <dxi-item dataField="partNumber"></dxi-item>
-        <dxi-item dataField="description"></dxi-item>
-        <dxi-item dataField="itemType"></dxi-item>
-        <dxi-item dataField="itemClass"></dxi-item>
-        <dxi-item dataField="itemCode"></dxi-item>
-    </dx-form>
-    <br/>
-    
+<div class="search-container content-block dx-card responsive-paddings">
+    <div class="pmsearch-container ">
+        <dx-form [(formData)]="pmsearch" [colCount]="1" [minColWidth]="200" labelMode="floating" labelLocation="left"
+            width="200" (submit)="handleSubmit($event)">
+            <dxi-item itemType="group">
+                <dxi-item dataField="partNumber"></dxi-item>
+                <dxi-item dataField="description"></dxi-item>
+                <dxi-item dataField="itemType" caption="MFR"></dxi-item>
+                <dxi-item dataField="itemClass"></dxi-item>
+                <dxi-item dataField="itemCode"></dxi-item>
+                <dxi-item itemType="button" type="default" stylingMode="contained"
+                    [buttonOptions]="submitButtonOptions">
+                </dxi-item>
+            </dxi-item>
+        </dx-form>
+    </div>
+    <br />
+    <div>
+        <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="ID" [hoverStateEnabled]="true"
+            [showBorders]="true" [selectedRowKeys]="[]">
+            <dxo-selection mode="single"></dxo-selection>
+            <dxi-column dataField="partNumber" [width]="100"></dxi-column>
+            <dxi-column dataField="description" [width]="150"></dxi-column>
+        </dx-data-grid>
+    </div>
 </div>

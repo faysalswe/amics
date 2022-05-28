@@ -1,7 +1,16 @@
-
-  ::ng-deep .pmsearch-container {   
-    width: 260px;    
-    background-color: rgba(191, 191, 191, 0.15);
+::ng-deep .pmsearch-container { 
+    padding: 10px;
+    max-width: 220px;
+    min-width: 200px;
   }
-
+  
+  ::ng-deep #form {
+    margin-top: 25px;
+    line-height: 20;
+  }
+  ::ng-deep .search-container {
+    margin: 10px 10px 10px;    
+    max-width: 300px;
+    min-width: 220px;
+  }
   
