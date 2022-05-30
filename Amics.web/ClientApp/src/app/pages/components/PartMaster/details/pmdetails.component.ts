@@ -19,6 +19,8 @@ export class PMDetailsComponent {
     pmDetails: pmDetails|undefined;
     pmpoviewArray: PMPOView[] =[];
     invTypes: string[] =["Basic" ,"Serial"];
+    warehouseLbl:string = "Warehouse";
+    locationLbl:string = "Location";
     handleSubmit = function (e:any) {
         setTimeout(() => {
             alert("Submitted");
