@@ -77,7 +77,7 @@ namespace Amics.Api
             services.AddMemoryCache();
             services.AddControllersWithViews();
             services.AddApiVersioningConfigured();
-            services.AddScoped<IPartMasterService, PartMasterService>();           
+            services.AddScoped<ISearchService, SearchService>();           
 
     
             services.AddHealthChecks();

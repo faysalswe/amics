@@ -11,6 +11,9 @@ namespace Aims.Core.Models
         public DbSet<LstWarehouse> LstWarehouses { get; set; }
         public DbSet<LstLocaton> LstLocations { get; set; }
         public DbSet<LstItemSearch> LstItemSearchs { get; set; }
+        public DbSet<LstItemType> LstItemTypes { get; set; }
+        public DbSet<LstItemCode> LstItemCodes { get; set; }
+        public DbSet<LstItemClass> LstItemClasses { get; set; }
 
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)
