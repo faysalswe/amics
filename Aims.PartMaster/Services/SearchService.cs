@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Aims.PartMaster.Services
 {
-    public interface IPartMasterService
+    public interface ISearchService
     {
         List<AimcsSpLookUp> CommonLookup(FieldNameSearch fieldName, string search_col1, string search_col2);
         List<LstWarehouse> WarehouseLookup(string searchWarehouse, string warehouseId);
@@ -21,10 +21,10 @@ namespace Aims.PartMaster.Services
         List<LstItemCode> ItemCodeLookup(string searchItemcodes, string itemcodeId);
     }
 
-    public class PartMasterService:IPartMasterService
+    public class SearchService:ISearchService
     {
         private readonly AmicsDbContext _amicsDbContext;
-        public PartMasterService(AmicsDbContext aimsDbContext)
+        public SearchService(AmicsDbContext aimsDbContext)
         {
             _amicsDbContext = aimsDbContext;
         }

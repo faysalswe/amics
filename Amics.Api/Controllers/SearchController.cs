@@ -13,11 +13,11 @@ namespace Amics.Api.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [Authorize]
-    public class PartMasterController : ControllerBase
+    public class SearchController : ControllerBase
     {
-        private readonly IPartMasterService _partMasterService;
-        private readonly ILogger<PartMasterController> _logger;
-        public PartMasterController(IPartMasterService partMasterService, ILogger<PartMasterController> logger)
+        private readonly ISearchService _partMasterService;
+        private readonly ILogger<SearchController> _logger;
+        public SearchController(ISearchService partMasterService, ILogger<SearchController> logger)
         {
             _partMasterService = partMasterService;
             _logger = logger;
@@ -32,7 +32,7 @@ namespace Amics.Api.Controllers
 
         }
 
-        [HttpGet, Route("WarehouseLookup")]
+        [HttpGet, Route("Warehouse")]
         public IList<LstWarehouse> GetWarehouseLookUp([FromQuery] string searchWarehouse, [FromQuery] string warehouseId)
         {
             var resultWh = _partMasterService.WarehouseLookup(searchWarehouse, warehouseId);
@@ -40,7 +40,7 @@ namespace Amics.Api.Controllers
             return resultWh;
         }
 
-        [HttpGet, Route("LocationLookup")]
+        [HttpGet, Route("Location")]
         public IList<LstLocaton> GetLocationLookUp([FromQuery] string searchLocation, [FromQuery] string warehouseId, [FromQuery] string locationId )
         {
           
@@ -58,7 +58,7 @@ namespace Amics.Api.Controllers
             return resultItemtype;
         }
 
-        [HttpGet, Route("ItemClassLookup")]
+        [HttpGet, Route("ItemClass")]
         public IList<LstItemClass> GetItemClassSearch([FromQuery] string itemclass, [FromQuery] string itemclassId)
         {
 
@@ -67,7 +67,7 @@ namespace Amics.Api.Controllers
             return resultItemclass;
         }
 
-        [HttpGet, Route("ItemCodeLookup")]
+        [HttpGet, Route("ItemCode")]
         public IList<LstItemCode> GetItemCodeSearch([FromQuery] string itemcode, [FromQuery] string itemcodeId)
         {
 
@@ -76,7 +76,7 @@ namespace Amics.Api.Controllers
             return resultItemCode;
         }
 
-        [HttpGet, Route("ItemNumberSearch")]
+        [HttpGet, Route("ItemNumber")]
         public IList<LstItemSearch> GetItemNumberSearch([FromQuery] string itemnumber, [FromQuery] string description, [FromQuery] string itemtype, [FromQuery] string itemcode, [FromQuery] string itemclass)
         {
 
