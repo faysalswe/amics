@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Linq;
+using Amics.Core.utils;
 
 namespace Aims.PartMaster.Services
 {
@@ -40,12 +41,11 @@ namespace Aims.PartMaster.Services
 
         public List<LstWarehouse> WarehouseLookup(string searchWarehouse, string warehouseId)
         {
-            var whId = new Guid(warehouseId.ToString());
-            //var result = _amicsDbContext.LstWarehouses
-            //    .FromSqlInterpolated($"select id,warehouse from list_warehouses where trim(warehouse) like  {"%" + searchWarehouse + "%"} order by warehouse")
-            //    .ToList();
+            var whId = string.IsNullOrEmpty(warehouseId) ? Guid.Empty : new Guid(warehouseId.ToString());
+            var name = string.IsNullOrEmpty(searchWarehouse) ? string.Empty : searchWarehouse;
+             
             var whresult = _amicsDbContext.LstWarehouses
-                .FromSqlRaw($"exec amics_sp_warehouse_lookup @whid ='{whId}',@warehouse = '{searchWarehouse}'")
+                .FromSqlRaw($"exec amics_sp_warehouse_lookup @whid ='{whId}',@warehouse = '{name}'")
                 .ToList();
 
             return whresult;
@@ -53,13 +53,16 @@ namespace Aims.PartMaster.Services
 
         public List<LstLocaton> LocationLookup(string searchLocation,string warehouseId, string locationId)
         {
+            if (string.IsNullOrEmpty(warehouseId))
+            {
+                throw new BusinessRuleException("WarehouseId cannot be null or empty");
+            } 
             var whId = new Guid(warehouseId.ToString());
-            var locId = new Guid(locationId.ToString());
-            //var result = _amicsDbContext.LstLocations
-            //    .FromSqlInterpolated($"select id,location,isnull(list_locations.invalid,0) as invalid,isnull(list_locations.sequenceno,'') as sequenceno,isnull(list_locations.route,'') as route from list_locations where warehousesid={whouseId} and location like  {"%" + searchLocation + "%"} and isnull(flag_delete,0)=0 order by location")
-            //    .ToList();
+            var locId = string.IsNullOrEmpty(locationId)? Guid.Empty:  new Guid(locationId.ToString());
+            var location = string.IsNullOrEmpty(searchLocation) ? string.Empty : searchLocation;
+             
             var locresult = _amicsDbContext.LstLocations
-                .FromSqlRaw($"exec amics_sp_location_lookup @whid='{whId}',@locationId='{locId}',@location='{searchLocation}'")
+                .FromSqlRaw($"exec amics_sp_location_lookup @whid='{whId}',@locid='{locId}',@location='{location}'")
                 .ToList();
 
             return locresult;

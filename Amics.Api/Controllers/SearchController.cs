@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace Amics.Api.Controllers
@@ -41,7 +42,7 @@ namespace Amics.Api.Controllers
         }
 
         [HttpGet, Route("Location")]
-        public IList<LstLocaton> GetLocationLookUp([FromQuery] string searchLocation, [FromQuery] string warehouseId, [FromQuery] string locationId )
+        public IList<LstLocaton> GetLocationLookUp([FromQuery] string warehouseId, [FromQuery] string searchLocation="",[FromQuery] string locationId = null)
         {
           
             var resultLoc = _partMasterService.LocationLookup(searchLocation, warehouseId, locationId);

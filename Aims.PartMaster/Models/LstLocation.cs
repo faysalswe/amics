@@ -8,8 +8,8 @@ namespace Aims.Core.Models
     {     
         public Guid Id { get; set; }
         public string Location { get; set; }
-        public string Invalid { get; set; }
-        public string SequenceNo { get; set; }
-        public string Route { get; set; }
+        public bool Invalid { get; set; }
+        public short SequenceNo { get; set; }
+        public short Route { get; set; }
     }
 }
