@@ -9,10 +9,8 @@ using System.Collections.Generic;
 
 namespace Amics.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [Route("api/v{version:apiVersion}/[controller]")] 
+    [Route("api/[controller]")] 
     [ApiController]
-    [ApiVersion("1.0")]
     [Authorize]
     public class SearchController : ControllerBase
     {
