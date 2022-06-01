@@ -4,9 +4,7 @@
             (submit)="handleSubmit($event)">
             <dxi-item itemType="group" [colCount]="4">
                 <dxi-item dataField="partNumber" [colSpan]="1" [isRequired]="true"></dxi-item>
-                <dxi-item dataField="itemType"  [colSpan]="1">
-                    <dxo-label text="MFR"> </dxo-label>
-                </dxi-item>
+                <dxi-item dataField="itemType" [colSpan]="1" [label]="{ text: 'MFR' }"></dxi-item>
                 <dxi-item dataField="itemClass" [colSpan]="1"></dxi-item>
                 <dxi-item dataField="itemCode" [colSpan]="1"></dxi-item>
             </dxi-item>
@@ -14,33 +12,31 @@
                 <dx-text-area dataField="description" label="Description"></dx-text-area>
             </dxi-item>
             <dxi-item itemType="group" [colCount]="2">
-                <dxi-item itemType="group" [colCount]="3">
+                <dxi-item itemType="group" [colCount]="3" class="legendBorder">
                     <dxi-item dataField="cost"></dxi-item>
                     <dxi-item dataField="markup"></dxi-item>
                     <dxi-item dataField="price"></dxi-item>
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="2">
-                    <dxi-item dataField="uom" name="UOM"></dxi-item>
+                    <dxi-item dataField="uom" [label]="{ text: 'UOM' }"></dxi-item>
                     <dxi-item dataField="maintenance"></dxi-item>
                 </dxi-item>
             </dxi-item>
             <dxi-item itemType="group" [colCount]="3">
                 <dxi-item itemType="group" [colCount]="2    ">
-                    <dxi-item dataField="defaultWarehouse">
-                        <dxo-label [text]="warehouseLbl"> </dxo-label>
-                    </dxi-item>
-                    <dxi-item dataField="defaultLocation" name="Location">
-                        <dxo-label [text]="locationLbl"> </dxo-label>
-                    </dxi-item>
+                    <dxi-item dataField="defaultWarehouse" [label]="{ text: warehouseLbl }"></dxi-item>
+                    <dxi-item dataField="defaultLocation" name="Location" [label]="{ text: locationLbl }"></dxi-item>
                 </dxi-item>
-                <dxi-item itemType="group" [colCount]="2">
+                <dxi-item itemType="group" [colCount]="2" class="legendBorder">
                     <dx-radio-group [dataSource]="invTypes" dataField="invType" layout="horizontal">
                     </dx-radio-group>
                 </dxi-item>
-                <dxi-item itemType="group" [colCount]="3" class="checkClass">
-                    <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp;
-                    <dx-check-box text="TAA" dataField="taa"></dx-check-box>&nbsp;
-                    <dx-check-box text="Create PO" dataField="createPO"></dx-check-box>&nbsp;
+                <dxi-item itemType="group" [colCount]="3" class="legendBorder checkClass">
+                     
+                        <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp;
+                        <dx-check-box text="TAA" dataField="taa"></dx-check-box>&nbsp;
+                        <dx-check-box text="Create PO" dataField="createPO"></dx-check-box>&nbsp;
+                   
                 </dxi-item>
             </dxi-item>
         </dx-form>

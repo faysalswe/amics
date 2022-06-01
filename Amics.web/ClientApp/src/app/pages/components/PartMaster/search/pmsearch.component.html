@@ -5,9 +5,7 @@
             <dxi-item itemType="group">
                 <dxi-item dataField="partNumber"></dxi-item>
                 <dxi-item dataField="description"></dxi-item>
-                <dxi-item dataField="itemType" >
-                    <dxo-label text="MFR"> </dxo-label>
-                </dxi-item>
+                <dxi-item dataField="itemType" [label]="{ text: 'MFR' }"> </dxi-item>
                 <dxi-item dataField="itemClass"></dxi-item>
                 <dxi-item dataField="itemCode"></dxi-item>
                 <dxi-item itemType="button" type="default" stylingMode="contained"
