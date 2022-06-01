@@ -9,9 +9,11 @@ import { Injectable } from '@angular/core';
 
 import { ApplicationSettings } from '../models/application-settings';
 import { AppSettingsService } from './app-settings.service';
+import { environment } from 'src/environments/environment';
 
 function parseReplaceDomain(request: HttpRequest<any>) {
-    return request.clone({ url: request.url.replace('{apiUrl}', ApplicationSettings.ApiUrl) });
+    var apiUrl = !ApplicationSettings.ApiUrl?environment.publicApiUrl:ApplicationSettings.ApiUrl;
+    return request.clone({ url: request.url.replace('{apiUrl}', apiUrl) });
 }
 
 @Injectable()

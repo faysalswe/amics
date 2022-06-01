@@ -12,6 +12,7 @@ import { PartMasterComponent } from './pages/components/PartMaster/partmaster.co
 import { HostComponent } from './pages/components/host/host.component';
 import { PMSearchComponent } from './pages/components/PartMaster/search/pmsearch.component';
 import { PMDetailsComponent } from './pages/components/PartMaster/details/pmdetails.component';
+import { ResponsiveComponent } from './pages/components/PartMaster/responsive/responsive.component';
 
 const routes: Routes = [
   {
@@ -66,7 +67,8 @@ const routes: Routes = [
     PartMasterComponent,
     PMSearchComponent,
     PMDetailsComponent,
-    HostComponent
+    HostComponent,
+    ResponsiveComponent
   ]
 })
 export class AppRoutingModule { }

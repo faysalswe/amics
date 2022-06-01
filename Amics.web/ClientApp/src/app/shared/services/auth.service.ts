@@ -92,6 +92,7 @@ export class AuthService {
       .then((x) => {
         if (x) {
           user = new ApplicationUser(x.userId, x.userName, x.firstName, x.password, x.warehouse, x.lastName, x.email, x.userDataBase, x.buyer, x.salesPerson, x.webAccess, x.amicsUser, x.empList, x.invTrans, x.forgotPwdAns);
+          this.user = user.userId;
         }
         this._appUser.next(user);
 

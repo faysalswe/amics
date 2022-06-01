@@ -25,10 +25,10 @@ export class ProfileComponent {
       Address: '4600 N Virginia Rd.'
     };
     this.colCountByScreen = {
-      xs: 1,
+      xs: 2,
       sm: 2,
-      md: 3,
-      lg: 4
+      md: 4,
+      lg: 6
     };
   }
 }

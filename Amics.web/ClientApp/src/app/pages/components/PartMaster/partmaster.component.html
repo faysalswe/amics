@@ -1,6 +1,21 @@
-<div class="left">
-  <app-pmsearch></app-pmsearch>
-</div>
-<div class="right">
-  <app-pmdetails></app-pmdetails>
-</div>
+<dx-responsive-box singleColumnScreen="sm">
+  <dxi-row [ratio]="1"></dxi-row>
+  <dxi-row [ratio]="3"></dxi-row>
+  <dxi-col [ratio]="1"></dxi-col>
+  <dxi-col [ratio]="3"></dxi-col>
+
+  <dxi-item>
+    <dxi-location [row]="0" [col]="0"></dxi-location>
+    <div *dxTemplate class="left-side-bar item">
+      <app-pmsearch></app-pmsearch>
+    </div>
+  </dxi-item>
+  <dxi-item>
+    <dxi-location [row]="0" [col]="1"></dxi-location>
+    <div *dxTemplate class="content item">
+      <app-pmdetails></app-pmdetails>
+    </div>
+  </dxi-item>
+
+</dx-responsive-box>
+ 
