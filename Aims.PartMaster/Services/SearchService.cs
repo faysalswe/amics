@@ -52,12 +52,8 @@ namespace Aims.PartMaster.Services
         }
 
         public List<LstLocaton> LocationLookup(string searchLocation,string warehouseId, string locationId)
-        {
-            if (string.IsNullOrEmpty(warehouseId))
-            {
-                throw new BusinessRuleException("WarehouseId cannot be null or empty");
-            } 
-            var whId = new Guid(warehouseId.ToString());
+        { 
+            var whId = string.IsNullOrEmpty(warehouseId) ? Guid.Empty : new Guid(warehouseId.ToString());
             var locId = string.IsNullOrEmpty(locationId)? Guid.Empty:  new Guid(locationId.ToString());
             var location = string.IsNullOrEmpty(searchLocation) ? string.Empty : searchLocation;
              

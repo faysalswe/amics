@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { pmSearch, pmSearchResult } from "src/app/pages/models/pmsearch";
+import { warehouse } from "src/app/pages/models/warehouse";
+import { SearchService } from "src/app/pages/services/search.service";
 import { PartMasterService } from "../../../services/partmaster.service";
 
 @Component({
@@ -7,7 +9,13 @@ import { PartMasterService } from "../../../services/partmaster.service";
     templateUrl: "./pmsearch.component.html",
     styleUrls: ['./pmsearch.component.scss']
 })
-export class PMSearchComponent {
+export class PMSearchComponent implements OnInit {
+ 
+    constructor(private searchService: SearchService) { }
+
+    ngOnInit(): void {
+         
+    }
     submitButtonOptions = {
         text: "Search",
         useSubmitBehavior: true,
@@ -17,8 +25,8 @@ export class PMSearchComponent {
 
     pmsearch: pmSearch | undefined;
     pmSearchResults: pmSearchResult[] = [];
-    constructor(service: PartMasterService) { }
-    handleSubmit = function (e:any) {
+
+    handleSubmit = function (e: any) {
         setTimeout(() => {
             alert("Submitted");
         }, 1000);
