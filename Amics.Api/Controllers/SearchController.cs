@@ -9,10 +9,8 @@ using System.Collections.Generic;
 
 namespace Amics.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [Route("api/v{version:apiVersion}/[controller]")] 
-    [ApiController]
-    [ApiVersion("1.0")]
+    [Route("api/[controller]")] 
+    [ApiController] 
     [Authorize]
     public class SearchController : ControllerBase
     {
@@ -50,31 +48,40 @@ namespace Amics.Api.Controllers
             return resultLoc;
         }
 
-        [HttpGet, Route("ItemTypeLookup")]
-        public IList<LstItemType> GetItemTypeSearch([FromQuery] string itemtype, [FromQuery] string itemtypeId)
+        [HttpGet, Route("ItemType")]
+        public IList<LstItemType> GetItemTypeSearch([FromQuery] string itemtypeId, [FromQuery] string itemtype)
         {
 
-            var resultItemtype = _partMasterService.ItemTypeLookup(itemtype, itemtypeId);
+            var resultItemtype = _partMasterService.ItemTypeLookup(itemtypeId, itemtype);
 
             return resultItemtype;
         }
 
         [HttpGet, Route("ItemClass")]
-        public IList<LstItemClass> GetItemClassSearch([FromQuery] string itemclass, [FromQuery] string itemclassId)
+        public IList<LstItemClass> GetItemClassSearch([FromQuery] string itemclassId, [FromQuery] string itemclass)
         {
 
-            var resultItemclass = _partMasterService.ItemClassLookup(itemclass, itemclassId);
+            var resultItemclass = _partMasterService.ItemClassLookup(itemclassId, itemclass);
 
             return resultItemclass;
         }
 
         [HttpGet, Route("ItemCode")]
-        public IList<LstItemCode> GetItemCodeSearch([FromQuery] string itemcode, [FromQuery] string itemcodeId)
+        public IList<LstItemCode> GetItemCodeSearch([FromQuery] string itemcodeId, [FromQuery] string itemcode)
         {
 
-            var resultItemCode = _partMasterService.ItemCodeLookup(itemcode, itemcodeId);
+            var resultItemCode = _partMasterService.ItemCodeLookup(itemcodeId, itemcode);
 
             return resultItemCode;
+        }
+
+        [HttpGet, Route("Uom")]
+        public IList<LstUom> GetUomSearch([FromQuery] string uomId, [FromQuery] string uomRef)
+        {
+
+            var resultUom = _partMasterService.UomLookup(uomId, uomRef);
+
+            return resultUom;
         }
 
         [HttpGet, Route("ItemNumber")]
