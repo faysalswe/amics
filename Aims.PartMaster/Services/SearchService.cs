@@ -17,9 +17,10 @@ namespace Aims.PartMaster.Services
         List<LstWarehouse> WarehouseLookup(string searchWarehouse, string warehouseId);
         List<LstLocaton> LocationLookup(string searchLocation, string warehouseId, string locationId);
         List<LstItemSearch> ItemNumberSearch(string itemnumber, string description, string itemtype, string itemcode, string itemclass);
-        List<LstItemType> ItemTypeLookup(string searchItemtype, string itemtypeId);
-        List<LstItemClass> ItemClassLookup(string searchItemclass, string itemclassId);
-        List<LstItemCode> ItemCodeLookup(string searchItemcodes, string itemcodeId);
+        List<LstItemType> ItemTypeLookup(string itemtypeId, string searchItemtype);
+        List<LstItemClass> ItemClassLookup(string itemclassId, string searchItemclass);
+        List<LstItemCode> ItemCodeLookup(string itemcodeId, string searchItemcodes);
+        List<LstUom> UomLookup(string uomId, string uomRef);
     }
 
     public class SearchService:ISearchService
@@ -74,38 +75,54 @@ namespace Aims.PartMaster.Services
             return searchresult;
         }
 
-        public List<LstItemType> ItemTypeLookup(string searchItemtype, string itemtypeId)
-        {
-            var itmtypeId = new Guid(itemtypeId.ToString());
-          
+        public List<LstItemType> ItemTypeLookup(string itemtypeId, string searchItemtype)
+        {           
+            var itmtypeId = string.IsNullOrEmpty(itemtypeId) ? Guid.Empty : new Guid(itemtypeId.ToString());
+            string itemtype = string.IsNullOrEmpty(searchItemtype) ? string.Empty : searchItemtype;
+            
             var result = _amicsDbContext.LstItemTypes
-                .FromSqlRaw($"exec amics_sp_itemtype_lookup @id ='{itmtypeId}',@itemtype = '{searchItemtype}'")
+                .FromSqlRaw($"exec amics_sp_itemtype_lookup @id ='{itmtypeId}',@itemtype = '{itemtype}'")
                 .ToList();
 
             return result;
         }
 
-        public List<LstItemClass> ItemClassLookup(string searchItemclass, string itemclassId)
-        {
-            var itmclassId = new Guid(itemclassId.ToString());
+        public List<LstItemClass> ItemClassLookup(string itemclassId, string searchItemclass)
+        {          
+            var itmclassId = string.IsNullOrEmpty(itemclassId) ? Guid.Empty : new Guid(itemclassId.ToString());
+            string itemClass = string.IsNullOrEmpty(searchItemclass) ? string.Empty : searchItemclass;
 
             var itemclsresult = _amicsDbContext.LstItemClasses
-                .FromSqlRaw($"exec amics_sp_itemclass_lookup @id ='{itmclassId}',@itemclass = '{searchItemclass}'")
+                .FromSqlRaw($"exec amics_sp_itemclass_lookup @id ='{itmclassId}',@itemclass = '{itemClass}'")
                 .ToList();
 
             return itemclsresult;
         }
 
-        public List<LstItemCode> ItemCodeLookup(string searchItemcodes, string itemcodeId)
-        {
-            var itmcodeId = new Guid(itemcodeId.ToString());
+        public List<LstItemCode> ItemCodeLookup(string itemcodeId,string searchItemcodes)
+        {          
+            var itmcodeId = string.IsNullOrEmpty(itemcodeId) ? Guid.Empty : new Guid(itemcodeId.ToString());
+            string itemCode = string.IsNullOrEmpty(searchItemcodes) ? string.Empty : searchItemcodes;
 
             var itmcodresult = _amicsDbContext.LstItemCodes
-                .FromSqlRaw($"exec amics_sp_itemcode_lookup @id ='{itmcodeId}',@itemcode = '{searchItemcodes}'")
+                .FromSqlRaw($"exec amics_sp_itemcode_lookup @id ='{itmcodeId}',@itemcode = '{itemCode}'")
                 .ToList();
 
             return itmcodresult;
         }
+
+        public List<LstUom> UomLookup(string uomId, string uomRef)
+        {
+            var uomRefId = string.IsNullOrEmpty(uomId) ? Guid.Empty : new Guid(uomId.ToString());
+            string uomRefVal = string.IsNullOrEmpty(uomRef) ? string.Empty : uomRef;
+
+            var result = _amicsDbContext.LstUoms
+                .FromSqlRaw($"exec amics_sp_uom_lookup @id ='{uomRefId}',@uomref = '{uomRefVal}'")
+                .ToList();
+
+            return result;
+        }
+
     }
 
 }
