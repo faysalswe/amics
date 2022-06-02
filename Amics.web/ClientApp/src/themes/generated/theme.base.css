@@ -23354,16 +23354,16 @@ input.dx-hidden {
   font-size: 12px;
 }
 .dx-layout-manager .dx-field-item:not(.dx-last-col) {
-  padding-right: 20px;
+  padding-right: 10px;
 }
 .dx-layout-manager .dx-field-item:not(.dx-first-col) {
-  padding-left: 20px;
+  padding-left: 10px;
 }
 .dx-layout-manager .dx-field-item .dx-field-item.dx-last-row {
   padding-bottom: 0;
 }
 .dx-field-item:not(.dx-field-item-has-group):not(.dx-field-item-has-tabs):not(.dx-first-row):not(.dx-label-v-align) {
-  padding-top: 20px;
+  padding-top: 0px;
 }
 .dx-field-item .dx-switch {
   vertical-align: middle;

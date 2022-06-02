@@ -9,7 +9,7 @@ html, body {
 }
 
 .content {
-  line-height: 1.5;
+  line-height: 0.5;
 
   h2 {
     font-size: 30px;
@@ -23,21 +23,21 @@ html, body {
 }
 
 .content-block {
-  margin-left: 40px;
-  margin-right: 40px;
-  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
 
   .screen-x-small & {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 }
 
 .responsive-paddings {
-  padding: 20px;
+  padding: 10px;
 
   .screen-large & {
-    padding: 40px;
+    padding: 10px;
   }
 }
 

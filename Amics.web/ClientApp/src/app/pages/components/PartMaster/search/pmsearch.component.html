@@ -1,8 +1,8 @@
 <div class="search-container content-block dx-card responsive-paddings">
     <div class="pmsearch-container ">
-        <dx-form [(formData)]="pmsearch" [colCount]="1" [minColWidth]="200" labelMode="floating" labelLocation="left"
-            width="200" (submit)="handleSubmit($event)">
-            <dxi-item itemType="group">
+        <dx-form [(formData)]="pmsearch" [colCount]="1" labelMode="floating" labelLocation="left"
+            (submit)="handleSubmit($event)">
+            <dxi-item itemType="group" verticalAlignment="">
                 <dxi-item dataField="partNumber"></dxi-item>
                 <dxi-item dataField="description"></dxi-item>
                 <dxi-item dataField="itemType" [label]="{ text: 'MFR' }"> </dxi-item>
@@ -19,8 +19,8 @@
         <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="ID" [hoverStateEnabled]="true"
             [showBorders]="true" [selectedRowKeys]="[]">
             <dxo-selection mode="single"></dxo-selection>
-            <dxi-column dataField="partNumber" [width]="100"></dxi-column>
-            <dxi-column dataField="description" [width]="150"></dxi-column>
+            <dxi-column dataField="partNumber"  ></dxi-column>
+            <dxi-column dataField="description" ></dxi-column>
         </dx-data-grid>
     </div>
 </div>

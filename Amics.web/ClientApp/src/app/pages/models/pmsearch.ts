@@ -1,9 +1,10 @@
-export interface pmSearch {
-    partNumber: string;
-    description: string;
-    itemType: string;
-    itemClass: string;
-    itemCode: string;
+export class pmSearch {
+    partNumber: string ='';
+    description: string ='';
+    itemType: string ='';
+    itemClass: string = '';
+    itemCode: string ='';
+    
 }
 
 export interface pmSearchResult {
