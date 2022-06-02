@@ -1,4 +1,5 @@
 ﻿using Aims.Core.Models;
+using Aims.PartMaster.Models;
 using Aims.PartMaster.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -92,5 +93,6 @@ namespace Amics.Api.Controllers
 
             return itemSearchResult;
         }
+               
     }
 }

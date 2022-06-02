@@ -16,7 +16,7 @@ namespace Aims.Core.Models
         public string Uomref { get; set; }
         public decimal Cost { get; set; }
         public string DwgNo { get; set; }
-        public decimal Conversion { get; set; }
+        public decimal Conversion { get; set; }        
 
     }
 }

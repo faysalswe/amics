@@ -8,5 +8,6 @@ namespace Aims.Core.Models
     {     
         public Guid Id { get; set; }
         public string Itemcode { get; set; }
+
     }
 }
