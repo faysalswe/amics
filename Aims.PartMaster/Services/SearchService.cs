@@ -22,7 +22,11 @@ namespace Aims.PartMaster.Services
         List<LstItemClass> ItemClassLookup(string itemclassId, string searchItemclass);
         List<LstItemCode> ItemCodeLookup(string itemcodeId, string searchItemcodes);
         List<LstUom> UomLookup(string uomId, string uomRef);
-      //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);
+        //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);
+        List<LstItemInfo> ItemInfo(string ItemsId, string ItemNumber, string Rev);
+        List<LstReasonCodes> ReasonCodes(string ReasonCode, string CodeFor);
+        List<LstCompanyOptions> CompanyOptions(decimal OptionId, string ScreenName);
+
     }
 
     public class SearchService:ISearchService
@@ -130,5 +134,43 @@ namespace Aims.PartMaster.Services
             return searchresult;
         }
 
-    }
+        public List<LstItemInfo> ItemInfo(string ItemsId, string ItemNumber, string Rev)
+        {
+
+            var itemsGuId = string.IsNullOrEmpty(ItemsId) ? Guid.Empty : new Guid(ItemsId.ToString());
+            var itemNo = string.IsNullOrEmpty(ItemNumber) ? string.Empty : ItemNumber;
+            var rev = string.IsNullOrEmpty(Rev) ? string.Empty : Rev;
+          
+            var searchResult = _amicsDbContext.LstItemsInfo
+                .FromSqlRaw($"exec sp_webapi_get_iteminfo @item='{itemNo}',@rev='{rev}',@itemsid='{itemsGuId}'")
+                .ToList<LstItemInfo>();
+
+            return searchResult;
+        }
+
+        public List<LstReasonCodes> ReasonCodes(string ReasonCode, string CodeFor)
+        {
+             
+            var resCode = string.IsNullOrEmpty(ReasonCode) ? string.Empty : ReasonCode;
+            var resCodeFor = string.IsNullOrEmpty(CodeFor) ? string.Empty : CodeFor;
+
+            var searchResult = _amicsDbContext.ListReasonCodes
+                .FromSqlRaw($"exec sp_webapi_get_reasoncode @reasoncode='{resCode}',@codefor='{resCodeFor}'")
+                .ToList<LstReasonCodes>();
+
+            return searchResult;
+        }
+        public List<LstCompanyOptions> CompanyOptions(decimal OptionId, string ScreenName)
+         {            
+          
+            var screenName = string.IsNullOrEmpty(ScreenName) ? string.Empty : ScreenName;
+
+        var searchResult = _amicsDbContext.ListCompanyOptions
+            .FromSqlRaw($"exec sp_webapi_get_list_company_options @optionid={OptionId},@screenname='{screenName}'")
+            .ToList<LstCompanyOptions>();
+
+            return searchResult;
+        }
+
+}
 }
