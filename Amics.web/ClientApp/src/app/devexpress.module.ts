@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { DxButtonModule, DxCheckBoxModule, DxContextMenuModule, DxDataGridModule, DxFormModule, DxListModule, DxNumberBoxModule, DxSelectBoxModule, DxSortableModule, DxTabPanelModule, DxTemplateModule, DxBoxModule, DxRadioGroupModule, DxTextAreaModule, DxResponsiveBoxModule } from "devextreme-angular";
+import { DxButtonModule, DxCheckBoxModule, DxContextMenuModule, DxDataGridModule, DxFormModule, DxListModule, DxNumberBoxModule, DxSelectBoxModule, DxSortableModule, DxTabPanelModule, DxTemplateModule, DxBoxModule, DxRadioGroupModule, DxTextAreaModule, DxResponsiveBoxModule, DxAutocompleteModule, DxLookupModule } from "devextreme-angular";
 @NgModule({
   imports: [
     DxButtonModule,
@@ -16,7 +16,9 @@ import { DxButtonModule, DxCheckBoxModule, DxContextMenuModule, DxDataGridModule
     DxBoxModule,
     DxRadioGroupModule,
     DxTextAreaModule,
-    DxResponsiveBoxModule
+    DxResponsiveBoxModule,
+    DxAutocompleteModule,
+    DxLookupModule
   ],
   exports: [
     DxButtonModule,
@@ -33,7 +35,9 @@ import { DxButtonModule, DxCheckBoxModule, DxContextMenuModule, DxDataGridModule
     DxBoxModule,
     DxRadioGroupModule,
     DxTextAreaModule,
-    DxResponsiveBoxModule
+    DxResponsiveBoxModule,
+    DxAutocompleteModule,
+    DxLookupModule
   ]
 })
 export class DevExpressModule { }

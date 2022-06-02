@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { pmSearch, pmSearchResult } from "src/app/pages/models/pmsearch";
-import { warehouse } from "src/app/pages/models/warehouse";
+import { Warehouse } from "src/app/pages/models/warehouse";
 import { SearchService } from "src/app/pages/services/search.service";
 import { PartMasterService } from "../../../services/partmaster.service";
 

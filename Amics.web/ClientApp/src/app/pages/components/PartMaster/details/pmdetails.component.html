@@ -17,23 +17,35 @@
                 <dxi-item itemType="group" [colCount]="1">
                     <dx-text-area dataField="description" label="Description (Max 150 characters)"></dx-text-area>
                 </dxi-item>
-                <dxi-item itemType="group" [colCount]="3" >
+                <dxi-item itemType="group" [colCount]="3">
                     <dxi-item dataField="cost"></dxi-item>
                     <dxi-item dataField="markup"></dxi-item>
-                    <dxi-item dataField="price" ></dxi-item>
+                    <dxi-item dataField="price"></dxi-item>
                 </dxi-item>
             </dxi-item>
             <dxi-item itemType="group" [colCount]="2">
-                <dxi-item itemType="group" [colCount]="2">
-                    <dxi-item dataField="defaultWarehouse" [label]="{ text: warehouseLbl }"></dxi-item>
-                    <dxi-item dataField="defaultLocation" name="Location" [label]="{ text: locationLbl }"></dxi-item>
+                <dxi-item itemType="group" [colCount]="2" caption="Warehouse & Location">
+                    <dxi-item>
+                        <dxo-label [text]="warehouseLbl"></dxo-label>
+                        <dx-lookup [items]="warehouseNames" [(value)]="defaultWarehouse" [placeholder]="warehouseLbl"
+                            (onValueChanged)="updateWarehouseSelection()">
+                            <dxo-drop-down-options [showTitle]="false"></dxo-drop-down-options>
+                        </dx-lookup>
+                    </dxi-item>
+
+                    <dxi-item>
+                        <dx-lookup [items]="validLocationNames" [(value)]="defaultLocation" [placeholder]="locationLbl">
+                            <dxo-drop-down-options [showTitle]="false"></dxo-drop-down-options>
+                        </dx-lookup>
+                    </dxi-item>
+
                 </dxi-item>
-                <dxi-item itemType="group" [colCount]="2">
-                    <dxi-item itemType="group" [colCount]="1" class="radioClass">
+                <dxi-item itemType="group" [colCount]="3">
+                    <dxi-item itemType="group" [colCount]="1" class="radioClass" caption="Inventory type">
                         <dx-radio-group [dataSource]="invTypes" dataField="invType" layout="horizontal">
                         </dx-radio-group>
                     </dxi-item>
-                    <dxi-item itemType="group" [colCount]="3" class="checkClass">
+                    <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass" caption="Other">
                         <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp;
                         <dx-check-box text="TAA" dataField="taa"></dx-check-box>&nbsp;
                         <dx-check-box text="Create PO" dataField="createPO"></dx-check-box>&nbsp;

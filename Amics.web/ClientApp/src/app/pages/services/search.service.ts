@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { warehouse } from "../models/warehouse";
+import { Warehouse, WarehouseLocation } from "../models/warehouse";
 
 
 @Injectable({
@@ -13,15 +13,15 @@ export class SearchService {
 
     constructor(private readonly httpClient: HttpClient) { }
 
-    getWarehouseInfo(warehouse: string): Observable<warehouse[]> {
-        return this.httpClient.get<warehouse[]>(`${this.api}/Warehouse/${warehouse}`);
+    getWarehouseInfo(warehouse: string): Observable<Warehouse[]> {
+        return this.httpClient.get<Warehouse[]>(`${this.api}/Warehouse/${warehouse}`);
     }
-    getLocationInfo(warehouseId: string, location:string): Observable<Location[]> {
+    getLocationInfo(warehouseId: string, location:string): Observable<WarehouseLocation[]> {
         let url = `${this.api}/Location/${warehouseId}`;
         if(location !== '')
         {
             url = url+`/${location}`
         }
-        return this.httpClient.get<Location[]>(url);
+        return this.httpClient.get<WarehouseLocation[]>(url);
     }
 }
