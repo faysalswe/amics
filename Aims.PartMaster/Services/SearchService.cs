@@ -23,8 +23,31 @@ namespace Aims.PartMaster.Services
         List<LstItemCode> ItemCodeLookup(string itemcodeId, string searchItemcodes);
         List<LstUom> UomLookup(string uomId, string uomRef);
         //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);
+
+
+        /// <summary>
+        /// Interface for get item's information, Must pass ItemsId or ItemNumber as parameter Rev is optional
+        /// </summary>
+        /// <param name="ItemsId">The ItemsId of the data.</param>
+        /// <param name="ItemNumber">The ItemNumber of the data.</param>
+        /// <param name="Rev">The Rev of the data. Default is '-'</param>
+
         List<LstItemInfo> ItemInfo(string ItemsId, string ItemNumber, string Rev);
+
+
+        /// <summary>
+        /// Interface for get list of reason codes for INCREASE or DECREASE
+        /// </summary>
+        /// <param name="ReasonCode">ReasonCode for the transaction.</param>
+        /// <param name="CodeFor">CodeFor is type of transaction must 'INCREASE' or 'DECREASE' as a parameter.</param>
         List<LstReasonCodes> ReasonCodes(string ReasonCode, string CodeFor);
+
+
+        /// <summary>
+        /// Interface  for get Company Options. Use this options for show or hide the fields or set default request globally 
+        /// </summary>
+        /// <param name="OptionId">Integer value as a parameter.</param>
+        /// <param name="ScreenName">Get options by screen name if it is global parameter value should be 'GENERAL' </param>
         List<LstCompanyOptions> CompanyOptions(decimal OptionId, string ScreenName);
 
     }
@@ -134,6 +157,13 @@ namespace Aims.PartMaster.Services
             return searchresult;
         }
 
+        /// <summary>
+        /// API Service for get item's information, Must pass ItemsId or ItemNumber as parameter Rev is optional
+        /// </summary>
+        /// <param name="ItemsId">The ItemsId of the data.</param>
+        /// <param name="ItemNumber">The ItemNumber of the data.</param>
+        /// <param name="Rev">The Rev of the data. Default is '-'</param>
+
         public List<LstItemInfo> ItemInfo(string ItemsId, string ItemNumber, string Rev)
         {
 
@@ -148,6 +178,12 @@ namespace Aims.PartMaster.Services
             return searchResult;
         }
 
+        /// <summary>
+        /// API Service for get list of reason codes for INCREASE or DECREASE
+        /// </summary>
+        /// <param name="ReasonCode">ReasonCode for the transaction.</param>
+        /// <param name="CodeFor">CodeFor is type of transaction must 'INCREASE' or 'DECREASE' as a parameter.</param>
+
         public List<LstReasonCodes> ReasonCodes(string ReasonCode, string CodeFor)
         {
              
@@ -160,6 +196,12 @@ namespace Aims.PartMaster.Services
 
             return searchResult;
         }
+        /// <summary>
+        /// API Service for get Company Options. Use this options for show or hide the fields or set default request globally 
+        /// </summary>
+        /// <param name="OptionId">Integer value as a parameter.</param>
+        /// <param name="ScreenName">Get options by screen name if it is global parameter value should be 'GENERAL' </param>
+
         public List<LstCompanyOptions> CompanyOptions(decimal OptionId, string ScreenName)
          {            
           
