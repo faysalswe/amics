@@ -47,7 +47,7 @@ namespace Aims.PartMaster.Services
         /// Interface  for get Company Options. Use this options for show or hide the fields or set default request globally 
         /// </summary>
         /// <param name="OptionId">Integer value as a parameter.</param>
-        /// <param name="ScreenName">Get options by screen name if it is global parameter value should be 'GENERAL' </param>
+        /// <param name="ScreenName">Get options by screen name if it is global, parameter value should be 'GENERAL' </param>
         List<LstCompanyOptions> CompanyOptions(decimal OptionId, string ScreenName);
 
     }
@@ -200,7 +200,7 @@ namespace Aims.PartMaster.Services
         /// API Service for get Company Options. Use this options for show or hide the fields or set default request globally 
         /// </summary>
         /// <param name="OptionId">Integer value as a parameter.</param>
-        /// <param name="ScreenName">Get options by screen name if it is global parameter value should be 'GENERAL' </param>
+        /// <param name="ScreenName">Get options by screen name if it is global, parameter value should be 'GENERAL' </param>
 
         public List<LstCompanyOptions> CompanyOptions(decimal OptionId, string ScreenName)
          {            

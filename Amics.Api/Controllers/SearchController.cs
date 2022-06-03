@@ -128,7 +128,7 @@ namespace Amics.Api.Controllers
         /// API Route Controller for get Company Options. Use this options for show or hide the fields or set default request globally 
         /// </summary>
         /// <param name="OptionId">Integer value as a parameter.</param>
-        /// <param name="ScreenName">Get options by screen name if it is global parameter value should be 'GENERAL' </param>
+        /// <param name="ScreenName">Get options by screen name if it is global, parameter value should be 'GENERAL' </param>
 
         [HttpGet, Route("GetCompanyOptions")]
         public IList<LstCompanyOptions> GetCompanyOptions([FromQuery] decimal OptionId, [FromQuery] string ScreenName)
