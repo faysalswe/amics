@@ -80,7 +80,7 @@ namespace Aims.PartMaster.Services
 
             return whresult;
         }
-
+        
         public List<LstLocaton> LocationLookup(string searchLocation,string warehouseId, string locationId)
         { 
             var whId = string.IsNullOrEmpty(warehouseId) ? Guid.Empty : new Guid(warehouseId.ToString());
@@ -174,7 +174,7 @@ namespace Aims.PartMaster.Services
             var searchResult = _amicsDbContext.LstItemsInfo
                 .FromSqlRaw($"exec sp_webapi_get_iteminfo @item='{itemNo}',@rev='{rev}',@itemsid='{itemsGuId}'")
                 .ToList<LstItemInfo>();
-
+             
             return searchResult;
         }
 
