@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Aims.PartMaster.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Aims.Core.Models
         public DbSet<LstItemCode> LstItemCodes { get; set; }
         public DbSet<LstItemClass> LstItemClasses { get; set; }
         public DbSet<LstUom> LstUoms { get; set; }
+        public DbSet<ListItems> LstItemInfo { get; set; }
 
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)

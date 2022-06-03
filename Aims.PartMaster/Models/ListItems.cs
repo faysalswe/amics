@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace Aims.PartMaster.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
-
+{    
     /// <summary>
     /// Summary description for LstObjListItems
     /// </summary>
@@ -64,7 +59,7 @@ namespace Aims.PartMaster.Models
         public bool? BuyItem { get; set; }
         public bool? Obsolete { get; set; }
         public bool? Taa { get; set; }
-        public bool CreatePO { get; set; }
+        //public bool CreatePO { get; set; }
 
 
 
@@ -74,23 +69,23 @@ namespace Aims.PartMaster.Models
         public double Quantity { get; set; }
         public string Notes { get; set; }
         public string Ref { get; set; }
-        public string Comments { get; set; }
-        public double ExtCost { get; set; }
+      //  public string Comments { get; set; }
+       // public double ExtCost { get; set; }
         public int LineNum { get; set; }
 
-        public int ActionFlag { get; set; }
+       // public int ActionFlag { get; set; }
         public string ParentItemNumber { get; set; }
         public string ParentRev { get; set; }
-        public string BomId { get; set; }
+       // public string BomId { get; set; }
         public string ReasonCode { get; set; }
         public double Weight { get; set; }
 
-        public string Coststring1 { get; set; }
-        public string Coststring2 { get; set; }
-        public string Coststring { get; set; }
-        public string Coststring4 { get; set; }
+        //public string Coststring1 { get; set; }
+        //public string Coststring2 { get; set; }
+        //public string Coststring { get; set; }
+        //public string Coststring4 { get; set; }
 
-        public string ExtCostString { get; set; }
+        //public string ExtCostString { get; set; }
         public string Qtystring { get; set; }
 
         public string user1 { get; set; }
@@ -130,7 +125,7 @@ namespace Aims.PartMaster.Models
         public string Pricestring9 { get; set; }
         public string Pricestring10 { get; set; }
 
-        public string ItemsId { get; set; }
+      //  public string ItemsId { get; set; }
 
         public string onhand { get; set; }
         public string allotedqty { get; set; }

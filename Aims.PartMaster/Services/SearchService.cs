@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Linq;
 using Amics.Core.utils;
+using Aims.PartMaster.Models;
 
 namespace Aims.PartMaster.Services
 {
@@ -21,6 +22,7 @@ namespace Aims.PartMaster.Services
         List<LstItemClass> ItemClassLookup(string itemclassId, string searchItemclass);
         List<LstItemCode> ItemCodeLookup(string itemcodeId, string searchItemcodes);
         List<LstUom> UomLookup(string uomId, string uomRef);
+      //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);
     }
 
     public class SearchService:ISearchService
@@ -63,16 +65,6 @@ namespace Aims.PartMaster.Services
                 .ToList();
 
             return locresult;
-        }
-
-
-        public List<LstItemSearch> ItemNumberSearch(string itemnumber, string description, string itemtype, string itemcode, string itemclass)
-        {          
-            var searchresult = _amicsDbContext.LstItemSearchs
-                .FromSqlRaw($"exec sp_webservice_search_items5 @item='{itemnumber}',@description='{description}',@itemtype='{itemtype }',@itemclass='{itemclass }',@itemcode='{itemcode }'")
-                .ToList<LstItemSearch>();
-
-            return searchresult;
         }
 
         public List<LstItemType> ItemTypeLookup(string itemtypeId, string searchItemtype)
@@ -123,6 +115,20 @@ namespace Aims.PartMaster.Services
             return result;
         }
 
-    }
+        public List<LstItemSearch> ItemNumberSearch(string itemnumber, string description, string itemtype, string itemcode, string itemclass)
+        {
+            var itmnumber = string.IsNullOrEmpty(itemnumber) ? string.Empty : itemnumber;
+            var desc = string.IsNullOrEmpty(description) ? string.Empty : description;
+            var itmtype = string.IsNullOrEmpty(itemtype) ? string.Empty : itemtype;
+            var itmcode = string.IsNullOrEmpty(itemcode) ? string.Empty : itemcode;
+            var itmclass = string.IsNullOrEmpty(itemclass) ? string.Empty : itemclass;
 
+            var searchresult = _amicsDbContext.LstItemSearchs
+                .FromSqlRaw($"exec sp_webservice_search_items5 @item='{itmnumber}',@description='{desc}',@itemtype='{itmtype}',@itemclass='{itmclass}',@itemcode='{itmcode}'")
+                .ToList<LstItemSearch>();
+
+            return searchresult;
+        }
+
+    }
 }
