@@ -16,8 +16,7 @@ using System.Threading.Tasks;
 
 namespace Amics.web.Controllers
 {
-    // comments by siva
-    public class AccountController : Controller
+      public class AccountController : Controller
     {
         private readonly ILogger<AccountController> _logger;
         private readonly IAuthorizationPolicy _authPolicy;

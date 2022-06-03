@@ -7,9 +7,9 @@ namespace Aims.PartMaster.Models
     /// <summary>
     /// Summary description for LstObjListItems
     /// </summary>
-    public class ListItems
+    public class LstItemDetails
     {
-        public ListItems()
+        public LstItemDetails()
         {
             //
             // TODO: Add constructor logic here

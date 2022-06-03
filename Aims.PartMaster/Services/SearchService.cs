@@ -13,8 +13,7 @@ using Aims.PartMaster.Models;
 namespace Aims.PartMaster.Services
 {
     public interface ISearchService
-    {
-        List<AimcsSpLookUp> CommonLookup(FieldNameSearch fieldName, string search_col1, string search_col2);
+    {        
         List<LstWarehouse> WarehouseLookup(string searchWarehouse, string warehouseId);
         List<LstLocaton> LocationLookup(string searchLocation, string warehouseId, string locationId);
         List<LstItemSearch> ItemNumberSearch(string itemnumber, string description, string itemtype, string itemcode, string itemclass);
@@ -33,15 +32,6 @@ namespace Aims.PartMaster.Services
         public SearchService(AmicsDbContext aimsDbContext)
         {
             _amicsDbContext = aimsDbContext;
-        }
-
-        public List<AimcsSpLookUp> CommonLookup(FieldNameSearch fieldName, string search_col1, string search_col2 ) 
-        { 
-            var result = _amicsDbContext.AmicsSpLookups
-                .FromSqlRaw($"exec amicsmvc_sp_lookup @fieldname='{fieldName.GetEnumDescription()}',@search_col1='{search_col1}',@search_col2='{search_col2 }'")
-                .ToList< AimcsSpLookUp>();
-
-            return result;
         }
 
         public List<LstWarehouse> WarehouseLookup(string searchWarehouse, string warehouseId)

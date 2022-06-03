@@ -23,15 +23,6 @@ namespace Amics.Api.Controllers
             _logger = logger;
         }
 
-        [HttpGet, Route("CommonLookup")]
-        public IList<AimcsSpLookUp> GetLookUpData([FromQuery]FieldNameSearch fieldName, [FromQuery] string search_col1, [FromQuery] string search_col2)
-        {
-            var result = _partMasterService.CommonLookup(fieldName, search_col1, search_col2);
-
-            return result;
-
-        }
-
         [HttpGet, Route("Warehouse")]
         public IList<LstWarehouse> GetWarehouseLookUp([FromQuery] string searchWarehouse, [FromQuery] string warehouseId)
         {
