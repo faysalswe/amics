@@ -93,6 +93,22 @@ namespace Amics.Api.Controllers
 
             return itemSearchResult;
         }
-               
+
+        [HttpGet, Route("CompanyOptions")]
+        public IList<LstCompanyOption> GetCompanyOptions()
+        {
+
+            var companyOptResult = _partMasterService.LoadCompanyOptions();
+
+            return companyOptResult;
+        }
+
+        [HttpGet, Route("ListFieldProperties")]
+        public IList<LstFieldProperties> GetListFieldProperties(string labelNum)
+        {
+            var fieldPropResult = _partMasterService.LoadFieldProperties(labelNum);
+
+            return fieldPropResult;
+        }
     }
 }
