@@ -22,7 +22,9 @@ namespace Aims.PartMaster.Services
         List<LstItemClass> ItemClassLookup(string itemclassId, string searchItemclass);
         List<LstItemCode> ItemCodeLookup(string itemcodeId, string searchItemcodes);
         List<LstUom> UomLookup(string uomId, string uomRef);
-      //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);
+        //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);
+        List<LstCompanyOption> LoadCompanyOptions();
+        List<LstFieldProperties> LoadFieldProperties(string labelNum);
     }
 
     public class SearchService:ISearchService
@@ -130,5 +132,20 @@ namespace Aims.PartMaster.Services
             return searchresult;
         }
 
+        public List<LstCompanyOption> LoadCompanyOptions()
+        {
+            var optResult = _amicsDbContext.LstCompanyOptions
+                            .FromSqlRaw($"amics_sp_list_companyOptions").ToList<LstCompanyOption>();
+
+            return optResult;
+        }
+
+        public List<LstFieldProperties> LoadFieldProperties(string labelNum)
+        {
+            var optResult = _amicsDbContext.LstFieldProperties
+                            .FromSqlRaw($"amics_sp_list_fieldproperties @labelnumber='{labelNum}'").ToList<LstFieldProperties>();
+
+            return optResult;
+        }
     }
 }
