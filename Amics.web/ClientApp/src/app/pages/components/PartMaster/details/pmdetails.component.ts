@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Guid } from "guid-typescript";
 import { pmDetails } from "src/app/pages/models/pmdetails";
 import { PMPOView } from "src/app/pages/models/pmpoview";
-import { pmSearch, pmSearchResult } from "src/app/pages/models/pmsearch";
+import { pmSearch, pmItemSearchResult } from "src/app/pages/models/pmsearch";
 import { Warehouse, WarehouseLocation } from "src/app/pages/models/warehouse";
 import { SearchService } from "src/app/pages/services/search.service";
 import { PartMasterService } from "../../../services/partmaster.service";
@@ -27,7 +27,7 @@ export class PMDetailsComponent {
          this.searchService.getWarehouseInfo('').subscribe(w=>{
              this.warehouses = w;
              this.warehouseNames = w.map(w=>w.warehouse);
-             this.defaultWarehouse = this.warehouseNames[0];
+        //     this.defaultWarehouse = this.warehouseNames[0];
          })
 
          this.searchService.getLocationInfo('','').subscribe(l=>{

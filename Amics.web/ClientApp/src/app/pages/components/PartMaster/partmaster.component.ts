@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Company } from "../../models/company";
+import { ItemClass, ItemCode, ItemType } from "../../models/searchModels";
 import { PartMasterService } from "../../services/partmaster.service";
 
 @Component({
@@ -20,6 +21,9 @@ export class PartMasterComponent {
   saveExitVisible = false;
   saveExitVisible2 = false;
 
+  itemClassList: ItemClass[] = [];
+  itemCodeList: ItemCode[] = [];
+  itemTypeList: ItemType[] = [];
   constructor(service: PartMasterService) {
     this.labelMode = 'static';
     this.labelLocation = 'left';
@@ -40,11 +44,11 @@ export class PartMasterComponent {
 
   logpmActionsSelectionChanged(e: any) {
     if (e === "Add" || e === "Edit") {
-      this.saveExitVisible = true;      
+      this.saveExitVisible = true;
     }
     else {
       this.saveExitVisible = false;
-    } 
+    }
 
   }
 

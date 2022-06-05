@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { pmSearch, pmSearchResult } from "src/app/pages/models/pmsearch";
-import { Warehouse } from "src/app/pages/models/warehouse";
+import { pmSearch, pmItemSearchResult } from "src/app/pages/models/pmsearch";
+import { ItemClass, ItemCode, ItemType } from "src/app/pages/models/searchModels";
 import { SearchService } from "src/app/pages/services/search.service";
 import { PartMasterService } from "../../../services/partmaster.service";
 
@@ -10,27 +10,41 @@ import { PartMasterService } from "../../../services/partmaster.service";
     styleUrls: ['./pmsearch.component.scss']
 })
 export class PMSearchComponent implements OnInit {
- 
-    constructor(private searchService: SearchService) { }
-
-    ngOnInit(): void {
-         
-    }
+    pmsearchInfo: pmSearch = new pmSearch();
+    pmSearchResults: pmItemSearchResult[] = []; 
     submitButtonOptions = {
         text: "Search",
         useSubmitBehavior: true,
         width: "100%",
         type: "default"
+    }; 
+    itemClassList: ItemClass[] = [];
+    itemCodeList: ItemCode[] = [];
+    itemTypeList: ItemType[] = [];
+ 
+    constructor(private searchService: SearchService) { }
+
+    ngOnInit(): void {
+        this.searchService.getItemClass('', '').subscribe(l => {
+            this.itemClassList = l; 
+        })
+
+        this.searchService.getItemCode('', '').subscribe(l => {
+            this.itemCodeList = l; 
+        })
+
+        this.searchService.getItemType('', '').subscribe(l => {
+            this.itemTypeList = l; 
+        }) 
     }
 
-    pmsearch: pmSearch | undefined;
-    pmSearchResults: pmSearchResult[] = [];
 
-    handleSubmit = function (e: any) {
-        setTimeout(() => {
-            alert("Submitted");
-        }, 1000);
+    handleSubmit(e: any) {
+        console.log(this.pmsearchInfo);
+        this.searchService.getItemNumberSearchResults(this.pmsearchInfo).subscribe(r =>
+            this.pmSearchResults = r);
 
         e.preventDefault();
     }
+
 }

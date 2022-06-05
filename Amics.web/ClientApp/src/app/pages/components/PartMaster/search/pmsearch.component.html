@@ -1,26 +1,37 @@
 <div class="search-container content-block dx-card responsive-paddings">
     <div class="pmsearch-container ">
-        <dx-form [(formData)]="pmsearch" [colCount]="1" labelMode="floating" labelLocation="left"
-            (submit)="handleSubmit($event)">
-            <dxi-item itemType="group" verticalAlignment="">
-                <dxi-item dataField="partNumber"></dxi-item>
-                <dxi-item dataField="description"></dxi-item>
-                <dxi-item dataField="itemType" [label]="{ text: 'MFR' }"> </dxi-item>
-                <dxi-item dataField="itemClass"></dxi-item>
-                <dxi-item dataField="itemCode"></dxi-item>
+        <form action="your-action" (submit)="handleSubmit($event)">
+            <dx-form [(formData)]="pmsearchInfo" [colCount]="1" labelMode="floating" labelLocation="left">
+                <dxi-item itemType="group" verticalAlignment="">
+                    <dxi-item dataField="itemnumber"></dxi-item>
+                    <dxi-item dataField="description"></dxi-item>
+                    <dxi-item dataField="itemtype" editorType="dxLookup"
+                        [editorOptions]="{ label:'MFR',items: itemTypeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemtype', displayExpr:'itemtype', valueExpr:'itemtype', showClearButton:true, searchMode:'contains' }">
+                    </dxi-item>
+                    <dxi-item dataField="itemclass" editorType="dxLookup"
+                        [editorOptions]="{ label:'Item Class',items: itemClassList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemclass', displayExpr:'itemclass', valueExpr:'itemclass', showClearButton:true, searchMode:'contains'  }">
+                    </dxi-item>
+                    <dxi-item dataField="itemcode" editorType="dxLookup"
+                        [editorOptions]="{ label:'Item Code',items: itemCodeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemcode', displayExpr:'itemcode', valueExpr:'itemcode', showClearButton:true, searchMode:'contains'  }">
+                    </dxi-item>
+                </dxi-item>
+
                 <dxi-item itemType="button" type="default" stylingMode="contained"
                     [buttonOptions]="submitButtonOptions">
                 </dxi-item>
-            </dxi-item>
-        </dx-form>
+            </dx-form>
+        </form>
     </div>
     <br />
     <div>
-        <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="ID" [hoverStateEnabled]="true"
-            [showBorders]="true" [selectedRowKeys]="[]">
+        <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="itemNumber" [columns]="['itemNumber', 'description']"
+            [hoverStateEnabled]="true" [showBorders]="true" [selectedRowKeys]="[]" height="50vh">
+            <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
             <dxo-selection mode="single"></dxo-selection>
-            <dxi-column dataField="partNumber"  ></dxi-column>
-            <dxi-column dataField="description" ></dxi-column>
+            <dxo-paging [pageSize]="10"> </dxo-paging>
+            <dxo-pager [visible]="true" [allowedPageSizes]="[10,20,30]" displayMode="compact"
+                [showPageSizeSelector]=false [showInfo]=true [showNavigationButtons]=true> 
+            </dxo-pager>
         </dx-data-grid>
     </div>
 </div>

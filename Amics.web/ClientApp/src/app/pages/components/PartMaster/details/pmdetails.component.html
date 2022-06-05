@@ -26,23 +26,23 @@
             <dxi-item itemType="group" [colCount]="2">
                 <dxi-item itemType="group" [colCount]="2" caption="Warehouse & Location">
                     <dxi-item>
-                        <dxo-label [text]="warehouseLbl"></dxo-label>
                         <dx-lookup [items]="warehouseNames" [(value)]="defaultWarehouse" [placeholder]="warehouseLbl"
-                            (onValueChanged)="updateWarehouseSelection()">
-                            <dxo-drop-down-options [showTitle]="false"></dxo-drop-down-options>
+                            [label]="warehouseLbl" searchMode="contains" [minSearchLength]="1"
+                            [showDataBeforeSearch]="true" (onValueChanged)="updateWarehouseSelection()">
+                            <dxo-drop-down-options [showTitle]="true"></dxo-drop-down-options>
                         </dx-lookup>
                     </dxi-item>
 
                     <dxi-item>
-                        <dx-lookup [items]="validLocationNames" [(value)]="defaultLocation" [placeholder]="locationLbl">
-                            <dxo-drop-down-options [showTitle]="false"></dxo-drop-down-options>
+                        <dx-lookup [items]="validLocationNames" [(value)]="defaultLocation" [placeholder]="locationLbl" [label]="locationLbl">
+                            <dxo-drop-down-options [showTitle]="true"></dxo-drop-down-options>
                         </dx-lookup>
                     </dxi-item>
 
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
                     <dxi-item itemType="group" [colCount]="1" class="radioClass" caption="Inventory type">
-                        <dx-radio-group [dataSource]="invTypes" dataField="invType" layout="horizontal">
+                        <dx-radio-group [dataSource]="invTypes" dataField="invType" layout="horizontal" label=""Inv Type>
                         </dx-radio-group>
                     </dxi-item>
                     <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass" caption="Other">
@@ -57,7 +57,13 @@
 </div>
 
 <div class="details-container content-block dx-card responsive-paddings">
-    <dx-data-grid id="gridContainer" [dataSource]="pmpoviewArray" keyExpr="ID"
+    <dx-data-grid id="gridContainer" [dataSource]="pmpoviewArray" keyExpr="PO" height="52vh"
         [columns]="['Line', 'PO', 'Supplier', 'Quantity', 'Recd Qty', 'SO']" [showBorders]="true">
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-paging [pageSize]="10"> </dxo-paging>
+        <dxo-pager [visible]="true" [allowedPageSizes]="[10,20,30]" displayMode="compact"
+            [showPageSizeSelector]=false [showInfo]=true [showNavigationButtons]=true>
+           
+        </dxo-pager>
     </dx-data-grid>
 </div>
