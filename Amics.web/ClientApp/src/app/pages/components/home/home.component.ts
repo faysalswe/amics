@@ -27,6 +27,10 @@ export class HomeComponent implements OnInit {
       const index = this.tabs.indexOf(tabToRemove);
       this.tabs.splice(index, 1);
     });
+    this.tabService.showTabObservable$.subscribe((tabToShow: any) => {
+      const index = this.tabs.findIndex(t => t.title == tabToShow);
+      this.selectedIndex = index;
+    });
   }
 
   onTabDragStart(e: any) {
@@ -38,7 +42,7 @@ export class HomeComponent implements OnInit {
     e.toData.splice(e.toIndex, 0, e.itemData);
   }
 
-  closeButtonHandler(itemData: any) { 
+  closeButtonHandler(itemData: any) {
     this.tabService.removeTab(itemData);
   }
 
