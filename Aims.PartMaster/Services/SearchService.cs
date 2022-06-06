@@ -21,8 +21,7 @@ namespace Aims.PartMaster.Services
         List<LstItemClass> ItemClassLookup(string itemclassId, string searchItemclass);
         List<LstItemCode> ItemCodeLookup(string itemcodeId, string searchItemcodes);
         List<LstUom> UomLookup(string uomId, string uomRef);
-        //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);
-        List<LstCompanyOption> LoadCompanyOptions();
+        //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);      
         List<LstFieldProperties> LoadFieldProperties(string labelNum);
     }
 
@@ -33,9 +32,13 @@ namespace Aims.PartMaster.Services
         {
             _amicsDbContext = aimsDbContext;
         }
-
+        /// <summary>
+        /// API Service to get Id, Warehouse details, returns all the records if parameters are null.
+        /// </summary>
+        /// <param name="searchWarehouse">Locationr</param>  
+        /// <param name="warehouseId">Warehouse Id</param>         
         public List<LstWarehouse> WarehouseLookup(string searchWarehouse, string warehouseId)
-        {
+        {            
             var whId = string.IsNullOrEmpty(warehouseId) ? Guid.Empty : new Guid(warehouseId.ToString());
             var name = string.IsNullOrEmpty(searchWarehouse) ? string.Empty : searchWarehouse;
              
@@ -46,6 +49,13 @@ namespace Aims.PartMaster.Services
             return whresult;
         }
 
+
+        /// <summary>
+        /// API Service to get Location(warehouseId, id,location, invalid,sequenceNo,route) details, returns all the records if parameters are null and warehouse Id is must to pass as parameter to get specific location.    
+        /// </summary>
+        /// <param name="searchLocation">Locationr</param>  
+        /// <param name="warehouseId">Warehouse Id</param> 
+        /// <param name="locationId">Location Id</param> 
         public List<LstLocaton> LocationLookup(string searchLocation,string warehouseId, string locationId)
         { 
             var whId = string.IsNullOrEmpty(warehouseId) ? Guid.Empty : new Guid(warehouseId.ToString());
@@ -59,6 +69,12 @@ namespace Aims.PartMaster.Services
             return locresult;
         }
 
+
+        /// <summary>
+        /// API Service to get Item Type details, returns all the records if parameters are null        
+        /// </summary>
+        /// <param name="itemtypeId">Item Type Idr</param>  
+        /// <param name="searchItemtype">Item Type</param> 
         public List<LstItemType> ItemTypeLookup(string itemtypeId, string searchItemtype)
         {           
             var itmtypeId = string.IsNullOrEmpty(itemtypeId) ? Guid.Empty : new Guid(itemtypeId.ToString());
@@ -71,6 +87,11 @@ namespace Aims.PartMaster.Services
             return result;
         }
 
+        /// <summary>
+        /// API Service to get Item Class details, returns all the records if parameters are null        
+        /// </summary>
+        /// <param name="itemclassId">Item Class Idr</param>  
+        /// <param name="searchItemclass">Item Class</param> 
         public List<LstItemClass> ItemClassLookup(string itemclassId, string searchItemclass)
         {          
             var itmclassId = string.IsNullOrEmpty(itemclassId) ? Guid.Empty : new Guid(itemclassId.ToString());
@@ -83,6 +104,11 @@ namespace Aims.PartMaster.Services
             return itemclsresult;
         }
 
+        /// <summary>
+        /// API Service to get Item Code details, returns all the records if parameters are null        
+        /// </summary>
+        /// <param name="itemcodeId">Item Code Idr</param>  
+        /// <param name="searchItemcodes">Item Code</param>       
         public List<LstItemCode> ItemCodeLookup(string itemcodeId,string searchItemcodes)
         {          
             var itmcodeId = string.IsNullOrEmpty(itemcodeId) ? Guid.Empty : new Guid(itemcodeId.ToString());
@@ -95,6 +121,11 @@ namespace Aims.PartMaster.Services
             return itmcodresult;
         }
 
+        /// <summary>
+        /// API Service to get UOM details, returns all the records if parameters are null        
+        /// </summary>
+        /// <param name="uomId">Uom Idr</param>  
+        /// <param name="uomRef">UomRef</param>           
         public List<LstUom> UomLookup(string uomId, string uomRef)
         {
             var uomRefId = string.IsNullOrEmpty(uomId) ? Guid.Empty : new Guid(uomId.ToString());
@@ -107,6 +138,15 @@ namespace Aims.PartMaster.Services
             return result;
         }
 
+        /// <summary>
+        /// API Service to get search result of Item No, Rev, Description details using below parameters, returns top 100 records from list_items table(order by createddate desc)
+        /// if parameters are null
+        /// </summary>
+        /// <param name="itemnumber">Item Number</param>  
+        /// <param name="description">Descriptionr</param>   
+        /// <param name="itemtype">Itemtype</param>   
+        /// <param name="itemcode">Itemcoder</param>   
+        /// <param name="itemclass">Itemclass</param>   
         public List<LstItemSearch> ItemNumberSearch(string itemnumber, string description, string itemtype, string itemcode, string itemclass)
         {
             var itmnumber = string.IsNullOrEmpty(itemnumber) ? string.Empty : itemnumber;
@@ -122,14 +162,10 @@ namespace Aims.PartMaster.Services
             return searchresult;
         }
 
-        public List<LstCompanyOption> LoadCompanyOptions()
-        {
-            var optResult = _amicsDbContext.LstCompanyOptions
-                            .FromSqlRaw($"amics_sp_list_companyOptions").ToList<LstCompanyOption>();
-
-            return optResult;
-        }
-
+        /// <summary>
+        /// API Service to get My Label info from db, returns all the data if parameter is null. Label no can pass single or multiple number with comma separated.
+        /// </summary>
+        /// <param name="labelNum">Label Number</param>        
         public List<LstFieldProperties> LoadFieldProperties(string labelNum)
         {
             var optResult = _amicsDbContext.LstFieldProperties
