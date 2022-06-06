@@ -11,31 +11,31 @@ import { PartMasterService } from "../../../services/partmaster.service";
 })
 export class PMSearchComponent implements OnInit {
     pmsearchInfo: pmSearch = new pmSearch();
-    pmSearchResults: pmItemSearchResult[] = []; 
+    pmSearchResults: pmItemSearchResult[] = [];
     submitButtonOptions = {
         text: "Search",
         useSubmitBehavior: true,
         width: "100%",
         type: "default"
-    }; 
+    };
     itemClassList: ItemClass[] = [];
     itemCodeList: ItemCode[] = [];
     itemTypeList: ItemType[] = [];
- 
+
     constructor(private searchService: SearchService) { }
 
     ngOnInit(): void {
         this.searchService.getItemClass('', '').subscribe(l => {
-            this.itemClassList = l; 
+            this.itemClassList = l;
         })
 
         this.searchService.getItemCode('', '').subscribe(l => {
-            this.itemCodeList = l; 
+            this.itemCodeList = l;
         })
 
         this.searchService.getItemType('', '').subscribe(l => {
-            this.itemTypeList = l; 
-        }) 
+            this.itemTypeList = l;
+        })
     }
 
 
@@ -47,4 +47,9 @@ export class PMSearchComponent implements OnInit {
         e.preventDefault();
     }
 
+    onSelectionChanged(e: any) {
+        console.log(e);
+        var selectedItem = e.selectedRowsData[0];
+        console.log(selectedItem);
+    }
 }
