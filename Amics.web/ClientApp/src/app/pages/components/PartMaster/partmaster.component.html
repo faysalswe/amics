@@ -1,5 +1,6 @@
 <dx-responsive-box singleColumnScreen="sm">
-  <dxi-row [ratio]="1"></dxi-row>  
+  <dxi-row [ratio]="1"></dxi-row>
+  <dxi-row [ratio]="0.05"></dxi-row>
   <dxi-col [ratio]="0.75"></dxi-col>
   <dxi-col [ratio]="3"></dxi-col>
 
@@ -15,6 +16,43 @@
       <app-pmdetails></app-pmdetails>
     </div>
   </dxi-item>
+  <dxi-item>
+    <dxi-location [row]="1" [col]="0" [colspan]="2"></dxi-location>
+    <div *dxTemplate class="footer item  content-block dx-card responsive-paddings">
+      <dx-box direction="row" width="100%">
+        <dxi-item [ratio]="0.5" style="align-items:center">
+          <dx-button stylingMode="contained" text="Copy To New" type="default"
+            (onClick)="logpmActionsSelectionChanged($event)">
+          </dx-button>
+        </dxi-item>
+        <dxi-item [ratio]="2.5" style="align-items:center">
+          <dxi-item itemType="group" [colCount]="3">
+            <dx-button stylingMode="contained" text="Add" type="default" (onClick)="logpmActionsSelectionChanged('Add')"
+              [visible]="!saveExitVisible">
+            </dx-button> &nbsp;
+            <dx-button stylingMode="contained" text="Edit" type="default"
+              (onClick)="logpmActionsSelectionChanged('Edit')" [visible]="!saveExitVisible">
+            </dx-button> &nbsp;
+            <dx-button stylingMode="contained" text="Delete" type="default"
+              (onClick)="logpmActionsSelectionChanged('Delete')" [visible]="!saveExitVisible">
+            </dx-button>  &nbsp;
+            <dx-button stylingMode="contained" text="Save" type="default"
+              (onClick)="logpmActionsSelectionChanged('Save')" [visible]="saveExitVisible">
+            </dx-button>  &nbsp;
+            <dx-button stylingMode="contained" text="Cancel" type="default"
+              (onClick)="logpmActionsSelectionChanged('Cancel')" [visible]="saveExitVisible">
+            </dx-button>
+          </dxi-item>
+
+          <dx-button-group [items]="pmActions2" stylingMode="contained" type="default" selectionMode="single"
+            keyExpr="text" [visible]="saveExitVisible2" (onItemClick)="logpmActionsSelectionChanged($event)">
+          </dx-button-group>
+        </dxi-item>
+        <dxi-item [ratio]="0.5"> </dxi-item>
+      </dx-box>
+
+
+    </div>
+  </dxi-item>
 
 </dx-responsive-box>
- 

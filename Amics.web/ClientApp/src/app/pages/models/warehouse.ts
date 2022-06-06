@@ -1,11 +1,11 @@
 import { Guid } from "guid-typescript";
 
-export interface warehouse {
+export interface Warehouse {
     id: Guid;
     warehouse: string;
 }
 
-export interface Location {
+export interface WarehouseLocation {
     warehouseId: Guid;
     id: Guid; 
     location: string;
