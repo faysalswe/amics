@@ -10,7 +10,7 @@ namespace Aims.Core.Services
 {
     public interface IPartmasterService
     {
-        List<LstItemDetails> LoadPartmaster(string itemNumber, string rev);
+        LstItemDetails LoadPartmaster(string itemNumber, string rev);
         List<LstItemsBom> LoadItemsBom(string parentItemId);
         List<LstItemsPO> LoadItemsPO(string parentId);
     }
@@ -27,13 +27,14 @@ namespace Aims.Core.Services
         /// </summary>
         /// <param name="itemnumber">itemnumber</param>  
         /// <param name="rev">rev</param>    
-        public List<LstItemDetails> LoadPartmaster(string itemNumber, string rev)
+        public LstItemDetails LoadPartmaster(string itemNumber, string rev)
         {            
             var itemNum = string.IsNullOrEmpty(itemNumber) ? string.Empty : itemNumber;
             var revDef = string.IsNullOrEmpty(rev) ? "-" : rev;
-
+            
+            //The code above should resolve the error.
             var itemresult = _amicsDbContext.LstItemDetails
-                .FromSqlRaw($"exec sp_webservice_load_partmaster5 @item ='{itemNum}',@rev = '{revDef}'").ToList();                
+                .FromSqlRaw($"exec sp_webservice_load_partmaster5 @item ='{itemNum}',@rev = '{revDef}'").AsEnumerable().FirstOrDefault();
 
             return itemresult;
         }
@@ -65,5 +66,6 @@ namespace Aims.Core.Services
 
             return poItemresult;
         }
+       
     }
 }

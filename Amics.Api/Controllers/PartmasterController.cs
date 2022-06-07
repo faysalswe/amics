@@ -31,7 +31,7 @@ namespace Amics.Api.Controllers
         /// <param name="itemnumber">itemnumber</param>  
         /// <param name="rev">rev</param>      
         [HttpGet, Route("")]
-        public IList<LstItemDetails> GetPartmasterDetails([FromQuery] string itemnumber, [FromQuery] string rev)
+        public LstItemDetails GetPartmasterDetails([FromQuery] string itemnumber, [FromQuery] string rev)
         {
             var resultPMInfo = _partMastService.LoadPartmaster(itemnumber, rev);
 
