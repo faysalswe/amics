@@ -22,7 +22,7 @@ namespace Aims.PartMaster.Services
         List<LstItemCode> ItemCodeLookup(string itemcodeId, string searchItemcodes);
         List<LstUom> UomLookup(string uomId, string uomRef);        
         List<LstFieldProperties> LoadFieldProperties(string labelNum);
-        List<LstUom> UomLookup(string uomId, string uomRef);
+         
         //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);
 
 
@@ -247,7 +247,6 @@ namespace Aims.PartMaster.Services
             return searchResult;
         }
 
-}
         /// <summary>
         /// API Service to get My Label info from db, returns all the data if parameter is null. Label no can pass single or multiple number with comma separated.
         /// </summary>
@@ -259,5 +258,6 @@ namespace Aims.PartMaster.Services
 
             return optResult;
         }
+
     }
 }
