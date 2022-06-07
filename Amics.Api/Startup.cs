@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Aims.PartMaster.Services;
+using Aims.Core.Services;
 
 namespace Amics.Api
 {
@@ -77,9 +78,10 @@ namespace Amics.Api
             services.AddMemoryCache();
             services.AddControllersWithViews();
             services.AddApiVersioningConfigured();
-            services.AddScoped<ISearchService, SearchService>();           
+            services.AddScoped<ISearchService, SearchService>();
+            services.AddScoped<IPartmasterService, PartmasterService>();
 
-    
+
             services.AddHealthChecks();
             services.AddSession(options =>
             {

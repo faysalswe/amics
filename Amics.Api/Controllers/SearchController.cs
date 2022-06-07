@@ -37,7 +37,7 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Route Controller to get Location details, pass warehouse Id, location Id and Location as parameter.
+        /// API Route Controller to  Location details, pass warehouse Id, location Id and Location as parameter.
         /// </summary>        
         /// <param name="warehouseId">Warehouse Id</param> 
         /// <param name="searchLocation">Location</param> 
@@ -128,7 +128,7 @@ namespace Amics.Api.Controllers
         /// API Route Controller to get list field properties information, pass labelNum as parameter.
         /// </summary>        
         /// <param name="labelNum">Label Number</param>           
-        [HttpGet, Route("ListFieldProperties")]
+        [HttpGet, Route("Label")]
         public IList<LstFieldProperties> GetListFieldProperties(string labelNum)
         {
             var fieldPropResult = _partMasterService.LoadFieldProperties(labelNum);

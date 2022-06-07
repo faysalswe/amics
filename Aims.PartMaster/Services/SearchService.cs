@@ -20,8 +20,7 @@ namespace Aims.PartMaster.Services
         List<LstItemType> ItemTypeLookup(string itemtypeId, string searchItemtype);
         List<LstItemClass> ItemClassLookup(string itemclassId, string searchItemclass);
         List<LstItemCode> ItemCodeLookup(string itemcodeId, string searchItemcodes);
-        List<LstUom> UomLookup(string uomId, string uomRef);
-        //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);      
+        List<LstUom> UomLookup(string uomId, string uomRef);        
         List<LstFieldProperties> LoadFieldProperties(string labelNum);
     }
 
