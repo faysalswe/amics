@@ -1,6 +1,29 @@
-import { NgModule } from "@angular/core";
-import { DxButtonModule, DxCheckBoxModule, DxContextMenuModule, DxDataGridModule, DxFormModule, DxListModule, DxNumberBoxModule, DxSelectBoxModule, DxSortableModule, DxTabPanelModule, DxTemplateModule, DxBoxModule, DxRadioGroupModule, DxTextAreaModule, DxResponsiveBoxModule, DxAutocompleteModule, DxLookupModule, DxButtonGroupModule } from "devextreme-angular";
-import dxButtonGroup from "devextreme/ui/button_group";
+import {NgModule} from "@angular/core";
+import {
+  DxAutocompleteModule,
+  DxBoxModule,
+  DxButtonGroupModule,
+  DxButtonModule,
+  DxCheckBoxModule,
+  DxContextMenuModule,
+  DxDataGridModule,
+  DxDateBoxModule,
+  DxFormModule,
+  DxLinearGaugeModule,
+  DxListModule,
+  DxLookupModule,
+  DxNumberBoxModule,
+  DxRadioGroupModule,
+  DxRangeSliderModule,
+  DxResponsiveBoxModule,
+  DxSelectBoxModule,
+  DxSortableModule,
+  DxTabPanelModule,
+  DxTemplateModule,
+  DxTextAreaModule,
+  DxTextBoxModule
+} from "devextreme-angular";
+
 @NgModule({
   imports: [
     DxButtonModule,
@@ -20,7 +43,11 @@ import dxButtonGroup from "devextreme/ui/button_group";
     DxResponsiveBoxModule,
     DxAutocompleteModule,
     DxLookupModule,
-    DxButtonGroupModule
+    DxButtonGroupModule,
+    DxLinearGaugeModule,
+    DxRangeSliderModule,
+    DxTextBoxModule,
+    DxDateBoxModule
   ],
   exports: [
     DxButtonModule,
@@ -40,7 +67,11 @@ import dxButtonGroup from "devextreme/ui/button_group";
     DxResponsiveBoxModule,
     DxAutocompleteModule,
     DxLookupModule,
-    DxButtonGroupModule
+    DxButtonGroupModule,
+    DxLinearGaugeModule,
+    DxRangeSliderModule,
+    DxTextBoxModule,
+    DxDateBoxModule
   ]
 })
 export class DevExpressModule { }

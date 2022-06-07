@@ -13,8 +13,14 @@ export const navigation = [
       {
         text: 'Part Master & BOM',
         path: '/profile',
-        title: 'Part Master',        
+        title: 'Part Master',
         type: ComponentType.PartMaster
+      },
+      {
+        text: 'Increase Inventory',
+        path: '/increase-inventory',
+        title: 'Increase Inventory',
+        type: ComponentType.IncreaseInventory
       },
       {
         text: 'Adjust Inventory',
