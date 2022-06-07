@@ -21,6 +21,12 @@
         </ng-container>
     </ng-container>
 
+  <ng-container *ngSwitchCase="this.componentType.IncreaseInventory">
+    <ng-container>
+      <app-increase-inventory></app-increase-inventory>
+    </ng-container>
+  </ng-container>
+
     <ng-container *ngSwitchDefault>Default Template</ng-container>
 
 </ng-container>

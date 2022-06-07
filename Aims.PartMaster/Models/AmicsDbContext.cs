@@ -16,6 +16,11 @@ namespace Aims.Core.Models
         public DbSet<LstItemCode> LstItemCodes { get; set; }
         public DbSet<LstItemClass> LstItemClasses { get; set; }
         public DbSet<LstUom> LstUoms { get; set; }
+        public DbSet<LstItemDetails> LstItemDetails { get; set; }
+        public DbSet<LstCompanyOption> LstCompanyOptions { get; set; }
+        public DbSet<LstFieldProperties> LstFieldProperties { get; set; }
+        public DbSet<LstItemsBom> LstItemsBom { get; set; }
+        public DbSet<LstItemsPO> LstItemsPO { get; set; }
         public DbSet<ListItems> LstItemInfo { get; set; }
         public DbSet<LstItemInfo> LstItemsInfo { get; set; }
         public DbSet<LstReasonCodes> ListReasonCodes { get; set; }

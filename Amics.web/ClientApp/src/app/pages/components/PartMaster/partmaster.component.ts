@@ -1,5 +1,6 @@
-import { Component, OnInit } from "@angular/core"; 
+import { Component, OnInit } from "@angular/core";
 import { Company } from "../../models/company";
+import { ItemClass, ItemCode, ItemType } from "../../models/searchModels";
 import { PartMasterService } from "../../services/partmaster.service";
 
 @Component({
@@ -7,7 +8,7 @@ import { PartMasterService } from "../../services/partmaster.service";
   templateUrl: "./partmaster.component.html",
   styleUrls: ['./partmaster.component.scss']
 })
-export class PartMasterComponent  {
+export class PartMasterComponent {
   companies: Company[];
 
   labelMode: string;
@@ -17,7 +18,12 @@ export class PartMasterComponent  {
   minColWidth: number;
   colCount: number;
   width: any;
+  saveExitVisible = false;
+  saveExitVisible2 = false;
 
+  itemClassList: ItemClass[] = [];
+  itemCodeList: ItemCode[] = [];
+  itemTypeList: ItemType[] = [];
   constructor(service: PartMasterService) {
     this.labelMode = 'static';
     this.labelLocation = 'left';
@@ -27,11 +33,23 @@ export class PartMasterComponent  {
     this.colCount = 2;
     this.companies = service.getCompanies();
   }
-   
+  pmActions1: any[] = [{ "text": "Add" }, { "text": "Edit" }, { "text": "Delete" }];
+  pmActions2: any[] = [{ "text": "Save" }, { "text": "Cancel" }];
 
   getCompanySelectorLabelMode() {
     return this.labelMode === 'outside'
       ? 'hidden'
       : this.labelMode;
   }
+
+  logpmActionsSelectionChanged(e: any) {
+    if (e === "Add" || e === "Edit") {
+      this.saveExitVisible = true;
+    }
+    else {
+      this.saveExitVisible = false;
+    }
+
+  }
+
 }
