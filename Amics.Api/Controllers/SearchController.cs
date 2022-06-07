@@ -22,16 +22,12 @@ namespace Amics.Api.Controllers
             _partMasterService = partMasterService;
             _logger = logger;
         }
-
-        [HttpGet, Route("CommonLookup")]
-        public IList<AimcsSpLookUp> GetLookUpData([FromQuery]FieldNameSearch fieldName, [FromQuery] string search_col1, [FromQuery] string search_col2)
-        {
-            var result = _partMasterService.CommonLookup(fieldName, search_col1, search_col2);
-
-            return result;
-
-        }
-
+        
+        /// <summary>
+        /// API Route Controller to get Warehouse details, pass warehouse Id and warehouse as parameter.
+        /// </summary>
+        /// <param name="searchWarehouse">Locationr</param>  
+        /// <param name="warehouseId">Warehouse Id</param>      
         [HttpGet, Route("Warehouse")]
         public IList<LstWarehouse> GetWarehouseLookUp([FromQuery] string searchWarehouse, [FromQuery] string warehouseId)
         {
@@ -40,6 +36,12 @@ namespace Amics.Api.Controllers
             return resultWh;
         }
 
+        /// <summary>
+        /// API Route Controller to  Location details, pass warehouse Id, location Id and Location as parameter.
+        /// </summary>        
+        /// <param name="warehouseId">Warehouse Id</param> 
+        /// <param name="searchLocation">Location</param> 
+        /// <param name="locationId">location Id</param> 
         [HttpGet, Route("Location")]
         public IList<LstLocaton> GetLocationLookUp([FromQuery] string warehouseId, [FromQuery] string searchLocation="",[FromQuery] string locationId = null)
         {
@@ -49,6 +51,11 @@ namespace Amics.Api.Controllers
             return resultLoc;
         }
 
+        /// <summary>
+        /// API Route Controller to get Itemtype details, pass itemtypeId and itemtype as parameter.
+        /// </summary>        
+        /// <param name="itemtypeId">itemtype Id</param> 
+        /// <param name="itemtype">itemtype</param>         
         [HttpGet, Route("ItemType")]
         public IList<LstItemType> GetItemTypeSearch([FromQuery] string itemtypeId, [FromQuery] string itemtype)
         {
@@ -58,6 +65,11 @@ namespace Amics.Api.Controllers
             return resultItemtype;
         }
 
+        /// <summary>
+        /// API Route Controller to get ItemClass details, pass itemclassId and itemclass as parameter.
+        /// </summary>        
+        /// <param name="itemclassId">itemclass Id</param> 
+        /// <param name="itemclass">itemclass</param>     
         [HttpGet, Route("ItemClass")]
         public IList<LstItemClass> GetItemClassSearch([FromQuery] string itemclassId, [FromQuery] string itemclass)
         {
@@ -67,6 +79,11 @@ namespace Amics.Api.Controllers
             return resultItemclass;
         }
 
+        /// <summary>
+        /// API Route Controller to get ItemCode details, pass itemcodeId and itemcode as parameter.
+        /// </summary>        
+        /// <param name="itemcodeId">itemcode Id</param> 
+        /// <param name="itemcode">itemcodeId</param>     
         [HttpGet, Route("ItemCode")]
         public IList<LstItemCode> GetItemCodeSearch([FromQuery] string itemcodeId, [FromQuery] string itemcode)
         {
@@ -76,6 +93,11 @@ namespace Amics.Api.Controllers
             return resultItemCode;
         }
 
+        /// <summary>
+        /// API Route Controller to get UOM details, pass uomId and uomRef as parameter.
+        /// </summary>        
+        /// <param name="uomId">uom Id</param> 
+        /// <param name="uomRef">uomRef</param>     
         [HttpGet, Route("Uom")]
         public IList<LstUom> GetUomSearch([FromQuery] string uomId, [FromQuery] string uomRef)
         {
@@ -85,6 +107,14 @@ namespace Amics.Api.Controllers
             return resultUom;
         }
 
+        /// <summary>
+        /// API Route Controller to get Item details for partmaster search, pass itemnumber,description,itemtype,itemcode and itemclass as parameter.
+        /// </summary>        
+        /// <param name="itemnumber">Item Number</param>  
+        /// <param name="description">Descriptionr</param>   
+        /// <param name="itemtype">Itemtype</param>   
+        /// <param name="itemcode">Itemcoder</param>   
+        /// <param name="itemclass">Itemclass</param>    
         [HttpGet, Route("ItemNumber")]
         public IList<LstItemSearch> GetItemNumberSearch([FromQuery] string itemnumber, [FromQuery] string description, [FromQuery] string itemtype, [FromQuery] string itemcode, [FromQuery] string itemclass)
         {
@@ -94,16 +124,11 @@ namespace Amics.Api.Controllers
             return itemSearchResult;
         }
 
-        [HttpGet, Route("CompanyOptions")]
-        public IList<LstCompanyOption> GetCompanyOptions()
-        {
-
-            var companyOptResult = _partMasterService.LoadCompanyOptions();
-
-            return companyOptResult;
-        }
-
-        [HttpGet, Route("ListFieldProperties")]
+        /// <summary>
+        /// API Route Controller to get list field properties information, pass labelNum as parameter.
+        /// </summary>        
+        /// <param name="labelNum">Label Number</param>           
+        [HttpGet, Route("Label")]
         public IList<LstFieldProperties> GetListFieldProperties(string labelNum)
         {
             var fieldPropResult = _partMasterService.LoadFieldProperties(labelNum);
