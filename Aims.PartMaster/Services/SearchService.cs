@@ -22,6 +22,35 @@ namespace Aims.PartMaster.Services
         List<LstItemCode> ItemCodeLookup(string itemcodeId, string searchItemcodes);
         List<LstUom> UomLookup(string uomId, string uomRef);        
         List<LstFieldProperties> LoadFieldProperties(string labelNum);
+         
+        //  List<ListItems> LoadSelectedItemNum(string itemnumber, string rev);
+
+
+        /// <summary>
+        /// Interface for get item's information, Must pass ItemsId or ItemNumber as parameter Rev is optional
+        /// </summary>
+        /// <param name="ItemsId">The ItemsId of the data.</param>
+        /// <param name="ItemNumber">The ItemNumber of the data.</param>
+        /// <param name="Rev">The Rev of the data. Default is '-'</param>
+
+        List<LstItemInfo> ItemInfo(string ItemsId, string ItemNumber, string Rev);
+
+
+        /// <summary>
+        /// Interface for get list of reason codes for INCREASE or DECREASE
+        /// </summary>
+        /// <param name="ReasonCode">ReasonCode for the transaction.</param>
+        /// <param name="CodeFor">CodeFor is type of transaction must 'INCREASE' or 'DECREASE' as a parameter.</param>
+        List<LstReasonCodes> ReasonCodes(string ReasonCode, string CodeFor);
+
+
+        /// <summary>
+        /// Interface  for get Company Options. Use this options for show or hide the fields or set default request globally 
+        /// </summary>
+        /// <param name="OptionId">Integer value as a parameter.</param>
+        /// <param name="ScreenName">Get options by screen name if it is global, parameter value should be 'GENERAL' </param>
+        List<LstCompanyOptions> CompanyOptions(decimal OptionId, string ScreenName);
+
     }
 
     public class SearchService:ISearchService
@@ -162,6 +191,63 @@ namespace Aims.PartMaster.Services
         }
 
         /// <summary>
+        /// API Service for get item's information, Must pass ItemsId or ItemNumber as parameter Rev is optional
+        /// </summary>
+        /// <param name="ItemsId">The ItemsId of the data.</param>
+        /// <param name="ItemNumber">The ItemNumber of the data.</param>
+        /// <param name="Rev">The Rev of the data. Default is '-'</param>
+
+        public List<LstItemInfo> ItemInfo(string ItemsId, string ItemNumber, string Rev)
+        {
+
+            var itemsGuId = string.IsNullOrEmpty(ItemsId) ? Guid.Empty : new Guid(ItemsId.ToString());
+            var itemNo = string.IsNullOrEmpty(ItemNumber) ? string.Empty : ItemNumber;
+            var rev = string.IsNullOrEmpty(Rev) ? string.Empty : Rev;
+          
+            var searchResult = _amicsDbContext.LstItemsInfo
+                .FromSqlRaw($"exec sp_webapi_get_iteminfo @item='{itemNo}',@rev='{rev}',@itemsid='{itemsGuId}'")
+                .ToList<LstItemInfo>();
+             
+            return searchResult;
+        }
+
+        /// <summary>
+        /// API Service for get list of reason codes for INCREASE or DECREASE
+        /// </summary>
+        /// <param name="ReasonCode">ReasonCode for the transaction.</param>
+        /// <param name="CodeFor">CodeFor is type of transaction must 'INCREASE' or 'DECREASE' as a parameter.</param>
+
+        public List<LstReasonCodes> ReasonCodes(string ReasonCode, string CodeFor)
+        {
+             
+            var resCode = string.IsNullOrEmpty(ReasonCode) ? string.Empty : ReasonCode;
+            var resCodeFor = string.IsNullOrEmpty(CodeFor) ? string.Empty : CodeFor;
+
+            var searchResult = _amicsDbContext.ListReasonCodes
+                .FromSqlRaw($"exec sp_webapi_get_reasoncode @reasoncode='{resCode}',@codefor='{resCodeFor}'")
+                .ToList<LstReasonCodes>();
+
+            return searchResult;
+        }
+        /// <summary>
+        /// API Service for get Company Options. Use this options for show or hide the fields or set default request globally 
+        /// </summary>
+        /// <param name="OptionId">Integer value as a parameter.</param>
+        /// <param name="ScreenName">Get options by screen name if it is global, parameter value should be 'GENERAL' </param>
+
+        public List<LstCompanyOptions> CompanyOptions(decimal OptionId, string ScreenName)
+         {            
+          
+            var screenName = string.IsNullOrEmpty(ScreenName) ? string.Empty : ScreenName;
+
+        var searchResult = _amicsDbContext.ListCompanyOptions
+            .FromSqlRaw($"exec sp_webapi_get_list_company_options @optionid={OptionId},@screenname='{screenName}'")
+            .ToList<LstCompanyOptions>();
+
+            return searchResult;
+        }
+
+        /// <summary>
         /// API Service to get My Label info from db, returns all the data if parameter is null. Label no can pass single or multiple number with comma separated.
         /// </summary>
         /// <param name="labelNum">Label Number</param>        
@@ -172,5 +258,6 @@ namespace Aims.PartMaster.Services
 
             return optResult;
         }
+
     }
 }
