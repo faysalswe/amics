@@ -19,11 +19,12 @@ export class PartMasterComponent {
   colCount: number;
   width: any;
   saveExitVisible = false;
-  saveExitVisible2 = false;
 
   itemClassList: ItemClass[] = [];
   itemCodeList: ItemCode[] = [];
   itemTypeList: ItemType[] = [];
+  children: string[] = ["BOM", "PO", "Notes", "Pictures", "Documents"];
+  selctedChild: string = "BOM";
   constructor(service: PartMasterService) {
     this.labelMode = 'static';
     this.labelLocation = 'left';
@@ -35,7 +36,7 @@ export class PartMasterComponent {
   }
   pmActions1: any[] = [{ "text": "Add" }, { "text": "Edit" }, { "text": "Delete" }];
   pmActions2: any[] = [{ "text": "Save" }, { "text": "Cancel" }];
-
+  saveExitVisible2 = false;
   getCompanySelectorLabelMode() {
     return this.labelMode === 'outside'
       ? 'hidden'
@@ -49,6 +50,11 @@ export class PartMasterComponent {
     else {
       this.saveExitVisible = false;
     }
+
+  }
+
+  logpmActions2SelectionChanged(e: any) {
+
 
   }
 

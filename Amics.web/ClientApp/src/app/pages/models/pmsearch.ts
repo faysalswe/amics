@@ -9,16 +9,16 @@ export class pmSearch {
 
 }
 
-export interface pmItemSearchResult {
-    id: string;
-    itemNumber: string;
-    rev: string;
-    description: string;
-    itemType: string;
-    itemCode: string;
-    itemClass: string;
-    uomref: string;
-    cost: number;
-    dwgNo: string;
-    conversion: number;
+export class pmItemSearchResult {
+    id: string = '';
+    itemNumber: string = '';
+    rev: string = '';
+    description: string = '';
+    itemType: string = '';
+    itemCode: string = '';
+    itemClass: string = '';
+    uomref: string = '';
+    cost: number = 0;
+    dwgNo: string = '';
+    conversion: number = 0;
 }
