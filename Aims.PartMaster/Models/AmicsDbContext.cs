@@ -25,8 +25,10 @@ namespace Aims.Core.Models
         public DbSet<LstItemInfo> LstItemsInfo { get; set; }
         public DbSet<LstReasonCodes> ListReasonCodes { get; set; }
         public DbSet<LstCompanyOptions> ListCompanyOptions { get; set; }
-
         
+        public InvStatus InvStatus { get; set; }
+
+
 
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)
