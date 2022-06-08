@@ -80,6 +80,7 @@ namespace Amics.Api
             services.AddApiVersioningConfigured();
             services.AddScoped<ISearchService, SearchService>();
             services.AddScoped<IPartmasterService, PartmasterService>();
+            services.AddScoped<IInventoryService, InventoryService>();
 
 
             services.AddHealthChecks();

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
+
 namespace Amics.Api.Controllers
 {
     [Route("api/[controller]")] 
@@ -22,20 +23,49 @@ namespace Amics.Api.Controllers
             _inventoryService = inventoryService;
             _logger = logger;
         }
-                 
+
 
         /// <summary>
-        /// API Route Controller for get Company Options. Use this options for show or hide the fields or set default request globally 
-        /// </summary>
-        /// <param name="OptionId">Integer value as a parameter.</param>
-        /// <param name="ScreenName">Get options by screen name if it is global, parameter value should be 'GENERAL' </param>
+        /// API Route Controller to get Inventory Status of an item, pass ItemsGUID and UsersGUID as parameters.
+        /// </summary>        
+        /// <param name="ItemsId">items guid</param> 
+        /// <param name="SecUserId">sec users guid</param>     
+        [HttpGet, Route("getInventoryStatus")]
+        public  InvStatus GetInventoryStatus([FromQuery] string ItemsId, [FromQuery] string SecUserId)
+        {
 
-        //[HttpGet, Route("GetCompanyOptions")]
-        //public IList<LstCompanyOptions> GetCompanyOptions([FromQuery] decimal OptionId, [FromQuery] string ScreenName)
-        //{
-        //    var companyOptions = _partMasterService.CompanyOptions(OptionId, ScreenName);
-        //    return companyOptions;
-        //}
+            var resultItemCode = _inventoryService.InventoryStatus(ItemsId, SecUserId);
+
+            return resultItemCode;
+        }
+
+        /// <summary>
+        /// API Route Controller to get DefaultValues for the screen or the form, pass FormName as optional parameter.
+        /// </summary>        
+        /// <param name="FormName">string</param> 
+
+        [HttpGet, Route("getDefaultValues")]
+        public IList<LstDefaultsValues> GetDefaultValues([FromQuery] string FormName)
+        {
+
+            var resultItemCode = _inventoryService.DefaultValues(FormName);
+
+            return resultItemCode;
+        }
+
+        /// <summary>
+        /// API Route Controller to get sales order or ER number an item, must pass ItemsGUID, optional somain as parameters.
+        /// </summary>        
+        /// <param name="ItemsId">items guid</param> 
+        /// <param name="SoMain">perfix so main</param> 
+
+        [HttpGet, Route("getErLookup")]
+        public IList<LstErLookup> GetErLookup([FromQuery] string ItemsId, string SoMain)
+        {
+            var resultItemCode = _inventoryService.ErLookup(ItemsId, SoMain);
+            return resultItemCode;
+        }
+        
 
     }
 }

@@ -34,4 +34,19 @@ namespace Aims.Core.Models
     }
 
 
+    public partial class LstDefaultsValues
+    {
+        public Guid Id { get; set; }
+        public string FormName { get; set; }
+        public string TextFields { get; set; }
+        public string Value { get; set; }      
+
+    }
+
+    public class LstErLookup
+    {
+        public Guid Id { get; set; }
+        public string SoMain { get; set; }      
+    }
+
 }
