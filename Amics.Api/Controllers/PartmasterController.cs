@@ -62,5 +62,17 @@ namespace Amics.Api.Controllers
             return resultPOInfo;
         }
 
+        /// <summary>
+        /// API Route Controller to get Partmaster PO details for grid, pass itemsId as parameter.
+        /// </summary>
+        /// <param name="itemsId">Items Id</param>          
+        [HttpGet, Route("BOMCount")]
+        public LstBomCount GetItemsBomCount([FromQuery] string itemsId)
+        {
+            var dataExist = _partMastService.ItemsBomCount(itemsId);
+
+            return dataExist;
+        }
+
     }
 }

@@ -21,6 +21,7 @@ namespace Aims.Core.Models
         public DbSet<LstFieldProperties> LstFieldProperties { get; set; }
         public DbSet<LstItemsBom> LstItemsBom { get; set; }
         public DbSet<LstItemsPO> LstItemsPO { get; set; }
+        public DbSet<LstBomCount> LstBomCount { get; set; }
 
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)

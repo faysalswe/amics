@@ -13,6 +13,7 @@ namespace Aims.Core.Services
         LstItemDetails LoadPartmaster(string itemNumber, string rev);
         List<LstItemsBom> LoadItemsBom(string parentItemId);
         List<LstItemsPO> LoadItemsPO(string parentId);
+        LstBomCount ItemsBomCount(string parentId);
     }
     public class PartmasterService: IPartmasterService
     {
@@ -66,6 +67,18 @@ namespace Aims.Core.Services
 
             return poItemresult;
         }
-       
+
+        /// <summary>
+        /// API Service to check whether Item BOM is exist or not in database
+        /// </summary>
+        /// <param name="parentId">Parent Item Id</param>          
+        public LstBomCount ItemsBomCount(string parentId)
+        {
+            var itemsId = string.IsNullOrEmpty(parentId) ? Guid.Empty : new Guid(parentId.ToString());
+
+            var bomexist = _amicsDbContext.LstBomCount.FromSqlRaw($"exec amics_sp_itembom_exist @parentid ='{itemsId}'").AsEnumerable().FirstOrDefault();
+
+            return bomexist;
+        }
     }
 }
