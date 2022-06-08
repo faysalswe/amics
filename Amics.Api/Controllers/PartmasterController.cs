@@ -31,7 +31,7 @@ namespace Amics.Api.Controllers
         /// <param name="itemnumber">itemnumber</param>  
         /// <param name="rev">rev</param>      
         [HttpGet, Route("")]
-        public IList<LstItemDetails> GetPartmasterDetails([FromQuery] string itemnumber, [FromQuery] string rev)
+        public LstItemDetails GetPartmasterDetails([FromQuery] string itemnumber, [FromQuery] string rev)
         {
             var resultPMInfo = _partMastService.LoadPartmaster(itemnumber, rev);
 
@@ -60,6 +60,18 @@ namespace Amics.Api.Controllers
             var resultPOInfo = _partMastService.LoadItemsPO(itemsId);
 
             return resultPOInfo;
+        }
+
+        /// <summary>
+        /// API Route Controller to get Partmaster PO details for grid, pass itemsId as parameter.
+        /// </summary>
+        /// <param name="itemsId">Items Id</param>          
+        [HttpGet, Route("BOMCount")]
+        public LstBomCount GetItemsBomCount([FromQuery] string itemsId)
+        {
+            var dataExist = _partMastService.ItemsBomCount(itemsId);
+
+            return dataExist;
         }
 
     }

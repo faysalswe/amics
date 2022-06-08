@@ -10,12 +10,12 @@ namespace Aims.Core.Models
         public Guid PomainId { get; set; }
         public string Pomain { get; set; }
         public Int64 Linenum { get; set; }
-        public Int16 POline { get; set; }
+        public Int16 Poline { get; set; }
         public decimal? Quantity { get; set; }
         public decimal? Received { get; set; }
         public string Somain { get; set; }
-        public string trans_date { get; set; }
-        public string supplier { get; set; }
+        public string Trans_date { get; set; }
+        public string Supplier { get; set; }
         public string P10 { get; set; }
         public string P11 { get; set; }
         public string P12 { get; set; }
@@ -23,9 +23,9 @@ namespace Aims.Core.Models
         public string P14 { get; set; }
         public string P15 { get; set; }
         public string P16 { get; set; }
-        public string p17 { get; set; }
-        public string p18 { get; set; }
-        public string p19 { get; set; }
-        public string p20 { get; set; }
+        public string P17 { get; set; }
+        public string P18 { get; set; }
+        public string P19 { get; set; }
+        public string P20 { get; set; }
     }
 }

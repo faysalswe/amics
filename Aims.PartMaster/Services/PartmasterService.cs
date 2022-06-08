@@ -10,9 +10,10 @@ namespace Aims.Core.Services
 {
     public interface IPartmasterService
     {
-        List<LstItemDetails> LoadPartmaster(string itemNumber, string rev);
+        LstItemDetails LoadPartmaster(string itemNumber, string rev);
         List<LstItemsBom> LoadItemsBom(string parentItemId);
         List<LstItemsPO> LoadItemsPO(string parentId);
+        LstBomCount ItemsBomCount(string parentId);
     }
     public class PartmasterService: IPartmasterService
     {
@@ -27,13 +28,14 @@ namespace Aims.Core.Services
         /// </summary>
         /// <param name="itemnumber">itemnumber</param>  
         /// <param name="rev">rev</param>    
-        public List<LstItemDetails> LoadPartmaster(string itemNumber, string rev)
+        public LstItemDetails LoadPartmaster(string itemNumber, string rev)
         {            
             var itemNum = string.IsNullOrEmpty(itemNumber) ? string.Empty : itemNumber;
             var revDef = string.IsNullOrEmpty(rev) ? "-" : rev;
-
+            
+            //The code above should resolve the error.
             var itemresult = _amicsDbContext.LstItemDetails
-                .FromSqlRaw($"exec sp_webservice_load_partmaster5 @item ='{itemNum}',@rev = '{revDef}'").ToList();                
+                .FromSqlRaw($"exec sp_webservice_load_partmaster5 @item ='{itemNum}',@rev = '{revDef}'").AsEnumerable().FirstOrDefault();
 
             return itemresult;
         }
@@ -64,6 +66,19 @@ namespace Aims.Core.Services
                 .FromSqlRaw($"exec sp_view_items_po5 @parentid ='{itemsId}'").ToList();
 
             return poItemresult;
+        }
+
+        /// <summary>
+        /// API Service to check whether Item BOM is exist or not in database
+        /// </summary>
+        /// <param name="parentId">Parent Item Id</param>          
+        public LstBomCount ItemsBomCount(string parentId)
+        {
+            var itemsId = string.IsNullOrEmpty(parentId) ? Guid.Empty : new Guid(parentId.ToString());
+
+            var bomexist = _amicsDbContext.LstBomCount.FromSqlRaw($"exec amics_sp_itembom_exist @parentid ='{itemsId}'").AsEnumerable().FirstOrDefault();
+
+            return bomexist;
         }
     }
 }
