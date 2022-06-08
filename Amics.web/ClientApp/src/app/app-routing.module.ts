@@ -14,6 +14,7 @@ import { PMSearchComponent } from './pages/components/PartMaster/search/pmsearch
 import { PMDetailsComponent } from './pages/components/PartMaster/details/pmdetails.component';
 import { ResponsiveComponent } from './pages/components/PartMaster/responsive/responsive.component';
 import {IncreaseInventoryComponent} from "./pages/components/IncreaseInventory/increase.inventory.component";
+import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
 
 const routes: Routes = [
   {
@@ -57,6 +58,11 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
+    path: 'inquiry',
+    component: InquiryComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
     path: '**',
     redirectTo: 'home'
   }
@@ -75,7 +81,8 @@ const routes: Routes = [
     PMDetailsComponent,
     HostComponent,
     ResponsiveComponent,
-    IncreaseInventoryComponent
+    IncreaseInventoryComponent,
+    InquiryComponent
   ]
 })
 export class AppRoutingModule { }

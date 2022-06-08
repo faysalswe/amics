@@ -33,6 +33,12 @@ export const navigation = [
         path: '/changeLocation',
         title: 'Change Location',
         type: ComponentType.Tasks
+      },
+      {
+        text: 'Inquiry',
+        path: '/inquiry',
+        title: 'Inquiry',
+        type: ComponentType.inquiry
       }
     ]
   }
