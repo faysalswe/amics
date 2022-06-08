@@ -58,21 +58,21 @@ namespace Aims.Core.Models
         public decimal? Child_Cost { get; set; }
         public double Quantity { get; set; }
         public int? LineNum { get; set; }
-        public string user1 { get; set; }
-        public string user2 { get; set; }
-        public decimal user3 { get; set; }
-        public string user4 { get; set; }
-        public string user5 { get; set; }
-        public string user6 { get; set; }
-        public string user7 { get; set; }
-        public string user8 { get; set; }
-        public string user9 { get; set; }
-        public string user10 { get; set; }
-        public string user11 { get; set; }
-        public string user12 { get; set; }
-        public string user13 { get; set; }
-        public string user14 { get; set; }
-        public string user15 { get; set; }
+        public string User1 { get; set; }
+        public string User2 { get; set; }
+        public decimal User3 { get; set; }
+        public string User4 { get; set; }
+        public string User5 { get; set; }
+        public string User6 { get; set; }
+        public string User7 { get; set; }
+        public string User8 { get; set; }
+        public string User9 { get; set; }
+        public string User10 { get; set; }
+        public string User11 { get; set; }
+        public string User12 { get; set; }
+        public string User13 { get; set; }
+        public string User14 { get; set; }
+        public string User15 { get; set; }
 
     }
 }

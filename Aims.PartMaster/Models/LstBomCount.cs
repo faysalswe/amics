@@ -8,6 +8,6 @@ namespace Aims.Core.Models
     public class LstBomCount
     {
         [Key] 
-        public int value { get; set; }
+        public int Value { get; set; }
     }
 }
