@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, filter, forkJoin, of, Subject, switchMap } from "rxjs";
+import { ComponentType } from "../../models/componentType";
 import { pmDetails } from "../../models/pmdetails";
 import { pmItemSearchResult } from "../../models/pmsearch";
 import { PartMasterService } from "../../services/partmaster.service";
@@ -11,11 +12,13 @@ export class PartMasterDataTransService {
 
     constructor(private pmService: PartMasterService) { }
 
-    private itemSelectedSubject$ = new Subject<pmItemSearchResult>();
+    private itemSelectedSubjectForPMScreen$ = new Subject<pmItemSearchResult>();
 
-    selectedItemChanged(selectedProductId: pmItemSearchResult): void {
-        this.itemSelectedSubject$.next(selectedProductId);
+    selectedItemChanged(selectedProductId: pmItemSearchResult, componentType: ComponentType): void {
+        if (componentType === ComponentType.PartMaster) {
+            this.itemSelectedSubjectForPMScreen$.next(selectedProductId);
+        }
     }
 
-    selectedItem$ = this.itemSelectedSubject$.pipe(switchMap(i => this.pmService.getPartMaster(i.itemNumber, i.rev)))
+    selectedItemForPMDetails$ = this.itemSelectedSubjectForPMScreen$.pipe(switchMap(i => this.pmService.getPartMaster(i.itemNumber, i.rev)))
 }

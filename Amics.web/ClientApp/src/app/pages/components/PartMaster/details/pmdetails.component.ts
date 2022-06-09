@@ -36,7 +36,7 @@ export class PMDetailsComponent {
             this.locations = l;
         })
 
-        this.pmdataTransfer.selectedItem$.subscribe(item => {
+        this.pmdataTransfer.selectedItemForPMDetails$.subscribe(item => {
             console.log(item);
             this.pmDetails = item;
             this.invType = item.invType;

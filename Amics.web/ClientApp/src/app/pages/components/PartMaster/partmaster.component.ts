@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Company } from "../../models/company";
+import { ComponentType } from "../../models/componentType";
 import { ItemClass, ItemCode, ItemType } from "../../models/searchModels";
 import { PartMasterService } from "../../services/partmaster.service";
 
@@ -10,6 +11,7 @@ import { PartMasterService } from "../../services/partmaster.service";
 })
 export class PartMasterComponent {
   companies: Company[];
+  componentType:ComponentType = ComponentType.PartMaster;
 
   labelMode: string;
   labelLocation: string;
