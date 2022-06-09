@@ -13,7 +13,7 @@ namespace Aims.Core.Models
         public string Rev { get; set; }        
         public string Description { get; set; }
         public decimal? Quantity { get; set; }
-        public string uomref { get; set; }
+        public string Uomref { get; set; }
         public string Ref { get; set; }
         public string Comments { get; set; }
         public string FindNo { get; set; }

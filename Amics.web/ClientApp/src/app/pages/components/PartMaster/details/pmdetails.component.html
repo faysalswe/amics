@@ -1,16 +1,16 @@
 <div class="details-container content-block dx-card responsive-paddings">
-    <div class="pmdetails-container ">
+    <div class="pmdetails-container " >
         <dx-form [(formData)]="pmDetails" labelMode="floating" labelLocation="left" (submit)="handleSubmit($event)">
             <dxi-item itemType="group" [colCount]="2">
                 <dxi-item itemType="group" [colCount]="2">
-                    <dxi-item dataField="partNumber" [colSpan]="1" [isRequired]="true"></dxi-item>
+                    <dxi-item dataField="itemNumber" [colSpan]="1" [isRequired]="true"></dxi-item>
                     <dxi-item dataField="itemType" [colSpan]="1" [label]="{ text: 'MFR' }"></dxi-item>
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="4">
                     <dxi-item dataField="itemClass" [colSpan]="1"></dxi-item>
                     <dxi-item dataField="itemCode" [colSpan]="1"></dxi-item>
-                    <dxi-item dataField="uom" [label]="{ text: 'UOM' }"></dxi-item>
-                    <dxi-item dataField="maintenance" [label]="{ text: 'Maintenance' }"></dxi-item>
+                    <dxi-item dataField="uomref" [label]="{ text: 'UOM' }"></dxi-item>
+                    <dxi-item dataField="leadTime" [label]="{ text: 'Maintenance' }"></dxi-item>
                 </dxi-item>
             </dxi-item>
             <dxi-item itemType="group" [colCount]="2">
@@ -24,31 +24,36 @@
                 </dxi-item>
             </dxi-item>
             <dxi-item itemType="group" [colCount]="2">
-                <dxi-item itemType="group" [colCount]="2" caption="Warehouse & Location">
+                <dxi-item itemType="group" [colCount]="2">
                     <dxi-item>
                         <dx-lookup [items]="warehouseNames" [(value)]="defaultWarehouse" [placeholder]="warehouseLbl"
-                            [label]="warehouseLbl" searchMode="contains" [minSearchLength]="1"
-                            [showDataBeforeSearch]="true" (onValueChanged)="updateWarehouseSelection()">
+                            [label]="warehouseLbl" searchMode="contains" [minSearchLength]="1" [searchEnabled]="true"
+                            [showClearButton]="true" [showDataBeforeSearch]="true"
+                            (onValueChanged)="updateWarehouseSelection(this.defaultLocation)">
                             <dxo-drop-down-options [showTitle]="true"></dxo-drop-down-options>
                         </dx-lookup>
                     </dxi-item>
 
                     <dxi-item>
-                        <dx-lookup [items]="validLocationNames" [(value)]="defaultLocation" [placeholder]="locationLbl" [label]="locationLbl">
+                        <dx-lookup [items]="validLocationNames" [(value)]="defaultLocation" [placeholder]="locationLbl"
+                            [label]="locationLbl" [searchEnabled]="true" [showClearButton]="true">
                             <dxo-drop-down-options [showTitle]="true"></dxo-drop-down-options>
                         </dx-lookup>
                     </dxi-item>
 
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
-                    <dxi-item itemType="group" [colCount]="1" class="radioClass" caption="Inventory type">
-                        <dx-radio-group [dataSource]="invTypes" dataField="invType" layout="horizontal" label=""Inv Type>
+                    <dxi-item itemType="group" [colCount]="1" class="radioClass"
+                        style="align-items:center;background-color: #F4F5F6;">
+                        <dx-radio-group [dataSource]="invTypes" [value]="invType" layout="horizontal"
+                            label="Inv Type">
                         </dx-radio-group>
                     </dxi-item>
-                    <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass" caption="Other">
-                        <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp;
-                        <dx-check-box text="TAA" dataField="taa"></dx-check-box>&nbsp;
-                        <dx-check-box text="Create PO" dataField="createPO"></dx-check-box>&nbsp;
+                    <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass"
+                        style="align-items:center;background-color: #F4F5F6;">&nbsp; &nbsp;
+                        <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp; &nbsp;
+                        <dx-check-box text="TAA" dataField="taa"></dx-check-box>&nbsp; &nbsp;
+                        <dx-check-box text="Create PO" dataField="createPO"></dx-check-box>
                     </dxi-item>
                 </dxi-item>
             </dxi-item>
@@ -57,13 +62,13 @@
 </div>
 
 <div class="details-container content-block dx-card responsive-paddings">
-    <dx-data-grid id="gridContainer" [dataSource]="pmpoviewArray" keyExpr="PO" height="52vh"
+    <dx-data-grid id="gridContainer" [dataSource]="pmpoviewArray" keyExpr="PO" height="58vh"
         [columns]="['Line', 'PO', 'Supplier', 'Quantity', 'Recd Qty', 'SO']" [showBorders]="true">
         <dxo-selection mode="single"></dxo-selection>
         <dxo-paging [pageSize]="10"> </dxo-paging>
-        <dxo-pager [visible]="true" [allowedPageSizes]="[10,20,30]" displayMode="compact"
-            [showPageSizeSelector]=false [showInfo]=true [showNavigationButtons]=true>
-           
+        <dxo-pager [visible]="true" [allowedPageSizes]="[10,20,30]" displayMode="compact" [showPageSizeSelector]=false
+            [showInfo]=true [showNavigationButtons]=true>
+
         </dxo-pager>
     </dx-data-grid>
 </div>
