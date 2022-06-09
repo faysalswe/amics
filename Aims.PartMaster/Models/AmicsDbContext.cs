@@ -25,7 +25,8 @@ namespace Aims.Core.Models
         public DbSet<LstItemInfo> LstItemsInfo { get; set; }
         public DbSet<LstReasonCodes> ListReasonCodes { get; set; }
         public DbSet<LstCompanyOptions> ListCompanyOptions { get; set; }
-         public DbSet<InvStatus> dbxInvStatus { get; set; }
+         
+        public DbSet<InvStatus> dbxInvStatus { get; set; }
         public DbSet<LstDefaultsValues> ListDefaultsValues { get; set; }
         public DbSet<LstErLookup> ListErLookup { get; set; }
 
