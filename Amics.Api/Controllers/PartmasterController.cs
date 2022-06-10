@@ -80,7 +80,7 @@ namespace Amics.Api.Controllers
         /// </summary>
         /// <param name="itemnum">Item Number</param>          
         /// /// <param name="rev">Rev</param>          
-        [HttpPost, Route("ItemDetailsDelete")]
+        [HttpDelete, Route("")]
         public LstMessage ItemDetailsDelete([FromQuery] string itemnum, [FromQuery] string rev)
         {
             var dataExist = _partMastService.ItemNumDelete(itemnum,rev);
@@ -92,11 +92,11 @@ namespace Amics.Api.Controllers
         /// API Route Controller to get Partmaster PO details for grid, pass itemsId as parameter.
         /// </summary>
         /// <param name="itemsId">Items Id</param>          
-        [HttpPost, Route("ItemDetailsAddUpdate")]
-        public LstMessage ItemDetailsAddUpdate([FromQuery] int actionFlag, [FromQuery] string id, [FromQuery] string itemNumber,[FromQuery] string rev,[FromQuery] string description, [FromQuery] string salesDescription, [FromQuery] string PurchaseDescription, [FromQuery] string invtypeidv, [FromQuery] string itemtypeidv, [FromQuery] string itemclassidv, [FromQuery] string itemcodeidv, string uomid, [FromQuery] decimal conversion, [FromQuery] decimal cost,decimal markup, [FromQuery] decimal price, [FromQuery] decimal price2, [FromQuery] decimal price3, [FromQuery] decimal weight, [FromQuery] bool reorder, [FromQuery] int buyitem, [FromQuery] int obsolete, [FromQuery] bool cyclecount, [FromQuery] string notes, [FromQuery] decimal minimum, [FromQuery] decimal maximum, [FromQuery] decimal leadtime, [FromQuery] string warehouseidv, [FromQuery] string locationsidv, [FromQuery] string glsales, [FromQuery] string glinv, [FromQuery] string glcogs, [FromQuery] string dwgno, [FromQuery] string user1, [FromQuery] string user2, [FromQuery] decimal user3, [FromQuery] int userbit, [FromQuery] int userbit2, [FromQuery] int userbit3)
+        [HttpPost, Route("")]
+        public LstMessage ItemDetailsAddUpdate([FromQuery] string id, [FromQuery] string itemNumber,[FromQuery] string rev,[FromQuery] string description, [FromQuery] string salesDescription, [FromQuery] string PurchaseDescription, [FromQuery] string invtypeidv, [FromQuery] string itemtypeidv, [FromQuery] string itemclassidv, [FromQuery] string itemcodeidv, string uomid, [FromQuery] decimal conversion, [FromQuery] decimal cost,decimal markup, [FromQuery] decimal price, [FromQuery] decimal price2, [FromQuery] decimal price3, [FromQuery] decimal weight, [FromQuery] int buyitem, [FromQuery] int obsolete, [FromQuery] string notes, [FromQuery] decimal minimum, [FromQuery] decimal maximum, [FromQuery] decimal leadtime, [FromQuery] string warehouseidv, [FromQuery] string locationsidv, [FromQuery] string glsales, [FromQuery] string glinv, [FromQuery] string glcogs, [FromQuery] string dwgno, [FromQuery] string user1, [FromQuery] string user2, [FromQuery] decimal user3, [FromQuery] int userbit, [FromQuery] int userbit2, [FromQuery] int userbit3)
         {
-            var itemUpdate = _partMastService.ItemNumDetailsAddUpdate(actionFlag, id, itemNumber, rev, description, salesDescription, PurchaseDescription, invtypeidv, itemtypeidv, itemclassidv, itemcodeidv, uomid, conversion,
-                cost, markup, price, price2, price3, weight, reorder, buyitem, obsolete, cyclecount, notes, minimum, maximum, leadtime, warehouseidv, locationsidv, glsales, glinv, glcogs, dwgno, user1, user2, user3, userbit, userbit2, userbit3);
+            var itemUpdate = _partMastService.ItemNumDetailsAddUpdate(id, itemNumber, rev, description, salesDescription, PurchaseDescription, invtypeidv, itemtypeidv, itemclassidv, itemcodeidv, uomid, conversion,
+                cost, markup, price, price2, price3, weight, buyitem, obsolete, notes, minimum, maximum, leadtime, warehouseidv, locationsidv, glsales, glinv, glcogs, dwgno, user1, user2, user3, userbit, userbit2, userbit3);
 
             return itemUpdate;
         }

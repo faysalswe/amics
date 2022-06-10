@@ -12,14 +12,14 @@ namespace Aims.Core.Models
         public string ItemNumber { get; set; }
         public string Rev { get; set; }        
         public string Description { get; set; }
-        public decimal? Quantity { get; set; }
+        public double? Quantity { get; set; }
         public string Uomref { get; set; }
         public string Ref { get; set; }
         public string Comments { get; set; }
         public string FindNo { get; set; }
         public int LineNum { get; set; }
         public decimal? Cost { get; set; }
-        public decimal? ExtCost { get; set; }
+        public double? ExtCost { get; set; }
         public string Itemtype { get; set; }
     }
 }
