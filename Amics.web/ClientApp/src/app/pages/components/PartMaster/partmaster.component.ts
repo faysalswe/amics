@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Company } from "../../models/company";
+import { ComponentType } from "../../models/componentType";
 import { ItemClass, ItemCode, ItemType } from "../../models/searchModels";
 import { PartMasterService } from "../../services/partmaster.service";
 
@@ -10,6 +11,7 @@ import { PartMasterService } from "../../services/partmaster.service";
 })
 export class PartMasterComponent {
   companies: Company[];
+  componentType:ComponentType = ComponentType.PartMaster;
 
   labelMode: string;
   labelLocation: string;
@@ -19,11 +21,12 @@ export class PartMasterComponent {
   colCount: number;
   width: any;
   saveExitVisible = false;
-  saveExitVisible2 = false;
 
   itemClassList: ItemClass[] = [];
   itemCodeList: ItemCode[] = [];
   itemTypeList: ItemType[] = [];
+  children: string[] = ["BOM", "PO", "Notes", "Pictures", "Documents"];
+  selctedChild: string = "BOM";
   constructor(service: PartMasterService) {
     this.labelMode = 'static';
     this.labelLocation = 'left';
@@ -35,7 +38,7 @@ export class PartMasterComponent {
   }
   pmActions1: any[] = [{ "text": "Add" }, { "text": "Edit" }, { "text": "Delete" }];
   pmActions2: any[] = [{ "text": "Save" }, { "text": "Cancel" }];
-
+  saveExitVisible2 = false;
   getCompanySelectorLabelMode() {
     return this.labelMode === 'outside'
       ? 'hidden'
@@ -49,6 +52,11 @@ export class PartMasterComponent {
     else {
       this.saveExitVisible = false;
     }
+
+  }
+
+  logpmActions2SelectionChanged(e: any) {
+
 
   }
 

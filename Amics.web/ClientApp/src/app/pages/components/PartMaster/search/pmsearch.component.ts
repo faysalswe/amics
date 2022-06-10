@@ -1,8 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
+import { ComponentType } from "src/app/pages/models/componentType";
 import { pmSearch, pmItemSearchResult } from "src/app/pages/models/pmsearch";
 import { ItemClass, ItemCode, ItemType } from "src/app/pages/models/searchModels";
 import { SearchService } from "src/app/pages/services/search.service";
 import { PartMasterService } from "../../../services/partmaster.service";
+import { PartMasterDataTransService } from "../pmdatatransfer.service";
 
 @Component({
     selector: "app-pmsearch",
@@ -10,6 +12,7 @@ import { PartMasterService } from "../../../services/partmaster.service";
     styleUrls: ['./pmsearch.component.scss']
 })
 export class PMSearchComponent implements OnInit {
+    @Input() componentType: ComponentType = ComponentType.PartMaster;
     pmsearchInfo: pmSearch = new pmSearch();
     pmSearchResults: pmItemSearchResult[] = [];
     submitButtonOptions = {
@@ -22,7 +25,7 @@ export class PMSearchComponent implements OnInit {
     itemCodeList: ItemCode[] = [];
     itemTypeList: ItemType[] = [];
 
-    constructor(private searchService: SearchService) { }
+    constructor(private searchService: SearchService, private pmDataTransService:PartMasterDataTransService) { }
 
     ngOnInit(): void {
         this.searchService.getItemClass('', '').subscribe(l => {
@@ -51,5 +54,7 @@ export class PMSearchComponent implements OnInit {
         console.log(e);
         var selectedItem = e.selectedRowsData[0];
         console.log(selectedItem);
+      
+        this.pmDataTransService.selectedItemChanged(selectedItem,this.componentType);
     }
 }
