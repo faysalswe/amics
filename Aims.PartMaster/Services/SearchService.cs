@@ -63,7 +63,7 @@ namespace Aims.PartMaster.Services
         /// <summary>
         /// API Service to get Id, Warehouse details, returns all the records if parameters are null.
         /// </summary>
-        /// <param name="searchWarehouse">Locationr</param>  
+        /// <param name="searchWarehouse">Warehouse</param>  
         /// <param name="warehouseId">Warehouse Id</param>         
         public List<LstWarehouse> WarehouseLookup(string searchWarehouse, string warehouseId)
         {            
