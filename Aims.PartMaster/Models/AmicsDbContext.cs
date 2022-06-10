@@ -23,11 +23,10 @@ namespace Aims.Core.Models
         public DbSet<LstItemsPO> LstItemsPO { get; set; }
         public DbSet<LstItemInfo> LstItemsInfo { get; set; }
         public DbSet<LstReasonCodes> ListReasonCodes { get; set; }
-        public DbSet<LstCompanyOptions> ListCompanyOptions { get; set; }
-
-        
+        public DbSet<LstCompanyOptions> ListCompanyOptions { get; set; }       
         public DbSet<LstBomCount> LstBomCount { get; set; }
-
+        public DbSet<LstMessage> LstMessage { get; set; }        
+        
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)
         {
