@@ -1,5 +1,5 @@
 <div class="details-container content-block dx-card responsive-paddings">
-    <div class="pmdetails-container " >
+    <div class="pmdetails-container ">
         <dx-form [(formData)]="pmDetails" labelMode="floating" labelLocation="left" (submit)="handleSubmit($event)">
             <dxi-item itemType="group" [colCount]="2">
                 <dxi-item itemType="group" [colCount]="2">
@@ -7,15 +7,16 @@
                     <dxi-item dataField="itemType" [colSpan]="1" [label]="{ text: 'MFR' }"></dxi-item>
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="4">
+                    <dxi-item dataField="uomref" [label]="{ text: 'UOM' }"></dxi-item>
+                    <dxi-item dataField="leadTime" [label]="{ text: 'Maintenance(days)' }"></dxi-item>
                     <dxi-item dataField="itemClass" [colSpan]="1"></dxi-item>
                     <dxi-item dataField="itemCode" [colSpan]="1"></dxi-item>
-                    <dxi-item dataField="uomref" [label]="{ text: 'UOM' }"></dxi-item>
-                    <dxi-item dataField="leadTime" [label]="{ text: 'Maintenance' }"></dxi-item>
                 </dxi-item>
             </dxi-item>
             <dxi-item itemType="group" [colCount]="2">
-                <dxi-item itemType="group" [colCount]="1">
-                    <dx-text-area dataField="description" label="Description (Max 150 characters)"></dx-text-area>
+                <dxi-item dataField="description" [colCount]="1" editorType="dxTextArea"
+                    [label]="{text: 'Description (Max 150 characters)'}">
+
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
                     <dxi-item dataField="cost"></dxi-item>
@@ -26,34 +27,38 @@
             <dxi-item itemType="group" [colCount]="2">
                 <dxi-item itemType="group" [colCount]="2">
                     <dxi-item>
-                        <dx-lookup [items]="warehouseNames" [(value)]="defaultWarehouse" [placeholder]="warehouseLbl"
+                        <dx-lookup [items]="warehouseNames" [(value)]="pmDetails.warehouse" [placeholder]="warehouseLbl"
                             [label]="warehouseLbl" searchMode="contains" [minSearchLength]="1" [searchEnabled]="true"
                             [showClearButton]="true" [showDataBeforeSearch]="true"
-                            (onValueChanged)="updateWarehouseSelection(this.defaultLocation)">
+                            (onValueChanged)="updateWarehouseSelection(this.pmDetails.warehouse)">
                             <dxo-drop-down-options [showTitle]="true"></dxo-drop-down-options>
                         </dx-lookup>
                     </dxi-item>
 
                     <dxi-item>
-                        <dx-lookup [items]="validLocationNames" [(value)]="defaultLocation" [placeholder]="locationLbl"
-                            [label]="locationLbl" [searchEnabled]="true" [showClearButton]="true">
+                        <dx-lookup [items]="validLocationNames" [(value)]="pmDetails.location"
+                            [placeholder]="locationLbl" [label]="locationLbl" [searchEnabled]="true"
+                            [showClearButton]="true">
                             <dxo-drop-down-options [showTitle]="true"></dxo-drop-down-options>
                         </dx-lookup>
                     </dxi-item>
 
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
-                    <dxi-item itemType="group" [colCount]="1" class="radioClass"
+                    <dxi-item [colCount]="1" editorType="dxRadioGroup"
+                        [editorOptions]=" {items: invTypes, value: pmDetails.invType, layout: 'horizontal' }"
                         style="align-items:center;background-color: #F4F5F6;">
-                        <dx-radio-group [dataSource]="invTypes" [value]="invType" layout="horizontal"
-                            label="Inv Type">
-                        </dx-radio-group>
+
                     </dxi-item>
                     <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass"
                         style="align-items:center;background-color: #F4F5F6;">&nbsp; &nbsp;
-                        <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp; &nbsp;
-                        <dx-check-box text="TAA" dataField="taa"></dx-check-box>&nbsp; &nbsp;
-                        <dx-check-box text="Create PO" dataField="createPO"></dx-check-box>
+                        <dxi-item editorType="dxCheckBox"
+                            [editorOptions]="{ text: 'Obsolete', value: pmDetails.obsolete}">
+                        </dxi-item> &nbsp; &nbsp;
+                        <dxi-item editorType="dxCheckBox" [editorOptions]="{ text: 'TAA', value: false}"></dxi-item>
+                        &nbsp; &nbsp;
+                        <dxi-item editorType="dxCheckBox" [editorOptions]="{ text: 'Create PO', value: false}">
+                        </dxi-item>
                     </dxi-item>
                 </dxi-item>
             </dxi-item>
@@ -62,13 +67,30 @@
 </div>
 
 <div class="details-container content-block dx-card responsive-paddings">
-    <dx-data-grid id="gridContainer" [dataSource]="pmpoviewArray" keyExpr="PO" height="58vh"
-        [columns]="['Line', 'PO', 'Supplier', 'Quantity', 'Recd Qty', 'SO']" [showBorders]="true">
-        <dxo-selection mode="single"></dxo-selection>
-        <dxo-paging [pageSize]="10"> </dxo-paging>
-        <dxo-pager [visible]="true" [allowedPageSizes]="[10,20,30]" displayMode="compact" [showPageSizeSelector]=false
-            [showInfo]=true [showNavigationButtons]=true>
+    <ng-container [ngSwitch]="selectedChild">
+        <ng-container *ngSwitchCase="childType.BOM">
+            <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="id" height="54vh"
+                [columns]="['lineNum','itemtype', 'itemNumber', 'description', 'quantity', 'uomref','ref', 'comments','cost','extCost']"
+                [showBorders]="true">
+                <dxo-selection mode="single"></dxo-selection>
+                <dxo-paging [pageSize]="10"> </dxo-paging>
+                <dxo-pager [visible]="true" [allowedPageSizes]="[10,20,30]" displayMode="compact"
+                    [showPageSizeSelector]=false [showInfo]=true [showNavigationButtons]=true>
 
-        </dxo-pager>
-    </dx-data-grid>
+                </dxo-pager>
+            </dx-data-grid>
+        </ng-container>
+        <ng-container *ngSwitchCase="childType.PO">
+            <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="54vh"
+                [columns]="['linenum','pomain', 'supplier', 'quantity', 'received', 'somain']"
+                [showBorders]="true">
+                <dxo-selection mode="single"></dxo-selection>
+                <dxo-paging [pageSize]="10"> </dxo-paging>
+                <dxo-pager [visible]="true" [allowedPageSizes]="[10,20,30]" displayMode="compact"
+                    [showPageSizeSelector]=false [showInfo]=true [showNavigationButtons]=true>
+
+                </dxo-pager>
+            </dx-data-grid>
+        </ng-container>
+    </ng-container>
 </div>

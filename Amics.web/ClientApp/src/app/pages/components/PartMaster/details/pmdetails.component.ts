@@ -1,13 +1,16 @@
 import { Component, OnInit } from "@angular/core";
 import { Guid } from "guid-typescript";
 import { Observable } from "rxjs";
+import { pmBomDetails } from "src/app/pages/models/pmBomDetails";
+import { PmChildType } from "src/app/pages/models/pmChildType";
 import { pmDetails } from "src/app/pages/models/pmdetails";
+import { pmPoDetails } from "src/app/pages/models/pmPoDetails";
 import { PMPOView } from "src/app/pages/models/pmpoview";
 import { pmSearch, pmItemSearchResult } from "src/app/pages/models/pmsearch";
 import { Warehouse, WarehouseLocation } from "src/app/pages/models/warehouse";
 import { SearchService } from "src/app/pages/services/search.service";
 import { PartMasterService } from "../../../services/partmaster.service";
-import { PartMasterDataTransService } from "../pmdatatransfer.service";
+import { PartMasterDataTransService } from "../../../services/pmdatatransfer.service";
 
 @Component({
     selector: "app-pmdetails",
@@ -15,15 +18,17 @@ import { PartMasterDataTransService } from "../pmdatatransfer.service";
     styleUrls: ['./pmdetails.component.scss']
 })
 export class PMDetailsComponent {
-    defaultWarehouse: string = '';
-    defaultLocation: string = '';
     warehouses: Warehouse[] = [];
     warehouseNames: string[] = [];
     locations: WarehouseLocation[] = [];
     validLocations: WarehouseLocation[] = [];
     validLocationNames: string[] = [];
     invType: string = '';
-    constructor(private searchService: SearchService, private pmdataTransfer: PartMasterDataTransService) { }
+    bomDetails: pmBomDetails[] = [];
+    poDetails: pmPoDetails[] = [];
+    selectedChild: PmChildType = PmChildType.BOM;
+    childType: typeof PmChildType;
+    constructor(private searchService: SearchService, private pmdataTransfer: PartMasterDataTransService, private pmService: PartMasterService) { this.childType = PmChildType }
 
     ngOnInit(): void {
 
@@ -40,18 +45,28 @@ export class PMDetailsComponent {
             console.log(item);
             this.pmDetails = item;
             this.invType = item.invType;
-            this.defaultWarehouse = item.warehouse;
-            this.defaultLocation='';
             this.updateWarehouseSelection(item.location);
         });
+        this.pmdataTransfer.selectedItemBomForPMDetails$.subscribe(boms => {
+            this.bomDetails = boms;
+        })
+
+        this.pmdataTransfer.selectedItemPoForPMDetails$.subscribe(poLines => {
+            this.poDetails = poLines;
+        })
+
+        this.pmdataTransfer.itemSelectedChild$.subscribe(child => { this.selectedChild = child; });
+
     }
 
+
     updateWarehouseSelection(location: string = '') {
-        let wid = this.warehouses.find(w => w.warehouse == this.defaultWarehouse)?.id;
+        let wid = this.warehouses.find(w => w.warehouse == this.pmDetails.warehouse)?.id;
         this.validLocations = this.locations.filter(l => l.warehouseId == wid);
         this.validLocationNames = this.validLocations.map(l => l.location);
-        this.defaultLocation = '';
-        if (!!location) { this.defaultLocation = location; }
+
+        if (!location) { this.pmDetails.location = ''; }
+
     }
 
     submitButtonOptions = {

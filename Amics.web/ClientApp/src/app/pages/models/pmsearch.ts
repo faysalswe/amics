@@ -1,3 +1,5 @@
+import { Guid } from "guid-typescript";
+
 export class pmSearch {
     itemnumber: string = '';
     description: string = '';
@@ -10,7 +12,7 @@ export class pmSearch {
 }
 
 export class pmItemSearchResult {
-    id: string = '';
+    id: Guid = Guid.createEmpty();
     itemNumber: string = '';
     rev: string = '';
     description: string = '';

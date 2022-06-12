@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Guid } from 'guid-typescript';
 import { Company } from '../models/company';
+import { pmBomDetails } from '../models/pmBomDetails';
 import { pmDetails } from '../models/pmdetails';
+import { pmPoDetails } from '../models/pmPoDetails';
 
 const companies: Company[] = [{
   ID: 1,
@@ -63,5 +66,12 @@ export class PartMasterService {
 
   getPartMaster(itemNumber: string, rev: string) {
     return this.httpClient.get<pmDetails>(`${this.api}?itemnumber=${itemNumber}&rev=${rev}`);
+  }
+
+  getBomDetails(itemId: Guid) {
+    return this.httpClient.get<pmBomDetails[]>(`${this.api}/BomDetails?itemsId=${itemId}`);
+  }
+  getPoDetails(itemId: Guid) {
+    return this.httpClient.get<pmPoDetails[]>(`${this.api}/PODetails?itemsId=${itemId}`);
   }
 }

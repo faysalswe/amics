@@ -1,5 +1,7 @@
+import { Guid } from "guid-typescript";
+
 export class pmDetails {
-    id: string = '';
+    id: Guid = Guid.createEmpty();
     itemNumber: string = '';
     rev: string = '';
     dwgNo: string = '';
