@@ -17,13 +17,17 @@ export class PartMasterDataTransService {
 
     selectedItemChanged(selectedProductId: pmItemSearchResult, componentType: ComponentType): void {
         if (componentType === ComponentType.PartMaster) {
+            if (!!selectedProductId) {
             this.itemSelectedSubjectForPMScreen$.next(selectedProductId);
         }
     }
+    }
     selectedChildChanged(selectedChild: PmChildType, componentType: ComponentType): void {
         if (componentType === ComponentType.PartMaster) {
+            if (!!selectedChild) {
             this.itemSelectedChild$.next(selectedChild);
         }
+    }
     }
     selectedItemForPMDetails$ = this.itemSelectedSubjectForPMScreen$.pipe(switchMap(i => this.pmService.getPartMaster(i.itemNumber, i.rev)))
     selectedItemBomForPMDetails$ = this.itemSelectedSubjectForPMScreen$.pipe(switchMap(i => this.pmService.getBomDetails(i.id)))

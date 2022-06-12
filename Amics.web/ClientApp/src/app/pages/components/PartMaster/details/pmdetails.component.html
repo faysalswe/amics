@@ -55,9 +55,11 @@
                         <dxi-item editorType="dxCheckBox"
                             [editorOptions]="{ text: 'Obsolete', value: pmDetails.obsolete}">
                         </dxi-item> &nbsp; &nbsp;
-                        <dxi-item editorType="dxCheckBox" [editorOptions]="{ text: 'TAA', value: false}"></dxi-item>
+                        <dxi-item editorType="dxCheckBox" [editorOptions]="{ text: 'TAA', value: pmDetails.userBit}">
+                        </dxi-item>
                         &nbsp; &nbsp;
-                        <dxi-item editorType="dxCheckBox" [editorOptions]="{ text: 'Create PO', value: false}">
+                        <dxi-item editorType="dxCheckBox"
+                            [editorOptions]="{ text: 'Create PO', value: pmDetails.userBit2}">
                         </dxi-item>
                     </dxi-item>
                 </dxi-item>
@@ -70,26 +72,39 @@
     <ng-container [ngSwitch]="selectedChild">
         <ng-container *ngSwitchCase="childType.BOM">
             <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="id" height="54vh"
-                [columns]="['lineNum','itemtype', 'itemNumber', 'description', 'quantity', 'uomref','ref', 'comments','cost','extCost']"
-                [showBorders]="true">
+                [allowColumnReordering]="true" [focusedRowEnabled]="true" [showBorders]="true" [showColumnLines]="true"
+                [allowColumnResizing]="true" [rowAlternationEnabled]="true">
+                <dxo-load-panel [enabled]="false"></dxo-load-panel>
+                <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
-                <dxo-paging [pageSize]="10"> </dxo-paging>
-                <dxo-pager [visible]="true" [allowedPageSizes]="[10,20,30]" displayMode="compact"
-                    [showPageSizeSelector]=false [showInfo]=true [showNavigationButtons]=true>
+                <dxi-column dataField="lineNum" dataType="number"></dxi-column>
+                <dxi-column dataField="itemtype" dataType="string" caption="MFR."></dxi-column>
+                <dxi-column dataField="itemNumber" caption="Part Number" dataType="string"></dxi-column>
+                <dxi-column dataField="description" dataType="string"></dxi-column>
+                <dxi-column dataField="quantity" dataType="number"></dxi-column>
+                <dxi-column dataField="uomref" dataType="string"></dxi-column>
+                <dxi-column dataField="ref" dataType="string"></dxi-column>
+                <dxi-column dataField="comments" dataType="string"></dxi-column>
+                <dxi-column dataField="cost" dataType="number" format="currency"></dxi-column>
+                <dxi-column dataField="extCost" dataType="number" format="currency"></dxi-column>
 
-                </dxo-pager>
+                <dxo-summary>
+                    <dxi-total-item column="cost" summaryType="sum" displayFormat="{0}" valueFormat="currency">
+                    </dxi-total-item>
+                    <dxi-total-item column="extCost" summaryType="sum" displayFormat="{0}" valueFormat="currency">
+                    </dxi-total-item>
+                </dxo-summary>
             </dx-data-grid>
         </ng-container>
         <ng-container *ngSwitchCase="childType.PO">
             <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="54vh"
-                [columns]="['linenum','pomain', 'supplier', 'quantity', 'received', 'somain']"
-                [showBorders]="true">
+                [focusedRowEnabled]="true" [allowColumnResizing]="true" [showBorders]="true" [showColumnLines]="true"
+                [rowAlternationEnabled]="true"
+                [columns]="['linenum','pomain', 'supplier', 'quantity', 'received', 'somain']" [showBorders]="true">
+                <dxo-load-panel [enabled]="false"></dxo-load-panel>
+                <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
-                <dxo-paging [pageSize]="10"> </dxo-paging>
-                <dxo-pager [visible]="true" [allowedPageSizes]="[10,20,30]" displayMode="compact"
-                    [showPageSizeSelector]=false [showInfo]=true [showNavigationButtons]=true>
 
-                </dxo-pager>
             </dx-data-grid>
         </ng-container>
     </ng-container>

@@ -24,14 +24,14 @@
     </div>
     <br />
     <div>
-        <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="itemNumber" [columns]="['itemNumber', 'description']"
-            [hoverStateEnabled]="true" [showBorders]="true" [selectedRowKeys]="[]" height="48vh" (onSelectionChanged)="onSelectionChanged($event)">
-            <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
+        <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="itemNumber"
+            [columns]="['itemNumber', 'description']" [focusedRowEnabled]="true" [hoverStateEnabled]="true"
+            [showColumnLines]="true" [rowAlternationEnabled]="true" [allowColumnResizing]="true" [showBorders]="true"
+            [selectedRowKeys]="[]" height="48vh" (onSelectionChanged)="onSelectionChanged($event)">
+            <dxo-load-panel [enabled]="false"></dxo-load-panel>
+            <dxo-scrolling mode="infinite"></dxo-scrolling>
             <dxo-selection mode="single"></dxo-selection>
-            <dxo-paging [pageSize]="10"> </dxo-paging>
-            <dxo-pager [visible]="true" [allowedPageSizes]="[10,20,30]" displayMode="compact"
-                [showPageSizeSelector]=false [showInfo]=true [showNavigationButtons]=true> 
-            </dxo-pager>
+
         </dx-data-grid>
     </div>
 </div>
