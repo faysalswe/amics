@@ -3,5 +3,6 @@ export enum pmCRUDActionType {
     Edit = 'Edit',
     Save = 'Save',
     Delete = 'Delete',
+    Cancel = 'Cancel',
     Copy = 'Copy'
 }

@@ -26,7 +26,7 @@
     <div>
         <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="itemNumber"
             [columns]="['itemNumber', 'description']" [focusedRowEnabled]="true" [hoverStateEnabled]="true"
-            [showColumnLines]="true" [rowAlternationEnabled]="true" [allowColumnResizing]="true" [showBorders]="true"
+              [rowAlternationEnabled]="true" [allowColumnResizing]="true"  
             [selectedRowKeys]="[]" height="48vh" (onSelectionChanged)="onSelectionChanged($event)">
             <dxo-load-panel [enabled]="false"></dxo-load-panel>
             <dxo-scrolling mode="infinite"></dxo-scrolling>

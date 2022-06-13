@@ -1,16 +1,29 @@
 <div class="details-container content-block dx-card responsive-paddings">
     <div class="pmdetails-container ">
-        <dx-form [(formData)]="pmDetails" labelMode="floating" labelLocation="left" (submit)="handleSubmit($event)">
+        <dx-form [(formData)]="pmDetails" labelMode="floating" labelLocation="left" (submit)="handleSubmit($event)"
+            [readOnly]="readOnly">
             <dxi-item itemType="group" [colCount]="2">
                 <dxi-item itemType="group" [colCount]="2">
                     <dxi-item dataField="itemNumber" [colSpan]="1" [isRequired]="true"></dxi-item>
-                    <dxi-item dataField="itemType" [colSpan]="1" [label]="{ text: 'MFR' }"></dxi-item>
+                    <!-- <dxi-item dataField="itemType" [colSpan]="1" [label]="{ text: 'MFR' }"></dxi-item> -->
+                    <dxi-item dataField="itemType" editorType="dxLookup"
+                        [editorOptions]="{ label:'MFR',items: itemTypeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemtype', displayExpr:'itemtype', valueExpr:'itemtype', showClearButton:true, searchMode:'contains' }">
+                    </dxi-item>
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="4">
-                    <dxi-item dataField="uomref" [label]="{ text: 'UOM' }"></dxi-item>
+                    <!-- <dxi-item dataField="uomref" [label]="{ text: 'UOM' }"></dxi-item> -->
+                    <dxi-item dataField="uomref" editorType="dxLookup"
+                        [editorOptions]="{ label:'UOM',items: uomList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'uom', displayExpr:'uom', valueExpr:'uom', showClearButton:true, searchMode:'contains'  }">
+                    </dxi-item>
                     <dxi-item dataField="leadTime" [label]="{ text: 'Maintenance(days)' }"></dxi-item>
-                    <dxi-item dataField="itemClass" [colSpan]="1"></dxi-item>
-                    <dxi-item dataField="itemCode" [colSpan]="1"></dxi-item>
+                    <!-- <dxi-item dataField="itemClass" [colSpan]="1"></dxi-item> -->
+                    <dxi-item dataField="itemClass" editorType="dxLookup" [colSpan]="1"
+                        [editorOptions]="{ label:'Item Class',items: itemClassList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemclass', displayExpr:'itemclass', valueExpr:'itemclass', showClearButton:true, searchMode:'contains'  }">
+                    </dxi-item>
+                    <!-- <dxi-item dataField="itemCode" [colSpan]="1"></dxi-item> -->
+                    <dxi-item dataField="itemCode" editorType="dxLookup" [colSpan]="1"
+                        [editorOptions]="{ label:'Item Code',items: itemCodeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemcode', displayExpr:'itemcode', valueExpr:'itemcode', showClearButton:true, searchMode:'contains'  }">
+                    </dxi-item>
                 </dxi-item>
             </dxi-item>
             <dxi-item itemType="group" [colCount]="2">
@@ -29,12 +42,11 @@
                     <dxi-item>
                         <dx-lookup [items]="warehouseNames" [(value)]="pmDetails.warehouse" [placeholder]="warehouseLbl"
                             [label]="warehouseLbl" searchMode="contains" [minSearchLength]="1" [searchEnabled]="true"
-                            [showClearButton]="true" [showDataBeforeSearch]="true"
+                            [showClearButton]="true" [showDataBeforeSearch]="true" [contentEditable]="!this.readOnly"
                             (onValueChanged)="updateWarehouseSelection(this.pmDetails.warehouse)">
                             <dxo-drop-down-options [showTitle]="true"></dxo-drop-down-options>
                         </dx-lookup>
                     </dxi-item>
-
                     <dxi-item>
                         <dx-lookup [items]="validLocationNames" [(value)]="pmDetails.location"
                             [placeholder]="locationLbl" [label]="locationLbl" [searchEnabled]="true"
@@ -45,21 +57,20 @@
 
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
-                    <dxi-item [colCount]="1" editorType="dxRadioGroup"
-                        [editorOptions]=" {items: invTypes, value: pmDetails.invType, layout: 'horizontal' }"
+                    <dxi-item [colCount]="1" editorType="dxRadioGroup" [label]="{text: ' '}" dataField="invType"
+                        [editorOptions]=" {items: invTypes,   layout: 'horizontal' }"
                         style="align-items:center;background-color: #F4F5F6;">
-
                     </dxi-item>
                     <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass"
-                        style="align-items:center;background-color: #F4F5F6;">&nbsp; &nbsp;
-                        <dxi-item editorType="dxCheckBox"
-                            [editorOptions]="{ text: 'Obsolete', value: pmDetails.obsolete}">
-                        </dxi-item> &nbsp; &nbsp;
-                        <dxi-item editorType="dxCheckBox" [editorOptions]="{ text: 'TAA', value: pmDetails.userBit}">
+                        style="align-items:center;background-color: #F4F5F6;">
+                        <dxi-item editorType="dxCheckBox" dataField="obsolete" [label]="{text: ' '}"
+                            [editorOptions]="{text: 'Obsolete'}">
                         </dxi-item>
-                        &nbsp; &nbsp;
-                        <dxi-item editorType="dxCheckBox"
-                            [editorOptions]="{ text: 'Create PO', value: pmDetails.userBit2}">
+                        <dxi-item editorType="dxCheckBox" dataField="userBit" [label]="{text: ' '}"
+                            [editorOptions]="{ text: 'TAA'}">
+                        </dxi-item>
+                        <dxi-item itemType="simple" editorType="dxCheckBox" dataField="userBit2" [label]="{text: ' '}"
+                            [editorOptions]="{ text: 'Create PO'}">
                         </dxi-item>
                     </dxi-item>
                 </dxi-item>
@@ -72,8 +83,8 @@
     <ng-container [ngSwitch]="selectedChild">
         <ng-container *ngSwitchCase="childType.BOM">
             <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="id" height="54vh"
-                [allowColumnReordering]="true" [focusedRowEnabled]="true" [showBorders]="true" [showColumnLines]="true"
-                [allowColumnResizing]="true" [rowAlternationEnabled]="true">
+                [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
+                [rowAlternationEnabled]="true">
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
@@ -98,9 +109,8 @@
         </ng-container>
         <ng-container *ngSwitchCase="childType.PO">
             <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="54vh"
-                [focusedRowEnabled]="true" [allowColumnResizing]="true" [showBorders]="true" [showColumnLines]="true"
-                [rowAlternationEnabled]="true"
-                [columns]="['linenum','pomain', 'supplier', 'quantity', 'received', 'somain']" [showBorders]="true">
+                [focusedRowEnabled]="true" [allowColumnResizing]="true" [rowAlternationEnabled]="true"
+                [columns]="['linenum','pomain', 'supplier', 'quantity', 'received', 'somain']">
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>

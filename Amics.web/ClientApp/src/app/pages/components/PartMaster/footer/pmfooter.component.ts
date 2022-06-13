@@ -17,19 +17,21 @@ export class PMFooterComponent {
   pmActions2: any[] = [{ "text": "Save" }, { "text": "Cancel" }];
   saveExitVisible2 = false;
   children: string[] = ["BOM", "PO", "Notes", "Pictures", "Documents"];
-  selctedChild: string = "BOM"; 
+  selctedChild: string = "BOM";
   constructor(private pmDataTranserService: PartMasterDataTransService) {
-
+    this.pmDataTranserService.itemSelectedCRUD$.subscribe(crud => { this.showSaveExit(crud) });
   }
 
   pmCRUDActionsSelectionChanged(e: any) {
+    this.pmDataTranserService.itemSelectedCRUD$.next(e);
+  }
+  showSaveExit(e: any) {
     if (e === pmCRUDActionType.Add || e === pmCRUDActionType.Edit) {
       this.saveExitVisible = true;
     }
     else {
       this.saveExitVisible = false;
     }
-
   }
 
   logpmActions2SelectionChanged(e: any) {
@@ -39,6 +41,6 @@ export class PMFooterComponent {
   handleValueChange(e: any) {
     const previousValue = e.previousValue;
     const newValue = e.value;
-    this.pmDataTranserService.selectedChildChanged(e.value,this.componentType);
+    this.pmDataTranserService.selectedChildChanged(e.value, this.componentType);
   };
 }

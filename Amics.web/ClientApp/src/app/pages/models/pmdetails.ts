@@ -64,5 +64,6 @@ export class pmDetails {
     user13: string = '';
     user14: string = '';
     user15: string = '';
+    uomid: Guid= Guid.createEmpty();
     constructor() { }
 }
