@@ -13,8 +13,8 @@ export class SearchService {
 
     private readonly api = '{apiUrl}/api/search';
 
-    constructor(private readonly httpClient: HttpClient) { }
-
+    constructor(private readonly httpClient: HttpClient) { } 
+    
     getWarehouseInfo(warehouse: string): Observable<Warehouse[]> {
         return this.httpClient.get<Warehouse[]>(`${this.api}/Warehouse?searchWarehouse=${warehouse}`);
     }

@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Guid } from 'guid-typescript';
 import { Company } from '../models/company';
+import { pmBomDetails } from '../models/pmBomDetails';
 import { pmDetails } from '../models/pmdetails';
+import { pmPoDetails } from '../models/pmPoDetails';
+import { SearchService } from './search.service';
 
 const companies: Company[] = [{
   ID: 1,
@@ -56,12 +60,28 @@ export class PartMasterService {
 
   private readonly api = '{apiUrl}/api/partmaster';
 
-  constructor(private readonly httpClient: HttpClient) { }
+  constructor(private readonly httpClient: HttpClient, private readonly searchService: SearchService) { }
   getCompanies(): Company[] {
     return companies;
   }
 
   getPartMaster(itemNumber: string, rev: string) {
     return this.httpClient.get<pmDetails>(`${this.api}?itemnumber=${itemNumber}&rev=${rev}`);
+  }
+
+  getBomDetails(itemId: Guid) {
+    return this.httpClient.get<pmBomDetails[]>(`${this.api}/BomDetails?itemsId=${itemId}`);
+  }
+  getPoDetails(itemId: Guid) {
+    return this.httpClient.get<pmPoDetails[]>(`${this.api}/PODetails?itemsId=${itemId}`);
+  }
+
+  AddorUpdatePMDetails(item: pmDetails, uomId: Guid) {
+    item.uomid = uomId;
+    return this.httpClient.post<string>(this.api, item);
+  }
+
+  DeletePM(itemNumber: string, rev: string) {
+    return this.httpClient.delete<string>(`${this.api}?itemnumber=${itemNumber}&rev=${rev}`);
   }
 }
