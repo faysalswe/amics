@@ -4,17 +4,11 @@ import { LoginFormComponent, ResetPasswordFormComponent, CreateAccountFormCompon
 import { AuthGuardService } from './shared/services';
 import { HomeComponent } from './pages/components/home/home.component';
 import { ProfileComponent } from './pages/components/profile/profile.component';
-import { TasksComponent } from './pages/components/tasks/tasks.component';
-import { DxDataGridModule, DxFormModule } from 'devextreme-angular';
+import { TasksComponent } from './pages/components/tasks/tasks.component'; 
 import { DevExpressModule } from './devexpress.module';
-import { CommonModule } from '@angular/common';
-import { PartMasterComponent } from './pages/components/PartMaster/partmaster.component';
-import { HostComponent } from './pages/components/host/host.component';
-import { PMSearchComponent } from './pages/components/PartMaster/search/pmsearch.component';
-import { PMDetailsComponent } from './pages/components/PartMaster/details/pmdetails.component';
-import { ResponsiveComponent } from './pages/components/PartMaster/responsive/responsive.component';
+import { CommonModule } from '@angular/common'; 
 import {IncreaseInventoryComponent} from "./pages/components/IncreaseInventory/increase.inventory.component";
-import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
+import { InquiryComponent } from './pages/components/inquiry/inquiry.component'; 
 
 const routes: Routes = [
   {
@@ -69,20 +63,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true }), DevExpressModule, CommonModule],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   providers: [AuthGuardService],
   exports: [RouterModule],
   declarations: [
-    HomeComponent,
-    ProfileComponent,
-    TasksComponent,
-    PartMasterComponent,
-    PMSearchComponent,
-    PMDetailsComponent,
-    HostComponent,
-    ResponsiveComponent,
-    IncreaseInventoryComponent,
-    InquiryComponent
+   
   ]
 })
 export class AppRoutingModule { }

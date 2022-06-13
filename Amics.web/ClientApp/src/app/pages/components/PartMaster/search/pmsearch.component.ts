@@ -4,7 +4,7 @@ import { pmSearch, pmItemSearchResult } from "src/app/pages/models/pmsearch";
 import { ItemClass, ItemCode, ItemType } from "src/app/pages/models/searchModels";
 import { SearchService } from "src/app/pages/services/search.service";
 import { PartMasterService } from "../../../services/partmaster.service";
-import { PartMasterDataTransService } from "../pmdatatransfer.service";
+import { PartMasterDataTransService } from "../../../services/pmdatatransfer.service";
 
 @Component({
     selector: "app-pmsearch",

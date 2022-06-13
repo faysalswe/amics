@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Aims.Core.Models
@@ -9,6 +10,7 @@ namespace Aims.Core.Models
         public Guid Id { get; set; }
         public Guid PomainId { get; set; }
         public string Pomain { get; set; }
+        [Key]
         public Int64 Linenum { get; set; }
         public Int16 Poline { get; set; }
         public decimal? Quantity { get; set; }
