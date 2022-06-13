@@ -93,12 +93,53 @@ namespace Amics.Api.Controllers
         /// </summary>
         /// <param name="itemsId">Items Id</param>          
         [HttpPost, Route("")]
-        public LstMessage ItemDetailsAddUpdate([FromQuery] string id, [FromQuery] string itemNumber,[FromQuery] string rev,[FromQuery] string description, [FromQuery] string salesDescription, [FromQuery] string PurchaseDescription, [FromQuery] string invtypeidv, [FromQuery] string itemtypeidv, [FromQuery] string itemclassidv, [FromQuery] string itemcodeidv, string uomid, [FromQuery] decimal conversion, [FromQuery] decimal cost,decimal markup, [FromQuery] decimal price, [FromQuery] decimal price2, [FromQuery] decimal price3, [FromQuery] decimal weight, [FromQuery] int buyitem, [FromQuery] int obsolete, [FromQuery] string notes, [FromQuery] decimal minimum, [FromQuery] decimal maximum, [FromQuery] decimal leadtime, [FromQuery] string warehouseidv, [FromQuery] string locationsidv, [FromQuery] string glsales, [FromQuery] string glinv, [FromQuery] string glcogs, [FromQuery] string dwgno, [FromQuery] string user1, [FromQuery] string user2, [FromQuery] decimal user3, [FromQuery] int userbit, [FromQuery] int userbit2, [FromQuery] int userbit3)
+        public LstMessage ItemDetailsAddUpdate([FromQuery] string id, [FromQuery] string itemNumber,[FromQuery] string rev,[FromQuery] string description, [FromQuery] string salesDescription, [FromQuery] string PurchaseDescription, [FromQuery] string invtypeidv, [FromQuery] string itemtypeidv, [FromQuery] string itemclassidv, [FromQuery] string itemcodeidv, string uomid, [FromQuery] decimal cost,decimal markup, [FromQuery] decimal price, [FromQuery] decimal price2, [FromQuery] decimal price3, [FromQuery] decimal weight, [FromQuery] int buyitem, [FromQuery] int obsolete, [FromQuery] string notes, [FromQuery] decimal leadtime, [FromQuery] string warehouseidv, [FromQuery] string locationsidv, [FromQuery] string glsales, [FromQuery] string glinv, [FromQuery] string glcogs, [FromQuery] string dwgno, [FromQuery] string user1, [FromQuery] string user2, [FromQuery] decimal user3, [FromQuery] string user4, [FromQuery] string user5, [FromQuery] string user6, [FromQuery] string user7, [FromQuery] string user8)
         {
-            var itemUpdate = _partMastService.ItemNumDetailsAddUpdate(id, itemNumber, rev, description, salesDescription, PurchaseDescription, invtypeidv, itemtypeidv, itemclassidv, itemcodeidv, uomid, conversion,
-                cost, markup, price, price2, price3, weight, buyitem, obsolete, notes, minimum, maximum, leadtime, warehouseidv, locationsidv, glsales, glinv, glcogs, dwgno, user1, user2, user3, userbit, userbit2, userbit3);
+            var itemUpdate = _partMastService.ItemNumDetailsAddUpdate(id, itemNumber, rev, description, salesDescription, PurchaseDescription, invtypeidv, itemtypeidv, itemclassidv, itemcodeidv, uomid,
+                cost, markup, price, price2, price3, weight, buyitem, obsolete, notes, leadtime, warehouseidv, locationsidv, glsales, glinv, glcogs, dwgno, user1, user2, user3, user4, user5, user6, user7, user8);
 
             return itemUpdate;
         }
+
+        /// <summary>
+        /// API Route Controller for Insert/Update/Delete Bom Item details in the items_bom table
+        /// </summary>        
+        [HttpPost, Route("BomGridUpdation")]
+        public LstMessage BomGridItemDetailsUpdation([FromBody] List<LstBomGridItems> LstBomGridItems)
+        {
+            var BomGridUpdate = _partMastService.BomGridDetailsUpdation(LstBomGridItems);
+
+            return BomGridUpdate;
+        }
+
+        /// <summary>
+        /// API Route Controller to get warehouse,location, somain, quantity & name details 
+        /// </summary>
+        /// <param name="itemsId">Items Id</param>          
+        /// /// <param name="secUsersId">SecUsers Id</param>          
+        [HttpGet, Route("ViewLocation")]
+        public IList<LstViewLocation> ViewLocation([FromQuery] string itemsId, [FromQuery] string secUsersId)
+        {
+            var getLocResult = _partMastService.ViewLocation(itemsId, secUsersId);
+
+            return getLocResult;
+        }
+
+
+        /// <summary>
+        /// API Route Controller to get location, somain, quantity & name details for specified warehouse 
+        /// </summary>
+        /// <param name="itemsId">Items Id</param>          
+        /// <param name="secUsersId">SecUsers Id</param>      
+        /// <param name="warehouse">Warehouse</param>      
+        [HttpGet, Route("ViewLocationWarehouse")]
+        public IList<LstViewLocationWh> ViewLocationWarehouse([FromQuery] string itemsId, [FromQuery] string secUsersId, [FromQuery] string warehouse)
+        {
+            var getLocResult = _partMastService.ViewLocationWarehouse(itemsId, secUsersId,warehouse);
+
+            return getLocResult;
+        }
+
+
     }
 }
