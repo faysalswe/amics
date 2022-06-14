@@ -9,7 +9,7 @@ namespace Aims.Core.Models
     /// Summary description for LstObjListItems
     /// </summary>
     public class LstItemDetails
-    {      
+    {
 
         public Guid Id { get; set; }
         public string ItemNumber { get; set; }
@@ -32,7 +32,7 @@ namespace Aims.Core.Models
         public decimal Weight { get; set; }
 
 
-        public decimal Conversion { get; set; }
+        public decimal? Conversion { get; set; }
         public decimal LeadTime { get; set; }
         public decimal Minimum { get; set; }
         public decimal Maximum { get; set; }
