@@ -95,10 +95,49 @@ namespace Amics.Api.Controllers
         [HttpPost, Route("")]
         public LstMessage ItemDetailsAddUpdate([FromBody] LstItemDetails  pmItem)
         {
-            var itemUpdate = _partMastService.ItemNumDetailsAddUpdate(pmItem.Id.ToString(), pmItem.ItemNumber, pmItem.Rev, pmItem.Description, pmItem.SalesDescription, pmItem.PurchaseDescription, pmItem.InvType, pmItem.ItemType, pmItem.ItemClass, pmItem.ItemCode, pmItem.uomid.ToString(), pmItem.Conversion,
-                pmItem.Cost, pmItem.Markup, pmItem.Price, pmItem.Price2, pmItem.Price3, pmItem.Weight, pmItem.BuyItem.Value ? 1:0, pmItem.Obsolete.Value?1:0, pmItem.Notes, pmItem.Minimum, pmItem.Maximum, pmItem.LeadTime, pmItem.Warehouse, pmItem.Location, pmItem.GLSales, pmItem.GLInv, pmItem.GLCOGS, pmItem.DwgNo, pmItem.User1, pmItem.User2, pmItem.User3, pmItem.UserBit.Value?1:0, pmItem.UserBit2.Value?1:0, 0);
-
+            var itemUpdate = _partMastService.ItemNumDetailsAddUpdate(pmItem);
             return itemUpdate;
         }
+
+        /// <summary>
+        /// API Route Controller for Insert/Update/Delete Bom Item details in the items_bom table
+        /// </summary>        
+        [HttpPost, Route("BomDetails")]
+        public LstMessage BomGridItemDetailsUpdation([FromBody] List<LstBomGridItems> LstBomGridItems)
+        {
+            var BomGridUpdate = _partMastService.BomGridDetailsUpdation(LstBomGridItems);
+
+            return BomGridUpdate;
+        }
+
+        /// <summary>
+        /// API Route Controller to get warehouse,location, somain, quantity & name details 
+        /// </summary>
+        /// <param name="itemsId">Items Id</param>          
+        /// /// <param name="secUsersId">SecUsers Id</param>          
+        [HttpGet, Route("ViewLocation")]
+        public IList<LstViewLocation> ViewLocation([FromQuery] string itemsId, [FromQuery] string secUsersId)
+        {
+            var getLocResult = _partMastService.ViewLocation(itemsId, secUsersId);
+
+            return getLocResult;
+        }
+
+
+        /// <summary>
+        /// API Route Controller to get location, somain, quantity & name details for specified warehouse 
+        /// </summary>
+        /// <param name="itemsId">Items Id</param>          
+        /// <param name="secUsersId">SecUsers Id</param>      
+        /// <param name="warehouse">Warehouse</param>      
+        [HttpGet, Route("ViewLocationWarehouse")]
+        public IList<LstViewLocationWh> ViewLocationWarehouse([FromQuery] string itemsId, [FromQuery] string secUsersId, [FromQuery] string warehouse)
+        {
+            var getLocResult = _partMastService.ViewLocationWarehouse(itemsId, secUsersId,warehouse);
+
+            return getLocResult;
+        }
+
+
     }
 }
