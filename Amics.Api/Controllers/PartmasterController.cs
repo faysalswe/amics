@@ -102,7 +102,7 @@ namespace Amics.Api.Controllers
         /// <summary>
         /// API Route Controller for Insert/Update/Delete Bom Item details in the items_bom table
         /// </summary>        
-        [HttpPost, Route("BomGridUpdation")]
+        [HttpPost, Route("BomDetails")]
         public LstMessage BomGridItemDetailsUpdation([FromBody] List<LstBomGridItems> LstBomGridItems)
         {
             var BomGridUpdate = _partMastService.BomGridDetailsUpdation(LstBomGridItems);
