@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Aims.Core.Models
@@ -17,6 +18,8 @@ namespace Aims.Core.Models
         public string Ref { get; set; }
         public string Comments { get; set; }
         public string FindNo { get; set; }
+
+        [Key]
         public int LineNum { get; set; }
         public decimal? Cost { get; set; }
         public double? ExtCost { get; set; }

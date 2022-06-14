@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Aims.Core.Models
@@ -73,6 +74,9 @@ namespace Aims.Core.Models
         public string User13 { get; set; }
         public string User14 { get; set; }
         public string User15 { get; set; }
+
+        [NotMapped]
+        public Guid? Uomid { get; set; }
 
     }
 }

@@ -13,6 +13,14 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpCacheControlService } from './shared/services/http-cache-control.service';
 import { DomainReplaceIterceptor } from './shared/services/DomainReplaceInterceptor';
 import { AppSettingsService } from './shared/services/app-settings.service';
+import { PartMasterModule } from './pages/components/PartMaster/partmaster.module';
+import { HomeComponent } from './pages/components/home/home.component';
+import { ProfileComponent } from './pages/components/profile/profile.component';
+import { TasksComponent } from './pages/components/tasks/tasks.component';
+import { HostComponent } from './pages/components/host/host.component';
+import { ResponsiveComponent } from './pages/components/PartMaster/responsive/responsive.component';
+import { IncreaseInventoryComponent } from './pages/components/IncreaseInventory/increase.inventory.component';
+import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -27,7 +35,13 @@ export function appEnvironmentFactory(
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent, HomeComponent,
+    ProfileComponent,
+    TasksComponent,
+    HostComponent,
+    ResponsiveComponent,
+    IncreaseInventoryComponent,
+    InquiryComponent
   ],
   imports: [
     CommonModule,
@@ -43,15 +57,16 @@ export function appEnvironmentFactory(
     UnauthenticatedContentModule,
     AppRoutingModule,
     DevExpressModule,
-    HttpClientModule
+    HttpClientModule,
+    PartMasterModule,
   ],
-  providers: [ 
+  providers: [
     {
       provide: APP_INITIALIZER,
       useFactory: appEnvironmentFactory,
       deps: [AppSettingsService],
       multi: true,
-    },    
+    },
     {
       provide: APP_INITIALIZER,
       useFactory: appUserServiceFactory,
@@ -62,7 +77,7 @@ export function appEnvironmentFactory(
       provide: HTTP_INTERCEPTORS,
       useClass: DomainReplaceIterceptor,
       multi: true,
-    },    
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpCacheControlService,
