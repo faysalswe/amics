@@ -95,9 +95,7 @@ namespace Amics.Api.Controllers
         [HttpPost, Route("")]
         public LstMessage ItemDetailsAddUpdate([FromBody] LstItemDetails  pmItem)
         {
-            var itemUpdate = _partMastService.ItemNumDetailsAddUpdate(pmItem.Id.ToString(), pmItem.ItemNumber, pmItem.Rev, pmItem.Description, pmItem.SalesDescription, pmItem.PurchaseDescription, pmItem.InvType, pmItem.ItemType, pmItem.ItemClass, pmItem.ItemCode, pmItem.uomid.ToString(), pmItem.Conversion,
-                pmItem.Cost, pmItem.Markup, pmItem.Price, pmItem.Price2, pmItem.Price3, pmItem.Weight, pmItem.BuyItem.Value ? 1:0, pmItem.Obsolete.Value?1:0, pmItem.Notes, pmItem.Minimum, pmItem.Maximum, pmItem.LeadTime, pmItem.Warehouse, pmItem.Location, pmItem.GLSales, pmItem.GLInv, pmItem.GLCOGS, pmItem.DwgNo, pmItem.User1, pmItem.User2, pmItem.User3, pmItem.UserBit.Value?1:0, pmItem.UserBit2.Value?1:0, 0);
-
+            var itemUpdate = _partMastService.ItemNumDetailsAddUpdate(pmItem);
             return itemUpdate;
         }
 

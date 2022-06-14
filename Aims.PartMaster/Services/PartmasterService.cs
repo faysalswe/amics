@@ -15,7 +15,7 @@ namespace Aims.Core.Services
         List<LstItemsPO> LoadItemsPO(string parentId);
         LstBomCount ItemsBomCount(string parentId);
         LstMessage ItemNumDelete(string itemNo, string rev);
-        LstMessage ItemNumDetailsAddUpdate(string id, string itemNumber, string rev, string description, string salesDescription, string PurchaseDescription, string invtypeidv, string itemtypeidv, string itemclassidv, string itemcodeidv, string uomid, decimal cost, decimal markup, decimal price, decimal price2, decimal price3, decimal weight, int buyitem, int obsolete, string notes, decimal leadtime, string warehouseidv, string locationsidv, string glsales, string glinv, string glcogs, string dwgno, string user1, string user2, decimal user3, string user4, string user5, string user6, string user7, string user8);
+        LstMessage ItemNumDetailsAddUpdate(LstItemDetails item);
         List<LstViewLocation> ViewLocation(string itemsId, string secUsersId);
         List<LstViewLocationWh> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse);
         LstMessage BomGridDetailsUpdation(List<LstBomGridItems> LstBomGridItems);
@@ -108,18 +108,18 @@ namespace Aims.Core.Services
         /// </summary>
         /// <param name="itemNo">Item Number</param> 
         /// <param name="Rev">Rev</param> 
-        public LstMessage ItemNumDetailsAddUpdate(string id, string itemNumber, string rev, string description, string salesDescription, string PurchaseDescription, string invtypeidv, string itemtypeidv, string itemclassidv, string itemcodeidv, string uomid, decimal cost, decimal markup, decimal price, decimal price2, decimal price3, decimal weight, int buyitem, int obsolete, string notes,decimal leadtime, string warehouseidv, string locationsidv, string glsales, string glinv, string glcogs, string dwgno, string user1, string user2, decimal user3, string user4, string user5, string user6, string user7, string user8)
+        public LstMessage ItemNumDetailsAddUpdate(LstItemDetails item)
         {
             int actionFlag = 0;
-            if (id == null || id == "")
+            if (item.Id == null || item.Id == Guid.Empty)
                 actionFlag = 1;
             else
                 actionFlag = 2;
 
-            var itemsid = string.IsNullOrEmpty(id) ? Guid.Empty : new Guid(id.ToString());           
-            var uomsid = string.IsNullOrEmpty(uomid) ? Guid.Empty : new Guid(uomid.ToString());
-                                    
-            var itemNumUpdate = _amicsDbContext.LstMessage.FromSqlRaw($"exec sp_maintain_partmaster25 @actionflag='{actionFlag}',@id='{itemsid}',@itemNumber='{itemNumber}', @rev='{rev}', @description='{description}', @salesDescription='{salesDescription}', @PurchaseDescription='{PurchaseDescription}', @invtypeidv='{invtypeidv}', @itemtypeidv='{itemtypeidv}', @itemclassidv='{itemclassidv}', @itemcodeidv='{itemcodeidv}', @uomid='{uomsid}', @cost='{cost}', @markup='{markup}', @price='{price}', @price2= '{price2}', @price3= '{price3}', @weight='{weight}', @buyitem ='{buyitem}', @obsolete = '{obsolete}',@notes = '{notes}', @leadtime= '{leadtime}', @warehouseidv= '{warehouseidv}',@locationsidv='{locationsidv}',@glsales='{glsales}',@glinv='{glinv}',@glcogs='{glcogs}',@dwgno = '{dwgno}', @user1 = '{user1}', @user2 = '{user2}', @user3 = '{user3}', @user4 = '{user4}',  @user5 = '{user5}', @user6 = '{user6}', @user7 = '{user7}', @user8 = '{user8}'").AsEnumerable().FirstOrDefault();
+            var itemsid = (item.Id == null || item.Id == Guid.Empty) ? Guid.Empty : item.Id;          
+            var uomsid = (item.Uomid == null || item.Uomid == Guid.Empty) ? Guid.Empty : item.Uomid;
+
+            var itemNumUpdate = _amicsDbContext.LstMessage.FromSqlRaw($"exec sp_maintain_partmaster25 @actionflag='{actionFlag}',@id='{itemsid}',@itemNumber='{item.ItemNumber}', @rev='{item.Rev}', @description='{item.Description}', @salesDescription='{item.SalesDescription}', @PurchaseDescription='{item.PurchaseDescription}', @invtypeidv='{item.InvType}', @itemtypeidv='{item.ItemType}', @itemclassidv='{item.ItemClass}', @itemcodeidv='{item.ItemCode}', @uomid='{item.Uomid}', @cost='{item.Cost}', @markup='{item.Markup}', @price='{item.Price}', @price2= '{item.Price2}', @price3= '{item.Price3}', @weight='{item.Weight}', @buyitem ='{item.BuyItem}', @obsolete = '{item.Obsolete}',@notes = '{item.Notes}', @leadtime= '{item.LeadTime}', @warehouseidv= '{item.Warehouse}',@locationsidv='{item.Location}',@glsales='{item.GLSales}',@glinv='{item.GLInv}',@glcogs='{item.GLCOGS}',@dwgno = '{item.DwgNo}', @user1 = '{item.User1}', @user2 = '{item.User2}', @user3 = '{item.User3}', @user4 = '{item.User4}',  @user5 = '{item.User5}', @user6 = '{item.User6}', @user7 = '{item.User7}', @user8 = '{item.User8}'").AsEnumerable().FirstOrDefault();
             
             return itemNumUpdate;
         }
