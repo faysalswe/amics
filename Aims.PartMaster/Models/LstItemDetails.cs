@@ -76,7 +76,7 @@ namespace Aims.Core.Models
         public string User15 { get; set; }
 
         [NotMapped]
-        public Guid? uomid { get; set; }
+        public Guid? Uomid { get; set; }
 
     }
 }
