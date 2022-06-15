@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { pmSearch, pmItemSearchResult } from "../models/pmsearch";
 import { ItemClass, ItemCode, ItemType, Uom } from "../models/searchModels";
 import { Warehouse, WarehouseLocation } from "../models/warehouse";
-
+import { LabelInt, ReasonInt } from "src/app/shared/models/rest.api.interface.model";
 
 @Injectable({
     providedIn: "root",
@@ -15,10 +15,19 @@ export class SearchService {
 
     constructor(private readonly httpClient: HttpClient) { } 
     
+    getLabels(){
+        return this.httpClient.get<LabelInt[]>(`${this.api}/Label`);         
+    }
+
     getWarehouseInfo(warehouse: string): Observable<Warehouse[]> {
         return this.httpClient.get<Warehouse[]>(`${this.api}/Warehouse?searchWarehouse=${warehouse}`);
     }
-
+    
+    getReasonCode(): Observable<ReasonInt[]> {
+        let url = `${this.api}/GetReasonCode?CodeFor=increase`;
+        return this.httpClient.get<ReasonInt[]>(url);
+      }
+    
     getLocationInfo(warehouseId: string, location: string): Observable<WarehouseLocation[]> {
         let url = `${this.api}/Location?warehouseId=${warehouseId}&searchLocation=${location}`;
         return this.httpClient.get<WarehouseLocation[]>(url);
