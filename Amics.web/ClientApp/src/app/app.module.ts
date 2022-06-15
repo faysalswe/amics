@@ -21,11 +21,16 @@ import { HostComponent } from './pages/components/host/host.component';
 import { ResponsiveComponent } from './pages/components/PartMaster/responsive/responsive.component';
 import { IncreaseInventoryComponent } from './pages/components/IncreaseInventory/increase.inventory.component';
 import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
+import { InventoryStatusComponent } from './pages/components/InventoryStatus/inventory.status.component';
+import { AddLabelDirective } from './shared/directives/add.label.directive';
+import { AppInitialDataService } from './shared/services/app.initial.data.service';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
 }
-
+export function appInitialDataServiceFactory(dataLoaderService: AppInitialDataService): Function {
+  return () => dataLoaderService.loadData();
+}
 
 export function appEnvironmentFactory(
   environmentService: AppSettingsService
@@ -41,7 +46,8 @@ export function appEnvironmentFactory(
     HostComponent,
     ResponsiveComponent,
     IncreaseInventoryComponent,
-    InquiryComponent
+    InquiryComponent, InventoryStatusComponent,
+    AddLabelDirective
   ],
   imports: [
     CommonModule,
@@ -71,6 +77,11 @@ export function appEnvironmentFactory(
       provide: APP_INITIALIZER,
       useFactory: appUserServiceFactory,
       deps: [AuthService],
+      multi: true,
+    }, {
+      provide: APP_INITIALIZER,
+      useFactory: appInitialDataServiceFactory,
+      deps: [AppInitialDataService],
       multi: true,
     },
     {

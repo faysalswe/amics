@@ -25,10 +25,6 @@ export class PMDetailsComponent {
     groupedWarehouses: any;
     locations: WarehouseLocation[] = [];
     validLocationNames: string[] = [];
-    invType: string = '';
-    obsolete: boolean = false;
-    userBit: boolean = false;
-    userBit2: boolean = false;
     bomDetails: pmBomDetails[] = [];
     poDetails: pmPoDetails[] = [];
     selectedChild: PmChildType = PmChildType.BOM;
@@ -38,7 +34,26 @@ export class PMDetailsComponent {
     itemCodeList: ItemCode[] = [];
     itemTypeList: ItemType[] = [];
     uomList: Uom[] = [];
-    constructor(private searchService: SearchService, private pmdataTransfer: PartMasterDataTransService, private pmService: PartMasterService) { this.childType = PmChildType }
+    yesButtonOptions: any;
+    noButtonOptions: any;
+    popupVisible = false;
+    constructor(private searchService: SearchService, private pmdataTransfer: PartMasterDataTransService, private pmService: PartMasterService) {
+        this.childType = PmChildType;
+        const that = this;
+        this.yesButtonOptions = {
+            text: 'Yes',
+            onClick(e:any) {
+                that.popupVisible = false;
+            },
+        };
+        this.noButtonOptions = {
+            text: 'No',
+            onClick(e:any) {
+                that.popupVisible = false;
+            }
+
+        };
+    }
 
     ngOnInit(): void {
         this.searchService.getItemClass('', '').subscribe(l => {
@@ -72,10 +87,6 @@ export class PMDetailsComponent {
         this.pmdataTransfer.selectedItemForPMDetails$.subscribe(item => {
             console.log(item);
             this.pmDetails = item;
-            this.invType = item.invType;
-            this.obsolete = item.obsolete;
-            this.userBit = item.userBit;
-            this.userBit2 = item.userBit2;
             this.updateWarehouseSelection(item.warehouse, true);
         });
         this.pmdataTransfer.selectedItemBomForPMDetails$.subscribe(boms => {
@@ -104,21 +115,7 @@ export class PMDetailsComponent {
                 this.readOnly = true;
             }
         });
-
-    }
-
-    invTypeChanged(e: any) {
-        this.invType = e.value;
-    }
-
-    obsoleteChanged(e: any) {
-        this.obsolete = e.value;
-    }
-    taaChanged(e: any) {
-        this.userBit = e.value;
-    }
-    createPoChanged(e: any) {
-        this.userBit2 = e.value;
+        this.pmdataTransfer.copyToNewSelected$.subscribe(e => this.popupVisible = true);
     }
 
     //  groupByKey = (list:any, key:any) => list.reduce((hash:any, obj:any) => ({...hash, [obj[key]]:( hash[obj[key]] || [] ).concat(obj)}), {})
@@ -129,8 +126,6 @@ export class PMDetailsComponent {
                 return Object.assign(hash, { [obj[key]]: (hash[obj[key]] || []).concat(obj) })
             }, {})
     }
-
-
 
     updateWarehouseSelection(location: string = '', onload: boolean = false) {
         if (!this.pmDetails.warehouse || !location) {

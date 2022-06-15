@@ -25,7 +25,9 @@ export class PMSearchComponent implements OnInit {
     itemCodeList: ItemCode[] = [];
     itemTypeList: ItemType[] = [];
 
-    constructor(private searchService: SearchService, private pmDataTransService:PartMasterDataTransService) { }
+
+    constructor(private searchService: SearchService, private pmDataTransService: PartMasterDataTransService) {
+    }
 
     ngOnInit(): void {
         this.searchService.getItemClass('', '').subscribe(l => {
@@ -44,8 +46,13 @@ export class PMSearchComponent implements OnInit {
 
     handleSubmit(e: any) {
         console.log(this.pmsearchInfo);
-        this.searchService.getItemNumberSearchResults(this.pmsearchInfo).subscribe(r =>
-            this.pmSearchResults = r);
+        this.searchService.getItemNumberSearchResults(this.pmsearchInfo).subscribe(r => {
+            this.pmSearchResults = r;
+            if(this.pmSearchResults.length !==0)
+            {
+                this.pmDataTransService.selectedItemChanged(this.pmSearchResults[0], this.componentType);
+            }
+        });
 
         e.preventDefault();
     }
@@ -54,7 +61,7 @@ export class PMSearchComponent implements OnInit {
         console.log(e);
         var selectedItem = e.selectedRowsData[0];
         console.log(selectedItem);
-      
-        this.pmDataTransService.selectedItemChanged(selectedItem,this.componentType);
+
+        this.pmDataTransService.selectedItemChanged(selectedItem, this.componentType);
     }
 }
