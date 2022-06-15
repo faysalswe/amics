@@ -1,134 +1,36 @@
-<div class="container m-1">
-  <div class="row">
-    <div class="col-2" style="border: 1px solid #eee;background-color: white">
-      <dx-form id="form" [colCount]="1" [formData]="employee">
-
-        <dxi-item [colSpan]="1">
-          <dx-text-box
-            value=""
-            width="100%"
-            label="Part Number"
-            placeholder="Type..."
-            [stylingMode]="'outlined'"
-            [labelMode]="'floating'"
-          ></dx-text-box>
-        </dxi-item>
-
-        <dxi-item [colSpan]="1">
-          <dx-text-box
-            value=""
-            width="100%"
-            label="Description"
-            placeholder="Type..."
-            [stylingMode]="'outlined'"
-            [labelMode]="'floating'"
-          ></dx-text-box>
-        </dxi-item>
-
-        <dxi-item [colSpan]="1">
-          <dx-text-box
-            value=""
-            width="100%"
-            label="Item Class"
-            placeholder="Type..."
-            [stylingMode]="'outlined'"
-            [labelMode]="'floating'"
-          ></dx-text-box>
-        </dxi-item>
-
-        <dxi-item [colSpan]="1">
-          <dx-text-box
-            value=""
-            width="100%"
-            label="Item Code"
-            placeholder="Type..."
-            [stylingMode]="'outlined'"
-            [labelMode]="'floating'"
-          ></dx-text-box>
-        </dxi-item>
-
-        <dxi-item [colSpan]="1">
-          <dx-button
-            stylingMode="contained"
-            text="Search"
-            type="default"
-            style="width: 100%"
-          >
-          </dx-button>
-        </dxi-item>
-
-      </dx-form>
-
+<div class="container-fluid m-1">
+  <div class="row" style="margin-right: 15px;">
+    <!-- LEFT SEARCH PANEL STARTS-->
+    <div class="col-3" style="border: 1px solid #eee;background-color: white;padding: 0px!important;">
+      <app-pmsearch [componentType]="componentType"></app-pmsearch>
     </div>
-    <div class="col-10" style="background-color: white">
+    <!-- LEFT SEARCH PANEL ENDS-->
+
+    <!-- RIGHT CONTENT PANEL STARTS-->
+    <div class="col-9" style="background-color: white;">
       <div class="row p-2" style="border-bottom: 2px solid #eee;">
-        <h3 style="padding-bottom: 0px;margin-bottom: 0px;"><span style="color: darkgrey">PN : 123456</span> / Computer
-          Assembly with DELL</h3>
-        <!--<hr style="padding: 0px;margin: 0px">-->
+        <h3 style="padding-bottom: 0px;margin-bottom: 0px;">
+          <span style="color: darkgrey">PN : {{pmDetails?.itemNumber}}</span> / {{pmDetails?.description}}</h3>
+        <app-inventory-status [itemsId]="itemsId" [secUserId]="secUserId"></app-inventory-status>
       </div>
       <div class="row">
-        <div class="col-3" style="border-right: 2px solid #eee;">
-          <div class="p-3">
-            <img
-              src="data:image/jpeg;base64,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"/>
 
-          </div>
-
-          <div>
-            <dx-linear-gauge class="gauge-element" [value]="70">
-              <dxo-value-indicator type="circle" color="#ff0000"></dxo-value-indicator>
-              <dxo-title text="On Hand - 70">
-                <dxo-font [size]="16"></dxo-font>
-              </dxo-title>
-              <dxo-geometry orientation="horizontal"></dxo-geometry>
-              <dxo-scale
-                [startValue]="0"
-                [endValue]="100"
-                [tickInterval]="100"
-                [customTicks]="[30, 60]"
-              >
-              </dxo-scale>
-              <dxo-range-container backgroundColor="none">
-                <dxi-range
-                  [startValue]="1"
-                  [endValue]="30"
-                  color="#00ff00"
-                ></dxi-range>
-                <dxi-range
-                  [startValue]="31"
-                  [endValue]="60"
-                  color="yellow"
-                ></dxi-range>
-                <dxi-range
-                  [startValue]="61"
-                  [endValue]="100"
-                  color="#ff0000"
-                ></dxi-range>
-              </dxo-range-container>
-            </dx-linear-gauge>
-
-
-          </div>
-
-        </div>
-
-        <div class="col-9">
+        <div class="col-12">
 
           <div class="row">
             <div id="form-container">
-              <dx-form id="form" [colCount]="3" [formData]="employee">
+              <dx-form id="form" [colCount]="3">
 
                 <!-- Quantity Starts  -->
                 <dxi-item [colSpan]="1">
                   <dx-number-box
                     [value]="1"
                     [showSpinButtons]="true"
-                    [label]="'Quantity'"
                     [stylingMode]="'outlined'"
                     [labelMode]="'floating'"
                     [elementAttr]="{ class: 'myclass' }"
                     [inputAttr]="{ id: 'quantityId' }"
-                  >
+                    [ngAddLabel]="labelMap.quan_num">
                     <dxi-button
                       name="prevDate"
                       location="after"
@@ -147,9 +49,9 @@
                 <!-- Unit Cost Starts  -->
                 <dxi-item [colSpan]="1">
                   <dx-text-box
-                    value="100"
+                    value="{{pmDetails.cost}}"
                     width="100%"
-                    label="Unit Cost"
+                    [ngAddLabel]="labelMap.unitCost_num"
                     placeholder="Type..."
                     [stylingMode]="'outlined'"
                     [labelMode]="'floating'"
@@ -168,25 +70,23 @@
                 <!-- Reason Code Starts  -->
                 <dxi-item [colSpan]="1">
                   <dx-select-box
-                    label="Reason Code"
-                    [dataSource]="dataReason"
-                    displayExpr="reason"
-                    valueExpr="id"
+                    [items]="reasonsStr"
+                    [value]="defaultReason"
                     [searchEnabled]="true"
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
                     placeholder="Search"
+                    [ngAddLabel]="labelMap.reasonCode_num"
                   ></dx-select-box>
                 </dxi-item>
-
                 <!-- Reason Code Ends  -->
 
 
                 <!-- Transaction Date Starts  -->
                 <dxi-item [colSpan]="1">
                   <dx-date-box
-                    [value]="birthDate"
-                    label="Transaction Date"
+                    [value]="todayDate"
+                    [ngAddLabel]="labelMap.txnDate_num"
                     placeholder="Select..."
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
@@ -197,10 +97,9 @@
                 <!-- Warehouse Search Starts  -->
                 <dxi-item [colSpan]="1">
                   <dx-select-box
-                    label="Warehouse"
-                    [dataSource]="data"
-                    displayExpr="warehouse"
-                    valueExpr="id"
+                    [ngAddLabel]="labelMap.warehouse_num"
+                    [items]="warehousesStr"
+                    value="{{pmDetails?.warehouse}}"
                     [searchEnabled]="true"
                     (onValueChanged)="updateSelectedWarehouse($event)"
                     [stylingMode]="'underlined'"
@@ -213,10 +112,9 @@
                 <!-- Location Search Starts  -->
                 <dxi-item [colSpan]="1">
                   <dx-select-box
-                    label="Location"
-                    [dataSource]="dataLoc"
-                    displayExpr="location"
-                    valueExpr="id"
+                    [ngAddLabel]="labelMap.location_num"
+                    [items]="locationsStr"
+                    value="{{pmDetails?.location}}"
                     [searchEnabled]="true"
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
@@ -228,44 +126,47 @@
                 <!-- Source Starts  -->
                 <dxi-item [colSpan]="1">
                   <dx-text-box
-                    value="Olivia Peyton"
+                    [value]="defaultSource"
                     width="100%"
-                    label="Source"
+                    [ngAddLabel]="labelMap.source_num"
                     placeholder="Type..."
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
                   ></dx-text-box>
 
-                  <dx-check-box [value]="true" text="Remember" class="mt-1"></dx-check-box>
+                  <dx-check-box [value]="true" text="Remember" class="mt-1" style="font-size: 10px"></dx-check-box>
                 </dxi-item>
                 <!-- Source Ends  -->
 
                 <!-- Ref Starts  -->
                 <dxi-item [colSpan]="1">
                   <dx-text-box
-                    value="Olivia Peyton"
+                    [value]="defaultRef"
                     width="100%"
                     label="Ref"
+                    [ngAddLabel]="labelMap.ref_num"
                     placeholder="Type..."
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
                   ></dx-text-box>
 
-                  <dx-check-box [value]="true" text="Remember" class="mt-1"></dx-check-box>
+                  <dx-check-box [value]="true" text="Remember" class="mt-1" style="font-size: 10px"></dx-check-box>
                 </dxi-item>
                 <!-- Ref Ends  -->
 
                 <!-- User or ER Starts  -->
                 <dxi-item [colSpan]="1">
-                  <dx-text-box
-                    value="Olivia Peyton"
-                    width="100%"
-                    label="User or ER"
-                    placeholder="Type..."
+                  <dx-select-box
+                    label="ER"
+                    [ngAddLabel]="labelMap.er_num"
+                    [items]="ersStr"
+                    [value]="er"
+                    [searchEnabled]="true"
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
-                  ></dx-text-box>
-                  <dx-check-box [value]="true" text="Remember" class="mt-1"></dx-check-box>
+                    placeholder="Search"
+                  ></dx-select-box>
+                  <!--<dx-check-box [value]="true" text="Remember" class="mt-1" style="font-size: 10px"></dx-check-box>-->
                 </dxi-item>
                 <!-- User or ER Ends  -->
 
@@ -276,11 +177,48 @@
                     width="100%"
                     placeholder="Type..."
                     label="Notes"
+                    [ngAddLabel]="labelMap.notes_num"
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
                   ></dx-text-area>
                 </dxi-item>
                 <!-- Notes Ends  -->
+
+                <!-- Slider Starts  -->
+                <dxi-item [colSpan]="1">
+                  <dx-linear-gauge class="gauge-element" [value]="70">
+                    <dxo-value-indicator type="circle" color="#ff0000"></dxo-value-indicator>
+                    <dxo-title text="On Hand - 70">
+                      <dxo-font [size]="16"></dxo-font>
+                    </dxo-title>
+                    <dxo-geometry orientation="horizontal"></dxo-geometry>
+                    <dxo-scale
+                      [startValue]="0"
+                      [endValue]="100"
+                      [tickInterval]="100"
+                      [customTicks]="[30, 60]"
+                    >
+                    </dxo-scale>
+                    <dxo-range-container backgroundColor="none">
+                      <dxi-range
+                        [startValue]="1"
+                        [endValue]="30"
+                        color="#00ff00"
+                      ></dxi-range>
+                      <dxi-range
+                        [startValue]="31"
+                        [endValue]="60"
+                        color="yellow"
+                      ></dxi-range>
+                      <dxi-range
+                        [startValue]="61"
+                        [endValue]="100"
+                        color="#ff0000"
+                      ></dxi-range>
+                    </dxo-range-container>
+                  </dx-linear-gauge>
+                </dxi-item>
+                <!-- Slider Ends  -->
 
               </dx-form>
             </div>
@@ -302,7 +240,7 @@
               ></dx-button>
             </div>
 
-            </div>
+          </div>
         </div>
 
         <div class="m-1">
@@ -315,6 +253,7 @@
       </div>
       <div class="row"></div>
     </div>
+    <!-- RIGHT CONTENT PANEL ENDS-->
   </div>
 
 </div>

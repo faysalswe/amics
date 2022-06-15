@@ -13,6 +13,7 @@ export class PartMasterDataTransService {
     constructor(private pmService: PartMasterService) { }
 
     private itemSelectedSubjectForPMScreen$ = new Subject<pmItemSearchResult>();
+    private itemSelectedSubjectForIncInvScreen$ = new Subject<pmItemSearchResult>();
     public itemSelectedChild$ = new Subject<PmChildType>();
     public itemSelectedCRUD$ = new Subject<CRUD>();
 
@@ -23,13 +24,18 @@ export class PartMasterDataTransService {
                 this.itemSelectedCRUD$.next(CRUD.Edit);
             }
         }
+        else if (componentType === ComponentType.IncreaseInventory) {
+            if (!!selectedProductId) {
+                this.itemSelectedSubjectForIncInvScreen$.next(selectedProductId);                 
+            }
+        }
     }
     selectedChildChanged(selectedChild: PmChildType, componentType: ComponentType): void {
         if (componentType === ComponentType.PartMaster) {
             if (!!selectedChild) {
                 this.itemSelectedChild$.next(selectedChild);
             }
-        }
+        }      
     }
 
     selectedCRUDActionChanged(selectedCRUD: CRUD, componentType: ComponentType): void {
@@ -39,7 +45,7 @@ export class PartMasterDataTransService {
             }
         }
     }
-
+    selectedItemForInvDetails$ = this.itemSelectedSubjectForIncInvScreen$.pipe(switchMap(i => this.pmService.getPartMaster(i.itemNumber, i.rev)))
     selectedItemForPMDetails$ = this.itemSelectedSubjectForPMScreen$.pipe(switchMap(i => this.pmService.getPartMaster(i.itemNumber, i.rev)))
     selectedItemBomForPMDetails$ = this.itemSelectedSubjectForPMScreen$.pipe(switchMap(i => this.pmService.getBomDetails(i.id)))
     selectedItemPoForPMDetails$ = this.itemSelectedSubjectForPMScreen$.pipe(switchMap(i => this.pmService.getPoDetails(i.id)))
