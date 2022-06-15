@@ -1,84 +1,114 @@
-import {Component} from '@angular/core';
-import {PMPOView} from "../../models/pmpoview";
-import {HttpClient} from "@angular/common/http";
-import ArrayStore from 'devextreme/data/array_store';
-import {Employee, IncreaseInventoryService} from "../../services/increase.inventory.service";
-
-
-export interface WarehouseInt {
-  id: string;
-  warehouse: string;
-}
-
-export interface LocationInt {
-  id: string;
-  location: string;
-  invalid: boolean;
-  sequenceNo: number;
-  route: number;
-}
-
-
-export interface ReasonInt {
-  id: string;
-  reason: string;
-}
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { PMPOView } from '../../models/pmpoview';
+import { HttpClient } from '@angular/common/http';
+import { pmDetails } from '../../models/pmdetails';
+import { ComponentType } from '../../models/componentType';
+import { combineLatest, map, Subscription, tap } from 'rxjs';
+import {
+  DefaultValInt,
+  ERInt, 
+  ReasonInt, 
+} from '../../../shared/models/rest.api.interface.model';
+import { IncreaseInventoryService } from './increase.inventory.service';
+import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
+import { LabelMap } from '../../models/Label';
+import { SearchService } from '../../services/search.service';
+import { Warehouse, WarehouseLocation } from '../../models/warehouse';
 
 @Component({
-  selector: "app-increase-inventory",
+  selector: 'app-increase-inventory',
   templateUrl: 'increase.inventory.component.html',
   styleUrls: ['./increase.inventory.component.scss'],
-  providers: [IncreaseInventoryService]
+  providers: [IncreaseInventoryService],
 })
+export class IncreaseInventoryComponent implements OnInit, OnDestroy {
+  labelMap: typeof LabelMap;
 
-export class IncreaseInventoryComponent {
+  componentType: ComponentType = ComponentType.IncreaseInventory;
 
-  employee: Employee;
-
-  positions: string[];
-
-  rules: Object;
-  birthDate = new Date(1981, 5, 3);
+  todayDate = new Date();
   pmpoviewArray: PMPOView[] = [];
   passwordButton: any;
   prevDateButton: any;
   afterDateButton: any;
   currencyIcon: any;
 
-  locations: LocationInt[] = [];
-  wareHouses: WarehouseInt[] = [];
+  pmDetails: pmDetails = new pmDetails();
+  defaultWarehouse: string = '';
+  defaultLocation: string = '';
+
+  warehouses: Warehouse[] = [];
+  warehousesStr: string[] = [];
+
   reasons: ReasonInt[] = [];
-  now: Date = new Date();
-  selectedWarehouseId = '';
-  data: any;
-  dataReason: any;
-  dataLoc: any;
+  reasonsStr: string[] = [];
 
-  constructor(service: IncreaseInventoryService, private http: HttpClient) {
+  locations: WarehouseLocation[] = [];
+  locationsStr: string[] = [];
 
-    this.reasons = [{
-      id: '123',
-      reason: 'Demand'
-    },
-      {
-        id: '123',
-        reason: 'Test'
-      }];
+  er: string = '';
+  ers: ERInt[] = [];
+  ersStr: string[] = [];
 
-    this.http.get<WarehouseInt[]>('https://localhost:44327/api/Search/Warehouse').subscribe((obj: WarehouseInt[]) => {
-      this.wareHouses = obj;
-      console.log(this.wareHouses);
+  defaultVals: DefaultValInt[] = [];
+  defaultSource: string = '';
+  defaultReason: string = '';
+  defaultRef: string = '';
 
-      this.data = new ArrayStore({
-        data: this.wareHouses,
-        key: 'id',
+  itemsId: string = '';
+  secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
+
+  defaultValue$: Subscription = new Subscription();
+
+  constructor(
+    private service: IncreaseInventoryService,
+    private http: HttpClient,
+    private pmdataTransfer: PartMasterDataTransService,
+    private incInvService: IncreaseInventoryService,
+    private searchService: SearchService
+  ) {
+    this.labelMap = LabelMap;
+  }
+
+  ngOnInit(): void {
+    this.defaultValue$ = this.incInvService
+      .getDefaultValues()
+      .subscribe((obj: DefaultValInt[]) => {
+        this.defaultVals = obj;
+        this.defaultSource = obj.find(
+          (x) => x.formName === 'ADJ-IN' && x.textFields === 'Source'
+        )?.value as string;
+        this.defaultReason = obj.find(
+          (x) => x.formName === 'ADJ-IN' && x.textFields === 'Reason Code'
+        )?.value as string;
+        this.defaultRef = obj.find(
+          (x) => x.formName === 'ADJ-IN' && x.textFields === 'Ref'
+        )?.value as string;
       });
 
-      this.dataReason = new ArrayStore({
-        data: this.reasons,
-        key: 'id',
-      });
+    this.searchService.getWarehouseInfo('').subscribe((obj: Warehouse[]) => {
+      this.warehouses = obj;
+      this.warehousesStr = obj.map((x) => x.warehouse);
+    });
 
+    this.searchService.getReasonCode().subscribe((obj: ReasonInt[]) => {
+      this.reasons = obj;
+      this.reasonsStr = obj.map((x) => x.reason.trim());
+    });
+
+    this.pmdataTransfer.selectedItemForInvDetails$.subscribe((item) => {
+      this.er = '';
+      console.log(item);
+      this.pmDetails = item;
+      this.defaultWarehouse = item.warehouse;
+      this.defaultLocation = item.location;
+      this.itemsId = item.id.toString();
+
+      this.incInvService.getER(this.itemsId).subscribe((obj: ERInt[]) => {
+        this.ers = obj;
+        this.ersStr = obj.map((x) => x.soMain);
+        if (obj.length == 1) this.er = obj[0].soMain;
+      });
     });
 
     this.prevDateButton = {
@@ -106,10 +136,6 @@ export class IncreaseInventoryComponent {
       },
     };
 
-    this.employee = service.getEmployee();
-    this.positions = service.getPositions();
-    this.rules = {X: /[02-9]/};
-
     this.passwordButton = {
       icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB7klEQVRYw+2YP0tcQRTFz65xFVJZpBBS2O2qVSrRUkwqYfUDpBbWQu3ELt/HLRQ/Q8RCGxVJrRDEwj9sTATxZ/Hugo4zL/NmV1xhD9xi59177pl9986fVwLUSyi/tYC+oL6gbuNDYtyUpLqkaUmfJY3a+G9JZ5J2JW1J2ivMDBSxeWCfeBxYTHSOWMcRYLOAEBebxtEVQWPASQdi2jgxro4E1YDTQIJjYM18hszGbew4EHNq/kmCvgDnHtI7YBko58SWgSXg1hN/btyFBM0AlwExczG1YDZrMS4uLUeUoDmgFfjLGwXEtG05wNXyTc4NXgzMCOAIGHD8q0ATuDZrempkwGJ9+AfUQ4K+A/eEseqZ/UbgdUw4fqs5vPeW+5mgBvBAPkLd8cPju+341P7D/WAaJGCdOFQI14kr6o/zvBKZYz11L5Okv5KGA89Kzu9K0b0s5ZXt5PjuOL6TRV5ZalFP4F+rrnhZ1Cs5vN6ijmn7Q162/ThZq9+YNW3MbfvDAOed5cxdGL+RFaUPKQtjI8DVAr66/u9i6+jJzTXm+HFEVqxVYBD4SNZNKzk109HxoycPaG0bIeugVDTp4hH2qdXJDu6xOAAWiuQoQdLHhvY1aEZSVdInG7+Q9EvSz9RrUKqgV0PP3Vz7gvqCOsUj+CxC9LB1Dc8AAAASdEVYdEVYSUY6T3JpZW50YXRpb24AMYRY7O8AAAAASUVORK5CYII=',
       type: 'default',
@@ -117,25 +143,26 @@ export class IncreaseInventoryComponent {
         // this.passwordMode = this.passwordMode === 'text' ? 'password' : 'text';
       },
     };
+    // throw new Error('Method not implemented.');
   }
 
   updateSelectedWarehouse(event$: any) {
     console.log(event$);
-    this.selectedWarehouseId = event$["value"];
+    var warehouseStr = event$['value'];
+    var obj: Warehouse = this.warehouses.find(
+      (x) => x.warehouse === warehouseStr
+    ) as Warehouse;
+    var warehouseId = obj?.id;
 
-    var param = {
-      warehouseId: this.selectedWarehouseId
-    };
-
-    this.http.get<LocationInt[]>('https://localhost:44327/api/Search/Location', {params: param}
-    ).subscribe((obj: LocationInt[]) => {
-      this.locations = obj;
-      console.log(this.locations);
-      this.dataLoc = new ArrayStore({
-        data: this.locations,
-        key: 'id',
+    this.searchService
+      .getLocationInfo(warehouseId.toString(),'')
+      .subscribe((obj: WarehouseLocation[]) => {
+        this.locations = obj;
+        this.locationsStr = obj.map((x) => x.location);
       });
-    });
+  }
 
+  ngOnDestroy() {
+    this.defaultValue$.unsubscribe();
   }
 }
