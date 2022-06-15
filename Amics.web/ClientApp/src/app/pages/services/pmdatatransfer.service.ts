@@ -16,6 +16,7 @@ export class PartMasterDataTransService {
     private itemSelectedSubjectForIncInvScreen$ = new Subject<pmItemSearchResult>();
     public itemSelectedChild$ = new Subject<PmChildType>();
     public itemSelectedCRUD$ = new Subject<CRUD>();
+    public copyToNewSelected$ = new Subject<any>();
 
     selectedItemChanged(selectedProductId: pmItemSearchResult, componentType: ComponentType): void {
         if (componentType === ComponentType.PartMaster) {

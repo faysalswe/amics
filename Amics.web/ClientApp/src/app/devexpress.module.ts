@@ -1,4 +1,4 @@
-import {NgModule} from "@angular/core";
+import { NgModule } from "@angular/core";
 import {
   DxAutocompleteModule,
   DxBoxModule,
@@ -13,6 +13,7 @@ import {
   DxListModule,
   DxLookupModule,
   DxNumberBoxModule,
+  DxPopupModule,
   DxRadioGroupModule,
   DxRangeSliderModule,
   DxResponsiveBoxModule,
@@ -47,7 +48,8 @@ import {
     DxLinearGaugeModule,
     DxRangeSliderModule,
     DxTextBoxModule,
-    DxDateBoxModule
+    DxDateBoxModule,
+    DxPopupModule
   ],
   exports: [
     DxButtonModule,
@@ -71,7 +73,8 @@ import {
     DxLinearGaugeModule,
     DxRangeSliderModule,
     DxTextBoxModule,
-    DxDateBoxModule
+    DxDateBoxModule,
+    DxPopupModule
   ]
 })
 export class DevExpressModule { }

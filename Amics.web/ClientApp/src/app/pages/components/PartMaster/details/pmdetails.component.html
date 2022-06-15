@@ -118,4 +118,19 @@
             </dx-data-grid>
         </ng-container>
     </ng-container>
+
+    <div>
+        <dx-popup [width]="400" [height]="150" [showTitle]="true" title="Do you like to copy BOM as well?"
+            [dragEnabled]="false" [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
+            [(visible)]="popupVisible">
+            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center"  
+                [options]="yesButtonOptions">
+            </dxi-toolbar-item>
+            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" 
+                [options]="noButtonOptions">
+            </dxi-toolbar-item>
+            <dxo-position at="center" my="center"> </dxo-position>
+
+        </dx-popup>
+    </div>
 </div>
