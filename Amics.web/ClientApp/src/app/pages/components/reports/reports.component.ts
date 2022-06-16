@@ -23,28 +23,28 @@ export class ReportsComponent implements OnInit {
   
 
   tabsData = [
-    {Name : "Inventory", items: [
-      {ID:1,"reportNo": "101", "reportName": "item list", "description": "List of all item in inventory"},
-      {ID:2,"reportNo": "104", "reportName": "Inventory", "description": "abcddddddd"},
-      {ID:3,"reportNo": "106", "reportName": "Multiple Inventory Location", "description": "location desc"},
-      {ID:4,"reportNo": "107", "reportName": "item list", "description": "List of all item in inventory"},
-      {ID:5,"reportNo": "108", "reportName": "Inventory", "description": "abcddddddd"},
-      {ID:6,"reportNo": "109", "reportName": "Multiple Inventory Location", "description": "location desc"},
+    {name : "Inventory", items: [
+      {id:1,"reportId": "101", "reportName": "item list", "description": "List of all item in inventory"},
+      {id:2,"reportId": "104", "reportName": "Inventory", "description": "abcddddddd"},
+      {id:3,"reportId": "106", "reportName": "Multiple Inventory Location", "description": "location desc"},
+      {id:4,"reportId": "107", "reportName": "item list", "description": "List of all item in inventory"},
+      {id:5,"reportId": "108", "reportName": "Inventory", "description": "abcddddddd"},
+      {id:6,"reportId": "109", "reportName": "Multiple Inventory Location", "description": "location desc"},
     
     ]},
-    {Name : "Sales Order", items: [
-      {ID:1,"reportNo": "201", "reportName": "sale list", "description": "List of all item in Sales"},
-      {ID:1,"reportNo": "204", "reportName": "Sale Order", "description": "abcddddddd"},
-      {ID:1,"reportNo": "206", "reportName": "Multiple Sale Location", "description": "Sale location desc"},
-      {ID:1,"reportNo": "206", "reportName": "Multiple Sale Location", "description": "Sale location desc"},
+    {name : "Sales Order", items: [
+      {id:1,"reportId": "201", "reportName": "sale list", "description": "List of all item in Sales"},
+      {id:2,"reportId": "204", "reportName": "Sale Order", "description": "abcddddddd"},
+      {id:3,"reportId": "206", "reportName": "Multiple Sale Location", "description": "Sale location desc"},
+      {id:4,"reportId": "207", "reportName": "Multiple Sale Location", "description": "Sale location desc"},
     ]},
-    {Name : "Purchase Order", items: [
-      {ID:1,"reportNo": "301", "reportName": "Purchase list",              "description": "List of all item in Purchase"},
-      {ID:1,"reportNo": "304", "reportName": "Purchase",                    "description": "Purchase"},
-      {ID:1,"reportNo": "406", "reportName": "Multiple Purchase Location", "description": "Purchase location desc"},
-      {ID:1,"reportNo": "406", "reportName": "Multiple Purchase Location", "description": "Purchase location desc"},
-      {ID:1,"reportNo": "406", "reportName": "Multiple Purchase Location", "description": "Purchase location desc"},
-      {ID:1,"reportNo": "406", "reportName": "Multiple Purchase Location", "description": "Purchase location desc"},
+    {name : "Purchase Order", items: [
+      {id:1,"reportId": "301", "reportName": "Purchase list",              "description": "List of all item in Purchase"},
+      {id:2,"reportId": "304", "reportName": "Purchase",                    "description": "Purchase"},
+      {id:3,"reportId": "401", "reportName": "Multiple Purchase Location", "description": "Purchase location desc"},
+      {id:4,"reportId": "402", "reportName": "Multiple Purchase Location", "description": "Purchase location desc"},
+      {id:5,"reportId": "403", "reportName": "Multiple Purchase Location", "description": "Purchase location desc"},
+      {id:6,"reportId": "404", "reportName": "Multiple Purchase Location", "description": "Purchase location desc"},
     ]}
   ];
 
@@ -53,6 +53,14 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  onSelectionChanged(e: any) {
+    console.log(e);
+    var selectedItem = e.selectedRowsData[0];
+    console.log(selectedItem);
+    this.showModel(selectedItem.reportId)
+    
+}
 
   // onClick(Report #) {
   //   that.popupVisible = false;
@@ -67,11 +75,11 @@ export class ReportsComponent implements OnInit {
   // }
   partnumberLbl:string = "partnumber";
 
-  showModel(reportNo: string){
-    if(reportNo == "101" || reportNo == "104"){
+  showModel(reportId: string){
+    if(reportId == "101" || reportId == "104"){
       this.popupVisible_101_104 = true;
     }
-    else if(reportNo == "106"){
+    else if(reportId == "106"){
       this.popupVisible_106 = true;
     }
   }
