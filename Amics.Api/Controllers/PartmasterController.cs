@@ -123,7 +123,6 @@ namespace Amics.Api.Controllers
             return getLocResult;
         }
 
-
         /// <summary>
         /// API Route Controller to get location, somain, quantity & name details for specified warehouse 
         /// </summary>
@@ -138,6 +137,74 @@ namespace Amics.Api.Controllers
             return getLocResult;
         }
 
+        // <summary>
+        /// API Route Controller to get list of records from Item Number/Descrption/SerialNo/TagNo/Location/ER/MdatIn search
+        /// </summary>
+        /// <param name="itemnum">Item Number</param>                  
+        [HttpGet, Route("Inquiry")]
+        public IList<LstInquiry> GetInquiryDetails([FromQuery] string itemnum, [FromQuery] string desc, [FromQuery] string lotno, [FromQuery] string serial, [FromQuery] string tag, [FromQuery] string location, [FromQuery] string action, [FromQuery] string user, [FromQuery] string er, [FromQuery] string mdatIn)
+        {
+            var getLocResult = _partMastService.InquiryDetails(itemnum, desc, lotno, serial, tag, location, action,user,er, mdatIn);
 
+            return getLocResult;
+        }
+
+        // <summary>
+        /// API Route Controllerto get warehouse, location, pomain,serial no, tag no, cost, quantity details   
+        /// </summary>
+        /// <param name="itemsId">Items Id</param>          
+        /// <param name="secUsersId">SecUsers Id</param>              
+        [HttpGet, Route("ViewSerial")]
+        public IList<LstSerial> ViewSerial([FromQuery] string ItemsId, [FromQuery] string secUsersId)
+        {
+            var vwSerialResult = _partMastService.ViewSerial(ItemsId, secUsersId);
+
+            return vwSerialResult;
+        }
+
+        // <summary>
+        /// API Route Controller to get location, pomain,serial no, tag no, cost, quantity details for selected warehouse
+        /// </summary>
+        /// <param name="itemsId">Items Id</param>          
+        /// <param name="secUsersId">SecUsers Id</param>      
+        /// <param name="warehouse">Warehouse</param>      
+        [HttpGet, Route("ViewSerialWarehouse")]
+        public IList<LstSerial> ViewSerialWh([FromQuery] string ItemsId, [FromQuery] string secUsersId, [FromQuery] string warehouse)
+        {
+            var vwSerialWhResult = _partMastService.ViewSerialWarehouse(ItemsId, secUsersId, warehouse);
+
+            return vwSerialWhResult;
+        }
+
+        // <summary>
+        /// API Route Controller to get location, pomain,serial no, tag no, cost, quantity details for selected warehouse and serial no 
+        /// </summary>
+        /// <param name="itemsId">Items Id</param>          
+        /// <param name="secUsersId">SecUsers Id</param>      
+        /// <param name="warehouse">Warehouse</param>  
+        /// <param name="serialNo">Serial No</param>   
+        [HttpGet, Route("ViewSerialSerNo")]
+        public IList<LstSerial> ViewSerialSerNo([FromQuery] string ItemsId, [FromQuery] string secUsersId, [FromQuery] string warehouse, [FromQuery] string serNo)
+        {
+            var vwSerNoResult = _partMastService.ViewSerialSerNo(ItemsId, secUsersId, warehouse, serNo);
+
+            return vwSerNoResult;
+        }
+
+
+        // <summary>
+        /// API Route Controller to get location, pomain,serial no, tag no, cost, quantity details for selected warehouse and tag no
+        /// </summary>
+        /// <param name="itemsId">Items Id</param>          
+        /// <param name="secUsersId">SecUsers Id</param>      
+        /// <param name="warehouse">Warehouse</param>   
+        /// <param name="tagNo">Tag No</param>   
+        [HttpGet, Route("ViewSerialTagNo")]
+        public IList<LstSerial> ViewSerialTagNo([FromQuery] string ItemsId, [FromQuery] string secUsersId, [FromQuery] string warehouse, [FromQuery] string tagNo)
+        {
+            var vwTagNoResult = _partMastService.ViewSerialTagNo(ItemsId, secUsersId, warehouse, tagNo);
+
+            return vwTagNoResult;
+        }
     }
 }
