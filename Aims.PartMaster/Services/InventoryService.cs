@@ -39,6 +39,15 @@ namespace Aims.PartMaster.Services
         List<LstErLookup> ErLookup(string ItemsId, string SoMain);
 
 
+        /// <summary>
+        ///Interface for get details of trans action log, options parametes FromDate,ToDate and Reason.
+        /// </summary>        
+        /// <param name="FromDate">01/25/2020</param> 
+        /// <param name="ToDate">01/25/2022</param> 
+        /// <param name="Reason">MISC REC,MISC PICK</param> 
+
+        List<LstTransLog> TransLog(string FromDate, string ToDate, string Reason);
+
     }
     public class InventoryService : IInventoryService
     {
@@ -92,6 +101,21 @@ namespace Aims.PartMaster.Services
               .FromSqlRaw($"exec sp_webapi_get_er_by_pn @itemsid='{itemsGuId}',@somain='{SoMain}'")
               .ToList();
             return erResult;
+        }
+
+
+
+        /// <summary>
+        ///API Service get details of trans action log, options parametes FromDate,ToDate and Reason.
+        /// </summary>        
+        /// <param name="FromDate">01/25/2020</param> 
+        /// <param name="ToDate">01/25/2022</param> 
+        /// <param name="Reason">MISC REC,MISC PICK</param> 
+
+        public List<LstTransLog> TransLog(string FromDate, string ToDate,string Reason)
+        {                       
+            var ViewTransLog = _amicsDbContext.ListTransLog.FromSqlRaw($"select * from [dbo].[fn_translog_view] ('{FromDate}','{ToDate}','{Reason}')").ToList();
+            return ViewTransLog;
         }
 
         //[WebMethod]

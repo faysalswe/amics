@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  publicApiUrl: "https://localhost:44327"
+  production: true,  
+  publicApiUrl: "https://amics.cc/amicsapi"
 };
