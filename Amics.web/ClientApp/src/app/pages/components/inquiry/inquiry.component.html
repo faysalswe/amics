@@ -5,6 +5,7 @@
     <dx-form id="form" [colCount]="5">
       <dxi-item [colSpan]="2">
         <dx-radio-group
+          
           [items]="inquiryOptions"
           [value]="inquiryOptions[0]"
           layout="horizontal"
@@ -16,43 +17,46 @@
       ></dxi-item>
       <dxi-item [colSpan]="1">
         <dx-button
-          stylingMode="outlined"
+          stylingMode="contained"
           text="search"
           text-align="center"
-          type="success"
+          type="default"
         >
         </dx-button>
       </dxi-item>
-      <dxi-item [colSpan]="1"></dxi-item>
+      <dxi-item [colSpan]="1">
+        <dx-check-box [value]="isCost" text="Include cost" dataField="Include cost" (onValueChanged)="changeCost($event)"></dx-check-box>
+       </dxi-item>
+      
+         <!-- <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp;  -->
     </dx-form>
-  </div>
+   </div>
   <div class="row">
     <dx-data-grid
       id="gridContainer"
       [dataSource]="inventoryArray"
       keyExpr="ID"
       height="50vh"
-      [columns]="[
-        'MFR',
-        'Part Number',
-        'Description',
-        'Location',
-        'Qty',
-        'SERIAL',
-        'TAG',
-        'ER',
-        'MDAT In'
-      ]"
       [showBorders]="true"
     >
+    <dxi-column dataField="MFR"></dxi-column>
+    <dxi-column dataField="Part Number"></dxi-column>
+    <dxi-column dataField="Description"></dxi-column>
+    <dxi-column dataField="Location"></dxi-column>
+    <dxi-column dataField="Qty"></dxi-column>
+    <dxi-column dataField="SERIAL"></dxi-column>
+    <dxi-column dataField="TAG"></dxi-column>
+    <dxi-column dataField="ER"></dxi-column>
+    <dxi-column dataField="MDAT In"></dxi-column>
+    <dxi-column dataField="Cost" [visible]="isCost"></dxi-column>
     </dx-data-grid>
   </div>
   <div class="row"><br /></div>
   <div class="row">
     <div class="col" style="text-align: center">
-      <dx-button stylingMode="outlined" text="print" type="success"> </dx-button
+      <dx-button stylingMode="contained" text="print" type="default"> </dx-button
       >&nbsp;
-      <dx-button stylingMode="outlined" text="exit" type="success"> </dx-button>
+      <dx-button stylingMode="contained" text="exit" type="default"> </dx-button>
     </div>
   </div>
 </div>

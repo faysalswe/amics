@@ -8,18 +8,17 @@ import {
   DefaultValInt,
   ERInt, 
   ReasonInt, 
-} from '../../../shared/models/rest.api.interface.model';
-import { IncreaseInventoryService } from './increase.inventory.service';
+} from '../../../shared/models/rest.api.interface.model'; 
 import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
 import { LabelMap } from '../../models/Label';
 import { SearchService } from '../../services/search.service';
 import { Warehouse, WarehouseLocation } from '../../models/warehouse';
+import { IncreaseInventoryService } from '../../services/increase.inventory.service';
 
 @Component({
   selector: 'app-increase-inventory',
   templateUrl: 'increase.inventory.component.html',
-  styleUrls: ['./increase.inventory.component.scss'],
-  providers: [IncreaseInventoryService],
+  styleUrls: ['./increase.inventory.component.scss']
 })
 export class IncreaseInventoryComponent implements OnInit, OnDestroy {
   labelMap: typeof LabelMap;
@@ -60,8 +59,7 @@ export class IncreaseInventoryComponent implements OnInit, OnDestroy {
 
   defaultValue$: Subscription = new Subscription();
 
-  constructor(
-    private service: IncreaseInventoryService,
+  constructor( 
     private http: HttpClient,
     private pmdataTransfer: PartMasterDataTransService,
     private incInvService: IncreaseInventoryService,

@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./inquiry.component.scss'],
 })
 export class InquiryComponent implements OnInit {
-  inventoryArray = [];
+   inventoryArray = []
+  isCost:boolean = false;
   inquiryOptions = [
     'Part Number',
     'Serial #',
@@ -23,5 +24,9 @@ export class InquiryComponent implements OnInit {
 
   onValueChanged($event: any) {
     this.searchLabel = $event.value;
+  }
+
+  changeCost($event: any){
+    this.isCost = $event.value
   }
 }

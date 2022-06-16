@@ -32,6 +32,29 @@
       <app-inquiry></app-inquiry>
     </ng-container>
   </ng-container>
+  <ng-container *ngSwitchCase="this.componentType.SerialDocuments">
+    <ng-container>
+      <app-serial-documents></app-serial-documents>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="this.componentType.ChangeSerial">
+    <ng-container>
+      <app-change-serial></app-change-serial>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="this.componentType.Reports">
+    <ng-container>
+      <app-reports></app-reports>
+    </ng-container>
+  </ng-container>
+
+  <ng-container [ngSwitch]="type">
+    <ng-container *ngSwitchCase="this.componentType.mdat">
+      <app-mdat></app-mdat>
+      <ng-container>
+  </ng-container>
 
     <ng-container *ngSwitchDefault>Default Template</ng-container>
 

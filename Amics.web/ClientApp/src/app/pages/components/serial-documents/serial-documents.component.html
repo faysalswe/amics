@@ -1,0 +1,73 @@
+<div class="details-container content-block dx-card responsive-paddings">
+  <div class="row"><h6>SerialDocuments</h6></div>
+  <div class="row" style="align-items: center">
+    <dx-form id="form" [colCount]="4">
+      <dxi-item [colSpan]="1">
+        <dx-radio-group
+          [items]="serialDocOptions"
+          [value]="serialDocOptions[0]"
+          layout="horizontal"
+          (onValueChanged)="onValueChanged($event)"
+        ></dx-radio-group>
+      </dxi-item>
+      <dxi-item [colSpan]="1">
+        <dx-text-box [label]="searchLabel" value=" "></dx-text-box
+      ></dxi-item>
+      <dxi-item [colSpan]="1">
+        <dx-button
+          stylingMode="contained"
+          text="search"
+          text-align="center"
+          type="default"
+        >
+        </dx-button>
+      </dxi-item>
+      <!-- <dxi-item [colSpan]="1">
+          <dx-check-box [value]="isCost" text="Include cost" dataField="Include cost" (onValueChanged)="changeCost($event)"></dx-check-box>
+        </dxi-item> -->
+
+      <!-- <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp; -->
+    </dx-form>
+  </div>
+  <div class="row">
+    <dx-data-grid
+      id="gridContainer"
+      [dataSource]="serialDocArray"
+      keyExpr="ID"
+      height="40vh"
+      [showBorders]="true"
+    >
+      <dxi-column dataField="Part Number"></dxi-column>
+      <dxi-column dataField="Description"></dxi-column>
+      <dxi-column dataField="Location"></dxi-column>
+      <dxi-column dataField="Qty"></dxi-column>
+      <dxi-column dataField="LOT"></dxi-column>
+      <dxi-column dataField="Color"></dxi-column>
+    </dx-data-grid>
+  </div>
+  <div class="row"><br /></div>
+  <div class="row">
+    <dx-data-grid
+      id="gridContainer"
+      [dataSource]="serialActionArray"
+      keyExpr="ID"
+      height="30vh"
+      [showBorders]="true"
+    >
+      <dxi-column dataField="Action"></dxi-column>
+      <dxi-column dataField="Line"></dxi-column>
+      <dxi-column dataField="Documents"></dxi-column>
+      <dxi-column dataField=""></dxi-column>
+    </dx-data-grid>
+  </div>
+  <div class="row"><br /></div>
+  <div class="row">
+    <div class="col" style="text-align: center">
+      <dx-button stylingMode="contained" text="edit" type="default">
+      </dx-button
+      >&nbsp;
+      <dx-button stylingMode="contained" text="exit" type="default">
+      </dx-button>
+    </div>
+  </div>
+</div>

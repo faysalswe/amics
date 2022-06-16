@@ -24,6 +24,10 @@ import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
 import { InventoryStatusComponent } from './pages/components/InventoryStatus/inventory.status.component';
 import { AddLabelDirective } from './shared/directives/add.label.directive';
 import { AppInitialDataService } from './shared/services/app.initial.data.service';
+import { SerialDocumentsComponent } from './pages/components/serial-documents/serial-documents.component';
+import { ChangeSerialComponent } from './pages/components/change-serial/change-serial.component';
+import { ReportsComponent } from './pages/components/reports/reports.component';
+import { MdatComponent } from './pages/components/mdat/mdat.component';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -47,7 +51,10 @@ export function appEnvironmentFactory(
     ResponsiveComponent,
     IncreaseInventoryComponent,
     InquiryComponent, InventoryStatusComponent,
-    AddLabelDirective
+    AddLabelDirective, SerialDocumentsComponent,
+    ChangeSerialComponent,
+    ReportsComponent,
+    MdatComponent,
   ],
   imports: [
     CommonModule,

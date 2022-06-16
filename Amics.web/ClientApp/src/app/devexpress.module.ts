@@ -20,9 +20,10 @@ import {
   DxSelectBoxModule,
   DxSortableModule,
   DxTabPanelModule,
+  DxTabsModule,
   DxTemplateModule,
   DxTextAreaModule,
-  DxTextBoxModule
+  DxTextBoxModule, 
 } from "devextreme-angular";
 
 @NgModule({
@@ -49,7 +50,8 @@ import {
     DxRangeSliderModule,
     DxTextBoxModule,
     DxDateBoxModule,
-    DxPopupModule
+    DxPopupModule,
+    DxTabsModule
   ],
   exports: [
     DxButtonModule,
@@ -74,7 +76,8 @@ import {
     DxRangeSliderModule,
     DxTextBoxModule,
     DxDateBoxModule,
-    DxPopupModule
+    DxPopupModule,
+    DxTabsModule
   ]
 })
 export class DevExpressModule { }
