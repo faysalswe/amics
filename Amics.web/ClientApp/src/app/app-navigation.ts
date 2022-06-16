@@ -39,7 +39,38 @@ export const navigation = [
         path: '/inquiry',
         title: 'Inquiry',
         type: ComponentType.inquiry
+      },
+      {
+        text: 'Serial Documents',
+        path: '/serialDocuments',
+        title: 'Serial Documents',
+        type: ComponentType.SerialDocuments
+      },
+      {
+        text: 'Change Serial',
+        path: '/changeSerial',
+        title: 'Change Serial',
+        type: ComponentType.ChangeSerial
+      },
+      {
+        text: 'Reports',
+        path: '/reports',
+        title: 'Reports',
+        type: ComponentType.Reports
+      },
+    ]
+  },
+  {
+    text: 'Sales Order',
+    icon: 'folder',
+    items: [
+      {
+        text: 'mdat',
+        path: '/mdat',
+        title: 'mdat',
+        type: ComponentType.mdat
       }
     ]
   }
+
 ];

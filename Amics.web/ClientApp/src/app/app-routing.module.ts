@@ -5,10 +5,8 @@ import { AuthGuardService } from './shared/services';
 import { HomeComponent } from './pages/components/home/home.component';
 import { ProfileComponent } from './pages/components/profile/profile.component';
 import { TasksComponent } from './pages/components/tasks/tasks.component'; 
-import { DevExpressModule } from './devexpress.module';
-import { CommonModule } from '@angular/common'; 
-import {IncreaseInventoryComponent} from "./pages/components/IncreaseInventory/increase.inventory.component";
-import { InquiryComponent } from './pages/components/inquiry/inquiry.component'; 
+import { IncreaseInventoryComponent } from "./pages/components/IncreaseInventory/increase.inventory.component";
+import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
 
 const routes: Routes = [
   {
@@ -67,7 +65,7 @@ const routes: Routes = [
   providers: [AuthGuardService],
   exports: [RouterModule],
   declarations: [
-   
+
   ]
 })
 export class AppRoutingModule { }

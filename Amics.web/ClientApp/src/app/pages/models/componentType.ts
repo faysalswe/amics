@@ -3,5 +3,9 @@ export enum ComponentType {
   Profile = 'Profile',
   Tasks = 'Tasks',
   IncreaseInventory = 'IncreaseInventory',
-  inquiry = "inquiry"
+  inquiry = "inquiry",
+  SerialDocuments = "serialDocuments",
+  ChangeSerial = "changeSerial",
+  Reports = "reports",
+  mdat = "mdat",
 }
