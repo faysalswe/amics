@@ -19,7 +19,7 @@ namespace Aims.Core.Services
         List<LstViewLocation> ViewLocation(string itemsId, string secUsersId);
         List<LstViewLocationWh> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse);
         LstMessage BomGridDetailsUpdation(List<LstBomGridItems> LstBomGridItems);
-        List<LstInquiry> InquiryDetails(string itemnum, string desc, string lotno, string serial, string tag, string location, string action, string user, string er, string mdatIn);
+        List<LstInquiry> InquiryDetails(InquiryRequestDetails request);
         List<LstSerial> ViewSerial(string itemsId, string secUsersId);
         List<LstSerial> ViewSerialWarehouse(string itemsId, string secUsersId, string warehouse);
         List<LstSerial> ViewSerialSerNo(string itemsId, string secUsersId, string warehouse, string serNo);
@@ -186,9 +186,9 @@ namespace Aims.Core.Services
         /// <param name="location">Location</param> 
         /// <param name="action">Action</param> 
         /// <param name="er">ER</param> 
-        public List<LstInquiry> InquiryDetails(string itemnum, string desc, string lotno,string serial, string tag, string location, string action, string user, string er, string mdatIn)
+        public List<LstInquiry> InquiryDetails(InquiryRequestDetails request)
         {
-            var inquiryResult = _amicsDbContext.LstInquiry.FromSqlRaw($"exec sp_inquiry5 @part='{itemnum}',@desc = '{desc}',@lotno='{lotno}',@location ='{location}',@action = '{action}', @serial='{serial}',@tag ='{tag}',@user = '{user}', @er = '{er}', @mdatIn='{mdatIn}'").ToList();
+            var inquiryResult = _amicsDbContext.LstInquiry.FromSqlRaw($"exec sp_inquiry5 @part='{request.ItemNumber}',@desc = '{request.Description}',@lotno='{request.LotNo}',@location ='{request.Location}',@action = '{request.Action}', @serial='{request.Serial}',@tag ='{request.Tag}',@user = '{request.User}', @er = '{request.ER}', @mdatIn='{request.MDATIn}'").ToList();
             
             return inquiryResult;
         }

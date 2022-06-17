@@ -12,6 +12,8 @@ export class ReportsComponent implements OnInit {
   pivotGridDataSource: any;
   popupVisible_101_104 = false;
   popupVisible_106 = false;
+  popupVisible_109 = false;
+  popupVisible_118 = false;
   partnumber:string[]=[];
   itemClassList: ItemClass[] = [];
   partnumberList:PartNumber[] = [];
@@ -19,6 +21,10 @@ export class ReportsComponent implements OnInit {
   itemcodeList:ItemCode[] = [];
   warehouseList:WareHouse[] = [];
   locationList:ReportLocation[] = [];
+
+
+  itemNumberList = [];
+  locationTransferList = [];
   defaultpartnumber:string='';
   
 
@@ -27,9 +33,8 @@ export class ReportsComponent implements OnInit {
       {id:1,"reportId": "101", "reportName": "item list", "description": "List of all item in inventory"},
       {id:2,"reportId": "104", "reportName": "Inventory", "description": "abcddddddd"},
       {id:3,"reportId": "106", "reportName": "Multiple Inventory Location", "description": "location desc"},
-      {id:4,"reportId": "107", "reportName": "item list", "description": "List of all item in inventory"},
-      {id:5,"reportId": "108", "reportName": "Inventory", "description": "abcddddddd"},
       {id:6,"reportId": "109", "reportName": "Multiple Inventory Location", "description": "location desc"},
+      {id:6,"reportId": "118", "reportName": "Multiple Inventory Location", "description": "location desc"},
     
     ]},
     {name : "Sales Order", items: [
@@ -82,5 +87,12 @@ export class ReportsComponent implements OnInit {
     else if(reportId == "106"){
       this.popupVisible_106 = true;
     }
+    else if(reportId == "109"){
+      this.popupVisible_109 = true;
+    }
+    else if(reportId == "118"){
+      this.popupVisible_118 = true;
+    }
   }
 }
+

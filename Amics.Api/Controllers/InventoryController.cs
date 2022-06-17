@@ -65,7 +65,23 @@ namespace Amics.Api.Controllers
             var resultItemCode = _inventoryService.ErLookup(ItemsId, SoMain);
             return resultItemCode;
         }
-        
+
+
+        /// <summary>
+        /// API Route Controller to get details of trans action log, options parametes FromDate,ToDate and Reason.
+        /// </summary>        
+        /// <param name="FromDate">01/25/2020</param> 
+        /// <param name="ToDate">01/25/2022</param> 
+        /// <param name="Reason">MISC REC,MISC PICK</param> 
+
+        [HttpGet, Route("getTransLog")]        
+        public IList<LstTransLog> GetTransLog([FromQuery] string FromDate, string ToDate, string Reason)
+        {
+            var resultTransLog = _inventoryService.TransLog(FromDate, ToDate, Reason);
+            return resultTransLog;
+        }
+
+
 
     }
 }
