@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Aims.PartMaster.Services;
 using Aims.Core.Services;
 using Aims.Core.Models;
+using Amics.Api.Model;
 
 namespace Amics.Api.Controllers
 {
@@ -141,12 +142,46 @@ namespace Amics.Api.Controllers
         /// API Route Controller to get list of records from Item Number/Descrption/SerialNo/TagNo/Location/ER/MdatIn search
         /// </summary>
         /// <param name="itemnum">Item Number</param>                  
-        [HttpGet, Route("Inquiry")]
-        public IList<LstInquiry> GetInquiryDetails([FromQuery] string itemnum, [FromQuery] string desc, [FromQuery] string lotno, [FromQuery] string serial, [FromQuery] string tag, [FromQuery] string location, [FromQuery] string action, [FromQuery] string user, [FromQuery] string er, [FromQuery] string mdatIn)
+        [HttpPost, Route("Inquiry")]
+        public IList<LstInquiry> GetInquiryDetails([FromBody] InquiryRequest request)
         {
-            var getLocResult = _partMastService.InquiryDetails(itemnum, desc, lotno, serial, tag, location, action,user,er, mdatIn);
+            var details = getInquiryRequestDetails(request);
+            details.User = request.User.ToString();
+            var getLocResult = _partMastService.InquiryDetails(details);
 
             return getLocResult;
+        }
+        private InquiryRequestDetails getInquiryRequestDetails(InquiryRequest req)
+        {
+            var details = new InquiryRequestDetails();
+            details.Action = req.Action.ToString("d");
+            switch (req.Action)
+            {
+                case InquiryActionType.ER:
+                    details.ER = req.SearchText;
+                    break;
+                case InquiryActionType.Location:
+                    details.Location = req.SearchText;
+                    break;
+                case InquiryActionType.Description:
+                    details.Description = req.SearchText;
+                    break;
+                case InquiryActionType.Serial:
+                    details.Serial = req.SearchText;
+                    break;
+                case InquiryActionType.Tag:
+                    details.Tag = req.SearchText;
+                    break;
+                case InquiryActionType.MdatIn:
+                    details.MDATIn = req.SearchText;
+                    break;
+                case InquiryActionType.PartMaster:
+                default:
+                    details.ItemNumber = req.SearchText;                   
+                    break;
+            }
+
+            return details;
         }
 
         // <summary>

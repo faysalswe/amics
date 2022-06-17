@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Guid } from 'guid-typescript';
 import { Company } from '../models/company';
+import { InquiryResponse , InquiryRequest } from '../models/inquiryRequest';
 import { pmBomDetails } from '../models/pmBomDetails';
 import { pmDetails } from '../models/pmdetails';
 import { pmPoDetails } from '../models/pmPoDetails';
@@ -68,7 +69,9 @@ export class PartMasterService {
   getPartMaster(itemNumber: string, rev: string) {
     return this.httpClient.get<pmDetails>(`${this.api}?itemnumber=${itemNumber}&rev=${rev}`);
   }
-
+  getInquiryDetails(request : InquiryRequest) {
+    return this.httpClient.post<InquiryResponse[]>(`${this.api}/Inquiry`,request);
+  }
   getBomDetails(itemId: Guid) {
     return this.httpClient.get<pmBomDetails[]>(`${this.api}/BomDetails?itemsId=${itemId}`);
   }

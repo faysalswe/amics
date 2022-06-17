@@ -1,61 +1,49 @@
-
 <div class="details-container content-block dx-card responsive-paddings">
-  <div class="row"><h6>Select Inquiry Option</h6></div>
+  <div class="row">
+    <h6>Select Inquiry Option</h6>
+  </div>
   <div class="row" style="align-items: center">
     <dx-form id="form" [colCount]="5">
       <dxi-item [colSpan]="2">
-        <dx-radio-group
-          
-          [items]="inquiryOptions"
-          [value]="inquiryOptions[0]"
-          layout="horizontal"
-          (onValueChanged)="onValueChanged($event)"
-        ></dx-radio-group>
+        <dx-radio-group [items]="inquiryOptions" [value]="inquiryOptions[0]" layout="horizontal"
+          (onValueChanged)="onValueChanged($event)"></dx-radio-group>
       </dxi-item>
       <dxi-item [colSpan]="1">
-        <dx-text-box [label]="searchLabel" value=" "></dx-text-box
-      ></dxi-item>
+        <dx-text-box [label]="searchLabel" [(value)]="searchText"></dx-text-box>
+      </dxi-item>
       <dxi-item [colSpan]="1">
-        <dx-button
-          stylingMode="contained"
-          text="search"
-          text-align="center"
-          type="default"
-        >
+        <dx-button stylingMode="contained" text="search" text-align="center" type="default"
+          (onClick)="searchInquiryDetails()">
         </dx-button>
       </dxi-item>
       <dxi-item [colSpan]="1">
-        <dx-check-box [value]="isCost" text="Include cost" dataField="Include cost" (onValueChanged)="changeCost($event)"></dx-check-box>
-       </dxi-item>
-      
-         <!-- <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp;  -->
+        <dx-check-box [value]="isCost" text="Include cost" dataField="Include cost"
+          (onValueChanged)="changeCost($event)"></dx-check-box>
+      </dxi-item>
+
+      <!-- <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp;  -->
     </dx-form>
-   </div>
+  </div>
   <div class="row">
-    <dx-data-grid
-      id="gridContainer"
-      [dataSource]="inventoryArray"
-      keyExpr="ID"
-      height="50vh"
-      [showBorders]="true"
-    >
-    <dxi-column dataField="MFR"></dxi-column>
-    <dxi-column dataField="Part Number"></dxi-column>
-    <dxi-column dataField="Description"></dxi-column>
-    <dxi-column dataField="Location"></dxi-column>
-    <dxi-column dataField="Qty"></dxi-column>
-    <dxi-column dataField="SERIAL"></dxi-column>
-    <dxi-column dataField="TAG"></dxi-column>
-    <dxi-column dataField="ER"></dxi-column>
-    <dxi-column dataField="MDAT In"></dxi-column>
-    <dxi-column dataField="Cost" [visible]="isCost"></dxi-column>
+    <dx-data-grid id="gridContainer" [dataSource]="inquiryResponseDetails" height="50vh" [showBorders]="true">
+      <dxo-load-panel [enabled]="false"></dxo-load-panel>
+      <dxo-scrolling mode="infinite"></dxo-scrolling>
+      <dxi-column dataField="itemtype"></dxi-column>
+      <dxi-column dataField="itemnumber"></dxi-column>
+      <dxi-column dataField="description"></dxi-column>
+      <dxi-column dataField="location"></dxi-column>
+      <dxi-column dataField="quantity"></dxi-column>
+      <dxi-column dataField="serial"></dxi-column>
+      <dxi-column dataField="lic_Plate"></dxi-column>
+      <dxi-column dataField="er"></dxi-column>
+      <dxi-column dataField="mdatin"></dxi-column>
+      <dxi-column dataField="cost" [visible]="isCost"></dxi-column>
     </dx-data-grid>
   </div>
   <div class="row"><br /></div>
   <div class="row">
     <div class="col" style="text-align: center">
-      <dx-button stylingMode="contained" text="print" type="default"> </dx-button
-      >&nbsp;
+      <dx-button stylingMode="contained" text="print" type="default"> </dx-button>&nbsp;
       <dx-button stylingMode="contained" text="exit" type="default"> </dx-button>
     </div>
   </div>
