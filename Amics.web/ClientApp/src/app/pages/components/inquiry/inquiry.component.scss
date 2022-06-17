@@ -2,4 +2,18 @@
 .row {
     --bs-gutter-x: -2.5rem;
 }
-    
+.dx-theme-material-typography h6 {
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: 0.15px;
+} 
+.screen-large .responsive-paddings {
+    padding: 10px;
+    margin: 8px;
+    padding: 1px;
+    background-color: antiquewhite;
+}
+
+dx-radio-group{
+    background-color: #f2f2f2;
+}
