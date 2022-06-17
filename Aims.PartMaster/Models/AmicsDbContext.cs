@@ -35,6 +35,9 @@ namespace Aims.Core.Models
         public DbSet<LstTransLog> ListTransLog { get; set; }
 
         
+        public DbSet<LstInquiry> LstInquiry { get; set; }
+        public DbSet<LstSerial> LstSerial { get; set; }
+
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)
         {
