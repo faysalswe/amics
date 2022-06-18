@@ -1,27 +1,31 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { PMPOView } from '../../models/pmpoview';
-import { HttpClient } from '@angular/common/http';
-import { pmDetails } from '../../models/pmdetails';
+import {Component} from '@angular/core';
+import {PMPOView} from "../../models/pmpoview";
+import {HttpClient} from "@angular/common/http";
+import ArrayStore from 'devextreme/data/array_store';
+import {Employee, IncreaseInventoryService} from "../../services/increase.inventory.service";
 import { ComponentType } from '../../models/componentType';
-import { combineLatest, map, Subscription, tap } from 'rxjs';
-import {
-  DefaultValInt,
-  ERInt, 
-  ReasonInt, 
-} from '../../../shared/models/rest.api.interface.model'; 
-import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
-import { LabelMap } from '../../models/Label';
-import { SearchService } from '../../services/search.service';
+import { pmDetails } from '../../models/pmdetails';
 import { Warehouse, WarehouseLocation } from '../../models/warehouse';
-import { IncreaseInventoryService } from '../../services/increase.inventory.service';
+import { DefaultValInt, ERInt, ReasonInt } from 'src/app/shared/models/rest.api.interface.model';
+import { Subscription } from 'rxjs';
+import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
+import { SearchService } from '../../services/search.service';
+import { LabelMap } from '../../models/Label';
+import { OptionIdMap } from '../../models/optionIdMap';
 
 @Component({
   selector: 'app-increase-inventory',
   templateUrl: 'increase.inventory.component.html',
-  styleUrls: ['./increase.inventory.component.scss']
+  styleUrls: ['./increase.inventory.component.scss'],
+  providers: [IncreaseInventoryService],
 })
-export class IncreaseInventoryComponent implements OnInit, OnDestroy {
+
+export class IncreaseInventoryComponent {
+
+  // employee: Employee;
+
   labelMap: typeof LabelMap;
+  optionIdMap: typeof OptionIdMap;
 
   componentType: ComponentType = ComponentType.IncreaseInventory;
 
@@ -59,14 +63,17 @@ export class IncreaseInventoryComponent implements OnInit, OnDestroy {
 
   defaultValue$: Subscription = new Subscription();
 
-  constructor( 
+  constructor(
+    private service: IncreaseInventoryService,
     private http: HttpClient,
     private pmdataTransfer: PartMasterDataTransService,
     private incInvService: IncreaseInventoryService,
     private searchService: SearchService
   ) {
     this.labelMap = LabelMap;
+    this.optionIdMap = OptionIdMap;
   }
+
 
   ngOnInit(): void {
     this.defaultValue$ = this.incInvService
@@ -153,7 +160,7 @@ export class IncreaseInventoryComponent implements OnInit, OnDestroy {
     var warehouseId = obj?.id;
 
     this.searchService
-      .getLocationInfo(warehouseId.toString(),'')
+      .getLocationInfo(warehouseId.toString(), '')
       .subscribe((obj: WarehouseLocation[]) => {
         this.locations = obj;
         this.locationsStr = obj.map((x) => x.location);
