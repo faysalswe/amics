@@ -13,10 +13,21 @@ namespace Aims.Core.Models
         public string Serial { get; set; } = "";
         public string Tag { get; set; } = "";
         public string Location { get; set; } = "";
-        public string Action { get; set; } = "";
+        public InquiryActionType Action { get; set; } = InquiryActionType.PartMaster;
         public string User { get; set; } = "";
         public string ER { get; set; } = "";
         public string MDATIn { get; set; } = "";
 
     }
+}
+
+public enum  InquiryActionType
+{
+    PartMaster = 1,
+    ER = 2,
+    Location = 3,
+    Description = 4,
+    Serial = 5,
+    Tag = 6,
+    MdatIn = 7,
 }

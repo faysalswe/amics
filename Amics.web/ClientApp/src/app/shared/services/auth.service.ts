@@ -83,6 +83,9 @@ export class AuthService {
     }
   }
 
+  currentUser(){
+    return this.user;
+  }
   getUser(): Promise<ApplicationUser> {
     let user = new ApplicationUser();
 

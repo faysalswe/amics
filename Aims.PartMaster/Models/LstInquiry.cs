@@ -19,7 +19,7 @@ namespace Aims.Core.Models
         public int Lic_Plate { get; set; }
         public string Source { get; set; }
         public string Ref { get; set; }
-        public decimal Cost { get; set; }
+        public string Cost { get; set; }
         public string Itemtype { get; set; }
         public string ER { get; set; } 
         public string Mdatin { get; set; }

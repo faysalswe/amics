@@ -94,9 +94,9 @@ namespace Amics.Api.Controllers
         /// </summary>
         /// <param name="itemsId">Items Id</param>          
         [HttpPost, Route("")]
-        public LstMessage ItemDetailsAddUpdate([FromBody] LstItemDetails  pmItem)
-        {
-            var itemUpdate = _partMastService.ItemNumDetailsAddUpdate(pmItem);
+        public async Task<string> ItemDetailsAddUpdate([FromBody] LstItemDetails  pmItem)
+        { 
+            var itemUpdate = await _partMastService.ItemNumDetailsAddUpdateAsync(pmItem);
             return itemUpdate;
         }
 
@@ -154,7 +154,7 @@ namespace Amics.Api.Controllers
         private InquiryRequestDetails getInquiryRequestDetails(InquiryRequest req)
         {
             var details = new InquiryRequestDetails();
-            details.Action = req.Action.ToString("d");
+            details.Action = req.Action;
             switch (req.Action)
             {
                 case InquiryActionType.ER:

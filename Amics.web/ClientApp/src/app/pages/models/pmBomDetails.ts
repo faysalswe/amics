@@ -7,7 +7,7 @@ export class pmBomDetails {
     itemNumber: string = '';
     rev: string = '';
     description: string = '';
-    quantity?: number = 0;
+    quantity: number = 0;
     uomref: string = '';
     ref:string='';
     comments: string = '';

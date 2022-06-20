@@ -8,8 +8,7 @@ import { PartMasterService } from '../../services/partmaster.service';
   styleUrls: ['./inquiry.component.scss'],
 })
 export class InquiryComponent implements OnInit {
-
-  inventoryArray = []
+ 
   isCost: boolean = false;
   dictionaryActions = [
     { name: 'Part Number', action: InquiryActionType.PartMaster },

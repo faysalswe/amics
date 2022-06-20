@@ -2,8 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Guid } from 'guid-typescript';
 import { Company } from '../models/company';
-import { InquiryResponse , InquiryRequest } from '../models/inquiryRequest';
+import { InquiryResponse, InquiryRequest } from '../models/inquiryRequest';
 import { pmBomDetails } from '../models/pmBomDetails';
+import { pmBomGridDetails } from '../models/pmBomGridDetails';
 import { pmDetails } from '../models/pmdetails';
 import { pmPoDetails } from '../models/pmPoDetails';
 import { SearchService } from './search.service';
@@ -69,17 +70,19 @@ export class PartMasterService {
   getPartMaster(itemNumber: string, rev: string) {
     return this.httpClient.get<pmDetails>(`${this.api}?itemnumber=${itemNumber}&rev=${rev}`);
   }
-  getInquiryDetails(request : InquiryRequest) {
-    return this.httpClient.post<InquiryResponse[]>(`${this.api}/Inquiry`,request);
+  getInquiryDetails(request: InquiryRequest) {
+    return this.httpClient.post<InquiryResponse[]>(`${this.api}/Inquiry`, request);
   }
   getBomDetails(itemId: Guid) {
     return this.httpClient.get<pmBomDetails[]>(`${this.api}/BomDetails?itemsId=${itemId}`);
   }
+  AddUpdateDeleteBomDetails(pmBomGridDetailsList: pmBomGridDetails[]) {
+    return this.httpClient.post<string>(`${this.api}/BomDetails`, pmBomGridDetailsList);
+  }
   getPoDetails(itemId: Guid) {
     return this.httpClient.get<pmPoDetails[]>(`${this.api}/PODetails?itemsId=${itemId}`);
   }
-
-  AddorUpdatePMDetails(item: pmDetails, uomId: Guid) {
+  AddorUpdatePMDetails(item: pmDetails, uomId: string) {
     item.uomid = uomId;
     return this.httpClient.post<string>(this.api, item);
   }
