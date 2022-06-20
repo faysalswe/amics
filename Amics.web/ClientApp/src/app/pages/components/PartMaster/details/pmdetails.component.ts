@@ -131,6 +131,8 @@ export class PMDetailsComponent {
         this.pmdataTransfer.selectedCRUD$.subscribe(crud => {
             if (crud === CRUD.Add) {
                 this.pmDetails = new pmDetails();
+                this.bomDetails = [];
+                this.poDetails = [];
                 this.readOnly = false;
             }
             else if (crud === CRUD.Edit) {
@@ -154,7 +156,6 @@ export class PMDetailsComponent {
             else if (popUp === PopUpAction.VL) {
                 this.popupVLVisible = true;
                 this.getLocations();
-
             }
             else if (popUp === PopUpAction.VS) {
 
