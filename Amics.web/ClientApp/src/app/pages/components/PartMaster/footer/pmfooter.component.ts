@@ -13,20 +13,22 @@ export class PMFooterComponent {
 
   width: any;
   saveExitVisible = false;
+  showViewSN = false;
   pmActions1: any[] = [{ "text": "Add" }, { "text": "Edit" }, { "text": "Delete" }];
   pmActions2: any[] = [{ "text": "Save" }, { "text": "Cancel" }];
   saveExitVisible2 = false;
   children: string[] = ["BOM", "PO", "Notes", "Documents"];
   selctedChild: string = "BOM";
   constructor(private pmDataTranserService: PartMasterDataTransService) {
-    this.pmDataTranserService.itemSelectedCRUD$.subscribe(crud => { this.showSaveExit(crud) });
+    this.pmDataTranserService.selectedCRUD$.subscribe(crud => { this.showSaveExit(crud) });
+    this.pmDataTranserService.isSerialSelected$.subscribe(isSer => { this.showViewSN = isSer });
   }
 
   copyToNew(e: any) {
     this.pmDataTranserService.copyToNewSelected$.next(e);
   }
   pmCRUDActionsSelectionChanged(e: any) {
-    this.pmDataTranserService.itemSelectedCRUD$.next(e);
+    this.pmDataTranserService.selectedCRUD$.next(e);
   }
   showSaveExit(e: any) {
     if (e === pmCRUDActionType.Add || e === pmCRUDActionType.Edit) {
@@ -37,8 +39,9 @@ export class PMFooterComponent {
     }
   }
 
-  logpmActions2SelectionChanged(e: any) {
 
+  logpmActions2SelectionChanged(e: any) {
+    this.pmDataTranserService.selectedPopUpAction$.next(e);
 
   }
   handleValueChange(e: any) {

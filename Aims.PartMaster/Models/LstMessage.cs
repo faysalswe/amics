@@ -8,7 +8,7 @@ namespace Aims.Core.Models
     public class LstMessage
     {
         [Key] 
-        public string message { get; set; }
+        public string Message { get; set; }
         
     }
 }

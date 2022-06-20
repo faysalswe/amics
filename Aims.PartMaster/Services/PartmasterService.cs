@@ -18,10 +18,9 @@ namespace Aims.Core.Services
         List<LstItemsPO> LoadItemsPO(string parentId);
         LstBomCount ItemsBomCount(string parentId);
         LstMessage ItemNumDelete(string itemNo, string rev);
-        Task<string> ItemNumDetailsAddUpdateAsync(LstItemDetails item);
-        List<LstViewLocation> ViewLocation(string itemsId, string secUsersId);
-        List<LstViewLocationWh> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse);
-        LstMessage BomGridDetailsUpdation(List<LstBomGridItems> LstBomGridItems);
+        Task<LstMessage> ItemNumDetailsAddUpdateAsync(LstItemDetails item); 
+        List<LstViewLocation> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse);
+        Task<LstMessage> BomGridDetailsUpdation(List<LstBomGridItems> LstBomGridItems);
         List<LstInquiry> InquiryDetails(InquiryRequestDetails request);
         List<LstSerial> ViewSerial(string itemsId, string secUsersId);
         List<LstSerial> ViewSerialWarehouse(string itemsId, string secUsersId, string warehouse);
@@ -115,7 +114,7 @@ namespace Aims.Core.Services
         /// Insert/Update the Item details from the Parent form into list_items table. If id is null, data will be added in the table. Data will be updated if id is not null. 
         /// </summary>
         /// <param name="LstItemDetails">Item Details</param>         
-        public async Task<string> ItemNumDetailsAddUpdateAsync(LstItemDetails item)
+        public async Task<LstMessage> ItemNumDetailsAddUpdateAsync(LstItemDetails item)
         {
             int actionFlag = 0;
             if (item.Id == null || item.Id == Guid.Empty)
@@ -193,7 +192,7 @@ namespace Aims.Core.Services
                 }
 
                 var hasRows = dataReader.Read();
-                return itemId;
+                return new LstMessage() { Message = itemId };
             }           
 
         }
@@ -202,47 +201,65 @@ namespace Aims.Core.Services
         /// API Service for Insert/Update/Delete Bom Item details in the items_bom table
         /// </summary>
         /// <param name="LstBomGridItems">Bom Item details</param>         
-        public LstMessage BomGridDetailsUpdation(List<LstBomGridItems> LstBomGridItems)
+        public async Task<LstMessage> BomGridDetailsUpdation(List<LstBomGridItems> itemsBOM)
         {
-            var bomUpdate = (dynamic)null;
-
-            foreach (var bomItem in LstBomGridItems)
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
             {
-                var bomItemsid = string.IsNullOrEmpty(bomItem.Id) ? Guid.Empty : new Guid(bomItem.Id.ToString());                              
+                for (int i = 0; i < itemsBOM.Count; i++)
+                {
+                    using (var command = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+                    {
+                        command.CommandText = "sp_maintain_item_bom5";
+                        command.CommandType = CommandType.StoredProcedure;
+                        conn.Open();
+                        try
+                        {                       
+                            command.Parameters.Add(new SqlParameter("@actionflag", itemsBOM[i].ActionFlag));
+                            command.Parameters.Add(new SqlParameter("@itemsid_parent", itemsBOM[i].Parent_ItemsId));
+                            command.Parameters.Add(new SqlParameter("@itemsid_child", itemsBOM[i].Child_ItemsId));
+                            command.Parameters.Add(new SqlParameter("@linenum", itemsBOM[i].LineNum));
+                            command.Parameters.Add(new SqlParameter("@quantity", itemsBOM[i].Quantity));
+                            command.Parameters.Add(new SqlParameter("@ref", itemsBOM[i].Ref));
+                            command.Parameters.Add(new SqlParameter("@comments", itemsBOM[i].Comments));
+                            command.Parameters.Add(new SqlParameter("@createdby", itemsBOM[i].Createdby));
+                            var itemsId = string.IsNullOrEmpty(itemsBOM[i].Id) ? Guid.Empty : new Guid(itemsBOM[i].Id);
+                            if (itemsId != Guid.Empty)
+                                command.Parameters.Add(new SqlParameter("@id", itemsBOM[i].Id));
+                            await command.ExecuteNonQueryAsync();
+                            command.Dispose();                      
+                        }
+                        catch (Exception ex)
+                        {
+                            //Log.ErrorLog(ex.Message, "Maintain : MaintainItemsBom");
+                        }
+                    }
 
-                bomUpdate = _amicsDbContext.LstMessage.FromSqlRaw($"exec sp_maintain_item_bom5 @actionflag='{bomItem.ActionFlag}',@id='{bomItemsid}',@itemsid_parent='{bomItem.Parent_ItemsId}',@itemsid_child='{bomItem.Child_ItemsId}',@linenum='{bomItem.LineNum}',@quantity='{bomItem.Quantity}',@ref='{bomItem.Ref}',@comments='{bomItem.Comments}',@createdby='{bomItem.Createdby}',@findno='{bomItem.FindNo}'").AsEnumerable().FirstOrDefault();
-            }           
-            return bomUpdate;
+                    conn.Close();
+                }
+            }
+            return new LstMessage() { Message = "Successfully Saved" };
         }
 
-        /// <summary>
-        /// API Service to get warehouse,location, somain, quantity & name details using below sql function        
-        /// </summary>
-        /// <param name="itemsId">Items Id</param> 
-        /// <param name="secUsersId">Sec_Users Id</param> 
-        public List<LstViewLocation> ViewLocation(string itemsId, string secUsersId)
-        {
-            var itmId = string.IsNullOrEmpty(itemsId) ? string.Empty : itemsId;
-            var usersId = string.IsNullOrEmpty(secUsersId) ? string.Empty : secUsersId;
-                        
-            var viewLocResult = _amicsDbContext.LstViewLocation.FromSqlRaw($"select * from fn_view_location_summary_essex('{itmId}','{usersId}')").ToList();
-            
-            return viewLocResult;
-        }
+        
         /// <summary>
         /// API Service to get location, somain, quantity & name details for given Warehouse
         /// </summary>
         /// <param name="itemsId">Items Id</param> 
         /// <param name="secUsersId">Sec_Users Id</param> 
         /// <param name="warehouse">Warehouse</param> 
-        public List<LstViewLocationWh> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse)
+        public List<LstViewLocation> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse)
         {
             var itmId = string.IsNullOrEmpty(itemsId) ? string.Empty : itemsId;
             var usersId = string.IsNullOrEmpty(secUsersId) ? string.Empty : secUsersId;
-
-            var viewLocResult = _amicsDbContext.LstViewLocationWh.FromSqlRaw($"select * from fn_view_location_summary_whs_essex('{itmId}','{usersId}','{warehouse}')").ToList();
-
-            return viewLocResult;
+            if (string.IsNullOrEmpty(warehouse)){
+                var viewLocResult = _amicsDbContext.LstViewLocation.FromSqlRaw($"select * from fn_view_location_summary_essex('{itmId}','{usersId}')").ToList();
+                return viewLocResult;
+            }
+            else {
+                var viewLocWhResult = _amicsDbContext.LstViewLocationWh.FromSqlRaw($"select * from fn_view_location_summary_whs_essex('{itmId}','{usersId}','{warehouse}')").ToList();
+                var viewLocResult = viewLocWhResult.Any()? viewLocWhResult.Select(r => new LstViewLocation() { Location = r.Location, Warehouse = "", Somain = r.Somain, Name = r.Name, Quantity = r.Quantity }).ToList(): new List<LstViewLocation>();
+                return viewLocResult;
+            }         
         }
 
         /// <summary>

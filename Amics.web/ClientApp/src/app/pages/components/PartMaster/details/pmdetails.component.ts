@@ -1,15 +1,14 @@
-import { ThisReceiver } from "@angular/compiler";
-import { Component, OnInit } from "@angular/core";
+import { ElementSchemaRegistry } from "@angular/compiler";
+import { Component } from "@angular/core";
 import notify from "devextreme/ui/notify";
 import { Guid } from "guid-typescript";
-import { Observable } from "rxjs";
 import { pmBomDetails } from "src/app/pages/models/pmBomDetails";
 import { BomAction, pmBomGridDetails } from "src/app/pages/models/pmBomGridDetails";
-import { CRUD, PmChildType } from "src/app/pages/models/pmChildType";
+import { CRUD, PmChildType, PopUpAction } from "src/app/pages/models/pmChildType";
 import { pmDetails } from "src/app/pages/models/pmdetails";
 import { pmPoDetails } from "src/app/pages/models/pmPoDetails";
 import { PMPOView } from "src/app/pages/models/pmpoview";
-import { pmSearch, pmItemSearchResult } from "src/app/pages/models/pmsearch";
+import { pmWHLocation } from "src/app/pages/models/pmWHLocation";
 import { ItemClass, ItemCode, ItemType, Uom } from "src/app/pages/models/searchModels";
 import { Warehouse, WarehouseLocation } from "src/app/pages/models/warehouse";
 import { SearchService } from "src/app/pages/services/search.service";
@@ -23,8 +22,10 @@ import { PartMasterDataTransService } from "../../../services/pmdatatransfer.ser
     styleUrls: ['./pmdetails.component.scss']
 })
 export class PMDetailsComponent {
+    secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
     warehouses: Warehouse[] = [];
     warehouseNames: string[] = [];
+    pmWHLocations: pmWHLocation[] = [];
     groupedLocations: any;
     groupedWarehouses: any;
     locations: WarehouseLocation[] = [];
@@ -40,13 +41,14 @@ export class PMDetailsComponent {
     uomList: Uom[] = [];
     yesButtonOptions: any;
     noButtonOptions: any;
-    popupVisible = false;
+    viewLocationPrintButtonOptions: any;
+    popupCopyBomVisible = false;
     pmBomDataSource: any;
     copyToNewClicked: boolean = false;
     toastVisible = false;
     toastType = 'info';
     toastMessage = '';
-
+    popupVLVisible = false;
 
     constructor(private searchService: SearchService, private pmdataTransfer: PartMasterDataTransService, private pmService: PartMasterService, private authService: AuthService) {
         this.childType = PmChildType;
@@ -54,7 +56,7 @@ export class PMDetailsComponent {
         this.yesButtonOptions = {
             text: 'Yes',
             onClick(e: any) {
-                that.popupVisible = false;
+                that.popupCopyBomVisible = false;
                 console.log('Yes to Copy Bom');
                 that.pmDetails.id = Guid.EMPTY;
                 that.pmDetails.itemNumber = '';
@@ -64,8 +66,16 @@ export class PMDetailsComponent {
         this.noButtonOptions = {
             text: 'No',
             onClick(e: any) {
-                that.popupVisible = false;
+                that.popupCopyBomVisible = false;
                 that.copyToNewClicked = false;
+            }
+
+        };
+        this.viewLocationPrintButtonOptions = {
+            text: 'Print',
+            onClick(e: any) {
+                that.popupVLVisible = false;
+
             }
 
         };
@@ -107,6 +117,7 @@ export class PMDetailsComponent {
             this.pmDetails = item;
             this.copyToNewClicked = false;
             this.updateWarehouseSelection(item.warehouse, true);
+            this.pmdataTransfer.isSerialSelected$.next(item.invType == 'SERIAL');
         });
         this.pmdataTransfer.selectedItemBomForPMDetails$.subscribe(boms => {
             this.bomDetails = boms;
@@ -117,7 +128,7 @@ export class PMDetailsComponent {
         })
 
         this.pmdataTransfer.itemSelectedChild$.subscribe(child => { this.selectedChild = child; });
-        this.pmdataTransfer.itemSelectedCRUD$.subscribe(crud => {
+        this.pmdataTransfer.selectedCRUD$.subscribe(crud => {
             if (crud === CRUD.Add) {
                 this.pmDetails = new pmDetails();
                 this.readOnly = false;
@@ -135,10 +146,30 @@ export class PMDetailsComponent {
                 this.readOnly = true;
             }
         });
-        this.pmdataTransfer.copyToNewSelected$.subscribe(e => this.popupVisible = true);
+        this.pmdataTransfer.selectedPopUpAction$.subscribe(popUp => {
+            console.log(popUp);
+            if (popUp === PopUpAction.UF) {
+
+            }
+            else if (popUp === PopUpAction.VL) {
+                this.popupVLVisible = true;
+                this.getLocations();
+
+            }
+            else if (popUp === PopUpAction.VS) {
+
+            } else if (popUp === PopUpAction.Print) {
+
+            }
+        });
+        this.pmdataTransfer.copyToNewSelected$.subscribe(e => this.popupCopyBomVisible = true);
     }
 
-
+    getLocations(wh: string = '') {
+        this.pmService.getViewWHLocation(this.pmDetails.id, this.secUserId, wh).subscribe(
+            x => this.pmWHLocations = x
+        )
+    }
 
     //  groupByKey = (list:any, key:any) => list.reduce((hash:any, obj:any) => ({...hash, [obj[key]]:( hash[obj[key]] || [] ).concat(obj)}), {})
     groupByKey(array: any, key: any) {
@@ -162,6 +193,16 @@ export class PMDetailsComponent {
             this.validLocationNames = locations.map(l => l.location);
         } else { this.validLocationNames = []; }
 
+    }
+
+    WarehouseLocationSelection(e: any) {
+        console.log(e);
+        if (e.value === null) {
+            this.getLocations('');
+        }
+        else {
+            this.getLocations(e.value);
+        }
     }
 
     submitButtonOptions = {
@@ -215,7 +256,7 @@ export class PMDetailsComponent {
         }
 
         if (anyErrors) {
-            notify({ message: msg ,shading:true, position:top}, "error", 1000);
+            notify({ message: msg, shading: true, position: top }, "error", 1000);
             // this.toastType = "error";
             // this.toastVisible = true;
             // this.toastMessage = msg;
@@ -240,29 +281,44 @@ export class PMDetailsComponent {
             notify({ message: "Invalid UOM", shading: true, position: top }, "error", 500);
         }
 
-        this.pmService.AddorUpdatePMDetails(this.pmDetails, uomid).subscribe(x => {
+        this.pmService.addorUpdatePMDetails(this.pmDetails, uomid).subscribe(x => {
             if (this.copyToNewClicked) {
-                this.pmService.getPartMaster(this.pmDetails.itemNumber, this.pmDetails.rev).subscribe((x) => {
-
-                    var boms = this.convertToNewBomGridDetails(x.id);
-                    this.pmService.AddUpdateDeleteBomDetails(boms).subscribe(b => { notify({ message: b, shading: true }, "success", 500) });
-
+                var boms = this.copyToNewBomGridDetails(x.message);
+                this.pmService.AddUpdateDeleteBomDetails(boms).subscribe(b => { notify({ message: b.message, shading: true, position: top }, "success", 500) }, err => {
+                    notify({ message: "error while saving bom", shading: true },
+                        "error", 1000)
                 });
             } else {
-                notify({ message: x, shading: true }, "success", 500)
+                notify({ message: "successfully saved", shading: true, position: top }, "success", 1000)
             }
-        });
+        },
+            (err) => { notify({ message: "error occurred while saving", shading: true }, "error", 500) });
     }
 
+    CreateBomGridDetails(bomD: pmBomDetails, action: BomAction) {
 
-    convertToNewBomGridDetails(parentId: string) {
+        var bom = new pmBomGridDetails();
+        bom.actionFlag = action;
+        bom.parent_ItemsId = bomD.itemsid_Parent.toString();
+        bom.child_ItemsId = bomD.itemsid_Child.toString();
+        bom.lineNum = bomD.lineNum;
+        bom.quantity = bomD.quantity.toFixed(2);
+        bom.ref = bomD.ref;
+        bom.findNo = bomD.findNo;
+        bom.comments = bomD.comments;
+        bom.createdby = this.authService.currentUser.toString();
+
+        return bom;
+    }
+    copyToNewBomGridDetails(parentId: string) {
         let bomGridDetails: pmBomGridDetails[] = [];
 
         for (var _i = 0, boms = this.bomDetails; _i < boms.length; _i++) {
             var bom = new pmBomGridDetails();
             bom.actionFlag = BomAction.Add;
             bom.parent_ItemsId = parentId;
-            bom.lineNum = _i;
+            bom.child_ItemsId = boms[_i].itemsid_Child.toString();
+            bom.lineNum = _i + 1;
             bom.quantity = boms[_i].quantity.toFixed(2);
             bom.ref = boms[_i].ref;
             bom.findNo = boms[_i].findNo;
@@ -275,7 +331,12 @@ export class PMDetailsComponent {
     }
 
     onDelete() {
-        this.pmService.DeletePM(this.pmDetails.itemNumber, this.pmDetails.rev).subscribe(x => console.log(x + " deleted"));
+        this.pmService.deletePMDetails(this.pmDetails.itemNumber, this.pmDetails.rev).subscribe(x => {
+            notify({ message: "deleted successfully", shading: true, position: top }, "error", 1000);
+            this.pmDetails = new pmDetails();
+            this.bomDetails = [];
+            this.poDetails = [];
+        });
     }
 
 }

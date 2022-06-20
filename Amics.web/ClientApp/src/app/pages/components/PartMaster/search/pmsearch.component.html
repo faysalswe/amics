@@ -24,14 +24,15 @@
     </div>
     <br />
     <div>
-        <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="itemNumber"
-            [columns]="['itemNumber', 'description']" [focusedRowEnabled]="true" [hoverStateEnabled]="true"
-              [rowAlternationEnabled]="true" [allowColumnResizing]="true"  
-            [selectedRowKeys]="[]" height="48vh" (onSelectionChanged)="onSelectionChanged($event)">
-            <dxo-load-panel [enabled]="false"></dxo-load-panel>
-            <dxo-scrolling mode="infinite"></dxo-scrolling>
-            <dxo-selection mode="single"></dxo-selection>
-
-        </dx-data-grid>
-    </div>   
+        <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
+            selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="48vh" [focusStateEnabled]="true"
+            (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom"> 
+            <div *dxTemplate="let item of 'item'">
+                <div>
+                    <div class="name">{{ item.itemNumber}}</div>
+                    <div class="description">{{ item.description }}</div>
+                </div>
+            </div>
+        </dx-list>
+    </div>
 </div>

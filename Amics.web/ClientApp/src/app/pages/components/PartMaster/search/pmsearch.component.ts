@@ -25,9 +25,12 @@ export class PMSearchComponent implements OnInit {
     itemCodeList: ItemCode[] = [];
     itemTypeList: ItemType[] = [];
 
-
+    selectedItem: any;
+    selectedItemNumber: string = '';
     constructor(private searchService: SearchService, private pmDataTransService: PartMasterDataTransService) {
+        this.search();
     }
+
 
     ngOnInit(): void {
         this.searchService.getItemClass('', '').subscribe(l => {
@@ -41,27 +44,30 @@ export class PMSearchComponent implements OnInit {
         this.searchService.getItemType('', '').subscribe(l => {
             this.itemTypeList = l;
         })
+
     }
 
 
     handleSubmit(e: any) {
         console.log(this.pmsearchInfo);
-        this.searchService.getItemNumberSearchResults(this.pmsearchInfo).subscribe(r => {
-            this.pmSearchResults = r;
-            if(this.pmSearchResults.length !==0)
-            {
-                this.pmDataTransService.selectedItemChanged(this.pmSearchResults[0], this.componentType);
-            }
-        });
-
+        this.search();
         e.preventDefault();
     }
-
+    search() {
+        this.searchService.getItemNumberSearchResults(this.pmsearchInfo).subscribe(r => {
+            this.pmSearchResults = r;
+            if (this.pmSearchResults.length !== 0) {
+                this.pmDataTransService.selectedItemChanged(this.pmSearchResults[0], this.componentType);
+                this.selectedItem = this.pmSearchResults[0];
+                this.selectedItemNumber = this.selectedItem.itemNumber;
+            }
+        });
+    }
     onSelectionChanged(e: any) {
         console.log(e);
-        var selectedItem = e.selectedRowsData[0];
-        console.log(selectedItem);
-
-        this.pmDataTransService.selectedItemChanged(selectedItem, this.componentType);
+        this.selectedItem = e.addedItems[0];
+        console.log(this.selectedItem);
+        this.selectedItemNumber = this.selectedItem.itemNumber;
+        this.pmDataTransService.selectedItemChanged(this.selectedItem, this.componentType);
     }
 }

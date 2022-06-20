@@ -1,12 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Guid } from 'guid-typescript';
+import { Observable } from 'rxjs';
 import { Company } from '../models/company';
 import { InquiryResponse, InquiryRequest } from '../models/inquiryRequest';
 import { pmBomDetails } from '../models/pmBomDetails';
 import { pmBomGridDetails } from '../models/pmBomGridDetails';
 import { pmDetails } from '../models/pmdetails';
 import { pmPoDetails } from '../models/pmPoDetails';
+import { pmWHLocation } from '../models/pmWHLocation';
 import { SearchService } from './search.service';
 
 const companies: Company[] = [{
@@ -70,6 +72,13 @@ export class PartMasterService {
   getPartMaster(itemNumber: string, rev: string) {
     return this.httpClient.get<pmDetails>(`${this.api}?itemnumber=${itemNumber}&rev=${rev}`);
   }
+  addorUpdatePMDetails(item: pmDetails, uomId: string): Observable<any> {
+    item.uomid = uomId;
+    return this.httpClient.post<string>(this.api, item);
+  }
+  deletePMDetails(itemNumber: string, rev: string): Observable<any> {
+    return this.httpClient.delete<string>(`${this.api}?itemnumber=${itemNumber}&rev=${rev}`);
+  }
   getInquiryDetails(request: InquiryRequest) {
     return this.httpClient.post<InquiryResponse[]>(`${this.api}/Inquiry`, request);
   }
@@ -77,17 +86,15 @@ export class PartMasterService {
     return this.httpClient.get<pmBomDetails[]>(`${this.api}/BomDetails?itemsId=${itemId}`);
   }
   AddUpdateDeleteBomDetails(pmBomGridDetailsList: pmBomGridDetails[]) {
-    return this.httpClient.post<string>(`${this.api}/BomDetails`, pmBomGridDetailsList);
+    return this.httpClient.post<any>(`${this.api}/BomDetails`, pmBomGridDetailsList);
   }
   getPoDetails(itemId: Guid) {
     return this.httpClient.get<pmPoDetails[]>(`${this.api}/PODetails?itemsId=${itemId}`);
   }
-  AddorUpdatePMDetails(item: pmDetails, uomId: string) {
-    item.uomid = uomId;
-    return this.httpClient.post<string>(this.api, item);
-  }
 
-  DeletePM(itemNumber: string, rev: string) {
-    return this.httpClient.delete<string>(`${this.api}?itemnumber=${itemNumber}&rev=${rev}`);
+  getViewWHLocation(itemId: string, userId: string, warehouse: string = ''): Observable<pmWHLocation[]> {
+
+    return this.httpClient.get<pmWHLocation[]>(`${this.api}/ViewWarehouseLocation?itemsId=${itemId}&secUsersId=${userId}&warehouse=${warehouse}`);
   }
+  
 }
