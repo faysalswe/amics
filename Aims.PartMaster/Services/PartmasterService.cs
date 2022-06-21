@@ -22,10 +22,8 @@ namespace Aims.Core.Services
         List<LstViewLocation> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse);
         Task<LstMessage> BomGridDetailsUpdation(List<LstBomGridItems> LstBomGridItems);
         List<LstInquiry> InquiryDetails(InquiryRequestDetails request);
-        List<LstSerial> ViewSerial(string itemsId, string secUsersId);
-        List<LstSerial> ViewSerialWarehouse(string itemsId, string secUsersId, string warehouse);
-        List<LstSerial> ViewSerialSerNo(string itemsId, string secUsersId, string warehouse, string serNo);
-        List<LstSerial> ViewSerialTagNo(string itemsId, string secUsersId, string warehouse, string tagNo);
+        List<LstSerial> ViewSerial(string itemsId, string secUsersId, string warehouse, string serNo, string tagNo);
+        List<LstNotes> ViewNotes(string parentId);
     }
     public class PartmasterService: IPartmasterService
     {
@@ -385,69 +383,39 @@ namespace Aims.Core.Services
         /// </summary>
         /// <param name="itemsId">Items Id</param> 
         /// <param name="secUsersId">Sec_Users Id</param> 
-        public List<LstSerial> ViewSerial(string itemsId, string secUsersId)
+        public List<LstSerial> ViewSerial(string itemsId, string secUsersId,string warehouse, string serNo, string tagNo)
         {
+            var viewSerialResult = (dynamic)null;
             var itmId = string.IsNullOrEmpty(itemsId) ? string.Empty : itemsId;
             var usersId = string.IsNullOrEmpty(secUsersId) ? string.Empty : secUsersId;
 
-            var viewLocResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where quantity > 0").ToList();
+            if ((warehouse == null || warehouse == "") && (serNo == null || serNo == "") && (tagNo == null || tagNo == ""))
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where quantity > 0").ToList();
+            else if ((warehouse != null || warehouse != "") && (serNo == null || serNo == "") && (tagNo == null || tagNo == ""))
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where warehouse='{warehouse}'").ToList();
+            else if ((warehouse == null || warehouse == "") && (serNo != null || serNo != "") && (tagNo == null || tagNo == ""))
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where serlot like '{serNo}%'").ToList();
+            else if ((warehouse != null || warehouse != "") && (serNo != null || serNo != "") && (tagNo == null || tagNo == ""))
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where serlot like '{serNo}%' and warehouse='{warehouse}'").ToList();
+            else if ((warehouse == null || warehouse == "") && (serNo == null || serNo == "") && (tagNo != null || tagNo != ""))
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where tagcol like '{tagNo}%'").ToList();
+            else if ((warehouse != null || warehouse != "") && (serNo == null || serNo == "") && (tagNo != null || tagNo != ""))
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where tagcol like '{tagNo}%' and warehouse='{warehouse}'").ToList();
 
-            return viewLocResult;
+            return viewSerialResult;
         }
 
         /// <summary>
-        /// API Service to get location, pomain,serial no, tag no, cost, quantity details for selected warehouse using below sql function           
+        /// API Service to load Notes details 
         /// </summary>
-        /// <param name="itemsId">Items Id</param> 
-        /// <param name="secUsersId">Sec_Users Id</param> 
-        public List<LstSerial> ViewSerialWarehouse(string itemsId, string secUsersId, string warehouse)
+        /// <param name="parentId">Items Id</param>        
+        public List<LstNotes> ViewNotes(string parentId)
         {
-            var itmId = string.IsNullOrEmpty(itemsId) ? string.Empty : itemsId;
-            var usersId = string.IsNullOrEmpty(secUsersId) ? string.Empty : secUsersId;
+            var itemsId = string.IsNullOrEmpty(parentId) ? Guid.Empty : new Guid(parentId.ToString());
 
-            var viewLocResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where warehouse='{warehouse}'").ToList();
+            var notesResult = _amicsDbContext.LstNotes.FromSqlRaw($"exec amics_sp_view_notes @itemsid='{itemsId}'").ToList();
 
-            return viewLocResult;
-        }
-
-        /// <summary>
-        /// API Service to get location, pomain,serial no, tag no, cost, quantity details for selected warehouse and serial no using below sql function           
-        /// </summary>
-        /// <param name="itemsId">Items Id</param> 
-        /// <param name="secUsersId">Sec_Users Id</param> 
-        public List<LstSerial> ViewSerialSerNo(string itemsId, string secUsersId, string warehouse, string serNo)
-        {
-            var serResult = (dynamic)null;
-            var itmId = string.IsNullOrEmpty(itemsId) ? string.Empty : itemsId;
-            var usersId = string.IsNullOrEmpty(secUsersId) ? string.Empty : secUsersId;
-
-            if (warehouse == null || warehouse == "")
-                serResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where serlot like '{serNo}'").ToList();
-            else
-                serResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where serlot like '{serNo}' and warehouse='{warehouse}'").ToList();
-
-            return serResult;
-        }
-
-        /// <summary>
-        /// API Service to get location, pomain,serial no, tag no, cost, quantity details for selected warehouse and tag no using below sql function           
-        /// </summary>
-        /// <param name="itemsId">Items Id</param> 
-        /// <param name="secUsersId">Sec_Users Id</param> 
-        /// <param name="warehouse">Warehouse</param> 
-        /// <param name="tagNo">Tag No</param> 
-        public List<LstSerial> ViewSerialTagNo(string itemsId, string secUsersId, string warehouse, string tagNo)
-        {
-            var tagResult = (dynamic)null;
-            var itmId = string.IsNullOrEmpty(itemsId) ? string.Empty : itemsId;
-            var usersId = string.IsNullOrEmpty(secUsersId) ? string.Empty : secUsersId;
-
-            if (warehouse == null || warehouse == "")
-                tagResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where tagcol like '{tagNo}'").ToList();
-            else
-                tagResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where tagcol like '{tagNo}' and warehouse='{warehouse}'").ToList();
-
-            return tagResult;
+            return notesResult;
         }
     }
 }
