@@ -49,4 +49,5 @@ namespace Aims.Core.Models
         public string SoMain { get; set; }      
     }
 
+
 }

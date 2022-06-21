@@ -48,6 +48,17 @@ namespace Aims.PartMaster.Services
 
         List<LstTransLog> TransLog(string FromDate, string ToDate, string Reason);
 
+
+        /// <summary>
+        ///Interface for get List next numbers for receiving.
+        /// </summary>      
+        TransNextNum TransNumberRec();
+
+        /// <summary>
+        ///Interface for execute receipt stored procedure and increase the quantity.
+        /// </summary> 
+        public LstMessage UpdateInvReceipt(InvReceipts InvReceipts);
+
     }
     public class InventoryService : IInventoryService
     {
@@ -118,27 +129,53 @@ namespace Aims.PartMaster.Services
             return ViewTransLog;
         }
 
-        //[WebMethod]
-        //[ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        //public string GetSoLinesId(string itemNumber, string Rev, string soMain)
-        //{
-        //    string soLinesId = "";
 
-        //    sqlConnection.Open();
-        //    sqlCommand = new SqlCommand("select id from so_lines where somainid = (select id from so_main where somain=@soMain) and itemsid = (select id from list_items where itemnumber=@itemNumber and rev = @rev)", sqlConnection);
-        //    sqlCommand.Parameters.Add("@itemNumber", itemNumber);
-        //    sqlCommand.Parameters.Add("@rev", Rev);
-        //    sqlCommand.Parameters.Add("@soMain", soMain);
+        /// <summary>
+        /// API Service for get List next numbers for receiving.
+        /// </summary>      
+        public TransNextNum TransNumberRec()
+        {            
+            var transnumResult = _amicsDbContext.dbxTransNextNum.FromSqlRaw($"exec sp_get_transnum").AsEnumerable().FirstOrDefault();
+            return transnumResult;
+        }
 
-        //    dataReader = sqlCommand.ExecuteReader();
-        //    if (dataReader.Read())
-        //    {
-        //        soLinesId = dataReader["id"].ToString();
-        //    }
-        //    sqlConnection.Close();
 
-        //    return soLinesId;
-        //}
+        /// <summary>
+        /// API Service for execute receipt stored procedure and increase the quantity.
+        /// </summary>   
+
+        public LstMessage UpdateInvReceipt(InvReceipts InvReceipts) {
+
+            var sourcesRefId = InvReceipts.SourcesRefId == null ? Guid.Empty :  InvReceipts.SourcesRefId;
+            var recExtedId = InvReceipts.ExtendedId == null ? Guid.Empty :  InvReceipts.ExtendedId;
+
+            var sql = $"exec sp_receipts_R5 @rec_sourcesrefid='{sourcesRefId}'";
+            sql += $",@rec_extedid='{recExtedId}'";
+            sql += $",@rec_source='{InvReceipts.Source}'";
+            sql += $",@rec_warehouse='{InvReceipts.Warehouse}'";
+            sql += $",@rec_location='{InvReceipts.Location}'";
+            sql += $",@rec_item='{InvReceipts.ItemNumber}'";
+            sql += $",@rec_rev='{InvReceipts.Rev}'";
+            sql += $",@rec_cost={InvReceipts.Cost}";
+            sql += $",@rec_quantity={InvReceipts.Quantity}";
+            sql += $",@rec_misc_reason='{InvReceipts.MiscReason}'";
+            sql += $",@rec_misc_ref='{InvReceipts.MiscRef}'";
+            sql += $",@rec_misc_source='{InvReceipts.MiscSource}'";
+            sql += $",@rec_notes='{InvReceipts.Notes}'";
+            sql += $",@rec_transdate='{InvReceipts.TransDate}'";
+            sql += $",@rec_user='{InvReceipts.User1}'";
+            sql += $",@rec_transnum='{InvReceipts.TransNum}'";
+            sql += $",@potype='{InvReceipts.PoType}'";
+            sql += $",@rec_account='{InvReceipts.RecAccount}'";
+            sql += $",@rec_packlist='{InvReceipts.RecPackList}'";
+            sql += $",@lic_plate_flag={InvReceipts.LicPlatFlage}";
+            sql += $",@rec_receiver={InvReceipts.ReceiverNum}";
+            sql += $",@user2='{InvReceipts.User2}'";
+
+
+            var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
+            return receiptResult;
+        }
 
     }
 }

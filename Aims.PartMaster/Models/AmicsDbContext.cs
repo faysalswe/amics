@@ -33,10 +33,12 @@ namespace Aims.Core.Models
         public DbSet<LstViewLocation> LstViewLocation { get; set; }
         public DbSet<LstBomGridItems> LstBomGridItems { get; set; }
         public DbSet<LstTransLog> ListTransLog { get; set; }
-
-        
         public DbSet<LstInquiry> LstInquiry { get; set; }
         public DbSet<LstSerial> LstSerial { get; set; }
+        public DbSet<TransNextNum> dbxTransNextNum { get; set; }
+        public DbSet<InvReceipts> dbxInvReceipts { get; set; }
+               
+
 
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)
@@ -49,6 +51,9 @@ namespace Aims.Core.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<InvReceipts>().HasNoKey();
+            modelBuilder.Entity<TransNextNum>().HasNoKey();
+
         }
     }
 }
