@@ -22,15 +22,6 @@ namespace Aims.Core.Services
         List<LstViewLocation> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse);
         Task<LstMessage> BomGridDetailsUpdation(List<LstBomGridItems> LstBomGridItems);
         List<LstInquiry> InquiryDetails(InquiryRequestDetails request);
-        List<LstSerial> ViewSerial(string itemsId, string secUsersId);
-        List<LstSerial> ViewSerialWarehouse(string itemsId, string secUsersId, string warehouse);
-        List<LstSerial> ViewSerialSerNo(string itemsId, string secUsersId, string warehouse, string serNo);
-        List<LstSerial> ViewSerialTagNo(string itemsId, string secUsersId, string warehouse, string tagNo);
-        LstMessage ItemNumDetailsAddUpdate(LstItemDetails item);
-        List<LstViewLocation> ViewLocation(string itemsId, string secUsersId);
-        List<LstViewLocationWh> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse);
-        LstMessage BomGridDetailsUpdation(List<LstBomGridItems> LstBomGridItems);
-        List<LstInquiry> InquiryDetails(InquiryRequestDetails request);      
         List<LstSerial> ViewSerial(string itemsId, string secUsersId, string warehouse, string serNo, string tagNo);
         List<LstNotes> ViewNotes(string parentId);
     }
