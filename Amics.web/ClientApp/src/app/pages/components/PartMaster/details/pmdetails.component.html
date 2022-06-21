@@ -1,19 +1,24 @@
 <div class="details-container content-block dx-card responsive-paddings">
     <div class="pmdetails-container ">
-        <dx-form [(formData)]="pmDetails" labelMode="floating" labelLocation="left" (submit)="handleSubmit($event)"
-            [readOnly]="readOnly">
+        <dx-form id="pmDetails" [(formData)]="pmDetails" labelMode="floating" labelLocation="left"
+            (submit)="handleSubmit($event)" [readOnly]="readOnly">
             <dxi-item itemType="group" [colCount]="2">
                 <dxi-item itemType="group" [colCount]="2">
-                    <dxi-item dataField="itemNumber" [colSpan]="1" [isRequired]="true"></dxi-item>
-                    <!-- <dxi-item dataField="itemType" [colSpan]="1" [label]="{ text: 'MFR' }"></dxi-item> -->
-                    <dxi-item dataField="itemType" editorType="dxLookup"
-                        [editorOptions]="{ label:'MFR',items: itemTypeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemtype', displayExpr:'itemtype', valueExpr:'itemtype', showClearButton:true, searchMode:'contains' }">
+                    <dxi-item dataField="itemNumber" [colSpan]="1">
+                        <dxi-validation-rule type="required" message="Part Number is required">
+                        </dxi-validation-rule>
+                    </dxi-item>
+
+                    <dxi-item dataField="itemType" editorType="dxLookup" [isRequired]="true"
+                        [editorOptions]="{ label:'MFR',items: itemTypeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemtype', displayExpr:'itemtype', valueExpr:'itemtype', searchMode:'contains' }">
+                        <dxi-validation-rule type="required" message="MFR is required"></dxi-validation-rule>
                     </dxi-item>
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="4">
                     <!-- <dxi-item dataField="uomref" [label]="{ text: 'UOM' }"></dxi-item> -->
-                    <dxi-item dataField="uomref" editorType="dxLookup"
-                        [editorOptions]="{ label:'UOM',items: uomList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'uom', displayExpr:'uom', valueExpr:'uom', showClearButton:true, searchMode:'contains'  }">
+                    <dxi-item dataField="uomref" editorType="dxLookup" [isRequired]="true"
+                        [editorOptions]="{ label:'UOM',items: uomList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'uom', displayExpr:'uom', valueExpr:'uom', searchMode:'contains'  }">
+                        <dxi-validation-rule type="required" message="UOM is required"></dxi-validation-rule>
                     </dxi-item>
                     <dxi-item dataField="leadTime" [label]="{ text: 'Maintenance(days)' }"></dxi-item>
                     <!-- <dxi-item dataField="itemClass" [colSpan]="1"></dxi-item> -->
@@ -32,9 +37,13 @@
 
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
-                    <dxi-item dataField="cost"></dxi-item>
+                    <dxi-item dataField="cost">
+                        <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+                    </dxi-item>
                     <dxi-item dataField="markup"></dxi-item>
-                    <dxi-item dataField="price"></dxi-item>
+                    <dxi-item dataField="price">
+                        <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+                    </dxi-item>
                 </dxi-item>
             </dxi-item>
             <dxi-item itemType="group" [colCount]="2">
@@ -42,24 +51,28 @@
                     <dxi-item>
                         <dx-lookup [items]="warehouseNames" [(value)]="pmDetails.warehouse" [placeholder]="warehouseLbl"
                             [label]="warehouseLbl" searchMode="contains" [minSearchLength]="1" [searchEnabled]="true"
-                            [showClearButton]="true" [showDataBeforeSearch]="true" [contentEditable]="!this.readOnly"
+                            [showDataBeforeSearch]="true" [contentEditable]="!this.readOnly"
                             (onValueChanged)="updateWarehouseSelection(this.pmDetails.warehouse)">
                             <dxo-drop-down-options [showTitle]="true"></dxo-drop-down-options>
+                            <dxi-validation-rule type="required" message="Warehouse is required"></dxi-validation-rule>
                         </dx-lookup>
+
                     </dxi-item>
                     <dxi-item>
                         <dx-lookup [items]="validLocationNames" [(value)]="pmDetails.location"
-                            [placeholder]="locationLbl" [label]="locationLbl" [searchEnabled]="true"
-                            [showClearButton]="true">
+                            [placeholder]="locationLbl" [label]="locationLbl" [searchEnabled]="true">
                             <dxo-drop-down-options [showTitle]="true"></dxo-drop-down-options>
+                            <dxi-validation-rule type="required" message="Location is required"></dxi-validation-rule>
                         </dx-lookup>
+
                     </dxi-item>
 
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
                     <dxi-item [colCount]="1" editorType="dxRadioGroup" [label]="{text: ' '}" dataField="invType"
-                        [editorOptions]=" {items: invTypes,   layout: 'horizontal' }"
+                        [isRequired]="true" [editorOptions]=" {items: invTypes,   layout: 'horizontal' }"
                         style="align-items:center;background-color: #F4F5F6;">
+                        <dxi-validation-rule type="required" message="Inv Type is required"></dxi-validation-rule>
                     </dxi-item>
                     <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass"
                         style="align-items:center;background-color: #F4F5F6;">
@@ -75,6 +88,16 @@
                     </dxi-item>
                 </dxi-item>
             </dxi-item>
+            <dxi-item itemType="group" [colCount]="2" [visible]="false">
+                <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonOptions"
+                    id="pmDetailsSubmit">
+                </dxi-item>
+            </dxi-item>
+            <dxi-item itemType="group" [colCount]="2" [visible]="false">
+                <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonOptions"
+                    id="pmDetailsSubmit">
+                </dxi-item>
+            </dxi-item>
         </dx-form>
     </div>
 </div>
@@ -84,10 +107,18 @@
         <ng-container *ngSwitchCase="childType.BOM">
             <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="id" height="54vh"
                 [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
-                [rowAlternationEnabled]="true">
+                [rowAlternationEnabled]="true" (onEditingStart)="logEvent('EditingStart')"
+                (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
+                (onRowInserted)="logEvent('RowInserted')" (onRowUpdating)="logEvent('RowUpdating')"
+                (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')"
+                (onRowRemoved)="logEvent('RowRemoved')" (onSaving)="logEvent('Saving')" (onSaved)="logEvent('Saved')"
+                (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')">
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
+                <dxo-editing mode="cell" refreshMode="full" [allowAdding]="true" [allowUpdating]="true"
+                    [allowDeleting]="true">
+                </dxo-editing>
                 <dxi-column dataField="lineNum" dataType="number"></dxi-column>
                 <dxi-column dataField="itemtype" dataType="string" caption="MFR."></dxi-column>
                 <dxi-column dataField="itemNumber" caption="Part Number" dataType="string"></dxi-column>
@@ -96,13 +127,22 @@
                 <dxi-column dataField="uomref" dataType="string"></dxi-column>
                 <dxi-column dataField="ref" dataType="string"></dxi-column>
                 <dxi-column dataField="comments" dataType="string"></dxi-column>
-                <dxi-column dataField="cost" dataType="number" format="currency"></dxi-column>
-                <dxi-column dataField="extCost" dataType="number" format="currency"></dxi-column>
+                <dxi-column dataField="cost" dataType="number" format="currency" [allowEditing]="false">
+                    <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+                </dxi-column>
+                <dxi-column dataField="extCost" dataType="number" format="currency" [allowEditing]="false">
+                    <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+                </dxi-column>
 
                 <dxo-summary>
-                    <dxi-total-item column="cost" summaryType="sum" displayFormat="{0}" valueFormat="currency">
+                    <dxi-total-item column="lineNum" summaryType="count"> </dxi-total-item>
+                    <dxi-total-item column="cost" summaryType="sum" valueFormat="currency">
+                        <dxo-format type="fixedPoint" [precision]="2">
+                        </dxo-format>
                     </dxi-total-item>
-                    <dxi-total-item column="extCost" summaryType="sum" displayFormat="{0}" valueFormat="currency">
+                    <dxi-total-item column="extCost" summaryType="sum" valueFormat="currency">
+                        <dxo-format type="fixedPoint" [precision]="2">
+                        </dxo-format>
                     </dxi-total-item>
                 </dxo-summary>
             </dx-data-grid>
@@ -122,15 +162,51 @@
     <div>
         <dx-popup [width]="400" [height]="150" [showTitle]="true" title="Do you like to copy BOM as well?"
             [dragEnabled]="false" [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
-            [(visible)]="popupVisible">
-            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center"  
-                [options]="yesButtonOptions">
+            [(visible)]="popupCopyBomVisible">
+            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" [options]="yesButtonOptions">
             </dxi-toolbar-item>
-            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" 
-                [options]="noButtonOptions">
+            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" [options]="noButtonOptions">
             </dxi-toolbar-item>
             <dxo-position at="center" my="center"> </dxo-position>
 
         </dx-popup>
+        <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
     </div>
+    <div>
+        <dx-popup [width]="800" [height]="800" [showTitle]="true" title="View Location" [dragEnabled]="false"
+            [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
+            [(visible)]="popupVLVisible">
+            <dx-lookup [items]="warehouseNames" [placeholder]="warehouseLbl" [showClearButton]="true" [width]="400"
+                [label]="warehouseLbl" searchMode="contains" [minSearchLength]="1" [searchEnabled]="true"
+                [showDataBeforeSearch]="true" [contentEditable]="!this.readOnly"
+                (onValueChanged)="WarehouseLocationSelection( $event)">
+                <dxo-drop-down-options [showTitle]="true"></dxo-drop-down-options>
+                <dxi-validation-rule type="required" message="Warehouse is required"></dxi-validation-rule>
+            </dx-lookup>
+
+            <br />
+
+            <dx-data-grid id="gridContainer" [dataSource]="pmWHLocations" keyExpr="location" height="54vh"
+                [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
+                [rowAlternationEnabled]="true">
+                <dxo-load-panel [enabled]="false"></dxo-load-panel>
+                <dxo-scrolling mode="infinite"></dxo-scrolling>
+                <dxo-selection mode="single"></dxo-selection>
+                <dxi-column dataField="warehouse" dataType="string"></dxi-column>
+                <dxi-column dataField="location" dataType="string"></dxi-column>
+                <dxi-column dataField="somain" caption="Equip Request" dataType="string"></dxi-column>
+                <dxi-column dataField="name" dataType="string" caption="Project Name"></dxi-column>
+                <dxi-column dataField="quantity" dataType="number"></dxi-column>
+
+            </dx-data-grid>
+
+            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="right"
+                [options]="viewLocationPrintButtonOptions">
+            </dxi-toolbar-item>
+            <dxo-position at="center" my="center"> </dxo-position>
+
+        </dx-popup>
+        <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
+    </div>
+
 </div>

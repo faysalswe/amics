@@ -1,22 +1,22 @@
 import { Guid } from "guid-typescript";
 
 export interface ItemClass {
-    id: Guid;
+    id: string;
     itemclass: string;
 }
 
 export interface ItemType {
-    id: Guid;
+    id: string;
     itemtype: string;
 }
 
 export interface ItemCode {
-    id: Guid;
+    id: string;
     itemcode: string;
 }
 
 export interface Uom {
-    id: Guid;
+    id: string;
     uom: string;
     purchasingUom: string;
     factor: number;

@@ -94,9 +94,9 @@ namespace Amics.Api.Controllers
         /// </summary>
         /// <param name="itemsId">Items Id</param>          
         [HttpPost, Route("")]
-        public LstMessage ItemDetailsAddUpdate([FromBody] LstItemDetails  pmItem)
-        {
-            var itemUpdate = _partMastService.ItemNumDetailsAddUpdate(pmItem);
+        public async Task<LstMessage> ItemDetailsAddUpdate([FromBody] LstItemDetails  pmItem)
+        { 
+            var itemUpdate = await _partMastService.ItemNumDetailsAddUpdateAsync(pmItem);
             return itemUpdate;
         }
 
@@ -104,24 +104,11 @@ namespace Amics.Api.Controllers
         /// API Route Controller for Insert/Update/Delete Bom Item details in the items_bom table
         /// </summary>        
         [HttpPost, Route("BomDetails")]
-        public LstMessage BomGridItemDetailsUpdation([FromBody] List<LstBomGridItems> LstBomGridItems)
+        public async Task<LstMessage> BomGridItemDetailsUpdation([FromBody] List<LstBomGridItems> LstBomGridItems)
         {
-            var BomGridUpdate = _partMastService.BomGridDetailsUpdation(LstBomGridItems);
+            var BomGridUpdate = await _partMastService.BomGridDetailsUpdation(LstBomGridItems);
 
             return BomGridUpdate;
-        }
-
-        /// <summary>
-        /// API Route Controller to get warehouse,location, somain, quantity & name details 
-        /// </summary>
-        /// <param name="itemsId">Items Id</param>          
-        /// /// <param name="secUsersId">SecUsers Id</param>          
-        [HttpGet, Route("ViewLocation")]
-        public IList<LstViewLocation> ViewLocation([FromQuery] string itemsId, [FromQuery] string secUsersId)
-        {
-            var getLocResult = _partMastService.ViewLocation(itemsId, secUsersId);
-
-            return getLocResult;
         }
 
         /// <summary>
@@ -130,8 +117,8 @@ namespace Amics.Api.Controllers
         /// <param name="itemsId">Items Id</param>          
         /// <param name="secUsersId">SecUsers Id</param>      
         /// <param name="warehouse">Warehouse</param>      
-        [HttpGet, Route("ViewLocationWarehouse")]
-        public IList<LstViewLocationWh> ViewLocationWarehouse([FromQuery] string itemsId, [FromQuery] string secUsersId, [FromQuery] string warehouse)
+        [HttpGet, Route("ViewWarehouseLocation")]
+        public IList<LstViewLocation> ViewWarehouseLocation([FromQuery] string itemsId, [FromQuery] string secUsersId, [FromQuery] string warehouse)
         {
             var getLocResult = _partMastService.ViewLocationWarehouse(itemsId, secUsersId,warehouse);
 
@@ -154,7 +141,7 @@ namespace Amics.Api.Controllers
         private InquiryRequestDetails getInquiryRequestDetails(InquiryRequest req)
         {
             var details = new InquiryRequestDetails();
-            details.Action = req.Action.ToString("d");
+            details.Action = req.Action;
             switch (req.Action)
             {
                 case InquiryActionType.ER:

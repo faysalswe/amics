@@ -1,5 +1,5 @@
 import {AfterViewInit, ChangeDetectorRef, Directive, ElementRef, Input} from "@angular/core";
-import {AppInitialDataService} from "../services/app.initial.data.service"; 
+import {AppInitialDataService} from "../services/app.initial.data.service";
 import SelectBox from "devextreme/ui/select_box";
 import TextBox from "devextreme/ui/text_box";
 import NumberBox from "devextreme/ui/number_box";
@@ -18,12 +18,12 @@ export class AddLabelDirective implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    var data = this.appInitDataService.getData();
+    var data = this.appInitDataService.getLabel();
     var result = new Map(data.map(i => [i.labelNumber, i.myLabel]));
     var myLabel = result.get(this.labelNumber);
 
     if (myLabel !== null && myLabel !== 'undefined') {
-      console.log(this.elementRef.nativeElement.tagName);
+      // console.log(this.elementRef.nativeElement.tagName);
       if (this.elementRef.nativeElement.tagName === "DX-SELECT-BOX") {
         let selectBox = SelectBox.getInstance(this.elementRef.nativeElement) as SelectBox;
         selectBox.option("label", myLabel);

@@ -1,7 +1,7 @@
 import { Guid } from "guid-typescript";
 
 export class pmDetails {
-    id: Guid = Guid.createEmpty();
+    id: string = Guid.EMPTY ;
     itemNumber: string = '';
     rev: string = '';
     dwgNo: string = '';
@@ -64,6 +64,6 @@ export class pmDetails {
     user13: string = '';
     user14: string = '';
     user15: string = '';
-    uomid: Guid= Guid.createEmpty();
+    uomid: string = Guid.EMPTY;
     constructor() { }
 }

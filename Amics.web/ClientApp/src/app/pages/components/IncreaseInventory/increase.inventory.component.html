@@ -1,28 +1,37 @@
 <div class="container-fluid m-1">
-  <div class="row" style="margin-right: 15px;">
+  <div class="row" style="margin-right: 15px">
     <!-- LEFT SEARCH PANEL STARTS-->
-    <div class="col-3" style="border: 1px solid #eee;background-color: white;padding: 0px!important;">
+    <div
+      class="col-3"
+      style="
+        border: 1px solid #eee;
+        background-color: white;
+        padding: 0px !important;
+      "
+    >
       <app-pmsearch [componentType]="componentType"></app-pmsearch>
     </div>
     <!-- LEFT SEARCH PANEL ENDS-->
 
     <!-- RIGHT CONTENT PANEL STARTS-->
-    <div class="col-9" style="background-color: white;">
-      <div class="row p-2" style="border-bottom: 2px solid #eee;">
-        <h3 style="padding-bottom: 0px;margin-bottom: 0px;">
-          <span style="color: darkgrey">PN : {{pmDetails?.itemNumber}}</span> / {{pmDetails?.description}}</h3>
-        <app-inventory-status [itemsId]="itemsId" [secUserId]="secUserId"></app-inventory-status>
+    <div class="col-9" style="background-color: white">
+      <div class="row p-2" style="border-bottom: 2px solid #eee">
+        <h3 style="padding-bottom: 0px; margin-bottom: 0px">
+          <span style="color: darkgrey">PN : {{ pmDetails?.itemNumber }}</span>
+          / {{ pmDetails?.description }}
+        </h3>
+        <app-inventory-status
+          [itemsId]="itemsId"
+          [secUserId]="secUserId"
+        ></app-inventory-status>
       </div>
       <div class="row">
-
         <div class="col-12">
-
           <div class="row">
             <div id="form-container">
               <dx-form id="form" [colCount]="3">
-
                 <!-- Quantity Starts  -->
-                <dxi-item [colSpan]="1">
+                <dxi-item [colSpan]="1" *ngDisplayLabel="100">
                   <dx-number-box
                     [value]="1"
                     [showSpinButtons]="true"
@@ -30,7 +39,8 @@
                     [labelMode]="'floating'"
                     [elementAttr]="{ class: 'myclass' }"
                     [inputAttr]="{ id: 'quantityId' }"
-                    [ngAddLabel]="labelMap.quan_num">
+                    [ngAddLabel]="labelMap.quan_num"
+                  >
                     <dxi-button
                       name="prevDate"
                       location="after"
@@ -47,9 +57,9 @@
                 <!-- Quantity Ends  -->
 
                 <!-- Unit Cost Starts  -->
-                <dxi-item [colSpan]="1">
+                <dxi-item [colSpan]="1" *ngDisplayLabel="optionIdMap.unitCost">
                   <dx-text-box
-                    value="{{pmDetails.cost}}"
+                    value="{{ pmDetails.cost }}"
                     width="100%"
                     [ngAddLabel]="labelMap.unitCost_num"
                     placeholder="Type..."
@@ -62,7 +72,6 @@
                       location="after"
                       [options]="currencyIcon"
                     ></dxi-button>
-
                   </dx-text-box>
                 </dxi-item>
                 <!-- Unit Cost Ends  -->
@@ -70,6 +79,7 @@
                 <!-- Reason Code Starts  -->
                 <dxi-item [colSpan]="1">
                   <dx-select-box
+                    width="100%"
                     [items]="reasonsStr"
                     [value]="defaultReason"
                     [searchEnabled]="true"
@@ -81,40 +91,42 @@
                 </dxi-item>
                 <!-- Reason Code Ends  -->
 
-
                 <!-- Transaction Date Starts  -->
-                <dxi-item [colSpan]="1">
+                <dxi-item [colSpan]="1" style="margin-top: 20px">
                   <dx-date-box
                     [value]="todayDate"
                     [ngAddLabel]="labelMap.txnDate_num"
                     placeholder="Select..."
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
+                    style="margin-top: 10px"
                   ></dx-date-box>
                 </dxi-item>
                 <!-- Transaction Date Ends  -->
 
                 <!-- Warehouse Search Starts  -->
-                <dxi-item [colSpan]="1">
+                <dxi-item [colSpan]="1" style="margin-top: 20px">
                   <dx-select-box
                     [ngAddLabel]="labelMap.warehouse_num"
                     [items]="warehousesStr"
-                    value="{{pmDetails?.warehouse}}"
+                    value="{{ pmDetails?.warehouse }}"
                     [searchEnabled]="true"
                     (onValueChanged)="updateSelectedWarehouse($event)"
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
                     placeholder="Search"
+                    style="width: 100%"
                   ></dx-select-box>
                 </dxi-item>
                 <!-- Warehouse Search Ends  -->
 
                 <!-- Location Search Starts  -->
-                <dxi-item [colSpan]="1">
+                <dxi-item [colSpan]="1" style="margin-top: 20px">
                   <dx-select-box
+                    width="100%"
                     [ngAddLabel]="labelMap.location_num"
                     [items]="locationsStr"
-                    value="{{pmDetails?.location}}"
+                    value="{{ pmDetails?.location }}"
                     [searchEnabled]="true"
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
@@ -124,7 +136,7 @@
                 <!-- Location Search Ends  -->
 
                 <!-- Source Starts  -->
-                <dxi-item [colSpan]="1">
+                <dxi-item [colSpan]="1" style="margin-top: 20px">
                   <dx-text-box
                     [value]="defaultSource"
                     width="100%"
@@ -134,12 +146,17 @@
                     [labelMode]="'floating'"
                   ></dx-text-box>
 
-                  <dx-check-box [value]="true" text="Remember" class="mt-1" style="font-size: 10px"></dx-check-box>
+                  <dx-check-box
+                    [value]="true"
+                    text="Remember"
+                    class="mt-1"
+                    style="font-size: 10px"
+                  ></dx-check-box>
                 </dxi-item>
                 <!-- Source Ends  -->
 
                 <!-- Ref Starts  -->
-                <dxi-item [colSpan]="1">
+                <dxi-item [colSpan]="1" style="margin-top: 20px">
                   <dx-text-box
                     [value]="defaultRef"
                     width="100%"
@@ -150,14 +167,20 @@
                     [labelMode]="'floating'"
                   ></dx-text-box>
 
-                  <dx-check-box [value]="true" text="Remember" class="mt-1" style="font-size: 10px"></dx-check-box>
+                  <dx-check-box
+                    [value]="true"
+                    text="Remember"
+                    class="mt-1"
+                    style="font-size: 10px"
+                  ></dx-check-box>
                 </dxi-item>
                 <!-- Ref Ends  -->
 
                 <!-- User or ER Starts  -->
-                <dxi-item [colSpan]="1">
+                <dxi-item [colSpan]="1" style="margin-top: 20px">
                   <dx-select-box
                     label="ER"
+                    width="100%"
                     [ngAddLabel]="labelMap.er_num"
                     [items]="ersStr"
                     [value]="er"
@@ -171,8 +194,8 @@
                 <!-- User or ER Ends  -->
 
                 <!-- Notes Starts  -->
-                <dxi-item [colSpan]="2">
-                  <dx-text-area
+                <dxi-item [colSpan]="2" style="margin-top: 20px;">
+                  <!-- <dx-text-area
                     value="Olivia loves to sell. She has been selling DevAV products since 2012."
                     width="100%"
                     placeholder="Type..."
@@ -180,12 +203,14 @@
                     [ngAddLabel]="labelMap.notes_num"
                     [stylingMode]="'underlined'"
                     [labelMode]="'floating'"
-                  ></dx-text-area>
+                  ></dx-text-area> -->
+                  <label>Notes</label>
+                  <textarea style="width: 100%;"></textarea>
                 </dxi-item>
                 <!-- Notes Ends  -->
 
                 <!-- Slider Starts  -->
-                <dxi-item [colSpan]="1">
+                <!-- <dxi-item [colSpan]="1">
                   <dx-linear-gauge class="gauge-element" [value]="70">
                     <dxo-value-indicator type="circle" color="#ff0000"></dxo-value-indicator>
                     <dxo-title text="On Hand - 70">
@@ -217,45 +242,50 @@
                       ></dxi-range>
                     </dxo-range-container>
                   </dx-linear-gauge>
-                </dxi-item>
+                </dxi-item> -->
                 <!-- Slider Ends  -->
-
               </dx-form>
             </div>
 
             <div class="row p-0" style="display: flex">
               <span style="flex: 1 1 0"></span>
               <dx-button
-                stylingMode="outlined"
+                stylingMode="contained"
                 text="Update"
                 type="default"
-                style="width: 150px;"
+                style="width: 150px"
               ></dx-button>
 
               <dx-button
-                stylingMode="outlined"
+                stylingMode="contained"
                 text="Exit"
                 type="default"
-                style="width: 150px;"
+                style="width: 150px"
               ></dx-button>
             </div>
-
           </div>
         </div>
 
-        <div class="m-1">
-          <dx-data-grid id="gridContainer" [dataSource]="pmpoviewArray" keyExpr="ID"
-                        [columns]="['Part Number', 'Quantity', 'Cost', 'Transaction Date', 'Location', 'Warehouse']"
-                        [showBorders]="true">
+        <div class="m-3">
+          <dx-data-grid
+            id="gridContainer"
+            [dataSource]="pmpoviewArray"
+            keyExpr="ID"
+            [columns]="[
+              'Part Number',
+              'Quantity',
+              'Cost',
+              'Transaction Date',
+              'Location',
+              'Warehouse'
+            ]"
+            [showBorders]="true"
+          >
           </dx-data-grid>
         </div>
-
       </div>
       <div class="row"></div>
     </div>
     <!-- RIGHT CONTENT PANEL ENDS-->
   </div>
-
 </div>
-
-

@@ -81,7 +81,28 @@ namespace Amics.Api.Controllers
             return resultTransLog;
         }
 
+        /// <summary>
+        /// API Route Controller to get List next numbers for receiving.
+        /// </summary>        
+     
+        [HttpGet, Route("getTransNumberRec")]
+        public TransNextNum GetTransNumberRec()
+        {
+            var resultTransLog = _inventoryService.TransNumberRec();
+            return resultTransLog;
+        }
 
+
+        /// <summary>
+        /// API Route Controller for execute receipt stored procedure and increase the quantity
+        /// </summary>        
+        [HttpPost, Route("UpdateReceipt")]
+        public LstMessage UpdateInvReceipt([FromBody] InvReceipts InvReceipts)
+        {
+            var BomGridUpdate = _inventoryService.UpdateInvReceipt(InvReceipts);
+
+            return BomGridUpdate;
+        }
 
     }
 }

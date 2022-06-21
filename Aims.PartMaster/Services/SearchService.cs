@@ -177,11 +177,11 @@ namespace Aims.PartMaster.Services
         /// <param name="itemclass">Itemclass</param>   
         public List<LstItemSearch> ItemNumberSearch(string itemnumber, string description, string itemtype, string itemcode, string itemclass)
         {
-            var itmnumber = string.IsNullOrEmpty(itemnumber) ? string.Empty : itemnumber;
+            var itmnumber = (string.IsNullOrEmpty(itemnumber) || itemtype == "null") ? string.Empty : itemnumber;
             var desc = string.IsNullOrEmpty(description) ? string.Empty : description;
-            var itmtype = string.IsNullOrEmpty(itemtype) ? string.Empty : itemtype;
-            var itmcode = string.IsNullOrEmpty(itemcode) ? string.Empty : itemcode;
-            var itmclass = string.IsNullOrEmpty(itemclass) ? string.Empty : itemclass;
+            var itmtype = (string.IsNullOrEmpty(itemtype)|| itemtype =="null") ? string.Empty : itemtype;
+            var itmcode = (string.IsNullOrEmpty(itemcode) || itemtype == "null") ? string.Empty : itemcode;
+            var itmclass = (string.IsNullOrEmpty(itemclass) || itemtype == "null")? string.Empty : itemclass;
 
             var searchresult = _amicsDbContext.LstItemSearchs
                 .FromSqlRaw($"exec sp_webservice_search_items5 @item='{itmnumber}',@description='{desc}',@itemtype='{itmtype}',@itemclass='{itmclass}',@itemcode='{itmcode}'")

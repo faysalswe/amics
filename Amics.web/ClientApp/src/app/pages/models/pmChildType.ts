@@ -13,3 +13,10 @@ export enum CRUD {
     Delete = 'Delete',
     Cancel = 'Cancel',
 }
+
+export enum PopUpAction {
+    UF = 'UserFields',
+    VL = 'ViewLocation',
+    VS = 'ViewSerial',
+    Print = 'Print',
+}

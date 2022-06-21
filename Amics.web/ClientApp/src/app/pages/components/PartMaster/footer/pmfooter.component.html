@@ -37,13 +37,16 @@
     </dx-button-group>
   </dxi-item>
   <dxi-item [ratio]="1">
-    <dxi-item itemType="group" [colCount]="3" style="text-align: right;padding-right: 15px;">
+    <dxi-item itemType="group" [colCount]="4" style="text-align: right;padding-right: 15px;">
 
       <dx-button stylingMode="contained" text="View Locations" type="default" [visible]="true"
-        (onClick)="logpmActions2SelectionChanged('View Locations')">
+        (onClick)="logpmActions2SelectionChanged('ViewLocation')">
+      </dx-button> &nbsp;
+      <dx-button stylingMode="contained" text="View SN" type="default" [visible]="showViewSN"
+        (onClick)="logpmActions2SelectionChanged('ViewSerial')">
       </dx-button> &nbsp;
       <dx-button stylingMode="contained" text="Preview/Print" type="default" [visible]="true"
-        (onClick)="logpmActions2SelectionChanged('Preview/Print')">
+        (onClick)="logpmActions2SelectionChanged('Print')">
       </dx-button>
     </dxi-item>
     <dx-button-group [items]="pmActions1" stylingMode="contained" type="default" selectionMode="single" keyExpr="text"

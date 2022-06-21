@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Subject, switchMap } from "rxjs";
 import { ComponentType } from "../models/componentType";
-import { CRUD, PmChildType } from "../models/pmChildType";
+import { CRUD, PmChildType, PopUpAction } from "../models/pmChildType";
 import { pmItemSearchResult } from "../models/pmsearch";
 import { PartMasterService } from "./partmaster.service";
 
@@ -15,14 +15,16 @@ export class PartMasterDataTransService {
     private itemSelectedSubjectForPMScreen$ = new Subject<pmItemSearchResult>();
     private itemSelectedSubjectForIncInvScreen$ = new Subject<pmItemSearchResult>();
     public itemSelectedChild$ = new Subject<PmChildType>();
-    public itemSelectedCRUD$ = new Subject<CRUD>();
+    public selectedCRUD$ = new Subject<CRUD>();
+    public selectedPopUpAction$ = new Subject<PopUpAction>();
     public copyToNewSelected$ = new Subject<any>();
+    public isSerialSelected$ = new Subject<any>();
 
     selectedItemChanged(selectedProductId: pmItemSearchResult, componentType: ComponentType): void {
         if (componentType === ComponentType.PartMaster) {
             if (!!selectedProductId) {
                 this.itemSelectedSubjectForPMScreen$.next(selectedProductId);
-                this.itemSelectedCRUD$.next(CRUD.Edit);
+                this.selectedCRUD$.next(CRUD.Edit);
             }
         }
         else if (componentType === ComponentType.IncreaseInventory) {
@@ -42,7 +44,14 @@ export class PartMasterDataTransService {
     selectedCRUDActionChanged(selectedCRUD: CRUD, componentType: ComponentType): void {
         if (componentType === ComponentType.PartMaster) {
             if (!!selectedCRUD) {
-                this.itemSelectedCRUD$.next(selectedCRUD);
+                this.selectedCRUD$.next(selectedCRUD);
+            }
+        }
+    }
+    selectedPopUpActionChanged(selectedAction: PopUpAction, componentType: ComponentType): void {
+        if (componentType === ComponentType.PartMaster) {
+            if (!!selectedAction) {
+                this.selectedPopUpAction$.next(selectedAction);
             }
         }
     }
