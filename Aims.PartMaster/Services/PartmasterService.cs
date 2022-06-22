@@ -17,7 +17,7 @@ namespace Aims.Core.Services
         List<LstItemsBom> LoadItemsBom(string parentItemId);
         List<LstItemsPO> LoadItemsPO(string parentId);
         LstBomCount ItemsBomCount(string parentId);
-        LstMessage ItemNumDelete(string itemNo, string rev);
+        Task<List<string>> ItemNumDelete(string itemNo, string rev);
         Task<LstMessage> ItemNumDetailsAddUpdateAsync(LstItemDetails item); 
         List<LstViewLocation> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse);
         Task<LstMessage> BomGridDetailsUpdation(List<LstBomGridItems> LstBomGridItems);
@@ -97,14 +97,40 @@ namespace Aims.Core.Services
         /// </summary>
         /// <param name="itemNo">Item Number</param> 
         /// <param name="Rev">Rev</param> 
-        public LstMessage ItemNumDelete(string itemNo, string rev)
+        public async Task<List<string>> ItemNumDelete(string itemNo, string rev)
         {
             var itemNum = string.IsNullOrEmpty(itemNo) ? string.Empty : itemNo;            
             var revDef = string.IsNullOrEmpty(rev) ? "-" : rev;
-
+            List<string> messages = new List<string>();
             var deleteMsg = _amicsDbContext.LstMessage.FromSqlRaw($"exec sp_delete_list_items5 @item='{itemNum}',@rev='{revDef}'").AsEnumerable().FirstOrDefault();
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "sp_delete_list_items5";
+                    conn.Open();
 
-            return deleteMsg;
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.Parameters.Add(new SqlParameter("@item", itemNo));
+                    sqlCommand.Parameters.Add(new SqlParameter("@rev", rev));
+                    var dataReader = await sqlCommand.ExecuteReaderAsync();
+
+                    while (await dataReader.ReadAsync())
+                    {
+                        messages.Add(dataReader["message"].ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //Log.ErrorLog(ex.Message, "Lookup : GetDeleteMessages");
+                }
+                finally
+                {
+                    conn.Close();
+                }               
+             }
+            return messages;
         }
 
         /// <summary>
@@ -122,8 +148,8 @@ namespace Aims.Core.Services
 
             var itemsid = (item.Id == null || item.Id == Guid.Empty) ? Guid.Empty : item.Id;          
             var uomid = (item.Uomid == null || item.Uomid == Guid.Empty) ? Guid.Empty : item.Uomid;
-
-            using(var conn = _amicsDbContext.Database.GetDbConnection())          
+            var revDef = string.IsNullOrEmpty(item.Rev) ? "-" : item.Rev;
+            using (var conn = _amicsDbContext.Database.GetDbConnection())          
             using (var command = _amicsDbContext.Database.GetDbConnection().CreateCommand())
             {
                 command.CommandText = "sp_maintain_partmaster25";
@@ -132,7 +158,7 @@ namespace Aims.Core.Services
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.Add(new SqlParameter("@actionflag", actionFlag));
                 command.Parameters.Add(new SqlParameter("@itemnumber", item.ItemNumber));
-                command.Parameters.Add(new SqlParameter("@rev", item.Rev));
+                command.Parameters.Add(new SqlParameter("@rev", revDef));
                 command.Parameters.Add(new SqlParameter("@dwgno", item.DwgNo));
                 command.Parameters.Add(new SqlParameter("@itemtypeidv", item.ItemType));
                 command.Parameters.Add(new SqlParameter("@invtypeidv", item.InvType));
@@ -178,7 +204,7 @@ namespace Aims.Core.Services
                 returnValue.Direction = System.Data.ParameterDirection.ReturnValue;
                 command.Parameters.Add(returnValue);
                 await command.ExecuteNonQueryAsync();
-               await  command.DisposeAsync();
+                await  command.DisposeAsync();
 
                 var command2 = _amicsDbContext.Database.GetDbConnection().CreateCommand();
                 command2.CommandText = "select id from list_items where itemnumber='" + item.ItemNumber + "' and rev='" + item.Rev + "'";
@@ -190,6 +216,7 @@ namespace Aims.Core.Services
                 }
 
                 var hasRows = dataReader.Read();
+                conn.Close();
                 return new LstMessage() { Message = itemId };
             }           
 
@@ -230,9 +257,13 @@ namespace Aims.Core.Services
                         {
                             //Log.ErrorLog(ex.Message, "Maintain : MaintainItemsBom");
                         }
+                        finally
+                        {
+                            conn.Close();
+                        }
                     }
 
-                    conn.Close();
+                   
                 }
             }
             return new LstMessage() { Message = "Successfully Saved" };
@@ -370,7 +401,8 @@ namespace Aims.Core.Services
                
                 }
                 finally
-                { 
+                {
+                    conn.Close();
                 }
             }
             return ItemList.ToList();

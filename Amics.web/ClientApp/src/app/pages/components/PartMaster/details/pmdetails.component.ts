@@ -32,6 +32,7 @@ export class PMDetailsComponent {
     validLocationNames: string[] = [];
     bomDetails: pmBomDetails[] = [];
     poDetails: pmPoDetails[] = [];
+    reasonsDelete: string[] = [];
     selectedChild: PmChildType = PmChildType.BOM;
     childType: typeof PmChildType;
     readOnly: boolean = true;
@@ -41,9 +42,12 @@ export class PMDetailsComponent {
     uomList: Uom[] = [];
     yesButtonOptions: any;
     noButtonOptions: any;
+    yesDeleteButtonOptions: any;
+    noDeleteButtonOptions: any;
     viewLocationPrintButtonOptions: any;
     popupCopyBomVisible = false;
-    pmBomDataSource: any;
+    popupDeleteVisible = false;
+    popupDeleteMessages = false;
     copyToNewClicked: boolean = false;
     toastVisible = false;
     toastType = 'info';
@@ -69,16 +73,31 @@ export class PMDetailsComponent {
                 that.popupCopyBomVisible = false;
                 that.copyToNewClicked = false;
             }
+        };
 
+        this.yesDeleteButtonOptions = {
+            text: 'Yes',
+            onClick(e: any) {
+                that.popupDeleteVisible = false;
+                console.log('Yes to Delete partnumber');
+                that.onDelete();
+            },
+        };
+        this.noDeleteButtonOptions = {
+            text: 'No',
+            onClick(e: any) {
+                that.popupDeleteVisible = false;
+                that.copyToNewClicked = false;
+            }
         };
         this.viewLocationPrintButtonOptions = {
             text: 'Print',
             onClick(e: any) {
                 that.popupVLVisible = false;
-
             }
 
         };
+        this.onReorder = this.onReorder.bind(this);
     }
     logEvent(eventName: any) {
         console.log(eventName);
@@ -142,7 +161,8 @@ export class PMDetailsComponent {
                 this.onSave();
                 this.readOnly = true;
             } else if (crud === CRUD.Delete) {
-                this.onDelete();
+                // this.onDelete();
+                this.popupDeleteVisible = true;
                 this.readOnly = true;
             } else {
                 this.readOnly = true;
@@ -330,13 +350,27 @@ export class PMDetailsComponent {
 
         return bomGridDetails;
     }
+    onReorder(e: any) {
 
+        const visibleRows = e.component.getVisibleRows();
+        const toIndex = this.bomDetails.indexOf(visibleRows[e.toIndex].data);
+        const fromIndex = this.bomDetails.indexOf(e.itemData);
+
+        this.bomDetails.splice(fromIndex, 1);
+        this.bomDetails.splice(toIndex, 0, e.itemData);
+    }
     onDelete() {
         this.pmService.deletePMDetails(this.pmDetails.itemNumber, this.pmDetails.rev).subscribe(x => {
-            notify({ message: "deleted successfully", shading: true, position: top }, "error", 1000);
-            this.pmDetails = new pmDetails();
-            this.bomDetails = [];
-            this.poDetails = [];
+            if (x.length === 0) {
+                notify({ message: "deleted successfully", shading: true, position: top }, "success", 1000);
+                this.pmDetails = new pmDetails();
+                this.bomDetails = [];
+                this.poDetails = [];
+            } else {
+                this.reasonsDelete = x;
+                this.popupDeleteMessages = true;
+            }
+
         });
     }
 

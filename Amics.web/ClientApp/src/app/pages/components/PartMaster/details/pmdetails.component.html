@@ -1,4 +1,12 @@
 <div class="details-container content-block dx-card responsive-paddings">
+    <div style="border-bottom: 2px solid #eee;padding-bottom: 10px;background-color: #F0E78C;">
+        <h3 style="padding-bottom: 0px; margin-bottom: 0px">
+            <span style="color: darkgrey">PN : {{ pmDetails.itemNumber }}</span>
+            / {{ pmDetails?.description }}
+        </h3>
+        <app-inventory-status [itemsId]="pmDetails.itemNumber" [secUserId]="secUserId"></app-inventory-status>
+    </div>
+    <br/>
     <div class="pmdetails-container ">
         <dx-form id="pmDetails" [(formData)]="pmDetails" labelMode="floating" labelLocation="left"
             (submit)="handleSubmit($event)" [readOnly]="readOnly">
@@ -109,14 +117,15 @@
                 [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
                 [rowAlternationEnabled]="true" (onEditingStart)="logEvent('EditingStart')"
                 (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
-                (onRowInserted)="logEvent('RowInserted')" (onRowUpdating)="logEvent('RowUpdating')"
-                (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')"
+                (onRowInserted)="logEvent('RowInserted')" (onRowRemoving)="logEvent('RowRemoving')"
                 (onRowRemoved)="logEvent('RowRemoved')" (onSaving)="logEvent('Saving')" (onSaved)="logEvent('Saved')"
                 (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')">
+                <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true">
+                </dxo-row-dragging>
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
-                <dxo-editing mode="cell" refreshMode="full" [allowAdding]="true" [allowUpdating]="true"
+                <dxo-editing mode="cell" refreshMode="full" [allowAdding]="true" [allowUpdating]="false"
                     [allowDeleting]="true">
                 </dxo-editing>
                 <dxi-column dataField="lineNum" dataType="number"></dxi-column>
@@ -173,6 +182,19 @@
         <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
     </div>
     <div>
+        <dx-popup [width]="400" [height]="150" [showTitle]="true" title="Are you sure want to delete?"
+            [dragEnabled]="false" [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
+            [(visible)]="popupDeleteVisible">
+            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" [options]="yesDeleteButtonOptions">
+            </dxi-toolbar-item>
+            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" [options]="noDeleteButtonOptions">
+            </dxi-toolbar-item>
+            <dxo-position at="center" my="center"> </dxo-position>
+
+        </dx-popup>
+        <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
+    </div>
+    <div>
         <dx-popup [width]="800" [height]="800" [showTitle]="true" title="View Location" [dragEnabled]="false"
             [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
             [(visible)]="popupVLVisible">
@@ -204,9 +226,20 @@
                 [options]="viewLocationPrintButtonOptions">
             </dxi-toolbar-item>
             <dxo-position at="center" my="center"> </dxo-position>
-
+        </dx-popup>
+    </div>
+    <div>
+        <dx-popup [width]="400" [height]="500" [showTitle]="true" title="Reason could not delete" [dragEnabled]="false"
+            [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
+            [(visible)]="popupDeleteMessages">
+            <dxo-position at="center" my="center"> </dxo-position>
+            <dx-list #grid id="gridContainer" [dataSource]="reasonsDelete" [hoverStateEnabled]="true"
+                selectionMode="none" pageLoadMode="scrollBottom">
+                <div *dxTemplate="let item of 'item'">
+                    {{ item}}
+                </div>
+            </dx-list>
         </dx-popup>
         <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
     </div>
-
 </div>

@@ -22,12 +22,12 @@ import { ResponsiveComponent } from './pages/components/PartMaster/responsive/re
 import { IncreaseInventoryComponent } from './pages/components/IncreaseInventory/increase.inventory.component';
 import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
 import { InventoryStatusComponent } from './pages/components/InventoryStatus/inventory.status.component';
-import { AddLabelDirective } from './shared/directives/add.label.directive';
 import { AppInitialDataService } from './shared/services/app.initial.data.service';
 import { SerialDocumentsComponent } from './pages/components/serial-documents/serial-documents.component';
 import { ChangeSerialComponent } from './pages/components/change-serial/change-serial.component';
 import { ReportsComponent } from './pages/components/reports/reports.component';
 import { MdatComponent } from './pages/components/mdat/mdat.component';
+import { SharedModule } from './shared/shared.module';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -50,8 +50,8 @@ export function appEnvironmentFactory(
     HostComponent,
     ResponsiveComponent,
     IncreaseInventoryComponent,
-    InquiryComponent, InventoryStatusComponent,
-    AddLabelDirective, SerialDocumentsComponent,
+    InquiryComponent,
+    SerialDocumentsComponent,
     ChangeSerialComponent,
     ReportsComponent,
     MdatComponent,
@@ -71,7 +71,7 @@ export function appEnvironmentFactory(
     AppRoutingModule,
     DevExpressModule,
     HttpClientModule,
-    PartMasterModule,
+    PartMasterModule, SharedModule
   ],
   providers: [
     {
