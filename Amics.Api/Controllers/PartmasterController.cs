@@ -195,5 +195,17 @@ namespace Amics.Api.Controllers
 
             return vwNotesResult;
         }
+        /// <summary>
+        /// API Route Controller for Add/Update/Delete Notes in the list_notes_general table for item number
+        /// </summary> 
+        /// <param name="LstNotes">Notes details</param>    
+        /// <param name="user">user</param>    
+        [HttpPost, Route("NotesUpdate")]
+        public LstMessage NotesUpdate([FromBody] List<LstNotes> LstNotes, string user)
+        {
+            var NotesUpdate = _partMastService.NotesUpdation(LstNotes, user);
+
+            return NotesUpdate;
+        }
     }
 }

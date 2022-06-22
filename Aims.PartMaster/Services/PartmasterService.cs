@@ -24,7 +24,9 @@ namespace Aims.Core.Services
         List<LstInquiry> InquiryDetails(InquiryRequestDetails request);
         List<LstSerial> ViewSerial(string itemsId, string secUsersId, string warehouse, string serNo, string tagNo);
         List<LstNotes> ViewNotes(string parentId);
+        LstMessage NotesUpdation(List<LstNotes> notesLst, string user);
     }
+
     public class PartmasterService: IPartmasterService
     {
         private readonly AmicsDbContext _amicsDbContext;
@@ -438,7 +440,7 @@ namespace Aims.Core.Services
         }
 
         /// <summary>
-        /// API Service to load Notes details 
+        /// API Service to load Notes details for item number
         /// </summary>
         /// <param name="parentId">Items Id</param>        
         public List<LstNotes> ViewNotes(string parentId)
@@ -449,5 +451,27 @@ namespace Aims.Core.Services
 
             return notesResult;
         }
+
+
+        /// <summary>
+        /// API Service to add/update/delete notes for item number
+        /// </summary>
+        /// <param name="LstNotes">Notes details</param>        
+        /// <param name="user">user</param>        
+        public LstMessage NotesUpdation(List<LstNotes> notesLst, string user)
+        {
+            var notesResult = (dynamic)null;
+            foreach (var notes in notesLst)
+            {
+                var notesId = (notes.Id == null || notes.Id == Guid.Empty) ? Guid.Empty : notes.Id;
+
+                if ((notesId == null || notesId == Guid.Empty) && (notes.ActionFlag == 0))
+                    notes.ActionFlag = 1;
+
+                notesResult = _amicsDbContext.LstMessage.FromSqlRaw($"exec sp_maintain_notes_general5 @actionflag='{notes.ActionFlag}', @parentid='{notes.ParentId}',@linenum='{notes.LineNum}',@notesref='{notes.NotesRef}', @notes='{notes.Notes}',@createdby='{user}',@id='{notesId}'").AsEnumerable().FirstOrDefault();
+            }
+            return notesResult;
+        }
+
     }
 }

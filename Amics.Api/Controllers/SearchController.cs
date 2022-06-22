@@ -125,18 +125,6 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Route Controller to get list field properties information, pass labelNum as parameter.
-        /// </summary>        
-        /// <param name="labelNum">Label Number</param>           
-        [HttpGet, Route("Label")]
-        public IList<LstFieldProperties> GetListFieldProperties(string labelNum)
-        {
-            var fieldPropResult = _partMasterService.LoadFieldProperties(labelNum);
-
-            return fieldPropResult;
-        }
-
-        /// <summary>
         /// API Route Controller for get item's information, Must pass ItemsId or ItemNumber as parameter Rev is optional
         /// </summary>
         /// <param name="ItemsId">The ItemsId of the data.</param>
@@ -164,20 +152,5 @@ namespace Amics.Api.Controllers
             var resCode = _partMasterService.ReasonCodes(ReasonCode, CodeFor);
             return resCode;
         }
-
-
-        /// <summary>
-        /// API Route Controller for get Company Options. Use this options for show or hide the fields or set default request globally 
-        /// </summary>
-        /// <param name="OptionId">Integer value as a parameter.</param>
-        /// <param name="ScreenName">Get options by screen name if it is global, parameter value should be 'GENERAL' </param>
-
-        [HttpGet, Route("GetCompanyOptions")]
-        public IList<LstCompanyOptions> GetCompanyOptions([FromQuery] decimal OptionId, [FromQuery] string ScreenName)
-        {
-            var companyOptions = _partMasterService.CompanyOptions(OptionId, ScreenName);
-            return companyOptions;
-        }
-
     }
 }

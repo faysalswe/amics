@@ -81,7 +81,7 @@ namespace Amics.Api
             services.AddScoped<ISearchService, SearchService>();
             services.AddScoped<IPartmasterService, PartmasterService>();
             services.AddScoped<IInventoryService, InventoryService>();
-
+            services.AddScoped<IConfigService, ConfigService>();
 
             services.AddHealthChecks();
             services.AddSession(options =>
