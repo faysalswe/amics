@@ -6,6 +6,6 @@ namespace Amics.Api.Model
     {
         public InquiryActionType Action { get; set; }
         public string SearchText { get; set; }
-        public Guid User { get; set; }
+        public string User { get; set; }
     }
 }

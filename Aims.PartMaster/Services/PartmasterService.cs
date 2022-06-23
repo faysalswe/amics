@@ -45,11 +45,166 @@ namespace Aims.Core.Services
             var itemNum = string.IsNullOrEmpty(itemNumber) ? string.Empty : itemNumber;
             var revDef = string.IsNullOrEmpty(rev) ? "-" : rev;
             
-            //The code above should resolve the error.
-            var itemresult = _amicsDbContext.LstItemDetails
-                .FromSqlRaw($"exec sp_webservice_load_partmaster5 @item ='{itemNum}',@rev = '{revDef}'").AsEnumerable().FirstOrDefault();
+       
+            LstItemDetails itemDetails = new LstItemDetails();
+            Utility util = new Utility();
+            string strCurr = string.Empty;
+            string strQty = string.Empty;
 
-            return itemresult;
+            //CompanyOptions CompOptions = (CompanyOptions)HttpContext.Current.Session["CompanyOptions"];
+
+            //if (CompOptions != null)
+            //{
+            //    strCurr = util.ReturnZeros(CompOptions.DecimalsinCurrency);
+            //    strQty = util.ReturnZeros(CompOptions.DecimalsinInventory);
+            //}
+            //else
+            //{
+                strCurr = util.ReturnZeros(2);
+                strQty = util.ReturnZeros(2);
+            //}
+
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "sp_webservice_load_partmaster5";
+                  
+                    sqlCommand.CommandType = CommandType.StoredProcedure;  
+                    
+                    sqlCommand.Parameters.Add(new SqlParameter("@item", itemNum));
+                    sqlCommand.Parameters.Add(new SqlParameter("@rev", revDef));
+
+                    conn.Open();
+
+                    var dataReader = sqlCommand.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        //LstObjListItems ItemListings = new LstObjListItems();
+                        itemDetails.Id = dataReader["id"].ToString().Trim();
+                        itemDetails.ItemNumber = dataReader["itemnumber"].ToString().Trim();
+                        itemDetails.Rev = dataReader["rev"].ToString().Trim();
+                        itemDetails.DwgNo = dataReader["dwgno"].ToString().Trim();
+
+                        itemDetails.Description = dataReader["description"].ToString().Trim();
+                        itemDetails.SalesDescription = dataReader["SalesDescription"].ToString().Trim();
+                        itemDetails.PurchaseDescription = dataReader["PurchaseDescription"].ToString().Trim();
+
+                        itemDetails.ItemType = dataReader["itemtype"].ToString().Trim();
+                        itemDetails.ItemClass = dataReader["itemclass"].ToString().Trim();
+                        itemDetails.ItemCode = dataReader["itemcode"].ToString().Trim();
+
+                        if ((dataReader["cost"] != DBNull.Value) || (dataReader["cost"].ToString() != ""))
+                        {
+                            itemDetails.Cost = Convert.ToDecimal(String.Format("{0:0." + strCurr + "}", dataReader["cost"]));
+                        }
+                        if ((dataReader["markup"] != DBNull.Value) || (dataReader["markup"].ToString() != ""))
+                        {
+                            itemDetails.Markup = Convert.ToDecimal(dataReader["markup"].ToString());
+                        }
+                        if ((dataReader["price"] != DBNull.Value) || (dataReader["price"].ToString() != ""))
+                        {                         
+                            itemDetails.Price = Convert.ToDecimal(String.Format("{0:0." + strCurr + "}", dataReader["price"]));
+                        }
+                        if ((dataReader["price2"] != DBNull.Value) || (dataReader["price2"].ToString() != ""))
+                        {
+                            itemDetails.Price2 = Convert.ToDecimal(dataReader["price2"].ToString());
+                        }
+                        if ((dataReader["price3"] != DBNull.Value) || (dataReader["price3"].ToString() != ""))
+                        {
+                            itemDetails.Price3 = Convert.ToDecimal(dataReader["price3"].ToString());
+                        }
+                        if ((dataReader["weight"] != DBNull.Value) || (dataReader["weight"].ToString() != ""))
+                        {
+                            itemDetails.Weight = Convert.ToDouble(dataReader["weight"].ToString());
+                        }
+
+
+                        itemDetails.Uomref = dataReader["uomref"].ToString().Trim();
+                        itemDetails.Purchasing_Uom = dataReader["Purchasing_UOM"].ToString().Trim();
+
+                        if ((dataReader["conversion"] != DBNull.Value) || (dataReader["conversion"].ToString() != ""))
+                        {
+                            itemDetails.Conversion = Convert.ToDecimal(dataReader["conversion"].ToString());
+                        }
+
+                        if ((dataReader["leadtime"] != DBNull.Value) || (dataReader["leadtime"].ToString() != ""))
+                        {
+                            itemDetails.LeadTime = Convert.ToDouble(dataReader["leadtime"].ToString());
+                        }
+
+                        if ((dataReader["minimum"] != DBNull.Value) || (dataReader["minimum"].ToString() != ""))
+                        {
+                            itemDetails.Minimum = Convert.ToDouble(dataReader["minimum"].ToString());
+                        }
+
+                        if ((dataReader["maximum"] != DBNull.Value) || (dataReader["maximum"].ToString() != ""))
+                        {
+
+                            itemDetails.Maximum = Convert.ToDouble(dataReader["maximum"].ToString());
+                        }
+
+                        itemDetails.GLSales = dataReader["glsales"].ToString().Trim();
+                        itemDetails.GLInv = dataReader["glinv"].ToString().Trim();
+                        itemDetails.GLCOGS = dataReader["glcogs"].ToString().Trim();
+
+                        itemDetails.Warehouse = dataReader["warehouse"].ToString().Trim();
+                        itemDetails.Location = dataReader["location"].ToString().Trim();
+                        itemDetails.InvType = dataReader["InvType"].ToString().Trim();
+
+                        if (dataReader["userbit"] != DBNull.Value)
+                            itemDetails.UserBit = Convert.ToBoolean(dataReader["userbit"]);
+
+                        if (dataReader["buyitem"] != DBNull.Value)
+                            itemDetails.BuyItem = Convert.ToBoolean(dataReader["buyitem"]);
+
+                        if (dataReader["obsolete"] != DBNull.Value)
+                            itemDetails.Obsolete = Convert.ToBoolean(dataReader["obsolete"]);
+
+
+                        //taa
+                        if (dataReader["userbit"] != DBNull.Value)
+                            itemDetails.UserBit = Convert.ToBoolean(dataReader["userbit"]); 
+
+                        //createpo
+                        if (dataReader["userbit2"] != DBNull.Value)
+                            itemDetails.UserBit2 = Convert.ToBoolean(dataReader["userbit2"]);
+
+                        
+                        itemDetails.Quantity = Convert.ToDouble(String.Format("{0:0." + strQty + "}", dataReader["quantity"]));
+
+                        itemDetails.Notes = dataReader["notes"].ToString().Trim();
+
+                        itemDetails.User1 = dataReader["user1"].ToString().Trim();
+                        itemDetails.User2 = dataReader["user2"].ToString().Trim();
+                        itemDetails.User3 = Convert.ToDouble(dataReader["user3"].ToString().Trim());
+                        itemDetails.User4 = dataReader["user4"].ToString().Trim();
+                        itemDetails.User5 = dataReader["user5"].ToString().Trim();
+                        itemDetails.User6 = dataReader["user6"].ToString().Trim();
+                        itemDetails.User7 = dataReader["user7"].ToString().Trim();
+                        itemDetails.User8 = dataReader["user8"].ToString().Trim();
+                        itemDetails.User9 = dataReader["user9"].ToString().Trim();
+                        itemDetails.User10 = dataReader["user10"].ToString().Trim();
+                        itemDetails.User11 = dataReader["user11"].ToString().Trim();
+                        itemDetails.User12 = dataReader["user12"].ToString().Trim();
+                        itemDetails.User13 = dataReader["user13"].ToString().Trim();
+                        itemDetails.User14 = dataReader["user14"].ToString().Trim();
+                        itemDetails.User15 = dataReader["user15"].ToString().Trim();
+                         
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //Log.ErrorLog(ex.Message, "Search : LoadPartmaster");
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+            return itemDetails;
         }
 
         /// <summary>
@@ -104,7 +259,7 @@ namespace Aims.Core.Services
             var itemNum = string.IsNullOrEmpty(itemNo) ? string.Empty : itemNo;            
             var revDef = string.IsNullOrEmpty(rev) ? "-" : rev;
             List<string> messages = new List<string>();
-            var deleteMsg = _amicsDbContext.LstMessage.FromSqlRaw($"exec sp_delete_list_items5 @item='{itemNum}',@rev='{revDef}'").AsEnumerable().FirstOrDefault();
+          
             using (var conn = _amicsDbContext.Database.GetDbConnection())
             using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
             {
@@ -143,12 +298,12 @@ namespace Aims.Core.Services
         public async Task<LstMessage> ItemNumDetailsAddUpdateAsync(LstItemDetails item)
         {
             int actionFlag = 0;
-            if (item.Id == null || item.Id == Guid.Empty)
+            if (string.IsNullOrEmpty(item.Id))
                 actionFlag = 1;
             else
                 actionFlag = 2;
 
-            var itemsid = (item.Id == null || item.Id == Guid.Empty) ? Guid.Empty : item.Id;          
+            var itemsid = (string.IsNullOrEmpty(item.Id)) ? Guid.Empty.ToString() : item.Id;          
             var uomid = (item.Uomid == null || item.Uomid == Guid.Empty) ? Guid.Empty : item.Uomid;
             var revDef = string.IsNullOrEmpty(item.Rev) ? "-" : item.Rev;
             using (var conn = _amicsDbContext.Database.GetDbConnection())          
@@ -169,7 +324,7 @@ namespace Aims.Core.Services
                 command.Parameters.Add(new SqlParameter("@description", item.Description));
                 command.Parameters.Add(new SqlParameter("@SalesDescription", item.SalesDescription));
                 command.Parameters.Add(new SqlParameter("@PurchaseDescription", item.PurchaseDescription));
-                command.Parameters.Add(new SqlParameter("@cost", item.Cost));
+                command.Parameters.Add(new SqlParameter("@cost", Convert.ToDouble(item.Cost)));
                 command.Parameters.Add(new SqlParameter("@markup", item.Markup));
                 command.Parameters.Add(new SqlParameter("@price", item.Price));
                 command.Parameters.Add(new SqlParameter("@price2", item.Price2));
@@ -323,7 +478,8 @@ namespace Aims.Core.Services
                      
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.Parameters.Add(new SqlParameter("@part", sp_inquiry.ItemNumber));
-                    sqlCommand.Parameters.Add(new SqlParameter("@er", sp_inquiry.LotNo));
+                    sqlCommand.Parameters.Add(new SqlParameter("@er", sp_inquiry.ER));
+                    sqlCommand.Parameters.Add(new SqlParameter("@lotno", sp_inquiry.LotNo));
                     sqlCommand.Parameters.Add(new SqlParameter("@serial", sp_inquiry.Serial));
                     sqlCommand.Parameters.Add(new SqlParameter("@tag", sp_inquiry.Tag));
                     sqlCommand.Parameters.Add(new SqlParameter("@location", sp_inquiry.Location));

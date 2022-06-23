@@ -1,14 +1,11 @@
-﻿using Aims.Core.Models;
-using Aims.Inventory.Models;
+﻿using Aims.Core.Models; 
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
-using System.Linq;
-using Amics.Core.utils;
+using System.Collections.Generic; 
+using System.Linq; 
 using Aims.PartMaster.Models;
+using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace Aims.PartMaster.Services
 {
@@ -170,12 +167,75 @@ namespace Aims.PartMaster.Services
             var itmtype = (string.IsNullOrEmpty(itemtype)|| itemtype =="null") ? string.Empty : itemtype;
             var itmcode = (string.IsNullOrEmpty(itemcode) || itemtype == "null") ? string.Empty : itemcode;
             var itmclass = (string.IsNullOrEmpty(itemclass) || itemtype == "null")? string.Empty : itemclass;
+            string strCurr = string.Empty;
+         
+            Utility util = new Utility();
+            var listItems = new List<LstItemSearch>();
 
-            var searchresult = _amicsDbContext.LstItemSearchs
-                .FromSqlRaw($"exec sp_webservice_search_items5 @item='{itmnumber}',@description='{desc}',@itemtype='{itmtype}',@itemclass='{itmclass}',@itemcode='{itmcode}'")
-                .ToList<LstItemSearch>();
+            //CompanyOptions CompOptions = (CompanyOptions)HttpContext.Current.Session["CompanyOptions"];
 
-            return searchresult;
+            //if (CompOptions != null)
+            //{
+            //    strCurr = util.ReturnZeros(CompOptions.DecimalsinCurrency);
+
+            //}
+            //else
+            //{
+            strCurr = util.ReturnZeros(2);
+
+            //}
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand .CommandText = "sp_webservice_search_items5";
+                    conn.Open(); 
+                   sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.Parameters.Add(new SqlParameter("@item", itmnumber));
+                    sqlCommand.Parameters.Add(new SqlParameter("@description", desc));
+                    sqlCommand.Parameters.Add(new SqlParameter("@itemtype", itmtype));
+                    sqlCommand.Parameters.Add(new SqlParameter("@itemclass", itmclass));
+                    sqlCommand.Parameters.Add(new SqlParameter("@itemcode", itmcode));
+                 
+
+                    var dataReader = sqlCommand.ExecuteReader();
+
+                        while (dataReader.Read())
+                        {
+                             LstItemSearch ItemListings = new LstItemSearch();
+                            ItemListings.Id = dataReader["id"].ToString().Trim();
+                            ItemListings.ItemNumber = dataReader["itemnumber"].ToString().Trim();
+                            ItemListings.Rev = dataReader["rev"].ToString().Trim();
+                            ItemListings.Description = dataReader["description"].ToString().Trim();
+                            ItemListings.ItemType = dataReader["itemtype"].ToString().Trim();
+                            ItemListings.ItemClass = dataReader["itemclass"].ToString().Trim();
+                            ItemListings.ItemCode = dataReader["itemcode"].ToString().Trim();
+                            ItemListings.Uomref = dataReader["uomref"].ToString().Trim();
+                            ItemListings.DwgNo = dataReader["dwgno"].ToString().Trim();
+
+                            if ((dataReader["cost"] != DBNull.Value) || (dataReader["cost"].ToString() != ""))
+                            { 
+                                ItemListings.Cost = Convert.ToDecimal(String.Format("{0:0." + strCurr + "}", dataReader["cost"]));
+                            }
+
+                            if ((dataReader["conversion"] != DBNull.Value) || (dataReader["conversion"].ToString() != ""))
+                            {
+                                ItemListings.Conversion = Convert.ToDecimal(dataReader["conversion"]);
+                            }
+                        listItems.Add(ItemListings);
+                        }
+                    }
+                catch (Exception ex)
+                {
+                    //Log.ErrorLog(ex.Message, "Search : SearchListItems");
+                }
+                finally
+                {
+                    conn.Close();
+                } }
+
+            return listItems;
         }
 
         /// <summary>

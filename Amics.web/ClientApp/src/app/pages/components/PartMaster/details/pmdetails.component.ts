@@ -1,4 +1,4 @@
-import { ElementSchemaRegistry } from "@angular/compiler";
+
 import { Component } from "@angular/core";
 import notify from "devextreme/ui/notify";
 import { Guid } from "guid-typescript";
@@ -358,6 +358,16 @@ export class PMDetailsComponent {
 
         this.bomDetails.splice(fromIndex, 1);
         this.bomDetails.splice(toIndex, 0, e.itemData);
+        if (fromIndex < toIndex) {
+            for (let i = fromIndex; i < toIndex; i++) {
+                this.bomDetails[i].lineNum = this.bomDetails[i].lineNum - 1;
+            }
+        } else {
+            for (let i = fromIndex; i > toIndex; i--) {
+                this.bomDetails[i].lineNum = this.bomDetails[i].lineNum + 1;
+            }
+        }
+        this.bomDetails[toIndex].lineNum = toIndex + 1;
     }
     onDelete() {
         this.pmService.deletePMDetails(this.pmDetails.itemNumber, this.pmDetails.rev).subscribe(x => {

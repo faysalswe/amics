@@ -52,7 +52,7 @@ export class InquiryComponent implements OnInit {
   searchInquiryDetails() {
     this.inquiryRequest.action = this.action;
     this.inquiryRequest.searchText = this.searchText;
-    this.inquiryRequest.user = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
+    this.inquiryRequest.user = 'admin';
     this.pmService.getInquiryDetails(this.inquiryRequest).subscribe(response => {
       this.inquiryResponseDetails = response;
       console.log(response);

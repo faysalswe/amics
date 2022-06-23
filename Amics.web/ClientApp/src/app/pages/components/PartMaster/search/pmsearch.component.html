@@ -26,7 +26,8 @@
     <div>
         <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
             selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="48vh" [focusStateEnabled]="true"
-            (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom"> 
+            (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom"
+            (keyDown)="onSelectionChanged($event)">
             <div *dxTemplate="let item of 'item'">
                 <div>
                     <div class="name">{{ item.itemNumber}}</div>
