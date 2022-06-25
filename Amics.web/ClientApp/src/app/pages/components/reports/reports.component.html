@@ -18,23 +18,11 @@
     </div>
     <div *dxTemplate="let report of 'item'">
       <div class="tabpanel-item">
-        <br />
-        <br />
-        <dx-data-grid
-          id="gridContainer"
-          [dataSource]="report.items"
-          keyExpr="reportId"
-          height="50vh"
-          [showBorders]="true"
-          [focusedRowEnabled]="true"
-          [hoverStateEnabled]="true"
-          [rowAlternationEnabled]="true"
-          [allowColumnResizing]="true"
-          [selectedRowKeys]="[]"
-          height="50vh"
-          (onSelectionChanged)="onSelectionChanged($event)"
-          [columns]="['reportId', 'reportName', 'description']"
-        >
+        <br /> <br />
+        <dx-data-grid id="gridContainer" [dataSource]="report.items" keyExpr="reportId" height="50vh"
+          [showBorders]="true" [focusedRowEnabled]="true" [hoverStateEnabled]="true" [rowAlternationEnabled]="true"
+          [allowColumnResizing]="true" [selectedRowKeys]="[]" height="50vh"
+          (onSelectionChanged)="onSelectionChanged($event)" [columns]="['reportId','reportName', 'description']">
           <dxo-load-panel [enabled]="false"></dxo-load-panel>
           <dxo-selection mode="single"></dxo-selection>
         </dx-data-grid>
@@ -43,16 +31,8 @@
   </dx-tab-panel>
 </div>
 
-<dx-popup
-  [width]="600"
-  [height]="500"
-  [showTitle]="true"
-  [dragEnabled]="false"
-  [closeOnOutsideClick]="true"
-  [showCloseButton]="true"
-  container=".dx-viewport"
-  [(visible)]="popupVisible_101_104"
->
+<dx-popup [width]="600" [height]="500" [showTitle]="true" [dragEnabled]="false" [closeOnOutsideClick]="true"
+  [showCloseButton]="true" container=".dx-viewport" [(visible)]="popupVisible_101_104">
   <h3>Filters</h3>
 
   <dx-form id="form" [colCount]="2" labelMode="floating">
@@ -184,8 +164,7 @@
         valueExpr: 'warehouse',
         showClearButton: true,
         searchMode: 'contains'
-      }"
-    >
+  }">
     </dxi-item>
     <dxi-item>
       <br />
@@ -345,6 +324,6 @@
           </dx-button>
         </dxi-item>
       </dx-form>
-      
 
+  
 </dx-popup>
