@@ -28,6 +28,7 @@ import { ChangeSerialComponent } from './pages/components/change-serial/change-s
 import { ReportsComponent } from './pages/components/reports/reports.component';
 import { MdatComponent } from './pages/components/mdat/mdat.component';
 import { SharedModule } from './shared/shared.module';
+import { EquipmentComponent } from './pages/components/equipment/equipment.component';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -55,6 +56,7 @@ export function appEnvironmentFactory(
     ChangeSerialComponent,
     ReportsComponent,
     MdatComponent,
+    EquipmentComponent,
   ],
   imports: [
     CommonModule,

@@ -7,5 +7,6 @@ export enum ComponentType {
   SerialDocuments = "serialDocuments",
   ChangeSerial = "changeSerial",
   Reports = "reports",
-  mdat = "mdat",
+  Mdat = "mdat",
+  ER = "ER",
 }
