@@ -55,6 +55,13 @@ namespace Aims.PartMaster.Services
         TransNextNum TransNumberRec();
 
         /// <summary>
+        /// API Service for insert a temp table for increase the quantity of SERIAL or LOT number.
+        /// </summary>   
+
+        public LstMessage InsertInvSerLot(List<InvSerLot> InvSerLot);
+      
+
+        /// <summary>
         ///Interface for execute receipt stored procedure and increase the quantity.
         /// </summary> 
         public LstMessage UpdateInvReceipt(InvReceipts InvReceipts);
@@ -79,7 +86,7 @@ namespace Aims.PartMaster.Services
         {
             var itemsGuId = string.IsNullOrEmpty(ItemsId) ? Guid.Empty : new Guid(ItemsId.ToString());
             var secUserGuId = string.IsNullOrEmpty(SecUserId) ? Guid.Empty : new Guid(SecUserId.ToString());
-            var statusResult = _amicsDbContext.dbxInvStatus.FromSqlRaw($"select * from dbo.webapi_fn_inv_status ('{itemsGuId}','{secUserGuId}')").AsEnumerable().FirstOrDefault();
+            var statusResult = _amicsDbContext.DbxInvStatus.FromSqlRaw($"select * from dbo.webapi_fn_inv_status ('{itemsGuId}','{secUserGuId}')").AsEnumerable().FirstOrDefault();
             
             return statusResult;
         }
@@ -135,8 +142,34 @@ namespace Aims.PartMaster.Services
         /// </summary>      
         public TransNextNum TransNumberRec()
         {            
-            var transnumResult = _amicsDbContext.dbxTransNextNum.FromSqlRaw($"exec sp_get_transnum").AsEnumerable().FirstOrDefault();
+            var transnumResult = _amicsDbContext.DbxTransNextNum.FromSqlRaw($"exec sp_get_transnum").AsEnumerable().FirstOrDefault();
             return transnumResult;
+        }
+
+
+        /// <summary>
+        /// API Service for insert a temp table for increase the quantity of SERIAL or LOT number.
+        /// </summary>   
+
+        public LstMessage InsertInvSerLot(List<InvSerLot> InvSerLot)
+        {
+                for (int i = 0; i < InvSerLot.Count; i++)
+                {
+                    var sql = $"exec sp_webapi_insert_inv_serlot @transnum={InvSerLot[i].Transnum}";
+                    sql += $",@serno='{InvSerLot[i].SerNo}'";
+                    sql += $",@tagno='{InvSerLot[i].TagNo}'";
+                    sql += $",@lotno='{InvSerLot[i].LotNo}'";
+                    sql += $",@model='{InvSerLot[i].Model}'";
+                    sql += $",@color='{InvSerLot[i].Color}'";
+                    sql += $",@qty={InvSerLot[i].Qty}";
+                    sql += $",@createdby={InvSerLot[i].CreatedBy}";
+                    sql += $",@expdate={InvSerLot[i].ExpDate}";                              
+
+                    var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
+                }
+            
+            return new LstMessage() { Message = "Successfully Saved" };
+
         }
 
 

@@ -104,5 +104,16 @@ namespace Amics.Api.Controllers
             return BomGridUpdate;
         }
 
+        /// <summary>
+        /// API Route Controller for execute receipt stored procedure and increase the quantity
+        /// </summary>        
+        [HttpPost, Route("InsertInvSerLot")]
+        public LstMessage InsertInvSerLot([FromBody] List<InvSerLot> InvSetLot)
+        {
+            var InvSerLot = _inventoryService.InsertInvSerLot(InvSetLot);
+
+            return InvSerLot;
+        }
+
     }
 }
