@@ -1,25 +1,25 @@
 <ng-container [ngSwitch]="type">
 
-    <ng-container *ngSwitchCase="this.componentType.PartMaster">
-        <ng-container>
-            <!-- <app-responsive></app-responsive> -->
-            <app-partmaster></app-partmaster>
-            <!-- <app-pmsearch></app-pmsearch> -->
-            <!-- <app-pmdetails></app-pmdetails> -->
-        </ng-container>
+  <ng-container *ngSwitchCase="this.componentType.PartMaster">
+    <ng-container>
+      <!-- <app-responsive></app-responsive> -->
+      <app-partmaster></app-partmaster>
+      <!-- <app-pmsearch></app-pmsearch> -->
+      <!-- <app-pmdetails></app-pmdetails> -->
     </ng-container>
+  </ng-container>
 
-    <ng-container *ngSwitchCase="this.componentType.Profile">
-        <ng-container>
-            <app-profile></app-profile>
-        </ng-container>
+  <ng-container *ngSwitchCase="this.componentType.Profile">
+    <ng-container>
+      <app-profile></app-profile>
     </ng-container>
+  </ng-container>
 
-    <ng-container *ngSwitchCase="this.componentType.Tasks">
-        <ng-container>
-            <app-tasks></app-tasks>
-        </ng-container>
+  <ng-container *ngSwitchCase="this.componentType.Tasks">
+    <ng-container>
+      <app-tasks></app-tasks>
     </ng-container>
+  </ng-container>
 
   <ng-container *ngSwitchCase="this.componentType.IncreaseInventory">
     <ng-container>
@@ -50,12 +50,15 @@
     </ng-container>
   </ng-container>
 
-  <ng-container [ngSwitch]="type">
-    <ng-container *ngSwitchCase="this.componentType.mdat">
+  <ng-container *ngSwitchCase="this.componentType.Mdat">
+    <ng-container>
       <app-mdat></app-mdat>
-      <ng-container>
+    </ng-container>
   </ng-container>
 
-    <ng-container *ngSwitchDefault>Default Template</ng-container>
-
-</ng-container>
+  <ng-container *ngSwitchCase="this.componentType.ER">
+    <ng-container>
+      <app-equipment></app-equipment>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngSwitchDefault>Default Template</ng-container>
