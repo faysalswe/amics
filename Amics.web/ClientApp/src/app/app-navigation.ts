@@ -68,7 +68,13 @@ export const navigation = [
         text: 'mdat',
         path: '/mdat',
         title: 'mdat',
-        type: ComponentType.mdat
+        type: ComponentType.Mdat
+      },
+      {
+        text: 'equipment',
+        path: '/equipment',
+        title: 'eqipment',
+        type: ComponentType.ER
       }
     ]
   }
