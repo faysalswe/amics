@@ -65,7 +65,12 @@ namespace Aims.PartMaster.Services
         ///Interface for execute receipt stored procedure and increase the quantity.
         /// </summary> 
         public LstMessage UpdateInvReceipt(InvReceipts InvReceipts);
-
+ 
+        ///<summary>
+        /// Interface for validating the serial number and lot number pass FormName as optional parameter.
+        /// </summary>        
+        /// <param name="ValidateSerTag">InputValidateSerTag</param> 
+        public OutValidateSerTag ValidateSerTag(InputValidateSerTag ValidateSerTag);
     }
     public class InventoryService : IInventoryService
     {
@@ -162,8 +167,9 @@ namespace Aims.PartMaster.Services
                     sql += $",@model='{InvSerLot[i].Model}'";
                     sql += $",@color='{InvSerLot[i].Color}'";
                     sql += $",@qty={InvSerLot[i].Qty}";
-                    sql += $",@createdby={InvSerLot[i].CreatedBy}";
-                    sql += $",@expdate={InvSerLot[i].ExpDate}";                              
+                    sql += $",@createdby='{InvSerLot[i].CreatedBy}'";
+                  if(InvSerLot[i].ExpDate != null)
+                    sql += $",@expdate='{InvSerLot[i].ExpDate}'";                              
 
                     var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
                 }
@@ -208,6 +214,24 @@ namespace Aims.PartMaster.Services
 
             var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
             return receiptResult;
+        }
+
+
+        /// <summary>
+        /// API Service for validating the serial number and lot number pass FormName as optional parameter.
+        /// </summary>        
+        /// <param name="ValidateSerTag">InputValidateSerTag</param> 
+        public OutValidateSerTag ValidateSerTag(InputValidateSerTag ValidateSerTag)
+        {
+            var sql = $"exec sp_webapi_validate_sertag @itemsid='{ValidateSerTag.itemsid}'";
+            sql += ValidateSerTag.option.ToUpper() == "SERIAL" ? $",@serno='{ValidateSerTag.sertag}'" : $",@tagno='{ValidateSerTag.sertag}'";
+
+            var validateSerTag = _amicsDbContext.OutValidateSerTag
+                .FromSqlRaw(sql)
+                .AsEnumerable()
+                .FirstOrDefault();
+
+            return validateSerTag;
         }
 
     }
