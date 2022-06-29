@@ -1,0 +1,16 @@
+<dx-data-grid
+  id="gridContainer"
+  [dataSource]="trasLogArray"
+  keyExpr="invtransid"
+  [showBorders]="true"
+  [showColumnLines]="false"
+  [showRowLines]="true"
+  [rowAlternationEnabled]="true"
+  [columnAutoWidth]="true">
+  <dxi-column dataField="source" caption="Source"></dxi-column>
+  <dxi-column dataField="ref" caption="Ref"></dxi-column>
+  <dxi-column dataField="notes" caption="Notes"></dxi-column>
+  <dxi-column dataField="warehouse" caption="Warehouse"></dxi-column>
+  <dxi-column dataField="createdBy" caption="createdBy By"></dxi-column>
+</dx-data-grid>
+
