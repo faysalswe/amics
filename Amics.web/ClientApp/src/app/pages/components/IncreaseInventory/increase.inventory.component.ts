@@ -1,29 +1,63 @@
-import {Component} from '@angular/core';
-import {PMPOView} from "../../models/pmpoview";
-import {HttpClient} from "@angular/common/http";
-import ArrayStore from 'devextreme/data/array_store';
-import {Employee, IncreaseInventoryService} from "../../services/increase.inventory.service";
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { PMPOView } from '../../models/pmpoview';
+import { HttpClient } from '@angular/common/http';
+import { IncreaseInventoryService } from '../../services/increase.inventory.service';
 import { ComponentType } from '../../models/componentType';
 import { pmDetails } from '../../models/pmdetails';
 import { Warehouse, WarehouseLocation } from '../../models/warehouse';
-import { DefaultValInt, ERInt, ReasonInt } from 'src/app/shared/models/rest.api.interface.model';
-import { Subscription } from 'rxjs';
+import {
+  DefaultValInt,
+  ERInt,
+  IncreaseInventoryInt,
+  ReasonInt,
+  SerialLotInt,
+  TransLogInt,
+} from 'src/app/shared/models/rest.api.interface.model';
+import { forkJoin, Subscription, tap } from 'rxjs';
 import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
 import { SearchService } from '../../services/search.service';
 import { LabelMap } from '../../models/Label';
 import { OptionIdMap } from '../../models/optionIdMap';
+import { InventoryService } from '../../services/inventory.service';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { AuthService } from '../../../shared/services';
+import Guid from 'devextreme/core/guid';
+import {
+  DxFormComponent,
+  DxSelectBoxComponent,
+  DxTextBoxComponent,
+} from 'devextreme-angular';
+import notify from 'devextreme/ui/notify';
+import { PMSearchComponent } from '../PartMaster/search/pmsearch.component';
+import { Employee, HomeService } from '../../services/home.service';
+import { TransNumberRecInt } from '../../../shared/models/rest.api.interface.model';
 
 @Component({
   selector: 'app-increase-inventory',
   templateUrl: 'increase.inventory.component.html',
   styleUrls: ['./increase.inventory.component.scss'],
-  providers: [IncreaseInventoryService],
+  providers: [IncreaseInventoryService, DatePipe],
+  //,changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-export class IncreaseInventoryComponent {
-
-  // employee: Employee;
-
+export class IncreaseInventoryComponent implements AfterViewInit {
+  @ViewChild(DxFormComponent, { static: false }) form!: DxFormComponent;
+  @ViewChild('quantityVar', { static: false }) quantityVar!: DxTextBoxComponent;
+  @ViewChild('varReasonCode', { static: false })
+  varReasonCode!: DxSelectBoxComponent;
+  @ViewChild('varWarehouse', { static: false })
+  varWarehouse!: DxSelectBoxComponent;
+  @ViewChild('varLocation', { static: false })
+  varLocation!: DxSelectBoxComponent;
+  @ViewChild('varPmSearch', { static: false }) varPmSearch!: PMSearchComponent;
+  @ViewChild('varInvStatus', { static: false })
+  varInvStatus!: PMSearchComponent;
   labelMap: typeof LabelMap;
   optionIdMap: typeof OptionIdMap;
 
@@ -32,8 +66,8 @@ export class IncreaseInventoryComponent {
   todayDate = new Date();
   pmpoviewArray: PMPOView[] = [];
   passwordButton: any;
-  prevDateButton: any;
-  afterDateButton: any;
+  triggerAdd: any;
+  triggerSub: any;
   currencyIcon: any;
 
   pmDetails: pmDetails = new pmDetails();
@@ -61,53 +95,266 @@ export class IncreaseInventoryComponent {
   itemsId: string = '';
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
 
-  defaultValue$: Subscription = new Subscription();
+  trasLogArray: TransLogInt[] = [];
+
+  fromDate: Date = new Date();
+  toDate: Date = new Date();
+
+  now: Date = new Date();
+
+  myForm!: FormGroup;
+  sourcesRefIdCntl!: AbstractControl;
+  sourceCntl!: AbstractControl;
+  extendedIdCntl!: AbstractControl;
+  warehouseCntl!: AbstractControl;
+  locationCntl!: AbstractControl;
+  itemNumberCntl!: AbstractControl;
+  revCntl!: AbstractControl;
+  costCntl!: AbstractControl;
+  quantityCntl!: AbstractControl;
+  miscReasonCntl!: AbstractControl;
+  miscRefCntl!: AbstractControl;
+  miscSourceCntl!: AbstractControl;
+  notesCntl!: AbstractControl;
+  transDateCntl!: AbstractControl;
+  transNumCntl!: AbstractControl;
+  poTypeCntl!: AbstractControl;
+  recAccountCntl!: AbstractControl;
+  recPackListCntl!: AbstractControl;
+  licPlatFlageCntl!: AbstractControl;
+  receiverNumCntl!: AbstractControl;
+  user1Cntl!: AbstractControl;
+  user2Cntl!: AbstractControl;
+
+  user?: string = '';
+
+  isVisible = false;
+  toastMessage = '';
+  type = 'info';
+
+  emailButtonOptions: any;
+  closeButtonOptions: any;
+  currentEmployee!: Employee;
+  popupVisible = false;
+  positionOf: string = 'window';
+  employees!: Employee[];
+
+  currentIncreaseInventoryIntObj!: IncreaseInventoryInt;
+
+  loadingVisible = false;
 
   constructor(
-    private service: IncreaseInventoryService,
-    private http: HttpClient,
     private pmdataTransfer: PartMasterDataTransService,
     private incInvService: IncreaseInventoryService,
-    private searchService: SearchService
+    private searchService: SearchService,
+    private inventoryService: InventoryService,
+    private fb: FormBuilder,
+    private datePipe: DatePipe,
+    private authService: AuthService
   ) {
     this.labelMap = LabelMap;
     this.optionIdMap = OptionIdMap;
+
+    this.initializeFormData();
+
+    const that = this;
+
+    this.closeButtonOptions = {
+      text: 'Save and Close',
+      onClick(e: any) {
+        that.popupVisible = false;
+        var serialLst: SerialLotInt[] = that.serialInvDetForms.value;
+        serialLst.forEach((obj) => {
+          obj.qty = 1;
+          obj.createdBy = String(that.user);
+        });
+        /*var newObj = serialLst.map(obj => {
+          return {
+            ...obj,
+            qty: 1,
+            createdBy: that.user
+          }
+        });*/
+        console.log(serialLst);
+        const body = that.increaseInvObj();
+        //that.inventoryService.insertInvSerLot(serialLst, body).su
+
+        that.inventoryService
+          .extractTransNum()
+          .subscribe((num: TransNumberRecInt) => {
+            var seq = num.sp_rec;
+
+            serialLst.forEach((obj) => {
+              obj.transnum = Number(seq);
+            });
+
+            body.transNum = Number(seq);
+
+            that.inventoryService
+              .invSerLotApi(serialLst)
+              .subscribe((obj1: any) => {
+                that.inventoryService
+                  .updateReceiptApi(body)
+                  .subscribe((obj2: any) => {
+                    console.log('Completed');
+                    that.refreshLog();
+                    that.initializeFormData();
+                    that.pmDetails = new pmDetails();
+                    setTimeout(() => {
+                      that.loadingVisible = false;
+                      notify(obj2['message'], 'info', 500);
+                    }, 500);
+                  });
+              });
+          });
+
+        /*    .subscribe((res: any) => {
+            that.refreshLog();
+            that.initializeFormData();
+            that.pmDetails = new pmDetails();
+            // that.varPmSearch.search();
+            // that.varInvStatus.search();
+            setTimeout(() => {
+              that.loadingVisible = false;
+              notify(res["message"], "info", 500);
+            }, 2000);
+          });*/
+      },
+    };
   }
 
-
-  ngOnInit(): void {
-    this.defaultValue$ = this.incInvService
-      .getDefaultValues()
-      .subscribe((obj: DefaultValInt[]) => {
-        this.defaultVals = obj;
-        this.defaultSource = obj.find(
-          (x) => x.formName === 'ADJ-IN' && x.textFields === 'Source'
-        )?.value as string;
-        this.defaultReason = obj.find(
-          (x) => x.formName === 'ADJ-IN' && x.textFields === 'Reason Code'
-        )?.value as string;
-        this.defaultRef = obj.find(
-          (x) => x.formName === 'ADJ-IN' && x.textFields === 'Ref'
-        )?.value as string;
-      });
-
-    this.searchService.getWarehouseInfo('').subscribe((obj: Warehouse[]) => {
-      this.warehouses = obj;
-      this.warehousesStr = obj.map((x) => x.warehouse);
+  private initializeFormData() {
+    this.myForm = this.fb.group({
+      sourcesRefId: [null, [Validators.required]],
+      source: ['MISC REC', [Validators.required]],
+      extendedId: [
+        '00000000-0000-0000-0000-000000000000',
+        [Validators.required],
+      ],
+      warehouse: [null, [Validators.required]],
+      location: [null, [Validators.required]],
+      itemNumber: [null],
+      rev: ['-', [Validators.required]],
+      cost: [null, [Validators.required]],
+      quantity: [null, [Validators.required]],
+      miscReason: [this.defaultReason, [Validators.required]],
+      miscRef: [this.defaultRef, [Validators.required]],
+      miscSource: [this.defaultSource, [Validators.required]],
+      notes: [null],
+      transDate: [this.todayDate, [Validators.required]],
+      transNum: [null],
+      poType: [null],
+      recAccount: [null],
+      recPackList: [null],
+      licPlatFlage: [true, [Validators.required]],
+      receiverNum: [0, [Validators.required]],
+      user1: [null],
+      user2: [null],
+      serialInvDet: this.fb.array([]),
     });
 
-    this.searchService.getReasonCode().subscribe((obj: ReasonInt[]) => {
-      this.reasons = obj;
-      this.reasonsStr = obj.map((x) => x.reason.trim());
+    this.sourcesRefIdCntl = this.myForm.controls['sourcesRefId'];
+    this.sourceCntl = this.myForm.controls['source'];
+    this.extendedIdCntl = this.myForm.controls['extendedId'];
+    this.warehouseCntl = this.myForm.controls['warehouse'];
+    this.locationCntl = this.myForm.controls['location'];
+    this.itemNumberCntl = this.myForm.controls['itemNumber'];
+    this.revCntl = this.myForm.controls['rev'];
+    this.costCntl = this.myForm.controls['cost'];
+    this.quantityCntl = this.myForm.controls['quantity'];
+    this.miscReasonCntl = this.myForm.controls['miscReason'];
+    this.miscRefCntl = this.myForm.controls['miscRef'];
+    this.miscSourceCntl = this.myForm.controls['miscSource'];
+    this.notesCntl = this.myForm.controls['notes'];
+    this.transDateCntl = this.myForm.controls['transDate'];
+    this.transNumCntl = this.myForm.controls['transNum'];
+    this.poTypeCntl = this.myForm.controls['poType'];
+    this.recAccountCntl = this.myForm.controls['recAccount'];
+    this.recPackListCntl = this.myForm.controls['recPackList'];
+    this.licPlatFlageCntl = this.myForm.controls['licPlatFlage'];
+    this.receiverNumCntl = this.myForm.controls['receiverNum'];
+    this.user1Cntl = this.myForm.controls['user1'];
+    this.user2Cntl = this.myForm.controls['user2'];
+  }
+
+  get serialInvDetForms() {
+    return this.myForm?.get('serialInvDet') as FormArray;
+  }
+
+  addSerialInvDet() {
+    const serialInvDet = this.fb.group({
+      transnum: [],
+      serNo: [],
+      tagNo: [],
+      model: [],
+      lotNo: [],
+      color: [],
+      qty: [],
+      createdBy: [],
+      expDate: [],
+    });
+
+    this.serialInvDetForms.push(serialInvDet);
+  }
+
+  removeSerialInvDet() {
+    for (var i = 0; i < this.serialInvDetForms.length; i++) {
+      this.serialInvDetForms.removeAt(i);
+    }
+  }
+
+  ngOnInit(): void {
+    this.loadingVisible = true;
+
+    this.fromDate.setMonth(this.fromDate.getMonth() - 1);
+
+    var initData$ = forkJoin(
+      [this.incInvService.getDefaultValues(),
+      this.searchService.getWarehouseInfo(''),
+      this.searchService.getReasonCode(),
+      this.inventoryService.getTransLog(this.fromDateStr(), this.toDateStr())]
+    ).pipe(
+      tap((obj) => {
+        console.log(obj);
+        this.defaultVals = obj[0];
+        this.warehouses = obj[1];
+        this.reasons = obj[2];
+        this.trasLogArray = obj[3];
+
+        this.defaultSource = this.defaultVals.find(
+          (x) => x.formName === 'ADJ-IN' && x.textFields === 'Source'
+        )?.value as string;
+        this.defaultReason = this.defaultVals.find(
+          (x) => x.formName === 'ADJ-IN' && x.textFields === 'Reason Code'
+        )?.value as string;
+        this.defaultRef = this.defaultVals.find(
+          (x) => x.formName === 'ADJ-IN' && x.textFields === 'Ref'
+        )?.value as string;
+
+        this.warehousesStr = this.warehouses.map((x) => x.warehouse);
+        this.reasonsStr = this.reasons.map((x) => x.reason.trim());
+      })
+    );
+
+    initData$.subscribe(() => {
+      this.loadingVisible = false;
     });
 
     this.pmdataTransfer.selectedItemForInvDetails$.subscribe((item) => {
+      this.focusAdjustQuantity();
       this.er = '';
+      // this.initializeFormData();
       console.log(item);
       this.pmDetails = item;
       this.defaultWarehouse = item.warehouse;
       this.defaultLocation = item.location;
       this.itemsId = item.id.toString();
+      console.log(this.itemsId);
+
+      // Initialize the form values
+      this.quantityCntl?.setValue(null);
+      this.costCntl?.setValue(item.cost);
+      this.notesCntl?.setValue('');
 
       this.incInvService.getER(this.itemsId).subscribe((obj: ERInt[]) => {
         this.ers = obj;
@@ -116,58 +363,139 @@ export class IncreaseInventoryComponent {
       });
     });
 
-    this.prevDateButton = {
-      icon: 'minus',
-      stylingMode: 'text',
-      onClick: () => {
-        //this.dateValue -= this.millisecondsInDay;
-      },
-    };
-
-    this.afterDateButton = {
-      icon: 'plus',
-      stylingMode: 'text',
-      onClick: () => {
-        //this.dateValue -= this.millisecondsInDay;
-      },
-    };
-
-    this.currencyIcon = {
-      text: 'USD',
-      stylingMode: 'text',
-      disabled: true,
-      onClick: () => {
-        //this.dateValue -= this.millisecondsInDay;
-      },
-    };
-
-    this.passwordButton = {
-      icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB7klEQVRYw+2YP0tcQRTFz65xFVJZpBBS2O2qVSrRUkwqYfUDpBbWQu3ELt/HLRQ/Q8RCGxVJrRDEwj9sTATxZ/Hugo4zL/NmV1xhD9xi59177pl9986fVwLUSyi/tYC+oL6gbuNDYtyUpLqkaUmfJY3a+G9JZ5J2JW1J2ivMDBSxeWCfeBxYTHSOWMcRYLOAEBebxtEVQWPASQdi2jgxro4E1YDTQIJjYM18hszGbew4EHNq/kmCvgDnHtI7YBko58SWgSXg1hN/btyFBM0AlwExczG1YDZrMS4uLUeUoDmgFfjLGwXEtG05wNXyTc4NXgzMCOAIGHD8q0ATuDZrempkwGJ9+AfUQ4K+A/eEseqZ/UbgdUw4fqs5vPeW+5mgBvBAPkLd8cPju+341P7D/WAaJGCdOFQI14kr6o/zvBKZYz11L5Okv5KGA89Kzu9K0b0s5ZXt5PjuOL6TRV5ZalFP4F+rrnhZ1Cs5vN6ijmn7Q162/ThZq9+YNW3MbfvDAOed5cxdGL+RFaUPKQtjI8DVAr66/u9i6+jJzTXm+HFEVqxVYBD4SNZNKzk109HxoycPaG0bIeugVDTp4hH2qdXJDu6xOAAWiuQoQdLHhvY1aEZSVdInG7+Q9EvSz9RrUKqgV0PP3Vz7gvqCOsUj+CxC9LB1Dc8AAAASdEVYdEVYSUY6T3JpZW50YXRpb24AMYRY7O8AAAAASUVORK5CYII=',
-      type: 'default',
-      onClick: () => {
-        // this.passwordMode = this.passwordMode === 'text' ? 'password' : 'text';
-      },
-    };
-    // throw new Error('Method not implemented.');
+    this.authService.getUser().then((e) => (this.user = e.userId));
   }
 
-  updateSelectedWarehouse(event$: any) {
-    console.log(event$);
-    var warehouseStr = event$['value'];
-    var obj: Warehouse = this.warehouses.find(
-      (x) => x.warehouse === warehouseStr
-    ) as Warehouse;
-    var warehouseId = obj?.id;
+  ngAfterViewInit() {
+    this.focusAdjustQuantity();
+  }
 
-    this.searchService
-      .getLocationInfo(warehouseId.toString(), '')
-      .subscribe((obj: WarehouseLocation[]) => {
-        this.locations = obj;
-        this.locationsStr = obj.map((x) => x.location);
+  private focusAdjustQuantity() {
+    setTimeout(() => {
+      this.quantityVar?.instance.focus();
+    }, 0);
+  }
+
+  private refreshLogs() {
+    this.inventoryService
+      .getTransLog(this.fromDateStr(), this.toDateStr())
+      .subscribe((obj: TransLogInt[]) => {
+        this.trasLogArray = obj;
       });
   }
 
-  ngOnDestroy() {
-    this.defaultValue$.unsubscribe();
+  updateSelectedWarehouse(event$: any) {
+    if (event$ != null) {
+      var warehouseStr = event$['value'];
+      var obj: Warehouse = this.warehouses.find(
+        (x) => x.warehouse === warehouseStr
+      ) as Warehouse;
+      var warehouseId = obj?.id;
+      if (warehouseId != null) {
+        this.searchService
+          .getLocationInfo(warehouseId?.toString(), '')
+          .subscribe((obj: WarehouseLocation[]) => {
+            this.locations = obj;
+            this.locationsStr = obj.map((x) => x.location);
+          });
+      }
+    }
   }
+
+  refreshLog() {
+    this.loadingVisible = true;
+    this.inventoryService
+      .getTransLog(this.fromDateStr(), this.toDateStr())
+      .subscribe((obj: TransLogInt[]) => {
+        this.trasLogArray = obj;
+        this.loadingVisible = false;
+      });
+  }
+
+  fromDateStr(): string {
+    return (
+      this.fromDate.getFullYear() +
+      '-' +
+      (this.fromDate.getMonth() + 1) +
+      '-' +
+      this.fromDate.getDate()
+    );
+  }
+
+  toDateStr(): string {
+    return (
+      this.toDate.getFullYear() +
+      '-' +
+      (this.toDate.getMonth() + 1) +
+      '-' +
+      this.toDate.getDate()
+    );
+  }
+
+  fromDatehandler(e: any) {
+    const previousValue = e.previousValue;
+    const newValue = e.value;
+    this.fromDate = e.value;
+  }
+
+  toDatehandler(e: any) {
+    const previousValue = e.previousValue;
+    const newValue = e.value;
+    this.toDate = e.value;
+  }
+
+  update() {
+    this.loadingVisible = true;
+    const body = this.increaseInvObj();
+    this.removeSerialInvDet();
+    for (var i = 0; i < body.quantity; i++) {
+      this.addSerialInvDet();
+    }
+
+    if (this.pmDetails.invType == 'SERIAL') {
+      this.popupVisible = true;
+      this.currentIncreaseInventoryIntObj = body;
+      this.loadingVisible = false;
+    } else {
+      this.inventoryService.updateReceipt(body).subscribe((res: any) => {
+        this.refreshLogs();
+        this.isVisible = true;
+        this.initializeFormData();
+        this.itemsId = this.itemsId;
+        this.pmDetails = new pmDetails();
+        setTimeout(() => {
+          this.loadingVisible = false;
+          notify(res['message'], 'info', 500);
+        }, 500);
+      });
+    }
+  }
+
+  increaseInvObj() {
+    const body = <IncreaseInventoryInt>this.myForm?.value;
+    body.transDate = this.datePipe
+      .transform(body.transDate, 'MM/dd/yy')
+      ?.toString();
+    body.user1 = this.user?.toString();
+    body.sourcesRefId = new Guid(this.sourcesRefIdCntl?.value).toString();
+    body.cost = Number(body.cost);
+    body.itemNumber = this.pmDetails.itemNumber;
+    body.licPlatFlage = true;
+    body.receiverNum = 0;
+    return body;
+  }
+
+  openReasonCodeBox() {
+    this.varReasonCode?.instance.open();
+  }
+
+  openWarehouseBox() {
+    this.varWarehouse?.instance.open();
+  }
+
+  openLocationBox() {
+    this.varLocation?.instance.open();
+  }
+
+  ngOnDestroy() {}
 }
