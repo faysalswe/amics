@@ -29,6 +29,9 @@ import { ReportsComponent } from './pages/components/reports/reports.component';
 import { MdatComponent } from './pages/components/mdat/mdat.component';
 import { SharedModule } from './shared/shared.module';
 import { EquipmentComponent } from './pages/components/equipment/equipment.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import { TransLogComponent } from './pages/components/IncreaseInventory/trans-log/trans-log.component';
+import { TransLogSubDetailsComponent } from './pages/components/IncreaseInventory/trans-log/trans-log-sub-details/trans-log-sub-details.component';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -57,6 +60,8 @@ export function appEnvironmentFactory(
     ReportsComponent,
     MdatComponent,
     EquipmentComponent,
+    TransLogComponent,
+    TransLogSubDetailsComponent,
   ],
   imports: [
     CommonModule,
@@ -73,7 +78,9 @@ export function appEnvironmentFactory(
     AppRoutingModule,
     DevExpressModule,
     HttpClientModule,
-    PartMasterModule, SharedModule
+    PartMasterModule,
+    SharedModule,
+    ReactiveFormsModule
   ],
   providers: [
     {

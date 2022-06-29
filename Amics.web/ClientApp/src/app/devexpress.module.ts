@@ -11,6 +11,7 @@ import {
   DxFormModule,
   DxLinearGaugeModule,
   DxListModule,
+  DxLoadPanelModule,
   DxLookupModule,
   DxNumberBoxModule,
   DxPopupModule,
@@ -53,7 +54,8 @@ import {
     DxDateBoxModule,
     DxPopupModule,
     DxTabsModule, 
-    DxToastModule
+    DxToastModule,
+    DxLoadPanelModule
   ],
   exports: [
     DxButtonModule,
@@ -80,7 +82,8 @@ import {
     DxDateBoxModule,
     DxPopupModule,
     DxTabsModule, 
-    DxToastModule
+    DxToastModule,
+    DxLoadPanelModule
   ]
 })
 export class DevExpressModule { }
