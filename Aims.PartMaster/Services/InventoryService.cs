@@ -89,6 +89,8 @@ namespace Aims.PartMaster.Services
 
         public InvStatus InventoryStatus(string ItemsId, string SecUserId)
         {
+           // ItemsId = ItemsId.Length < 32 ? Guid.Empty.ToString() : ItemsId;
+
             var itemsGuId = string.IsNullOrEmpty(ItemsId) ? Guid.Empty : new Guid(ItemsId.ToString());
             var secUserGuId = string.IsNullOrEmpty(SecUserId) ? Guid.Empty : new Guid(SecUserId.ToString());
             var statusResult = _amicsDbContext.DbxInvStatus.FromSqlRaw($"select * from dbo.webapi_fn_inv_status ('{itemsGuId}','{secUserGuId}')").AsEnumerable().FirstOrDefault();
@@ -137,7 +139,7 @@ namespace Aims.PartMaster.Services
 
         public List<LstTransLog> TransLog(string FromDate, string ToDate,string Reason)
         {                       
-            var ViewTransLog = _amicsDbContext.ListTransLog.FromSqlRaw($"select * from [dbo].[fn_translog_view] ('{FromDate}','{ToDate}','{Reason}')").ToList();
+            var ViewTransLog = _amicsDbContext.ListTransLog.FromSqlRaw($"select newid() as id,* from [dbo].[fn_translog_view] ('{FromDate}','{ToDate}','{Reason}')").ToList();
             return ViewTransLog;
         }
 

@@ -31,6 +31,7 @@ export interface CompanyOptionsInt {
 }
 
 export interface TransLogInt {
+  id: string
   invtransid: string
   itemnumber: string
   description: string
@@ -38,6 +39,7 @@ export interface TransLogInt {
   ref: string
   quantity: number
   transDate: string
+  createdDate: string
   createdBy: string
   serNo: string
   tagNo: string
