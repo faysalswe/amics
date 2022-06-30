@@ -128,7 +128,7 @@ export class PMDetailsComponent {
             this.locations = l;
             this.groupedLocations = this.groupByKey(l, 'warehouseId');
             console.log(this.groupedLocations);
-            console.log(this.groupedLocations['f062f282-ad8e-4743-b01f-2fb9c7ba9f7d']);
+         //   console.log(this.groupedLocations['f062f282-ad8e-4743-b01f-2fb9c7ba9f7d']);
         })
 
         this.pmdataTransfer.selectedItemForPMDetails$.subscribe(item => {

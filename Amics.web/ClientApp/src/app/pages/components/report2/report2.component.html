@@ -1,0 +1,402 @@
+<div class="details-container content-block dx-card responsive-paddings">
+    <dx-tab-panel #tabPanel [dataSource]="tabsData" [selectedIndex]="0" [loop]="false" [animationEnabled]="false"
+        [swipeEnabled]="false">
+        <!-- [(visible)]="salesPopupVisible"
+    [title]="salesPopupTitle"
+    [width]="600"
+    [height]="400"
+    (onShown)="onPopupShown()" -->
+        >
+        <div *dxTemplate="let report of 'title'">
+            <span>{{ report.name }}</span>
+        </div>
+        <div *dxTemplate="let report of 'item'">
+            <div class="tabpanel-item">
+                <br /> <br />
+                <dx-data-grid id="gridContainer" [dataSource]="report.items" keyExpr="reportId" height="50vh"
+                    [showBorders]="true" [focusedRowEnabled]="true" [hoverStateEnabled]="true"
+                    [rowAlternationEnabled]="true" [allowColumnResizing]="true" [selectedRowKeys]="[]" height="50vh"
+                    (onSelectionChanged)="onSelectionChanged($event)"
+                    [columns]="['reportId','reportName', 'description']">
+                    <dxo-load-panel [enabled]="false"></dxo-load-panel>
+                    <dxo-selection mode="single"></dxo-selection>
+                </dx-data-grid>
+            </div>
+        </div>
+    </dx-tab-panel>
+</div>
+
+<dx-popup [width]="600" [height]="500" [showTitle]="true" [dragEnabled]="false" [closeOnOutsideClick]="true"
+    [showCloseButton]="true" container=".dx-viewport" [(visible)]="popupVisible_101">
+    <h3>Filters</h3>
+
+    <dx-form id="form" [colCount]="2" labelMode="floating">
+        <!-- <dxi-item [colSpan]="1"> -->
+        <dxi-item dataField="partNumber" editorType="dxLookup" [editorOptions]="{
+        label: 'partNumber',
+        items: partnumberList,
+        showDataBeforeSearch: true,
+        searchEnabled: true,
+        searchExpr: 'partNumber',
+        displayExpr: 'partNumber',
+        valueExpr: 'partNumber',
+        showClearButton: true,
+        searchMode: 'contains'
+      }">
+        </dxi-item>
+        <dxi-item>
+            <dx-text-box dataField="Rev" label="Rev"></dx-text-box>
+        </dxi-item>
+        <dxi-item>
+            <dx-text-box dataField="Description" label="Description"></dx-text-box>
+        </dxi-item>
+        <dxi-item dataField="itemtype" editorType="dxLookup" [editorOptions]="{
+        label: 'Item Type',
+        items: itemtypeList,
+        showDataBeforeSearch: true,
+        searchEnabled: true,
+        searchExpr: 'itemtype',
+        displayExpr: 'itemtype',
+        valueExpr: 'itemtype',
+        showClearButton: true,
+        searchMode: 'contains'
+      }">
+        </dxi-item>
+        <dxi-item dataField="itemclass" editorType="dxLookup" [editorOptions]="{
+        label: 'Item Class',
+        items: itemClassList,
+        showDataBeforeSearch: true,
+        searchEnabled: true,
+        searchExpr: 'itemclass',
+        displayExpr: 'itemclass',
+        valueExpr: 'itemclass',
+        showClearButton: true,
+        searchMode: 'contains'
+      }">
+        </dxi-item>
+
+        <dxi-item dataField="itemcode" editorType="dxLookup" [editorOptions]="{
+        label: 'Item Code',
+        items: itemcodeList,
+        showDataBeforeSearch: true,
+        searchEnabled: true,
+        searchExpr: 'itemcode',
+        displayExpr: 'itemcode',
+        valueExpr: 'itemcode',
+        showClearButton: true,
+        searchMode: 'contains'
+      }">
+        </dxi-item>
+        <dxi-item dataField="warehouse" editorType="dxLookup" [editorOptions]="{
+        label: 'Warehouse',
+        items: warehouseList,
+        showDataBeforeSearch: true,
+        searchEnabled: true,
+        searchExpr: 'warehouse',
+        displayExpr: 'warehouse',
+        valueExpr: 'warehouse',
+        showClearButton: true,
+        searchMode: 'contains'
+      }">
+        </dxi-item>
+        <dxi-item dataField="location" editorType="dxLookup" [editorOptions]="{
+        label: 'Location',
+        items: locationList,
+        showDataBeforeSearch: true,
+        searchEnabled: true,
+        searchExpr: 'location',
+        displayExpr: 'location',
+        valueExpr: 'location',
+        showClearButton: true,
+        searchMode: 'contains'
+      }">
+        </dxi-item>
+        <dxi-item [colSpan]="2" style="text-align: center">
+            <br />
+            <br />
+            <dx-check-box text="Include non-Inventory" dataField="nonInventory"></dx-check-box>
+            <br />
+            <br />
+            <dx-check-box text="Include Obsolete Item" dataField="obsoleteItem"></dx-check-box>
+        </dxi-item>
+        <dxi-item [colSpan]="2" style="text-align: center">
+            <br />
+            <br />
+            <dx-button stylingMode="contained" text="Submit" type="default">
+            </dx-button>
+        </dxi-item>
+
+        <br />
+    </dx-form>
+</dx-popup>
+
+<dx-popup [width]="600" [height]="500" [showTitle]="true" [dragEnabled]="false" [closeOnOutsideClick]="true"
+    [showCloseButton]="true" container=".dx-viewport" [(visible)]="popupVisible_104">
+    <h3>Filters</h3>
+
+    <dx-form id="form" [colCount]="2" labelMode="floating">
+        <!-- <dxi-item [colSpan]="1"> -->
+        <dxi-item dataField="partNumber" editorType="dxLookup" [editorOptions]="{
+          label: 'partNumber',
+          items: partnumberList,
+          showDataBeforeSearch: true,
+          searchEnabled: true,
+          searchExpr: 'partNumber',
+          displayExpr: 'partNumber',
+          valueExpr: 'partNumber',
+          showClearButton: true,
+          searchMode: 'contains'
+        }">
+        </dxi-item>
+        <dxi-item>
+            <dx-text-box dataField="Rev" label="Rev"></dx-text-box>
+        </dxi-item>
+        <dxi-item>
+            <dx-text-box dataField="Description" label="Description"></dx-text-box>
+        </dxi-item>
+        <dxi-item dataField="itemtype" editorType="dxLookup" [editorOptions]="{
+          label: 'Item Type',
+          items: itemtypeList,
+          showDataBeforeSearch: true,
+          searchEnabled: true,
+          searchExpr: 'itemtype',
+          displayExpr: 'itemtype',
+          valueExpr: 'itemtype',
+          showClearButton: true,
+          searchMode: 'contains'
+        }">
+        </dxi-item>
+        <dxi-item dataField="itemclass" editorType="dxLookup" [editorOptions]="{
+          label: 'Item Class',
+          items: itemClassList,
+          showDataBeforeSearch: true,
+          searchEnabled: true,
+          searchExpr: 'itemclass',
+          displayExpr: 'itemclass',
+          valueExpr: 'itemclass',
+          showClearButton: true,
+          searchMode: 'contains'
+        }">
+        </dxi-item>
+
+        <dxi-item dataField="itemcode" editorType="dxLookup" [editorOptions]="{
+          label: 'Item Code',
+          items: itemcodeList,
+          showDataBeforeSearch: true,
+          searchEnabled: true,
+          searchExpr: 'itemcode',
+          displayExpr: 'itemcode',
+          valueExpr: 'itemcode',
+          showClearButton: true,
+          searchMode: 'contains'
+        }">
+        </dxi-item>
+        <dxi-item dataField="warehouse" editorType="dxLookup" [editorOptions]="{
+          label: 'Warehouse',
+          items: warehouseList,
+          showDataBeforeSearch: true,
+          searchEnabled: true,
+          searchExpr: 'warehouse',
+          displayExpr: 'warehouse',
+          valueExpr: 'warehouse',
+          showClearButton: true,
+          searchMode: 'contains'
+        }">
+        </dxi-item>
+        <dxi-item dataField="location" editorType="dxLookup" [editorOptions]="{
+          label: 'Location',
+          items: locationList,
+          showDataBeforeSearch: true,
+          searchEnabled: true,
+          searchExpr: 'location',
+          displayExpr: 'location',
+          valueExpr: 'location',
+          showClearButton: true,
+          searchMode: 'contains'
+        }">
+        </dxi-item>
+
+        <br />
+    </dx-form>
+    <dx-form id="form" [colCount]="4" labelMode="floating">
+        <dxi-item [colSpan]="4"></dxi-item>
+        <dxi-item></dxi-item>
+        <dxi-item [colSpan]="2" style="text-align: center">
+            <dx-radio-group [items]="summary_detail" [value]="summary_detail[0]" layout="horizontal"
+                style="justify-content: center;"></dx-radio-group>
+        </dxi-item>
+        <dxi-item></dxi-item>
+        <dxi-item></dxi-item>
+
+        <dxi-item [colSpan]="1" editorType="dxCheckBox" dataField="cost" [label]="{text: ' '}"
+            [editorOptions]="{text: 'Include Cost'}">
+        </dxi-item>
+        <dxi-item [colSpan]="1" editorType="dxCheckBox" dataField="sm" [label]="{text: ' '}"
+            [editorOptions]="{text: 'Include SN'}">
+        </dxi-item>
+        <dxi-item></dxi-item>
+
+        <dxi-item [colSpan]="4"></dxi-item>
+
+
+        <dxi-item></dxi-item>
+        <dxi-item [colSpan]="1">
+            <h4>Group By:</h4>
+        </dxi-item>
+        <dxi-item [colSpan]="1" dataField="itemNumber" editorType="dxLookup" [editorOptions]="{
+            label: 'Item Number',
+            items: locationList,
+            showDataBeforeSearch: true,
+            searchEnabled: true,
+            searchExpr: 'itemNumber',
+            displayExpr: 'itemNumber',
+            valueExpr: 'itemNumber',
+            showClearButton: true,
+            searchMode: 'contains'
+          }">
+        </dxi-item>
+        <dxi-item></dxi-item>
+
+
+        <dxi-item [colSpan]="4" style="text-align: center">
+            <br />
+            <br />
+            <dx-button stylingMode="contained" text="Submit" type="default">
+            </dx-button>
+        </dxi-item>
+    </dx-form>
+</dx-popup>
+
+<dx-popup [width]="600" [height]="500" [showTitle]="true" [dragEnabled]="false" [closeOnOutsideClick]="true"
+    [showCloseButton]="true" container=".dx-viewport" [(visible)]="popupVisible_106">
+    <dx-form id="form" [colCount]="1" style="text-align: center" labelMode="floating">
+        <dxi-item dataField="warehouse" editorType="dxLookup" [editorOptions]="{
+          label: 'Warehouse',
+          items: warehouseList,
+          showDataBeforeSearch: true,
+          searchEnabled: true,
+          searchExpr: 'warehouse',
+          displayExpr: 'warehouse',
+          valueExpr: 'warehouse',
+          showClearButton: true,
+          searchMode: 'contains'
+    }">
+        </dxi-item>
+        <dxi-item>
+            <br />
+            <br />
+            <dx-button stylingMode="contained" text="Save and Exit" type="default">
+            </dx-button>
+            &nbsp;&nbsp;&nbsp;
+            <dx-button stylingMode="contained" text="Cancel and Exit" type="default">
+            </dx-button>
+        </dxi-item>
+    </dx-form>
+</dx-popup>
+
+<dx-popup [width]="600" [height]="500" [showTitle]="true" [dragEnabled]="false" [closeOnOutsideClick]="true"
+    [showCloseButton]="true" container=".dx-viewport" [(visible)]="popupVisible_109">
+    <dx-form id="form" [colCount]="2" labelMode="floating">
+        <!-- <dxi-item [colSpan]="1"> -->
+        <dxi-item dataField="itemNumber" editorType="dxLookup" [editorOptions]="{
+          label: 'itemNumber',
+          items: itemNumberList,
+          showDataBeforeSearch: true,
+          searchEnabled: true,
+          searchExpr: 'itemNumber',
+          displayExpr: 'itemNumber',
+          valueExpr: 'itemNumber',
+          showClearButton: true,
+          searchMode: 'contains'
+        }">
+        </dxi-item>
+        <dxi-item dataField="warehouse" editorType="dxLookup" [editorOptions]="{
+          label: 'Warehouse',
+          items: warehouseList,
+          showDataBeforeSearch: true,
+          searchEnabled: true,
+          searchExpr: 'warehouse',
+          displayExpr: 'warehouse',
+          valueExpr: 'warehouse',
+          showClearButton: true,
+          searchMode: 'contains'
+        }">
+        </dxi-item>
+        <dxi-item dataField="location" editorType="dxLookup" [editorOptions]="{
+          label: 'Location',
+          items: locationList,
+          showDataBeforeSearch: true,
+          searchEnabled: true,
+          searchExpr: 'location',
+          displayExpr: 'location',
+          valueExpr: 'location',
+          showClearButton: true,
+          searchMode: 'contains'
+        }">
+        </dxi-item>
+        <dxi-item> </dxi-item>
+        <dxi-item>
+            <dx-date-box placeholder="Inv Trans Date" [useMaskBehavior]="true" type="date">
+            </dx-date-box>
+        </dxi-item>
+        <dxi-item>
+            <dx-date-box placeholder="Inv Trans Date" [useMaskBehavior]="true" type="date">
+            </dx-date-box>
+        </dxi-item>
+
+        <dxi-item>
+            <dx-text-box dataField="Serial No." label="Serial No."></dx-text-box>
+        </dxi-item>
+
+        <dxi-item>
+            <dx-text-box dataField="Tag No." label="Tag No."></dx-text-box>
+        </dxi-item>
+
+        <dxi-item>
+            <dx-text-box dataField="Ref." label="Ref."></dx-text-box>
+        </dxi-item>
+        <dxi-item></dxi-item>
+
+        <dxi-item [colSpan]="2" style="text-align: center">
+            <br />
+            <br />
+            <br />
+            <br />
+            <dx-button stylingMode="contained" text="Submit" type="default">
+            </dx-button>
+            &nbsp;&nbsp;
+            <dx-button stylingMode="contained" text="Reset" type="default">
+            </dx-button>
+        </dxi-item>
+
+        <br />
+    </dx-form>
+</dx-popup>
+
+<dx-popup [width]="600" [height]="500" [showTitle]="true" [dragEnabled]="false" [closeOnOutsideClick]="true"
+    [showCloseButton]="true" container=".dx-viewport" [(visible)]="popupVisible_118">
+
+    <h4>Select a row</h4>
+
+    <dx-data-grid id="gridContainer" [dataSource]="locationTransferList" keyExpr="ID" height="30vh" [columns]="[
+            'Trans Num',
+            'ER nnumber',
+            'Location',
+            'Created By',
+            'Transdate'
+          ]" [showBorders]="true">
+    </dx-data-grid>
+
+    <dx-form id="form" [colCount]="2" labelMode="floating">
+        <dxi-item [colSpan]="2" style="text-align: center">
+            <br />
+            <br />
+            <br />
+            <br />
+            <dx-button stylingMode="contained" text="Preview/Print" type="default">
+            </dx-button>
+        </dxi-item>
+    </dx-form>
+
+
+</dx-popup>
