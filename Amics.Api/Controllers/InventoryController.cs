@@ -115,5 +115,16 @@ namespace Amics.Api.Controllers
             return InvSerLot;
         }
 
+
+        /// <summary>
+        /// API Route Controller for validate the serial and tag are exists
+        /// </summary>        
+        [HttpGet, Route("ValidateSerTag")]
+        public OutValidateSerTag ValidateSerTag([FromQuery] InputValidateSerTag ValidateSerTag)
+        {
+            var validateSerTag = _inventoryService.ValidateSerTag(ValidateSerTag);
+            return validateSerTag;
+        }
+
     }
 }

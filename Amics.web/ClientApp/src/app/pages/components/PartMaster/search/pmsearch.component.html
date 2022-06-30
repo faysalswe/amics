@@ -1,3 +1,5 @@
+
+
 <div class="search-container content-block dx-card responsive-paddings">
     <div class="pmsearch-container ">
         <form action="your-action" (submit)="handleSubmit($event)">
@@ -24,16 +26,19 @@
     </div>
     <br />
     <div>
+
+      <div style="height: calc(100vh - 480px); float: left; margin: 0px; padding: 0px; ">
         <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
-            selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="48vh" [focusStateEnabled]="true"
-            (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom"
-            (keyDown)="onSelectionChanged($event)">
-            <div *dxTemplate="let item of 'item'">
-                <div>
-                    <div class="name">{{ item.itemNumber}}</div>
-                    <div class="description">{{ item.description }}</div>
-                </div>
+                 selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="100vh" [focusStateEnabled]="true"
+                 (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom"
+                 (keyDown)="onSelectionChanged($event)">
+          <div *dxTemplate="let item of 'item'">
+            <div>
+              <div class="name">{{ item.itemNumber}}</div>
+              <div class="description">{{ item.description }}</div>
             </div>
+          </div>
         </dx-list>
+        </div>
+      </div>
     </div>
-</div>
