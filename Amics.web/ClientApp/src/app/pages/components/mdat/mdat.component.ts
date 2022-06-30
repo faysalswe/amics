@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { pmDetails } from '../../models/pmdetails';
 
 @Component({
   selector: 'app-mdat',
@@ -9,6 +10,8 @@ export class MdatComponent implements OnInit {
 
   customers = [];
   pmSearchResults = [];
+  warehouseList = [];
+  mdatList = [];
   now: Date = new Date();
   constructor() { }
 

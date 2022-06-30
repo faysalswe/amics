@@ -15,6 +15,7 @@ import { ProfileComponent } from "../profile/profile.component";
 @Component({
     selector: "app-host",
     templateUrl: "./host.component.html",
+    styleUrls: ['./host.component.scss'],
 })
 export class HostComponent implements OnInit {
     @Input() type: ComponentType | undefined;

@@ -6,7 +6,7 @@ import { PartMasterDataTransService } from "src/app/pages/services/pmdatatransfe
     templateUrl: "./ViewLocation.component.html",
     styleUrls: ['./viewLocation.component.scss']
 })
-export class PMSearchComponent {
+export class ViewLocationComponent {
 
     constructor( private pmDataTransService: PartMasterDataTransService)
     {

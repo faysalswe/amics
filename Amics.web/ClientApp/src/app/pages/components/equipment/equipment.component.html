@@ -1,0 +1,316 @@
+<dx-responsive-box singleColumnScreen="sm">
+    <dxi-row [ratio]="0.50"></dxi-row>
+    <dxi-row [ratio]="0.10"></dxi-row>
+    <dxi-row [ratio]="1"></dxi-row>
+    <dxi-row [ratio]="1"></dxi-row>
+    <dxi-col [ratio]="0.75"></dxi-col>
+    <dxi-col [ratio]="1"></dxi-col>
+    <dxi-col [ratio]="1"></dxi-col>
+    <dxi-col [ratio]="1"></dxi-col>
+    <dxi-col [ratio]="1"></dxi-col>
+    <!-- Search Panel -->
+    <dxi-item>
+        <dxi-location [row]="0" [col]="0" [rowspan]="2"></dxi-location>
+        <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+            <dx-form id="form" [colCount]="1" labelMode="floating">
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="Equip Request" label="Equip Request"></dx-text-box>
+                    <br />
+                    <dx-text-box dataField=" Project id" label="Project id"></dx-text-box>
+                    <br />
+                    <dx-text-box dataField=" Project name" label="Project name"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1" dataField="status" editorType="dxLookup" [editorOptions]="{
+            label: 'Status',
+            items: statusList,
+            showDataBeforeSearch: true,
+            searchEnabled: true,
+            searchExpr: 'status',
+            displayExpr: 'status',
+            valueExpr: 'status',
+            showClearButton: true,
+            searchMode: 'contains'
+          }"></dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="Requestor" label="Requestor"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1" style="text-align: center;">
+                    <dx-button stylingMode="contained" text="Search" type="default" width="400">
+                    </dx-button>
+                </dxi-item>
+                <dxi-item></dxi-item>
+                <dxi-item [colSpan]="1">
+                    <div>
+                        <h6>Select year to search:</h6>
+                    </div>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-radio-group [items]="searchingYear" [value]="searchingYear[0]" layout="horizontal">
+                    </dx-radio-group>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-data-grid id="gridContainer" [dataSource]="equipSearchList" keyExpr="ID" height="30vh"
+                        [showBorders]="true">
+                        <dxi-column dataField="ER"></dxi-column>
+                        <dxi-column dataField="ER Date"></dxi-column>
+                        <dxi-column dataField=""></dxi-column>
+                    </dx-data-grid>
+                </dxi-item>
+                <dxi-item [colSpan]="1" style="text-align: center;">
+                    <dx-button stylingMode="contained" text="Search" type="default">
+                    </dx-button>
+                </dxi-item>
+            </dx-form>
+
+        </div>
+    </dxi-item>
+    <!-- Detail Panel -->
+    <dxi-item>
+        <dxi-location [row]="0" [col]="1"></dxi-location>
+        <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+            <dx-form id="form" [colCount]="2" labelMode="floating">
+                <dxi-item [colSpan]="2">
+                    <dx-text-box dataField="Equip Request" label="Equip Request"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="2" dataField="projectId" editorType="dxLookup" [editorOptions]="{
+                    label: 'Project Id',
+                    items: statusList,
+                    showDataBeforeSearch: true,
+                    searchEnabled: true,
+                    searchExpr: 'projectId',
+                    displayExpr: 'projectId',
+                    valueExpr: 'projectId',
+                    showClearButton: true,
+                    searchMode: 'contains'
+                  }"></dxi-item>
+                <dxi-item [colSpan]="2" dataField="status" editorType="dxLookup" [editorOptions]="{
+                    label: 'Status',
+                    items: statusList,
+                    showDataBeforeSearch: true,
+                    searchEnabled: true,
+                    searchExpr: 'status',
+                    displayExpr: 'status',
+                    valueExpr: 'status',
+                    showClearButton: true,
+                    searchMode: 'contains'
+                  }"></dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-date-box placeholder="ER Date" [useMaskBehavior]="true" type="date">
+                    </dx-date-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="Est. Comp" label="Est. Comp"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="PR Comp" label="PR Comp"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="Status" label="Status"></dx-text-box>
+                </dxi-item>
+            </dx-form>
+        </div>
+    </dxi-item>
+    <dxi-item>
+        <dxi-location [row]="0" [col]="2"></dxi-location>
+        <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+            <dx-form id="form" [colCount]="1" labelMode="floating">
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="Task Description" label="Task Description"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1" dataField="shipVia" editorType="dxLookup" [editorOptions]="{
+                    label: 'Ship Via',
+                    items: statusList,
+                    showDataBeforeSearch: true,
+                    searchEnabled: true,
+                    searchExpr: 'shipVia',
+                    displayExpr: 'shipVia',
+                    valueExpr: 'shipVia',
+                    showClearButton: true,
+                    searchMode: 'contains'
+                  }"></dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="Budget Authority" label="Budget Authority"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-date-box placeholder="BA Date" [useMaskBehavior]="true" type="date">
+                    </dx-date-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="Budget" label="Budget"></dx-text-box>
+                </dxi-item>
+            </dx-form>
+        </div>
+    </dxi-item>
+    <dxi-item>
+        <dxi-location [row]="0" [col]="3"></dxi-location>
+        <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+            <dx-form id="form" [colCount]="1" labelMode="floating">
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="Requestor" label="Requestor"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="WBS" label="WBS"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="ACRN" label="ACRN"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="MDAT in" label="MDAT in"></dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-text-box dataField="Org" label="Org"></dx-text-box>
+                </dxi-item>
+            </dx-form>
+        </div>
+    </dxi-item>
+
+    <dxi-item>
+        <dxi-location [row]="0" [col]="4"></dxi-location>
+        <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+            <dx-form id="form" [colCount]="1" labelMode="floating">
+                <dxi-item [colSpan]="1">
+                    <dx-radio-group [items]="equipNotes" [value]="equipNotes[0]" 
+                    layout="horizontal" (onValueChanged)="changeNotesHeader($event)">
+                    </dx-radio-group>
+                </dxi-item>
+                <dxi-item [colSpan]="1">
+                    <br>
+                    <h6>{{notesHeader}}</h6>
+                    <dx-form id="form" [colCount]="1" labelMode="floating">
+                     <dxi-item dataField="description"
+                          editorType="dxTextArea"
+                        [label]="{text: 'Description (Max 300 characters)'}">
+                    </dxi-item>
+                    </dx-form>
+                    <!-- <textarea style="width: 100%; min-height:135px;"></textarea> -->
+                    <!-- <dxi-item dataField="description" editorType="dxTextArea"
+                        [label]="{text: 'Description (Max 150 characters)'}">
+                    </dxi-item> -->
+                </dxi-item>
+            </dx-form>
+        </div>
+    </dxi-item>
+
+    <!-- Bottom Grid -->
+    <dxi-item>
+        <dxi-location [row]="1" [col]="1" [colspan]="4"></dxi-location>
+        <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+            <dxi-item [colSpan]="1">
+                <dx-form id="form" [colCount]="6" labelMode="floating">
+                    <dxi-item></dxi-item>
+                    <dxi-item [colSpan]="1">
+                        <dx-text-box dataField="Contact" label="Contact"></dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="1">
+                        <dx-text-box dataField="E-Mail" label="E-Mail"></dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="1">
+                        <dx-text-box dataField="Phone" label="Phone"></dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="1" dataField="fax" editorType="dxLookup" [editorOptions]="{
+                        label: 'Fax',
+                        items: statusList,
+                        showDataBeforeSearch: true,
+                        searchEnabled: true,
+                        searchExpr: 'fax',
+                        displayExpr: 'fax',
+                        valueExpr: 'fax',
+                        showClearButton: true,
+                        searchMode: 'contains'
+                      }"></dxi-item>
+                    <dxi-item></dxi-item>
+                    <dxi-item itemType="empty" [colSpan]="6"></dxi-item>
+                </dx-form>
+            </dxi-item>
+            <dxi-item [colSpan]="1">
+                <dx-data-grid id="gridContainer" [dataSource]="equipMainList" keyExpr="ID" height="25vh"
+                        [showBorders]="true">
+                        <dxi-column dataField="Action"></dxi-column>
+                        <dxi-column dataField="Line"></dxi-column>
+                        <dxi-column dataField="MFR."></dxi-column>
+                        <dxi-column dataField="Part Number"></dxi-column>
+                        <dxi-column dataField="Rev"></dxi-column>
+                        <dxi-column dataField="Description"></dxi-column>
+                        <dxi-column dataField="Quantity"></dxi-column>
+                        <dxi-column dataField="Shipped"></dxi-column>
+                        <dxi-column dataField="Cost(U)"></dxi-column>
+                        <dxi-column dataField="Ext Price"></dxi-column>
+                        <dxi-column dataField="Cost(L)"></dxi-column>
+                        <dxi-column dataField="PO Cost(U)"></dxi-column>
+                        <dxi-column dataField="PO Cost(L)"></dxi-column>
+                    </dx-data-grid>
+            </dxi-item>
+            <dxi-item [colSpan]="1">
+                <br>
+                <h6>Line Notes</h6>
+                <dx-form id="form" [colCount]="12" labelMode="floating">
+                    <dxi-item dataField="Line Notes" [colSpan]="10" 
+                        editorType="dxTextArea"
+                        [label]="{text: 'Line Notes (Max 150 characters)'}">
+                    </dxi-item>
+                    <dxi-item [colSpan]="2">
+                        <dx-button stylingMode="contained" text="Enlarged View" type="default" width="350">
+                        </dx-button>
+                    </dxi-item>
+                    <dxi-item itemType="empty" [colSpan]="12"></dxi-item>
+                    <dxi-item></dxi-item>
+                    <dxi-item [colSpan]="2">
+                        <dx-text-box dataField="Cost(U)" label="Cost(U)"></dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="2">
+                        <dx-text-box dataField="Cost(L)" label="Cost(L)"></dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="2">
+                        <dx-text-box dataField="PO Cost(U)" label="PO Cost(U)"></dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="2">
+                        <dx-text-box dataField="PO Cost(L)" label="PO Cost(L)"></dx-text-box>
+                    </dxi-item>
+                    <dxi-item></dxi-item>
+                </dx-form>
+            </dxi-item>
+        </div>
+    </dxi-item>
+    <!-- footer -->
+    <dxi-item>
+        <dxi-location [row]="3" [col]="0" [colspan]="5"></dxi-location>
+        <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+            <dx-form id="form" [colCount]="3" labelMode="floating">
+                <dxi-item></dxi-item>
+                <dxi-item [colSpan]="1">
+                    <dx-radio-group [items]="equipradio" [value]="equipradio[0]" layout="horizontal">
+                    </dx-radio-group>
+                </dxi-item>
+            </dx-form>
+            <dx-form id="form" [colCount]="6" labelMode="floating">
+                <dxi-item [colSpan]="1">
+                    <dx-button stylingMode="contained" text="Copy to new" type="default">
+                    </dx-button>
+                </dxi-item>
+                <dxi-item [colSpan]="2">
+                    <dx-button stylingMode="contained" text="Add" type="default">
+                    </dx-button> &nbsp;
+                    <dx-button stylingMode="contained" text="Edit" type="default">
+                    </dx-button>&nbsp;
+                    <dx-button stylingMode="contained" text="Delete" type="default">
+                    </dx-button>&nbsp;
+                    <dx-button stylingMode="contained" text="Exit" type="default">
+                    </dx-button>
+                </dxi-item>
+                <dxi-item [colSpan]="2" style="text-align: center;">
+                    <dx-button stylingMode="contained" text="User Fields" type="default" >
+                    </dx-button>&nbsp;
+                    <dx-button stylingMode="contained" text="Create Proj XFR" type="default">
+                    </dx-button>&nbsp;
+                    <dx-button stylingMode="contained" text="View Proj XFR" type="default">
+                    </dx-button>
+                </dxi-item>
+                <dxi-item [colSpan]="1" style="float: right;">
+                    <dx-button stylingMode="contained" text="Reports" type="default">
+                    </dx-button>
+                </dxi-item>
+
+            </dx-form>
+        </div>
+    </dxi-item>
+

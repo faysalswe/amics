@@ -24,7 +24,7 @@ namespace Aims.Core.Models
         public DbSet<LstItemInfo> LstItemsInfo { get; set; }
         public DbSet<LstReasonCodes> ListReasonCodes { get; set; }
         public DbSet<LstCompanyOptions> ListCompanyOptions { get; set; }         
-        public DbSet<InvStatus> dbxInvStatus { get; set; }
+        public DbSet<InvStatus> DbxInvStatus { get; set; }
         public DbSet<LstDefaultsValues> ListDefaultsValues { get; set; }
         public DbSet<LstErLookup> ListErLookup { get; set; }        
         public DbSet<LstBomCount> LstBomCount { get; set; }
@@ -35,12 +35,14 @@ namespace Aims.Core.Models
         public DbSet<LstTransLog> ListTransLog { get; set; }
         public DbSet<LstInquiry> LstInquiry { get; set; }
         public DbSet<LstSerial> LstSerial { get; set; }
-        public DbSet<TransNextNum> dbxTransNextNum { get; set; }
-        public DbSet<InvReceipts> dbxInvReceipts { get; set; }               
+        public DbSet<TransNextNum> DbxTransNextNum { get; set; }
+        public DbSet<InvReceipts> DbxInvReceipts { get; set; }                            
         public DbSet<LstNotes> LstNotes { get; set; }
         public DbSet<LstMessagetext> LstMessagetext { get; set; }
         public DbSet<LstChangeLocSearch> LstChangeLocSearch { get; set; }
         
+
+        public DbSet<OutValidateSerTag> OutValidateSerTag { get; set; }
 
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)
@@ -55,8 +57,17 @@ namespace Aims.Core.Models
         {
             modelBuilder.Entity<InvReceipts>().HasNoKey();
             modelBuilder.Entity<TransNextNum>().HasNoKey();
+            modelBuilder.Entity<InvSerLot>().HasNoKey();
+
+
+            modelBuilder.Entity<InvReceipts>().HasNoKey();
+            modelBuilder.Entity<TransNextNum>().HasNoKey();
             modelBuilder.Entity<LstMessagetext>().HasNoKey();
             modelBuilder.Entity<LstChangeLocSearch>().HasNoKey();
+
+            modelBuilder.Entity<InputValidateSerTag>().HasNoKey();
+            modelBuilder.Entity<OutValidateSerTag>().HasNoKey();
+
         }
     }
 }

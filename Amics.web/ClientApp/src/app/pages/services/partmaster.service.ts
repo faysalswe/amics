@@ -77,7 +77,7 @@ export class PartMasterService {
     return this.httpClient.post<string>(this.api, item);
   }
   deletePMDetails(itemNumber: string, rev: string): Observable<any> {
-    return this.httpClient.delete<string>(`${this.api}?itemnumber=${itemNumber}&rev=${rev}`);
+    return this.httpClient.delete<string[]>(`${this.api}?itemnumber=${itemNumber}&rev=${rev}`);
   }
   getInquiryDetails(request: InquiryRequest) {
     return this.httpClient.post<InquiryResponse[]>(`${this.api}/Inquiry`, request);

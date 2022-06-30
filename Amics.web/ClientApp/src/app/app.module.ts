@@ -22,12 +22,19 @@ import { ResponsiveComponent } from './pages/components/PartMaster/responsive/re
 import { IncreaseInventoryComponent } from './pages/components/IncreaseInventory/increase.inventory.component';
 import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
 import { InventoryStatusComponent } from './pages/components/InventoryStatus/inventory.status.component';
-import { AddLabelDirective } from './shared/directives/add.label.directive';
 import { AppInitialDataService } from './shared/services/app.initial.data.service';
 import { SerialDocumentsComponent } from './pages/components/serial-documents/serial-documents.component';
 import { ChangeSerialComponent } from './pages/components/change-serial/change-serial.component';
 import { ReportsComponent } from './pages/components/reports/reports.component';
 import { MdatComponent } from './pages/components/mdat/mdat.component';
+import { SharedModule } from './shared/shared.module';
+import { EquipmentComponent } from './pages/components/equipment/equipment.component';
+import { ShipmentComponent } from './pages/components/shipment/shipment.component';
+import { Report2Component } from './pages/components/report2/report2.component';
+import { BulkTransferComponent } from './pages/components/bulk-transfer/bulk-transfer.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import { TransLogComponent } from './pages/components/IncreaseInventory/trans-log/trans-log.component';
+import { TransLogSubDetailsComponent } from './pages/components/IncreaseInventory/trans-log/trans-log-sub-details/trans-log-sub-details.component';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -50,11 +57,17 @@ export function appEnvironmentFactory(
     HostComponent,
     ResponsiveComponent,
     IncreaseInventoryComponent,
-    InquiryComponent, InventoryStatusComponent,
-    AddLabelDirective, SerialDocumentsComponent,
+    InquiryComponent,
+    SerialDocumentsComponent,
     ChangeSerialComponent,
     ReportsComponent,
     MdatComponent,
+    EquipmentComponent,
+    TransLogComponent,
+    TransLogSubDetailsComponent,
+    ShipmentComponent,
+    Report2Component,
+    BulkTransferComponent
   ],
   imports: [
     CommonModule,
@@ -72,6 +85,8 @@ export function appEnvironmentFactory(
     DevExpressModule,
     HttpClientModule,
     PartMasterModule,
+    SharedModule,
+    ReactiveFormsModule
   ],
   providers: [
     {

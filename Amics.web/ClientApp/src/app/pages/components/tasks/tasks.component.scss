@@ -1,0 +1,29 @@
+.name {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.description {
+  font-size: 14px;
+  opacity: 0.7;
+  display: inline-block;
+  word-break: break-word;
+}
+
+.tables {
+  display: flex;
+}
+
+.column:first-child {
+  width: 50%;
+  padding-right: 15px;
+}
+
+.column:last-child {
+  width: 50%;
+  padding-left: 15px;
+}
+
+.separator{
+  min-width: 35px;
+}

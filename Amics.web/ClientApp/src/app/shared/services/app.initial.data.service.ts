@@ -3,7 +3,7 @@ import {
   CompanyOptionsInt,
   LabelInt,
 } from '../models/rest.api.interface.model';
-import { SearchService } from 'src/app/pages/services/search.service';
+import { ConfigService } from 'src/app/pages/services/config.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +13,11 @@ export class AppInitialDataService {
   labels: LabelInt[] = [];
   companyOptions: CompanyOptionsInt[] = [];
 
-  constructor(private searchService: SearchService) {}
+  constructor(private configService: ConfigService) {}
 
   loadData() {
-    this.searchService.getLabels().subscribe((l) => (this.labels = l));
-    this.searchService
+    this.configService.getLabels().subscribe((l) => (this.labels = l));
+    this.configService
       .getCompanyOptions()
       .subscribe((l) => (this.companyOptions = l));
   }

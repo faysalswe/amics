@@ -1,4 +1,8 @@
 <div class="details-container content-block dx-card responsive-paddings">
+    <div style="border-bottom: 2px solid #eee;padding-bottom: 10px;">
+        <app-inventory-status [itemsId]="pmDetails.id" [secUserId]="secUserId"></app-inventory-status>
+    </div>
+    <br />
     <div class="pmdetails-container ">
         <dx-form id="pmDetails" [(formData)]="pmDetails" labelMode="floating" labelLocation="left"
             (submit)="handleSubmit($event)" [readOnly]="readOnly">
@@ -37,11 +41,11 @@
 
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
-                    <dxi-item dataField="cost">
+                    <dxi-item dataField="cost" format="currency">
                         <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
                     </dxi-item>
                     <dxi-item dataField="markup"></dxi-item>
-                    <dxi-item dataField="price">
+                    <dxi-item dataField="price" format="currency">
                         <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
                     </dxi-item>
                 </dxi-item>
@@ -107,26 +111,32 @@
         <ng-container *ngSwitchCase="childType.BOM">
             <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="id" height="54vh"
                 [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
-                [rowAlternationEnabled]="true" (onEditingStart)="logEvent('EditingStart')"
+                [columnAutoWidth]="true" [rowAlternationEnabled]="true" (onEditingStart)="logEvent('EditingStart')"
                 (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
-                (onRowInserted)="logEvent('RowInserted')" (onRowUpdating)="logEvent('RowUpdating')"
-                (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')"
+                (onRowInserted)="logEvent('RowInserted')" (onRowRemoving)="logEvent('RowRemoving')"
                 (onRowRemoved)="logEvent('RowRemoved')" (onSaving)="logEvent('Saving')" (onSaved)="logEvent('Saved')"
                 (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')">
+                <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true">
+                </dxo-row-dragging>
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
-                <dxo-editing mode="cell" refreshMode="full" [allowAdding]="true" [allowUpdating]="true"
-                    [allowDeleting]="true">
+                <dxo-editing mode="row" refreshMode="full" [allowAdding]="true" [allowUpdating]="false"
+                    [allowDeleting]="true" newRowPosition="pageBottom">
                 </dxo-editing>
-                <dxi-column dataField="lineNum" dataType="number"></dxi-column>
-                <dxi-column dataField="itemtype" dataType="string" caption="MFR."></dxi-column>
-                <dxi-column dataField="itemNumber" caption="Part Number" dataType="string"></dxi-column>
-                <dxi-column dataField="description" dataType="string"></dxi-column>
-                <dxi-column dataField="quantity" dataType="number"></dxi-column>
-                <dxi-column dataField="uomref" dataType="string"></dxi-column>
-                <dxi-column dataField="ref" dataType="string"></dxi-column>
-                <dxi-column dataField="comments" dataType="string"></dxi-column>
+                <dxi-column dataField="lineNum" dataType="number" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="itemtype" dataType="string" caption="MFR." [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="itemNumber" caption="Part Number" dataType="string"
+                    (optionChanged)="logEvent('optionChanged') ">
+                    <dxi-validation-rule type="required"></dxi-validation-rule>
+                </dxi-column>
+                <dxi-column dataField="description" dataType="string" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="quantity" dataType="number">
+                    <dxi-validation-rule type="required"></dxi-validation-rule>
+                </dxi-column>
+                <dxi-column dataField="uomref" dataType="string" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="ref" dataType="string" [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="comments" dataType="string" [allowEditing]="false"></dxi-column>
                 <dxi-column dataField="cost" dataType="number" format="currency" [allowEditing]="false">
                     <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
                 </dxi-column>
@@ -173,6 +183,19 @@
         <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
     </div>
     <div>
+        <dx-popup [width]="400" [height]="150" [showTitle]="true" title="Are you sure want to delete?"
+            [dragEnabled]="false" [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
+            [(visible)]="popupDeleteVisible">
+            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" [options]="yesDeleteButtonOptions">
+            </dxi-toolbar-item>
+            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" [options]="noDeleteButtonOptions">
+            </dxi-toolbar-item>
+            <dxo-position at="center" my="center"> </dxo-position>
+
+        </dx-popup>
+        <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
+    </div>
+    <div>
         <dx-popup [width]="800" [height]="800" [showTitle]="true" title="View Location" [dragEnabled]="false"
             [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
             [(visible)]="popupVLVisible">
@@ -204,9 +227,20 @@
                 [options]="viewLocationPrintButtonOptions">
             </dxi-toolbar-item>
             <dxo-position at="center" my="center"> </dxo-position>
-
+        </dx-popup>
+    </div>
+    <div>
+        <dx-popup [width]="400" [height]="500" [showTitle]="true" title="Reason could not delete" [dragEnabled]="false"
+            [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
+            [(visible)]="popupDeleteMessages">
+            <dxo-position at="center" my="center"> </dxo-position>
+            <dx-list #grid id="gridContainer" [dataSource]="reasonsDelete" [hoverStateEnabled]="true"
+                selectionMode="none" pageLoadMode="scrollBottom">
+                <div *dxTemplate="let item of 'item'">
+                    {{ item}}
+                </div>
+            </dx-list>
         </dx-popup>
         <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
     </div>
-
 </div>

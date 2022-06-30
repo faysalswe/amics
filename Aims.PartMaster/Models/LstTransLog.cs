@@ -8,6 +8,7 @@ namespace Aims.Core.Models
     public class LstTransLog
     {
         [Key]
+        public Guid id { get; set; }
         public Guid Invtransid { get; set; }
         public string Itemnumber { get; set; }
         public string Description { get; set; }
@@ -15,6 +16,7 @@ namespace Aims.Core.Models
         public string Ref { get; set; }
         public decimal? Quantity { get; set; }    
         public string TransDate { get; set; }
+        public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public string SerNo { get; set; }
         public string TagNo { get; set; }

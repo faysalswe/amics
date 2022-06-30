@@ -104,5 +104,27 @@ namespace Amics.Api.Controllers
             return BomGridUpdate;
         }
 
+        /// <summary>
+        /// API Route Controller for execute receipt stored procedure and increase the quantity
+        /// </summary>        
+        [HttpPost, Route("InsertInvSerLot")]
+        public LstMessage InsertInvSerLot([FromBody] List<InvSerLot> InvSetLot)
+        {
+            var InvSerLot = _inventoryService.InsertInvSerLot(InvSetLot);
+
+            return InvSerLot;
+        }
+
+
+        /// <summary>
+        /// API Route Controller for validate the serial and tag are exists
+        /// </summary>        
+        [HttpGet, Route("ValidateSerTag")]
+        public OutValidateSerTag ValidateSerTag([FromQuery] InputValidateSerTag ValidateSerTag)
+        {
+            var validateSerTag = _inventoryService.ValidateSerTag(ValidateSerTag);
+            return validateSerTag;
+        }
+
     }
 }

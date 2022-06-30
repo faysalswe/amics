@@ -7,6 +7,10 @@ import { ProfileComponent } from './pages/components/profile/profile.component';
 import { TasksComponent } from './pages/components/tasks/tasks.component'; 
 import { IncreaseInventoryComponent } from "./pages/components/IncreaseInventory/increase.inventory.component";
 import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
+import { EquipmentComponent } from './pages/components/equipment/equipment.component';
+import { ShipmentComponent } from './pages/components/shipment/shipment.component';
+import { Report2Component } from './pages/components/report2/report2.component';
+import { BulkTransferComponent } from './pages/components/bulk-transfer/bulk-transfer.component';
 
 const routes: Routes = [
   {
@@ -52,6 +56,26 @@ const routes: Routes = [
   {
     path: 'inquiry',
     component: InquiryComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'equipment',
+    component: EquipmentComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'shipment',
+    component: ShipmentComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'report2',
+    component: Report2Component,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'bulkTransfer',
+    component: BulkTransferComponent,
     canActivate: [AuthGuardService]
   },
   {

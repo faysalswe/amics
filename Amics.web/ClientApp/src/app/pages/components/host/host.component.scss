@@ -1,0 +1,7 @@
+.dx-item .dx-tab .dx-tab-selected{
+background-color: #F0E78C;
+}
+
+::ng-deep .dx-tab.dx-tab-selected, .dx-tab.dx-tab-selected .dx-icon {
+    background-color: #F0E78C;
+}

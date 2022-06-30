@@ -51,7 +51,7 @@ export class pmDetails {
     lineNum: number = 0;
     user1: string = '';
     user2: string = '';
-    user3: string = '';
+    user3: number = 0;
     user4: string = '';
     user5: string = '';
     user6: string = '';

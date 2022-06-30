@@ -24,12 +24,12 @@ export class PartMasterDataTransService {
         if (componentType === ComponentType.PartMaster) {
             if (!!selectedProductId) {
                 this.itemSelectedSubjectForPMScreen$.next(selectedProductId);
-                this.selectedCRUD$.next(CRUD.Edit);
+                //  this.selectedCRUD$.next(CRUD.Edit);
             }
         }
         else if (componentType === ComponentType.IncreaseInventory) {
             if (!!selectedProductId) {
-                this.itemSelectedSubjectForIncInvScreen$.next(selectedProductId);                 
+                this.itemSelectedSubjectForIncInvScreen$.next(selectedProductId);
             }
         }
     }
@@ -38,7 +38,7 @@ export class PartMasterDataTransService {
             if (!!selectedChild) {
                 this.itemSelectedChild$.next(selectedChild);
             }
-        }      
+        }
     }
 
     selectedCRUDActionChanged(selectedCRUD: CRUD, componentType: ComponentType): void {

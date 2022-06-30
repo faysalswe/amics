@@ -82,9 +82,9 @@ namespace Amics.Api.Controllers
         /// <param name="itemnum">Item Number</param>          
         /// /// <param name="rev">Rev</param>          
         [HttpDelete, Route("")]
-        public LstMessage ItemDetailsDelete([FromQuery] string itemnum, [FromQuery] string rev)
+        public async Task<List<string>> ItemDetailsDelete([FromQuery] string Itemnumber, [FromQuery] string Rev)
         {
-            var dataExist = _partMastService.ItemNumDelete(itemnum,rev);
+            var dataExist = await _partMastService.ItemNumDelete(Itemnumber, Rev);
 
             return dataExist;
         }

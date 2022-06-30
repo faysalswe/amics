@@ -67,7 +67,9 @@ export class PMSearchComponent implements OnInit {
         console.log(e);
         this.selectedItem = e.addedItems[0];
         console.log(this.selectedItem);
-        this.selectedItemNumber = this.selectedItem.itemNumber;
-        this.pmDataTransService.selectedItemChanged(this.selectedItem, this.componentType);
+        if (!!this.selectedItem) {
+            this.selectedItemNumber = this.selectedItem.itemNumber;
+            this.pmDataTransService.selectedItemChanged(this.selectedItem, this.componentType);
+        }
     }
 }
