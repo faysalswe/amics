@@ -11,7 +11,7 @@
 
 
 <div id="container" class="container-fluid m-1">
-  <div class="row" style="margin-right: 15px">
+  <div class="row" style="margin-right: 15px;margin-bottom:10px;">
     <!-- LEFT SEARCH PANEL STARTS-->
     <div class="col-3" style="padding: 0px; margin: 0px; height: 100%">
       <app-pmsearch [componentType]="componentType" #varPmSearch></app-pmsearch>
@@ -37,258 +37,199 @@
             <div id="form-container">
               <dx-form id="form" [formGroup]="myForm" [colCount]="4">
                 <!-- Quantity Starts  -->
-                <dxi-item
-                  [colSpan]="1"
-                  *ngDisplayLabel="100"
-                  [isRequired]="true"
-                >
-                  <dx-number-box
-                    formControlName="quantity"
-                    [stylingMode]="'outlined'"
-                    [labelMode]="'floating'"
-                    [elementAttr]="{ class: 'myclass' }"
-                    [inputAttr]="{ id: 'quantityId' }"
-                    [ngAddLabel]="labelMap.quan_num"
-                    #quantityVar
-                  >
+                <dxi-item [colSpan]="1"
+                          *ngDisplayLabel="100"
+                          [isRequired]="true">
+                  <dx-number-box formControlName="quantity"
+                                 [stylingMode]="'outlined'"
+                                 [labelMode]="'floating'"
+                                 [elementAttr]="{ class: 'myclass' }"
+                                 [inputAttr]="{ id: 'quantityId' }"
+                                 [ngAddLabel]="labelMap.quan_num"
+                                 #quantityVar>
                   </dx-number-box>
 
-                  <dxi-validation-rule
-                    type="required"
-                    message="Quantity is required"
-                  >
+                  <dxi-validation-rule type="required"
+                                       message="Quantity is required">
                   </dxi-validation-rule>
                 </dxi-item>
                 <!-- Quantity Ends  -->
-
                 <!-- Unit Cost Starts  -->
                 <dxi-item [colSpan]="1" [isRequired]="true">
-                  <dx-number-box
-                    formControlName="cost"
-                    [stylingMode]="'outlined'"
-                    [labelMode]="'floating'"
-                    [elementAttr]="{ class: 'myclass' }"
-                    [inputAttr]="{ id: 'costId' }"
-                    [ngAddLabel]="labelMap.unitCost_num"
-                    #unitCostVar
-                    format="$ #,##0.####"
-                  >
+                  <dx-number-box formControlName="cost"
+                                 [stylingMode]="'outlined'"
+                                 [labelMode]="'floating'"
+                                 [elementAttr]="{ class: 'myclass' }"
+                                 [inputAttr]="{ id: 'costId' }"
+                                 [ngAddLabel]="labelMap.unitCost_num"
+                                 #unitCostVar
+                                 format="$ #,##0.####">
                   </dx-number-box>
 
                   <!--<dx-text-box
-                    formControlName="cost"
-                    width="100%"
-                    value=""
-                    placeholder="Type..."
-                    [stylingMode]="'outlined'"
-                    [labelMode]="'floating'"
-                    [inputAttr]="{ id: 'costId' }"
-                    [ngAddLabel]="labelMap.unitCost_num"
-                    #unitCostVar>
-                  </dx-text-box>-->
+              formControlName="cost"
+              width="100%"
+              value=""
+              placeholder="Type..."
+              [stylingMode]="'outlined'"
+              [labelMode]="'floating'"
+              [inputAttr]="{ id: 'costId' }"
+              [ngAddLabel]="labelMap.unitCost_num"
+              #unitCostVar>
+            </dx-text-box>-->
 
-                  <dxi-validation-rule
-                    type="required"
-                    message="Unit cost is required"
-                  >
+                  <dxi-validation-rule type="required"
+                                       message="Unit cost is required">
                   </dxi-validation-rule>
                 </dxi-item>
                 <!-- Unit Cost Ends  -->
-
                 <!-- Reason Code Starts  -->
-                <dxi-item
-                  [colSpan]="1"
-                  style="margin-top: 20px"
-                  [isRequired]="true"
-                >
-                  <dx-select-box
-                    formControlName="miscReason"
-                    width="100%"
-                    [items]="reasonsStr"
-                    [value]="defaultReason"
-                    [searchEnabled]="true"
-                    [stylingMode]="'underlined'"
-                    [labelMode]="'floating'"
-                    placeholder="Search"
-                    [ngAddLabel]="labelMap.reasonCode_num"
-                    #varReasonCode
-                    (onFocusIn)="openReasonCodeBox()"
-                  ></dx-select-box>
+                <dxi-item [colSpan]="1"
+                          style="margin-top: 20px"
+                          [isRequired]="true">
+                  <dx-select-box formControlName="miscReason"
+                                 width="100%"
+                                 [items]="reasonsStr"
+                                 [value]="defaultReason"
+                                 [searchEnabled]="true"
+                                 [stylingMode]="'underlined'"
+                                 [labelMode]="'floating'"
+                                 placeholder="Search"
+                                 [ngAddLabel]="labelMap.reasonCode_num"
+                                 #varReasonCode
+                                 (onFocusIn)="openReasonCodeBox()"></dx-select-box>
 
-                  <dxi-validation-rule
-                    type="required"
-                    message="Reason Code is required"
-                  >
+                  <dxi-validation-rule type="required"
+                                       message="Reason Code is required">
                   </dxi-validation-rule>
                 </dxi-item>
                 <!-- Reason Code Ends  -->
-
                 <!-- Transaction Date Starts  -->
-                <dxi-item
-                  [colSpan]="1"
-                  style="margin-top: 20px"
-                  [isRequired]="true"
-                >
-                  <dx-date-box
-                    formControlName="transDate"
-                    [value]="todayDate"
-                    [ngAddLabel]="labelMap.txnDate_num"
-                    placeholder="Select..."
-                    [stylingMode]="'underlined'"
-                    [labelMode]="'floating'"
-                    style="margin-top: 10px"
-                  ></dx-date-box>
+                <dxi-item [colSpan]="1"
+                          style="margin-top: 20px"
+                          [isRequired]="true">
+                  <dx-date-box formControlName="transDate"
+                               [value]="todayDate"
+                               [ngAddLabel]="labelMap.txnDate_num"
+                               placeholder="Select..."
+                               [stylingMode]="'underlined'"
+                               [labelMode]="'floating'"
+                               style="margin-top: 10px"></dx-date-box>
 
-                  <dxi-validation-rule
-                    type="required"
-                    message="Trans Date is required"
-                  >
+                  <dxi-validation-rule type="required"
+                                       message="Trans Date is required">
                   </dxi-validation-rule>
                 </dxi-item>
                 <!-- Transaction Date Ends  -->
-
                 <!-- Warehouse Search Starts  -->
-                <dxi-item
-                  [colSpan]="1"
-                  style="margin-top: 20px"
-                  [isRequired]="true"
-                >
-                  <dx-select-box
-                    formControlName="warehouse"
-                    [ngAddLabel]="labelMap.warehouse_num"
-                    [items]="warehousesStr"
-                    value="{{ pmDetails?.warehouse }}"
-                    [searchEnabled]="true"
-                    (onValueChanged)="updateSelectedWarehouse($event)"
-                    [stylingMode]="'underlined'"
-                    [labelMode]="'floating'"
-                    placeholder="Search"
-                    style="width: 100%"
-                    #varWarehouse
-                    (onFocusIn)="openWarehouseBox()"
-                  ></dx-select-box>
+                <dxi-item [colSpan]="1"
+                          style="margin-top: 20px"
+                          [isRequired]="true">
+                  <dx-select-box formControlName="warehouse"
+                                 [ngAddLabel]="labelMap.warehouse_num"
+                                 [items]="warehousesStr"
+                                 value="{{ pmDetails?.warehouse }}"
+                                 [searchEnabled]="true"
+                                 (onValueChanged)="updateSelectedWarehouse($event)"
+                                 [stylingMode]="'underlined'"
+                                 [labelMode]="'floating'"
+                                 placeholder="Search"
+                                 style="width: 100%"
+                                 #varWarehouse
+                                 (onFocusIn)="openWarehouseBox()"></dx-select-box>
 
-                  <dxi-validation-rule
-                    type="required"
-                    message="Warehouse is required"
-                  >
+                  <dxi-validation-rule type="required"
+                                       message="Warehouse is required">
                   </dxi-validation-rule>
                 </dxi-item>
                 <!-- Warehouse Search Ends  -->
-
                 <!-- Location Search Starts  -->
-                <dxi-item
-                  [colSpan]="1"
-                  style="margin-top: 20px"
-                  [isRequired]="true"
-                >
-                  <dx-select-box
-                    formControlName="location"
-                    width="100%"
-                    [ngAddLabel]="labelMap.location_num"
-                    [items]="locationsStr"
-                    value="{{ pmDetails?.location }}"
-                    [searchEnabled]="true"
-                    [stylingMode]="'underlined'"
-                    [labelMode]="'floating'"
-                    placeholder="Search"
-                    #varLocation
-                    (onFocusIn)="openLocationBox()"
-                  ></dx-select-box>
+                <dxi-item [colSpan]="1"
+                          style="margin-top: 20px"
+                          [isRequired]="true">
+                  <dx-select-box formControlName="location"
+                                 width="100%"
+                                 [ngAddLabel]="labelMap.location_num"
+                                 [items]="locationsStr"
+                                 value="{{ pmDetails?.location }}"
+                                 [searchEnabled]="true"
+                                 [stylingMode]="'underlined'"
+                                 [labelMode]="'floating'"
+                                 placeholder="Search"
+                                 #varLocation
+                                 (onFocusIn)="openLocationBox()"></dx-select-box>
 
-                  <dxi-validation-rule
-                    type="required"
-                    message="Location is required"
-                  >
+                  <dxi-validation-rule type="required"
+                                       message="Location is required">
                   </dxi-validation-rule>
                 </dxi-item>
                 <!-- Location Search Ends  -->
-
                 <!-- Source Starts  -->
                 <dxi-item [colSpan]="1" style="margin-top: 20px">
-                  <dx-text-box
-                    formControlName="miscSource"
-                    [value]="defaultSource"
-                    width="100%"
-                    [ngAddLabel]="labelMap.source_num"
-                    placeholder="Type..."
-                    [stylingMode]="'underlined'"
-                    [labelMode]="'floating'"
-                  ></dx-text-box>
+                  <dx-text-box formControlName="miscSource"
+                               [value]="defaultSource"
+                               width="100%"
+                               [ngAddLabel]="labelMap.source_num"
+                               placeholder="Type..."
+                               [stylingMode]="'underlined'"
+                               [labelMode]="'floating'"></dx-text-box>
 
-                  <dx-check-box
-                    [value]="true"
-                    text="Remember"
-                    class="mt-1"
-                    style="font-size: 10px"
-                  ></dx-check-box>
+                  <dx-check-box [value]="true"
+                                text="Remember"
+                                class="mt-1"
+                                style="font-size: 10px"></dx-check-box>
                 </dxi-item>
                 <!-- Source Ends  -->
-
                 <!-- Ref Starts  -->
                 <dxi-item [colSpan]="1" style="margin-top: 20px">
-                  <dx-text-box
-                    formControlName="miscRef"
-                    [value]="defaultRef"
-                    width="100%"
-                    label="Ref"
-                    [ngAddLabel]="labelMap.ref_num"
-                    placeholder="Type..."
-                    [stylingMode]="'underlined'"
-                    [labelMode]="'floating'"
-                  ></dx-text-box>
+                  <dx-text-box formControlName="miscRef"
+                               [value]="defaultRef"
+                               width="100%"
+                               label="Ref"
+                               [ngAddLabel]="labelMap.ref_num"
+                               placeholder="Type..."
+                               [stylingMode]="'underlined'"
+                               [labelMode]="'floating'"></dx-text-box>
 
-                  <dx-check-box
-                    [value]="true"
-                    text="Remember"
-                    class="mt-1"
-                    style="font-size: 10px"
-                  ></dx-check-box>
+                  <dx-check-box [value]="true"
+                                text="Remember"
+                                class="mt-1"
+                                style="font-size: 10px"></dx-check-box>
                 </dxi-item>
                 <!-- Ref Ends  -->
-
                 <!-- User or ER Starts  -->
-                <dxi-item
-                  [colSpan]="1"
-                  style="margin-top: 20px"
-                  [isRequired]="true"
-                >
-                  <dx-select-box
-                    formControlName="sourcesRefId"
-                    label="ER"
-                    width="100%"
-                    [ngAddLabel]="labelMap.er_num"
-                    [items]="ersStr"
-                    [value]="er"
-                    [searchEnabled]="true"
-                    [stylingMode]="'underlined'"
-                    [labelMode]="'floating'"
-                    placeholder="Search"
-                  ></dx-select-box>
+                <dxi-item [colSpan]="1"
+                          style="margin-top: 20px"
+                          [isRequired]="true">
+                  <dx-select-box formControlName="sourcesRefId"
+                                 label="ER"
+                                 width="100%"
+                                 [ngAddLabel]="labelMap.er_num"
+                                 [items]="ersStr"
+                                 [value]="er"
+                                 [searchEnabled]="true"
+                                 [stylingMode]="'underlined'"
+                                 [labelMode]="'floating'"
+                                 placeholder="Search"></dx-select-box>
 
                   <dxi-validation-rule type="required" message="ER is required">
                   </dxi-validation-rule>
                 </dxi-item>
                 <!-- User or ER Ends  -->
-
                 <!-- Notes Starts  -->
                 <dxi-item [colSpan]="2">
                   <label>Notes</label>
-                  <textarea
-                    formControlName="notes"
-                    style="width: 100%; height: 40px"
-                  ></textarea>
+                  <textarea formControlName="notes"
+                            style="width: 100%; height: 40px"></textarea>
                 </dxi-item>
                 <!-- Notes Ends  -->
                 <dxi-item>
-                  <dx-button
-                    stylingMode="contained"
-                    text="Update"
-                    type="default"
-                    style="width: 150px; margin-top: 25px"
-                    (click)="update()"
-                    [disabled]="!myForm.valid"
-                  ></dx-button>
+                  <dx-button stylingMode="contained"
+                             text="Update"
+                             type="default"
+                             style="width: 150px; margin-top: 25px"
+                             (click)="update()"
+                             [disabled]="!myForm.valid"></dx-button>
                 </dxi-item>
               </dx-form>
             </div>
@@ -297,27 +238,23 @@
               <span style="flex: 1 1 0"></span>
 
               <div class="col-2" style="background-color: #f8f9fa">
-                <dx-date-box
-                  [value]="fromDate"
-                  [ngAddLabel]="labelMap.fromDate_num"
-                  placeholder="From Date"
-                  [stylingMode]="'underlined'"
-                  [labelMode]="'floating'"
-                  style="margin-top: 5px"
-                  (onValueChanged)="fromDatehandler($event)"
-                ></dx-date-box>
+                <dx-date-box [value]="fromDate"
+                             [ngAddLabel]="labelMap.fromDate_num"
+                             placeholder="From Date"
+                             [stylingMode]="'underlined'"
+                             [labelMode]="'floating'"
+                             style="margin-top: 5px"
+                             (onValueChanged)="fromDatehandler($event)"></dx-date-box>
               </div>
 
               <div class="col-2" style="background-color: #f8f9fa">
-                <dx-date-box
-                  [value]="toDate"
-                  [ngAddLabel]="labelMap.toDate_num"
-                  placeholder="To Date"
-                  [stylingMode]="'underlined'"
-                  [labelMode]="'floating'"
-                  style="margin-top: 5px"
-                  (onValueChanged)="toDatehandler($event)"
-                ></dx-date-box>
+                <dx-date-box [value]="toDate"
+                             [ngAddLabel]="labelMap.toDate_num"
+                             placeholder="To Date"
+                             [stylingMode]="'underlined'"
+                             [labelMode]="'floating'"
+                             style="margin-top: 5px"
+                             (onValueChanged)="toDatehandler($event)"></dx-date-box>
               </div>
 
               <div class="col-2" style="background-color: #f8f9fa">
@@ -329,12 +266,16 @@
           </div>
         </div>
 
-        <div class="mt-2">
-          <app-trans-log [data]="trasLogArray"></app-trans-log>
+        <div class="mt-2" style="margin-bottom:10px;">
+          <div style="height: calc(100vh - 530px); float: left; margin: 0px; margin-bottom:10px; padding: 0px;">
+            <app-trans-log [data]="trasLogArray"></app-trans-log>
+          </div>
         </div>
+
+
       </div>
-      <div class="row"></div>
-    </div>
+        <div class="row"></div>
+      </div>
     <!-- RIGHT CONTENT PANEL ENDS-->
   </div>
 

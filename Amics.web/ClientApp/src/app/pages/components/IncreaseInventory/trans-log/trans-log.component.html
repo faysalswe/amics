@@ -1,49 +1,51 @@
-<dx-data-grid
-            id="gridContainer"
-            [dataSource]="data"
-            keyExpr="invtransid"
-            [showBorders]="true"
-            [showColumnLines]="true"
-            [showRowLines]="true"
-            [rowAlternationEnabled]="true"
-            [columnAutoWidth]="true"
-            [allowColumnResizing]="true"
-            columnResizingMode="widget"
-          >
-            <dxo-sorting mode="single"></dxo-sorting>
-            <dxi-column dataField="itemnumber" caption="Item #"></dxi-column>
-            <dxi-column
-              dataField="description"
+<dx-data-grid id="gridContainer"
+              [dataSource]="data"
+              keyExpr="id"
+              height="100vh"
+              [showBorders]="true"
+              [showColumnLines]="true"
+              [showRowLines]="true"
+              [rowAlternationEnabled]="true"
+              [columnAutoWidth]="true"
+              [allowColumnResizing]="true"
+              columnResizingMode="widget" >
+  <dxo-sorting mode="single"></dxo-sorting>
+  <dxi-column dataField="itemnumber" caption="Item #"></dxi-column>
+  <dxi-column dataField="description"
               caption="Description"
               [width]="140"
-            ></dxi-column>
-            <dxi-column dataField="quantity" caption="Qty"></dxi-column>
-            <dxi-column dataField="cost" caption="Cost"></dxi-column>
-            <dxi-column dataField="serNo" caption="Serial #"></dxi-column>
-            <dxi-column dataField="tagNo" caption="Tag #"></dxi-column>
-            <dxi-column dataField="location" caption="Location"></dxi-column>
-            <dxi-column
-              dataField="transDate"
-              caption="Trans Date"
+             ></dxi-column>
+  <dxi-column dataField="quantity"  [width]="90" caption="Qty"></dxi-column>
+  <dxi-column dataField="cost"  [width]="100" caption="Cost"></dxi-column>
+  <dxi-column dataField="serNo"  [width]="120" caption="Serial #"></dxi-column>
+  <dxi-column dataField="tagNo"  [width]="120" caption="Tag #"></dxi-column>
+  <dxi-column dataField="location" [width]="120" caption="Location"></dxi-column>
+
+  <dxi-column dataField="transDate"
+              [width]="120"
+              caption="Trans Date"></dxi-column>
+  <dxi-column dataField="createdDate"
+              caption="Created Date"
               [sortIndex]="0"
               sortOrder="desc"
-            ></dxi-column>
+              [visible]="false"></dxi-column>
 
-            <dxo-selection mode="single"></dxo-selection>
-            <dxo-paging [pageSize]="10"></dxo-paging>
-            <dxo-pager
-              [visible]="true"
-              [allowedPageSizes]="[10, 20, 30]"
-              displayMode="compact"
-              [showPageSizeSelector]="false"
-              [showInfo]="true"
-              [showNavigationButtons]="true"
-            ></dxo-pager>
-            <dxo-master-detail
-              [enabled]="true"
-              template="detail"
-            ></dxo-master-detail>
-            <div *dxTemplate="let log of 'detail'">
-              <app-trans-log-sub-details [transLogInt]="log.data"></app-trans-log-sub-details>
-            </div>
-          </dx-data-grid>
+
+  <dxo-load-panel [enabled]="true"></dxo-load-panel>
+  <dxo-scrolling mode="infinite"></dxo-scrolling>
+  <dxo-selection mode="single"></dxo-selection>
+  <!--<dxo-paging [pageSize]="10"></dxo-paging>
+  <dxo-pager [visible]="true"
+             [allowedPageSizes]="[10, 20, 30]"
+             displayMode="compact"
+             [showPageSizeSelector]="false"
+             [showInfo]="true"
+             [showNavigationButtons]="true"></dxo-pager>-->
+
+
+  <dxo-master-detail [enabled]="true"
+                     template="detail"></dxo-master-detail>
+  <div *dxTemplate="let log of 'detail'">
+    <app-trans-log-sub-details [transLogInt]="log.data"></app-trans-log-sub-details>
+  </div>
+</dx-data-grid>
