@@ -32,6 +32,9 @@ import { EquipmentComponent } from './pages/components/equipment/equipment.compo
 import { ShipmentComponent } from './pages/components/shipment/shipment.component';
 import { Report2Component } from './pages/components/report2/report2.component';
 import { BulkTransferComponent } from './pages/components/bulk-transfer/bulk-transfer.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import { TransLogComponent } from './pages/components/IncreaseInventory/trans-log/trans-log.component';
+import { TransLogSubDetailsComponent } from './pages/components/IncreaseInventory/trans-log/trans-log-sub-details/trans-log-sub-details.component';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -60,6 +63,8 @@ export function appEnvironmentFactory(
     ReportsComponent,
     MdatComponent,
     EquipmentComponent,
+    TransLogComponent,
+    TransLogSubDetailsComponent,
     ShipmentComponent,
     Report2Component,
     BulkTransferComponent
@@ -79,7 +84,9 @@ export function appEnvironmentFactory(
     AppRoutingModule,
     DevExpressModule,
     HttpClientModule,
-    PartMasterModule, SharedModule
+    PartMasterModule,
+    SharedModule,
+    ReactiveFormsModule
   ],
   providers: [
     {

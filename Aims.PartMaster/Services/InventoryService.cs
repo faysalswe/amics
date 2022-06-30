@@ -65,7 +65,12 @@ namespace Aims.PartMaster.Services
         ///Interface for execute receipt stored procedure and increase the quantity.
         /// </summary> 
         public LstMessage UpdateInvReceipt(InvReceipts InvReceipts);
-
+ 
+        ///<summary>
+        /// Interface for validating the serial number and lot number pass FormName as optional parameter.
+        /// </summary>        
+        /// <param name="ValidateSerTag">InputValidateSerTag</param> 
+        public OutValidateSerTag ValidateSerTag(InputValidateSerTag ValidateSerTag);
     }
     public class InventoryService : IInventoryService
     {
@@ -84,6 +89,8 @@ namespace Aims.PartMaster.Services
 
         public InvStatus InventoryStatus(string ItemsId, string SecUserId)
         {
+           // ItemsId = ItemsId.Length < 32 ? Guid.Empty.ToString() : ItemsId;
+
             var itemsGuId = string.IsNullOrEmpty(ItemsId) ? Guid.Empty : new Guid(ItemsId.ToString());
             var secUserGuId = string.IsNullOrEmpty(SecUserId) ? Guid.Empty : new Guid(SecUserId.ToString());
             var statusResult = _amicsDbContext.DbxInvStatus.FromSqlRaw($"select * from dbo.webapi_fn_inv_status ('{itemsGuId}','{secUserGuId}')").AsEnumerable().FirstOrDefault();
@@ -132,7 +139,7 @@ namespace Aims.PartMaster.Services
 
         public List<LstTransLog> TransLog(string FromDate, string ToDate,string Reason)
         {                       
-            var ViewTransLog = _amicsDbContext.ListTransLog.FromSqlRaw($"select * from [dbo].[fn_translog_view] ('{FromDate}','{ToDate}','{Reason}')").ToList();
+            var ViewTransLog = _amicsDbContext.ListTransLog.FromSqlRaw($"select newid() as id,* from [dbo].[fn_translog_view] ('{FromDate}','{ToDate}','{Reason}')").ToList();
             return ViewTransLog;
         }
 
@@ -162,8 +169,9 @@ namespace Aims.PartMaster.Services
                     sql += $",@model='{InvSerLot[i].Model}'";
                     sql += $",@color='{InvSerLot[i].Color}'";
                     sql += $",@qty={InvSerLot[i].Qty}";
-                    sql += $",@createdby={InvSerLot[i].CreatedBy}";
-                    sql += $",@expdate={InvSerLot[i].ExpDate}";                              
+                    sql += $",@createdby='{InvSerLot[i].CreatedBy}'";
+                  if(InvSerLot[i].ExpDate != null)
+                    sql += $",@expdate='{InvSerLot[i].ExpDate}'";                              
 
                     var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
                 }
@@ -208,6 +216,24 @@ namespace Aims.PartMaster.Services
 
             var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
             return receiptResult;
+        }
+
+
+        /// <summary>
+        /// API Service for validating the serial number and lot number pass FormName as optional parameter.
+        /// </summary>        
+        /// <param name="ValidateSerTag">InputValidateSerTag</param> 
+        public OutValidateSerTag ValidateSerTag(InputValidateSerTag ValidateSerTag)
+        {
+            var sql = $"exec sp_webapi_validate_sertag @itemsid='{ValidateSerTag.itemsid}'";
+            sql += ValidateSerTag.option.ToUpper() == "SERIAL" ? $",@serno='{ValidateSerTag.sertag}'" : $",@tagno='{ValidateSerTag.sertag}'";
+
+            var validateSerTag = _amicsDbContext.OutValidateSerTag
+                .FromSqlRaw(sql)
+                .AsEnumerable()
+                .FirstOrDefault();
+
+            return validateSerTag;
         }
 
     }

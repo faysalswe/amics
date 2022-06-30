@@ -33,14 +33,14 @@ namespace Aims.Core.Models
         public DbSet<LstViewLocation> LstViewLocation { get; set; }
         public DbSet<LstBomGridItems> LstBomGridItems { get; set; }
         public DbSet<LstTransLog> ListTransLog { get; set; }
-
-        
         public DbSet<LstInquiry> LstInquiry { get; set; }
         public DbSet<LstSerial> LstSerial { get; set; }
         public DbSet<TransNextNum> DbxTransNextNum { get; set; }
-        public DbSet<InvReceipts> DbxInvReceipts { get; set; }               
+        public DbSet<InvReceipts> DbxInvReceipts { get; set; }                            
         public DbSet<LstNotes> LstNotes { get; set; }
         public DbSet<LstMessagetext> LstMessagetext { get; set; }
+
+        public DbSet<OutValidateSerTag> OutValidateSerTag { get; set; }
 
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)
@@ -56,7 +56,15 @@ namespace Aims.Core.Models
             modelBuilder.Entity<InvReceipts>().HasNoKey();
             modelBuilder.Entity<TransNextNum>().HasNoKey();
             modelBuilder.Entity<InvSerLot>().HasNoKey();
+
+
+            modelBuilder.Entity<InvReceipts>().HasNoKey();
+            modelBuilder.Entity<TransNextNum>().HasNoKey();
             modelBuilder.Entity<LstMessagetext>().HasNoKey();
+
+            modelBuilder.Entity<InputValidateSerTag>().HasNoKey();
+            modelBuilder.Entity<OutValidateSerTag>().HasNoKey();
+
         }
     }
 }
