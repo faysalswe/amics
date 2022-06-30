@@ -29,6 +29,9 @@ import { ReportsComponent } from './pages/components/reports/reports.component';
 import { MdatComponent } from './pages/components/mdat/mdat.component';
 import { SharedModule } from './shared/shared.module';
 import { EquipmentComponent } from './pages/components/equipment/equipment.component';
+import { ShipmentComponent } from './pages/components/shipment/shipment.component';
+import { Report2Component } from './pages/components/report2/report2.component';
+import { BulkTransferComponent } from './pages/components/bulk-transfer/bulk-transfer.component';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -57,6 +60,9 @@ export function appEnvironmentFactory(
     ReportsComponent,
     MdatComponent,
     EquipmentComponent,
+    ShipmentComponent,
+    Report2Component,
+    BulkTransferComponent
   ],
   imports: [
     CommonModule,

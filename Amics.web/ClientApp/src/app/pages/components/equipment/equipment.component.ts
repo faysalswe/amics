@@ -35,6 +35,9 @@ export class EquipmentComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  changeNotesHeader(event: any){}
+  changeNotesHeader(event: any)
+  {
+    this.notesHeader = event.value;
+  }
 
 }

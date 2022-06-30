@@ -12,17 +12,17 @@
       <dx-form id="form" [colCount]="1">
         <dxi-item [colSpan]="1">
           <dx-text-box
-            dataField=" numMDATber"
-            label="MDAT number"
+            dataField="MDAT Number"
+            label="MDAT Number"
           ></dx-text-box>
           <br />
           <dx-text-box dataField=" ER" label="ER"></dx-text-box>
           <br />
           <dx-text-box
-            dataField="Packlist number" label="packlist number"
+            dataField="Packlist Number" label="Packlist Number"
           ></dx-text-box>
           <br />
-          <dx-text-box dataField="status" label="status"></dx-text-box>
+          <dx-text-box dataField="Status" label="Status"></dx-text-box>
           <br />
           <dx-button
             stylingMode="contained"
@@ -38,7 +38,7 @@
             id="gridContainer"
             [dataSource]="pmSearchResults"
             keyExpr="itemNumber"
-            [columns]="['MDATnumber', 'description']"
+            [columns]="['MDAT Number', 'description']"
             [hoverStateEnabled]="true"
             [showBorders]="true"
             [selectedRowKeys]="[]"
@@ -69,19 +69,25 @@
       *dxTemplate
       class="details-container content-block dx-card responsive-paddings"
     >
-      <dx-form id="form" [colCount]="4">
+      <dx-form id="form" [colCount]="4" labelMode="floating">
         <dxi-item [colSpan]="1">
           <dx-text-box
-            dataField="MDAT number"
-            label="MDAT number"
+            dataField="MDAT Number"
+            label="MDAT Number"
           ></dx-text-box>
           <br />
           <br />
           <dx-text-box
-            dataField="packetlist number"
-            label="packetlist number"
+            dataField="Packlist Number"
+            label="Packlist Number"
           ></dx-text-box>
-          
+          <br/>
+          <br/>
+          <dx-date-box
+            placeholder="Cancelled Date"
+            displayFormat="dd-MMM-yy"
+          >
+          </dx-date-box>
         </dxi-item>
         <dxi-item [colSpan]="1">
           <dx-text-box dataField="ER" label="ER"></dx-text-box>
@@ -89,11 +95,9 @@
           <br />
           <dx-date-box
             placeholder="Submitted Date"
-            [useMaskBehavior]="true"
-            type="date"
+            displayFormat="dd-MMM-yy"
           >
           </dx-date-box>
-          
         </dxi-item>
         <br />
         <dxi-item [colSpan]="1">
@@ -102,34 +106,36 @@
           <br />
           <dx-date-box
             placeholder="Approved Date"
-            [useMaskBehavior]="true"
-            type="date"
+            displayFormat="dd-MMM-yy"
           >
           </dx-date-box>
-          
+
         </dxi-item>
         <br />
-        <dxi-item [colSpan]="1">
-          <dx-text-box dataField="status" label="status"></dx-text-box>
-          <br>
-          <br>
-          <dx-date-box
-            placeholder="Shipped Date"
-            [useMaskBehavior]="true"
-            type="date"
-          >
-          </dx-date-box>
+        <br/>
+        <dxi-item itemType="group" [colSpan]="1">
+        <dxi-item [colSpan]="1" dataField="warehouse" editorType="dxLookup" [editorOptions]="{
+                  label: 'Warehouse',
+                  items: warehouseList,
+                  showDataBeforeSearch: true,
+                  searchEnabled: true,
+                  searchExpr: 'warehouse',
+                  displayExpr: 'warehouse',
+                  valueExpr: 'warehouse',
+                  showClearButton: true,
+                  searchMode: 'contains'
+                }"></dxi-item>
+                <dxi-item>
+                  <dx-date-box style="margin-top: 20px;"
+                  placeholder="Shipped Date"
+                  displayFormat="dd-MMM-yy"
+                >
+                </dx-date-box>
+                </dxi-item>
         </dxi-item>
-        <br />
       </dx-form>
     </div>
   </dxi-item>
-
-  <!-- <dxi-item>
-    <dxi-location [row]="1" [col]="0"></dxi-location>
-    <div *dxTemplate></div>
-  </dxi-item> -->
-
   <dxi-item>
     <dxi-location [row]="1" [col]="1"></dxi-location>
     <div
@@ -143,11 +149,11 @@
         height="40vh"
         [columns]="[
           'Line',
-          'MDAT number',
-          'status',
-          'Submitted data',
-          'Approved data',
-          'shipped data'
+          'MDAT Number',
+          'Status',
+          'Submitted Date',
+          'Approved Date',
+          'Shipped Date'
         ]"
         [showBorders]="true"
       >
@@ -160,5 +166,5 @@
   <dx-button stylingMode="contained" text="Submit" type="default"
   >
 </dx-button>
-</div>
+</div> -->
 

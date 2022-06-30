@@ -11948,6 +11948,11 @@
   opacity: 1;
 }
 
+.dx-datebox-calendar.dx-dropdowneditor .dx-dropdowneditor-icon::before,
+.dx-datebox-calendar.dx-dropdowneditor.dx-dropdowneditor-active .dx-dropdowneditor-icon::before {
+  content: "";
+}
+
 .dx-datebox-wrapper-calendar .dx-popup-content {
   padding: 0;
 }
