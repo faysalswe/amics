@@ -8,7 +8,7 @@
             (submit)="handleSubmit($event)" [readOnly]="readOnly">
             <dxi-item itemType="group" [colCount]="2">
                 <dxi-item itemType="group" [colCount]="2">
-                    <dxi-item dataField="itemNumber" [colSpan]="1">
+                    <dxi-item dataField="itemNumber" [colSpan]="1" [label]="{text:'Part Number'}">
                         <dxi-validation-rule type="required" message="Part Number is required">
                         </dxi-validation-rule>
                     </dxi-item>
@@ -101,7 +101,7 @@
         <ng-container *ngSwitchCase="childType.BOM">
             <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="itemNumber" height="52vh"
                 [focusedRowEnabled]="true" [allowColumnResizing]="true" [allowColumnReordering]="true"
-                [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true"
+                [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true" (onKeyDown)="onKeyDown($event)"
                 (onEditingStart)="logEvent('EditingStart')" (onInitNewRow)="logEvent('InitNewRow')"
                 (onRowInserting)="logEvent('RowInserting')" (onRowInserted)="rowInserted($event)"
                 (onRowUpdating)="rowUpdated($event)" (onRowUpdated)="logEvent('RowUpdated')"
@@ -112,7 +112,7 @@
                 </dxo-row-dragging>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
-                <dxo-editing mode="row" [allowUpdating]="false" [allowDeleting]="!this.readOnly"
+                <dxo-editing mode="row" [allowUpdating]="!this.readOnly" [allowDeleting]="!this.readOnly"
                     [allowAdding]="!this.readOnly">
                 </dxo-editing>
 
@@ -126,7 +126,7 @@
 
                 <dxi-column dataField="description" [allowEditing]="false"></dxi-column>
                 <dxi-column dataField="quantity" [allowEditing]="true">
-
+                    <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
                 <dxi-column dataField="uomref" [allowEditing]="false" [width]="80"></dxi-column>
                 <dxi-column dataField="ref" [allowEditing]="false" [width]="80"></dxi-column>
@@ -172,7 +172,16 @@
             </dx-data-grid>
         </ng-container>
     </ng-container>
+    <div>
+        <dx-popup [width]="800" [height]="800" [showTitle]="true" title="search partnumber" [dragEnabled]="false"
+            [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
+            [(visible)]="popupF2Visible">
+            <br />
 
+            <app-pmsearch [componentType]="componentType"></app-pmsearch>
+            <dxo-position at="center" my="center"> </dxo-position>
+        </dx-popup>
+    </div>
     <div>
         <dx-popup [width]="400" [height]="150" [showTitle]="true" title="Do you like to copy BOM as well?"
             [dragEnabled]="false" [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
@@ -225,7 +234,7 @@
                     <dxi-total-item column="location" summaryType="count"> </dxi-total-item>
                 </dxo-summary>
             </dx-data-grid>
-            <dxo-export [enabled]="true" ></dxo-export>
+            <dxo-export [enabled]="true"></dxo-export>
             <dxo-position at="center" my="center"> </dxo-position>
         </dx-popup>
     </div>

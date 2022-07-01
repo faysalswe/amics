@@ -21,6 +21,7 @@ import { Workbook } from "exceljs";
 import { saveAs } from "file-saver";
 import { exportDataGrid } from "devextreme/excel_exporter";
 import { pmNotes } from "src/app/pages/models/pmNotes";
+import { ComponentType } from "src/app/pages/models/componentType";
 @Component({
     selector: "app-pmdetails",
     templateUrl: "./pmdetails.component.html",
@@ -63,9 +64,11 @@ export class PMDetailsComponent {
     toastType = 'info';
     toastMessage = '';
     popupVLVisible = false;
+    popupF2Visible = false;
     popupVSVisible = false;
     lookupItemNumbers: pmItemSearchResult[] = [];
     editRowKey!: number;
+    componentType: ComponentType = ComponentType.PartMasterF2;
     constructor(private searchService: SearchService, private pmdataTransfer: PartMasterDataTransService, private pmService: PartMasterService, private authService: AuthService) {
         this.childType = PmChildType;
         const that = this;
@@ -114,6 +117,13 @@ export class PMDetailsComponent {
         this.rowInserted = this.rowInserted.bind(this);
         this.rowUpdated = this.rowUpdated.bind(this);
         this.rowRemoved = this.rowRemoved.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
+    }
+    onKeyDown(e:any) {
+        if (e.event.ctrlKey && e.event.key === "F2") {
+            console.log("Ctrl + F2 was pressed"); 
+            this.popupF2Visible = true;
+        }
     }
     logEvent(eventName: any) {
         console.log(eventName);
@@ -171,7 +181,7 @@ export class PMDetailsComponent {
         });
         this.pmdataTransfer.selectedItemBomForPMDetails$.subscribe(boms => {
             this.bomDetails = boms;
-            this.originalBomDetails = boms;
+            this.originalBomDetails = [...boms];
         })
 
         this.pmdataTransfer.selectedItemPoForPMDetails$.subscribe(poLines => {
@@ -383,7 +393,7 @@ export class PMDetailsComponent {
         }
 
         // find inserted 
-        let newBoms = this.bomDetails.filter(b => b.id === Guid.createEmpty());
+        let newBoms = this.bomDetails.filter(b => b.id === "00000000-0000-0000-0000-000000000000");
         if (!!newBoms && newBoms.length > 0) {
             for (let _i = 0; _i < newBoms.length; _i++) {
                 let newBom = new pmBomGridDetails();
@@ -403,7 +413,7 @@ export class PMDetailsComponent {
         //find Updated and deleted
         for (var _i = 0, boms = this.originalBomDetails; _i < boms.length; _i++) {
             var bom = new pmBomGridDetails();
-            var originalBom = this.bomDetails.find(b => b.id == this.bomDetails[_i].id)
+            var originalBom = this.bomDetails.find(b => b.id == this.originalBomDetails[_i].id)
             if (!originalBom) {
                 bom.actionFlag = BomAction.Delete;
             }
@@ -559,7 +569,7 @@ export class PMDetailsComponent {
         if (!!item) {
             let bitem = this.bomDetails.find(b => b.itemNumber === key);
             if (!!bitem) {
-                bitem.id = Guid.createEmpty();
+                bitem.id = "00000000-0000-0000-0000-000000000000";
                 bitem.itemNumber = item.itemNumber;
                 bitem.itemtype = item.itemType;
                 bitem.description = item.description;

@@ -1,5 +1,6 @@
 export enum ComponentType {
   PartMaster = 'PartMaster',
+  PartMasterF2 = 'PartMasterF2',
   Profile = 'Profile',
   Tasks = 'Tasks',
   IncreaseInventory = 'IncreaseInventory',
