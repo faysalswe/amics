@@ -24,16 +24,19 @@
           <br />
           <br />
           <h4>Project</h4>
-          <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
-            selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="30vh" [focusStateEnabled]="true"
-            pageLoadMode="scrollBottom">
-            <div *dxTemplate="let item of 'item'">
-              <div>
-                <div class="name">{{ item.itemNumber}}</div>
-                <div class="description">{{ item.description }}</div>
+          <div style="height: calc(100vh - 600px); float: left; margin: 0px; padding: 0px; ">
+            <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
+              selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="100vh" [focusStateEnabled]="true"
+              pageLoadMode="scrollBottom">
+              <div *dxTemplate="let item of 'item'">
+                <div>
+                  <div class="name">{{ item.itemNumber}}</div>
+                  <div class="description">{{ item.description }}</div>
+                </div>
               </div>
-            </div>
-          </dx-list>
+            </dx-list>
+          </div>
+
         </dxi-item>
       </dx-form>
     </div>
@@ -74,82 +77,56 @@
         <dxi-item itemType="empty" [colSpan]="4"></dxi-item>
 
         <dxi-item [colSpan]="4">
-          <dx-data-grid
-          #grid
-          id="gridContainer"
-          [dataSource]="gridList"
-          keyExpr="itemNumber"
-          [columns]="[
+          <dx-data-grid #grid id="gridContainer" [dataSource]="gridList" keyExpr="itemNumber" [columns]="[
             'Equip Request', 
             'Line No',
             'Part Number',
             'Description',
             'Mfgr',
-            'Qty']"
-          [hoverStateEnabled]="true"
-          [showBorders]="true"
-          [selectedRowKeys]="[]"
-          height="30vh"
-        >
-          <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
-          <dxo-selection mode="single"></dxo-selection>
-        </dx-data-grid>
+            'Qty']" [hoverStateEnabled]="true" [showBorders]="true" [selectedRowKeys]="[]" height="30vh">
+            <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
+            <dxo-selection mode="single"></dxo-selection>
+          </dx-data-grid>
         </dxi-item>
-        
+
       </dx-form>
     </div>
   </dxi-item>
   <dxi-item>
     <dxi-location [row]="1" [col]="1"></dxi-location>
-    <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
-      <dx-form id="form" labelMode="floating">
-        <dxi-item>
-          <div class="tables">
-            <div class="column1">
-              <dx-data-grid
-                [dataSource]="tableLeft"
-                [height]="200"
-                [showBorders]="true"
-              >
-                <dxo-row-dragging
-                  [data]="1"
-                  group="tasksGroup"
-                  [onAdd]="onAdd"
-                ></dxo-row-dragging>
-                <dxo-scrolling mode="virtual"></dxo-scrolling>
-          
-                <dxi-column dataField="wareHouse" dataType="string"></dxi-column>
-                <dxi-column dataField="location" dataType="string"></dxi-column>
-                <dxi-column dataField="serialNo" dataType="string"></dxi-column>
-                <dxi-column dataField="tagNo" dataType="string"></dxi-column>
-                <dxi-column dataField="qty" dataType="string"></dxi-column>
-              </dx-data-grid>
+      <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+        <dx-form id="form" labelMode="floating">
+          <dxi-item>
+            <div class="tables" >
+              <div class="column1">
+                <dx-data-grid [dataSource]="tableLeft" height="calc(100vh - 600px)" [showBorders]="true">
+                  <dxo-row-dragging [data]="1" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
+                  <dxo-scrolling mode="virtual"></dxo-scrolling>
+  
+                  <dxi-column dataField="wareHouse" dataType="string"></dxi-column>
+                  <dxi-column dataField="location" dataType="string"></dxi-column>
+                  <dxi-column dataField="serialNo" dataType="string"></dxi-column>
+                  <dxi-column dataField="tagNo" dataType="string"></dxi-column>
+                  <dxi-column dataField="qty" dataType="string"></dxi-column>
+                </dx-data-grid>
+              </div>
+              <div class="separator"></div>
+              <div class="column2">
+                <dx-data-grid [dataSource]="tableRight" height="calc(100vh - 600px)" [showBorders]="true">
+                  <dxo-row-dragging [data]="2" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
+                  <dxo-scrolling mode="virtual"></dxo-scrolling>
+  
+                  <dxi-column dataField="wareHouse" dataType="string"></dxi-column>
+                  <dxi-column dataField="location" dataType="string"></dxi-column>
+                  <dxi-column dataField="serialNo" dataType="string"></dxi-column>
+                  <dxi-column dataField="tagNo" dataType="string"></dxi-column>
+                </dx-data-grid>
+              </div>
             </div>
-            <div class="separator"></div>
-            <div class="column2">
-              <dx-data-grid
-                [dataSource]="tableRight"
-                [height]="200"
-                [showBorders]="true"
-              >
-                <dxo-row-dragging
-                  [data]="2"
-                  group="tasksGroup"
-                  [onAdd]="onAdd"
-                ></dxo-row-dragging>
-                <dxo-scrolling mode="virtual"></dxo-scrolling>
-          
-                <dxi-column dataField="wareHouse" dataType="string"></dxi-column>
-                <dxi-column dataField="location" dataType="string"></dxi-column>
-                <dxi-column dataField="serialNo" dataType="string"></dxi-column>
-                <dxi-column dataField="tagNo" dataType="string"></dxi-column>
-              </dx-data-grid>
-            </div>
-          </div>
-        </dxi-item>
-        
-      </dx-form>
-    </div>
+          </dxi-item>
+  
+        </dx-form>
+      </div>
   </dxi-item>
   <dxi-item>
     <dxi-location [row]="2" [col]="0" [colspan]="2"></dxi-location>

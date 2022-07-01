@@ -107,67 +107,74 @@
 </div>
 
 <div class="details-container content-block dx-card responsive-paddings">
-    <ng-container [ngSwitch]="selectedChild">
-        <ng-container *ngSwitchCase="childType.BOM">
-            <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="id" height="54vh"
-                [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
-                [columnAutoWidth]="true" [rowAlternationEnabled]="true" (onEditingStart)="logEvent('EditingStart')"
-                (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
-                (onRowInserted)="logEvent('RowInserted')" (onRowRemoving)="logEvent('RowRemoving')"
-                (onRowRemoved)="logEvent('RowRemoved')" (onSaving)="logEvent('Saving')" (onSaved)="logEvent('Saved')"
-                (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')">
-                <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true">
-                </dxo-row-dragging>
-                <dxo-load-panel [enabled]="false"></dxo-load-panel>
-                <dxo-scrolling mode="infinite"></dxo-scrolling>
-                <dxo-selection mode="single"></dxo-selection>
-                <dxo-editing mode="row" refreshMode="full" [allowAdding]="true" [allowUpdating]="false"
-                    [allowDeleting]="true" newRowPosition="pageBottom">
-                </dxo-editing>
-                <dxi-column dataField="lineNum" dataType="number" [allowEditing]="false"></dxi-column>
-                <dxi-column dataField="itemtype" dataType="string" caption="MFR." [allowEditing]="false"></dxi-column>
-                <dxi-column dataField="itemNumber" caption="Part Number" dataType="string"
-                    (optionChanged)="logEvent('optionChanged') ">
-                    <dxi-validation-rule type="required"></dxi-validation-rule>
-                </dxi-column>
-                <dxi-column dataField="description" dataType="string" [allowEditing]="false"></dxi-column>
-                <dxi-column dataField="quantity" dataType="number">
-                    <dxi-validation-rule type="required"></dxi-validation-rule>
-                </dxi-column>
-                <dxi-column dataField="uomref" dataType="string" [allowEditing]="false"></dxi-column>
-                <dxi-column dataField="ref" dataType="string" [allowEditing]="false"></dxi-column>
-                <dxi-column dataField="comments" dataType="string" [allowEditing]="false"></dxi-column>
-                <dxi-column dataField="cost" dataType="number" format="currency" [allowEditing]="false">
-                    <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
-                </dxi-column>
-                <dxi-column dataField="extCost" dataType="number" format="currency" [allowEditing]="false">
-                    <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
-                </dxi-column>
+    <div style="height: calc(100vh - 480px); float: right; margin: 15px; padding: 0px; ">
+        <ng-container [ngSwitch]="selectedChild">
+            <ng-container *ngSwitchCase="childType.BOM">
+                <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="id" height="calc(100vh - 480px)"
+                    [showBorders]="true" [showColumnLines]="true" [showRowLines]="true" [allowColumnReordering]="true"
+                    [focusedRowEnabled]="true" [allowColumnResizing]="true" [columnAutoWidth]="true"
+                    [rowAlternationEnabled]="true" (onEditingStart)="logEvent('EditingStart')"
+                    (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
+                    (onRowInserted)="logEvent('RowInserted')" (onRowRemoving)="logEvent('RowRemoving')"
+                    (onRowRemoved)="logEvent('RowRemoved')" (onSaving)="logEvent('Saving')"
+                    (onSaved)="logEvent('Saved')" (onEditCanceling)="logEvent('EditCanceling')"
+                    (onEditCanceled)="logEvent('EditCanceled')">
+                    <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true">
+                    </dxo-row-dragging>
+                    <dxo-load-panel [enabled]="false"></dxo-load-panel>
+                    <dxo-scrolling mode="infinite"></dxo-scrolling>
+                    <dxo-selection mode="single"></dxo-selection>
+                    <dxo-editing mode="row" refreshMode="full" [allowAdding]="true" [allowUpdating]="false"
+                        [allowDeleting]="true" newRowPosition="pageBottom">
+                    </dxo-editing>
+                    <dxi-column dataField="lineNum" dataType="number" [allowEditing]="false"></dxi-column>
+                    <dxi-column dataField="itemtype" dataType="string" caption="MFR." [allowEditing]="false">
+                    </dxi-column>
+                    <dxi-column dataField="itemNumber" caption="Part Number" dataType="string"
+                        (optionChanged)="logEvent('optionChanged') ">
+                        <dxi-validation-rule type="required"></dxi-validation-rule>
+                    </dxi-column>
+                    <dxi-column dataField="description" dataType="string" [allowEditing]="false"></dxi-column>
+                    <dxi-column dataField="quantity" dataType="number">
+                        <dxi-validation-rule type="required"></dxi-validation-rule>
+                    </dxi-column>
+                    <dxi-column dataField="uomref" dataType="string" [allowEditing]="false"></dxi-column>
+                    <dxi-column dataField="ref" dataType="string" [allowEditing]="false"></dxi-column>
+                    <dxi-column dataField="comments" dataType="string" [allowEditing]="false"></dxi-column>
+                    <dxi-column dataField="cost" dataType="number" format="currency" [allowEditing]="false">
+                        <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+                    </dxi-column>
+                    <dxi-column dataField="extCost" dataType="number" format="currency" [allowEditing]="false">
+                        <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+                    </dxi-column>
 
-                <dxo-summary>
-                    <dxi-total-item column="lineNum" summaryType="count"> </dxi-total-item>
-                    <dxi-total-item column="cost" summaryType="sum" valueFormat="currency">
-                        <dxo-format type="fixedPoint" [precision]="2">
-                        </dxo-format>
-                    </dxi-total-item>
-                    <dxi-total-item column="extCost" summaryType="sum" valueFormat="currency">
-                        <dxo-format type="fixedPoint" [precision]="2">
-                        </dxo-format>
-                    </dxi-total-item>
-                </dxo-summary>
-            </dx-data-grid>
-        </ng-container>
-        <ng-container *ngSwitchCase="childType.PO">
-            <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="54vh"
-                [focusedRowEnabled]="true" [allowColumnResizing]="true" [rowAlternationEnabled]="true"
-                [columns]="['linenum','pomain', 'supplier', 'quantity', 'received', 'somain']">
-                <dxo-load-panel [enabled]="false"></dxo-load-panel>
-                <dxo-scrolling mode="infinite"></dxo-scrolling>
-                <dxo-selection mode="single"></dxo-selection>
+                    <dxo-summary>
+                        <dxi-total-item column="lineNum" summaryType="count"> </dxi-total-item>
+                        <dxi-total-item column="cost" summaryType="sum" valueFormat="currency">
+                            <dxo-format type="fixedPoint" [precision]="2">
+                            </dxo-format>
+                        </dxi-total-item>
+                        <dxi-total-item column="extCost" summaryType="sum" valueFormat="currency">
+                            <dxo-format type="fixedPoint" [precision]="2">
+                            </dxo-format>
+                        </dxi-total-item>
+                    </dxo-summary>
+                    <dxo-scrolling mode="infinite"></dxo-scrolling>
+                </dx-data-grid>
+            </ng-container>
+            <ng-container *ngSwitchCase="childType.PO">
+                <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="calc(100vh - 480px)"
+                    [focusedRowEnabled]="true" [allowColumnResizing]="true" [rowAlternationEnabled]="true"
+                    [columns]="['linenum','pomain', 'supplier', 'quantity', 'received', 'somain']">
+                    <dxo-load-panel [enabled]="false"></dxo-load-panel>
+                    <dxo-scrolling mode="infinite"></dxo-scrolling>
+                    <dxo-selection mode="single"></dxo-selection>
 
-            </dx-data-grid>
+                </dx-data-grid>
+            </ng-container>
         </ng-container>
-    </ng-container>
+    </div>
+
 
     <div>
         <dx-popup [width]="400" [height]="150" [showTitle]="true" title="Do you like to copy BOM as well?"
