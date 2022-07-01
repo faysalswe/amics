@@ -58,6 +58,12 @@ export const navigation = [
         title: 'Reports',
         type: ComponentType.Reports
       },
+      {
+        text: 'Bulk Transfer',
+        path: '/bulkTransfer',
+        title: 'Bulk Transfer',
+        type: ComponentType.BulkTransfer
+      },
     ]
   },
   {
@@ -75,7 +81,19 @@ export const navigation = [
         path: '/equipment',
         title: 'eqipment',
         type: ComponentType.ER
-      }
+      },
+      {
+        text: 'Shipment',
+        path: '/shipment',
+        title: 'Shipment',
+        type: ComponentType.Shipment
+      },
+      {
+        text: 'Reports',
+        path: '/report2',
+        title: 'Reports',
+        type: ComponentType.Report2
+      },
     ]
   }
 

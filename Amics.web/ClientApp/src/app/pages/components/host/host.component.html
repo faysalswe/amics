@@ -61,4 +61,23 @@
       <app-equipment></app-equipment>
     </ng-container>
   </ng-container>
+
+  <ng-container *ngSwitchCase="this.componentType.Shipment">
+    <ng-container>
+      <app-shipment></app-shipment>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="this.componentType.Report2">
+    <ng-container>
+      <app-report2></app-report2>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="this.componentType.BulkTransfer">
+    <ng-container>
+      <app-bulk-transfer></app-bulk-transfer>
+    </ng-container>
+  </ng-container>
+
   <ng-container *ngSwitchDefault>Default Template</ng-container>

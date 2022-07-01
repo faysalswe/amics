@@ -82,6 +82,7 @@ namespace Amics.Api
             services.AddScoped<IPartmasterService, PartmasterService>();
             services.AddScoped<IInventoryService, InventoryService>();
             services.AddScoped<IConfigService, ConfigService>();
+            services.AddScoped<IChangeLocService, ChangeLocationService>();
 
             services.AddHealthChecks();
             services.AddSession(options =>

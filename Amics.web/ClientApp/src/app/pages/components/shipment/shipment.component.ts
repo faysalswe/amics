@@ -1,33 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import 'devextreme/data/odata/store';
-import { taskItemSearchResult } from '../../models/pmsearch';
 
 @Component({
-  selector: "app-tasks",
-  templateUrl: 'tasks.component.html',
-  styleUrls: ['tasks.component.scss']
+  selector: 'app-shipment',
+  templateUrl: './shipment.component.html',
+  styleUrls: ['./shipment.component.scss']
 })
-
-export class TasksComponent {
-
+export class ShipmentComponent {
   gridList = [];
   pmSearchResults = [
-    { itemNumber: "Car", description: "This is a car" },
-    { itemNumber: "Bike", description: "This is a bike" },
-    { itemNumber: "Aeroplane", description: "This is a aeroplane" },
-    { itemNumber: "Train", description: "This is a train" },
+    { itemNumber: "Blue", description: "This is a blue color" },
+    { itemNumber: "Red", description: "This is a red color" },
+    { itemNumber: "Orange", description: "This is a orange color" },
+    { itemNumber: "Green", description: "This is a green color" },
   ];
   selectedItemNumber: string = '';
   statusList = [];
   locationList = [];
 
-  tableRight: Array<Task> = [];
-  tableLeft: Array<Task> = [
-    { wareHouse: "house 1", location: "England", serialNo: "11", tagNo: "tag-66", qty: "111" },
-    { wareHouse: "house 2", location: "France", serialNo: "11", tagNo: "tag-66", qty: "111" },
-    { wareHouse: "house 3", location: "America", serialNo: "11", tagNo: "tag-66", qty: "111" },
-    { wareHouse: "house 4", location: "Russia", serialNo: "11", tagNo: "tag-66", qty: "111" },
-    { wareHouse: "house 5", location: "Pakistan", serialNo: "11", tagNo: "tag-66", qty: "111" },
+  tableRight: Array<Shipment> = [];
+  tableLeft: Array<Shipment> = [
+    { wareHouse: "wareHouse 1", location: "Newyork", serialNo: "11", tagNo: "tag-1", qty: "111" },
+    { wareHouse: "wareHouse 2", location: "Texas", serialNo: "11", tagNo: "tag-1", qty: "111" },
+    { wareHouse: "wareHouse 3", location: "Connictcut", serialNo: "11", tagNo: "tag-1", qty: "111" },
+    { wareHouse: "wareHouse 4", location: "New jersey", serialNo: "11", tagNo: "tag-1", qty: "111" },
+    { wareHouse: "wareHouse 5", location: "california", serialNo: "11", tagNo: "tag-1", qty: "111" },
   ];
 
   constructor() {
@@ -37,7 +33,7 @@ export class TasksComponent {
   onAdd(event: any) {
     debugger
 
-    let rowData = new Task();
+    let rowData = new Shipment();
     let itemData = event.itemData;
     rowData.wareHouse = itemData.wareHouse;
     rowData.location = itemData.location;
@@ -67,8 +63,7 @@ export class TasksComponent {
     }
   }
 }
-
-export class Task {
+export class Shipment {
   wareHouse: string = "";
   location: string = "";
   serialNo: string = "";
