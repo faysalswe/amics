@@ -1,7 +1,7 @@
 import { Guid } from "guid-typescript";
 
 export class pmBomDetails {
-    id: Guid = Guid.createEmpty();
+    id: string = "00000000-0000-0000-0000-000000000000";
     itemsid_Parent: Guid = Guid.createEmpty();
     itemsid_Child: Guid = Guid.createEmpty();
     itemNumber: string = '';

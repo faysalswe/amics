@@ -5,7 +5,7 @@
         <form action="your-action" (submit)="handleSubmit($event)">
             <dx-form [(formData)]="pmsearchInfo" [colCount]="1" labelMode="floating" labelLocation="left">
                 <dxi-item itemType="group" verticalAlignment="">
-                    <dxi-item dataField="itemnumber"></dxi-item>
+                    <dxi-item dataField="itemnumber"  [label]="{text:'Part Number'}"></dxi-item>
                     <dxi-item dataField="description"></dxi-item>
                     <dxi-item dataField="itemtype" editorType="dxLookup"
                         [editorOptions]="{ label:'MFR',items: itemTypeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemtype', displayExpr:'itemtype', valueExpr:'itemtype', showClearButton:true, searchMode:'contains' }">
