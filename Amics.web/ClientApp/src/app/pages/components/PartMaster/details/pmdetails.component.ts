@@ -272,11 +272,7 @@ export class PMDetailsComponent {
             this.getLocations(e.value);
         }
     }
-
-    ItemNumberSelection(e: any) {
-        console.log(e);
-        //   this.getListItemNumbers();
-    }
+  
 
     ItemNumberSelection(e: any) {
         console.log(e);
