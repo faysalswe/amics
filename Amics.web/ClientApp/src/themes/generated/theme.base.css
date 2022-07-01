@@ -9928,7 +9928,7 @@
 
 .dx-list.dx-list-select-decorator-enabled .dx-list-item.dx-state-focused .dx-checkbox.dx-checkbox-checked .dx-checkbox-icon::after,
 .dx-list.dx-list-select-decorator-enabled .dx-list-item.dx-state-focused .dx-checkbox.dx-checkbox-indeterminate .dx-checkbox-icon::after {
- background-color: #03A9F4;
+  background-color: #03A9F4;
   -webkit-transform: scale(1);
   transform: scale(1);
 }

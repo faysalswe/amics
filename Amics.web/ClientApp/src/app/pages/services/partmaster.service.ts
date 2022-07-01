@@ -8,6 +8,9 @@ import { pmBomDetails } from '../models/pmBomDetails';
 import { pmBomGridDetails } from '../models/pmBomGridDetails';
 import { pmDetails } from '../models/pmdetails';
 import { pmPoDetails } from '../models/pmPoDetails';
+import { pmSerial } from '../models/pmSerial'; 
+import { pmNotes } from '../models/pmNotes'; 
+
 import { pmWHLocation } from '../models/pmWHLocation';
 import { SearchService } from './search.service';
 
@@ -91,10 +94,20 @@ export class PartMasterService {
   getPoDetails(itemId: Guid) {
     return this.httpClient.get<pmPoDetails[]>(`${this.api}/PODetails?itemsId=${itemId}`);
   }
+  getNotes(itemId: Guid) {
+    return this.httpClient.get<pmNotes[]>(`${this.api}/ViewNotes?itemsId=${itemId}`);
+  }
 
   getViewWHLocation(itemId: string, userId: string, warehouse: string = ''): Observable<pmWHLocation[]> {
 
     return this.httpClient.get<pmWHLocation[]>(`${this.api}/ViewWarehouseLocation?itemsId=${itemId}&secUsersId=${userId}&warehouse=${warehouse}`);
   }
-  
+  getViewSerial(itemId: string, userId: string): Observable<pmSerial[]> {
+
+    return this.httpClient.get<pmSerial[]>(`${this.api}/ViewSerial?itemsId=${itemId}&secUsersId=${userId}`);
+  }
+  getViewNotes(itemId: string): Observable<pmNotes[]> {
+
+    return this.httpClient.get<pmNotes[]>(`${this.api}/ViewNotes?itemsId=${itemId}`);
+  }
 }

@@ -17,7 +17,7 @@ export class PMFooterComponent {
   pmActions1: any[] = [{ "text": "Add" }, { "text": "Edit" }, { "text": "Delete" }];
   pmActions2: any[] = [{ "text": "Save" }, { "text": "Cancel" }];
   saveExitVisible2 = false;
-  children: string[] = ["BOM", "PO", "Notes", "Documents"];
+  children: string[] = ["BOM", "PO", "Notes"];
   selctedChild: string = "BOM";
   constructor(private pmDataTranserService: PartMasterDataTransService) {
     this.pmDataTranserService.selectedCRUD$.subscribe(crud => { this.showSaveExit(crud) });

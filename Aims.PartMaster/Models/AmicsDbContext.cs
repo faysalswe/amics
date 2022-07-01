@@ -39,6 +39,8 @@ namespace Aims.Core.Models
         public DbSet<InvReceipts> DbxInvReceipts { get; set; }                            
         public DbSet<LstNotes> LstNotes { get; set; }
         public DbSet<LstMessagetext> LstMessagetext { get; set; }
+        public DbSet<LstChangeLocSearch> LstChangeLocSearch { get; set; }
+        
 
         public DbSet<OutValidateSerTag> OutValidateSerTag { get; set; }
 
@@ -61,6 +63,7 @@ namespace Aims.Core.Models
             modelBuilder.Entity<InvReceipts>().HasNoKey();
             modelBuilder.Entity<TransNextNum>().HasNoKey();
             modelBuilder.Entity<LstMessagetext>().HasNoKey();
+            modelBuilder.Entity<LstChangeLocSearch>().HasNoKey();
 
             modelBuilder.Entity<InputValidateSerTag>().HasNoKey();
             modelBuilder.Entity<OutValidateSerTag>().HasNoKey();
