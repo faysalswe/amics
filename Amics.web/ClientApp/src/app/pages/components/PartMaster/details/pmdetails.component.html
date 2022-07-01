@@ -208,7 +208,7 @@
 
             <dx-data-grid id="gridContainer" [dataSource]="pmWHLocations" keyExpr="location" height="650"
                 [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
-                [rowAlternationEnabled]="true" (onExporting)="onExporting($event)">
+                [rowAlternationEnabled]="true" (onExporting)="onExporting($event)" [showBorders]="true">
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-sorting mode="multiple"></dxo-sorting>
@@ -225,7 +225,7 @@
                     <dxi-total-item column="location" summaryType="count"> </dxi-total-item>
                 </dxo-summary>
             </dx-data-grid>
-            <dxo-export [enabled]="true" [allowExportSelectedData]="true"></dxo-export>
+            <dxo-export [enabled]="true" ></dxo-export>
             <dxo-position at="center" my="center"> </dxo-position>
         </dx-popup>
     </div>

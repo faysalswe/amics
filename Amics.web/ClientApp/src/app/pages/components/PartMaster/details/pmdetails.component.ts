@@ -1,5 +1,4 @@
 import { Component, ViewChild } from "@angular/core";
-import CustomStore from "devextreme/data/custom_store";
 import notify from "devextreme/ui/notify";
 import { Guid } from "guid-typescript";
 import { pmBomDetails } from "src/app/pages/models/pmBomDetails";
@@ -16,8 +15,7 @@ import { SearchService } from "src/app/pages/services/search.service";
 import { AuthService } from "src/app/shared/services";
 import { PartMasterService } from "../../../services/partmaster.service";
 import { PartMasterDataTransService } from "../../../services/pmdatatransfer.service";
-import { DxDataGridComponent } from "devextreme-angular";
-import { BindingType, ThisReceiver } from "@angular/compiler";
+import { DxDataGridComponent } from "devextreme-angular"; 
 import { pmSerial } from "src/app/pages/models/pmSerial";
 import { Workbook } from "exceljs";
 import { saveAs } from "file-saver";
@@ -273,6 +271,11 @@ export class PMDetailsComponent {
         else {
             this.getLocations(e.value);
         }
+    }
+
+    ItemNumberSelection(e: any) {
+        console.log(e);
+        //   this.getListItemNumbers();
     }
 
     ItemNumberSelection(e: any) {
