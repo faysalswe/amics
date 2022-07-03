@@ -1,0 +1,140 @@
+<dx-responsive-box singleColumnScreen="sm">
+  <dxi-row [ratio]="0.50"></dxi-row>
+  <dxi-row [ratio]="0.75"></dxi-row>
+  <dxi-row [ratio]="1"></dxi-row>
+  <dxi-col [ratio]="0.75"></dxi-col>
+  <dxi-col [ratio]="3"></dxi-col>
+  <dxi-item>
+    <dxi-location [row]="0" [col]="0" [rowspan]="2"></dxi-location>
+    <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+
+      <div class="pmsearch-container ">
+        <form (submit)="onFormSubmit($event)">
+          <dx-form [(formData)]="changeLocRequest" [colCount]="1" labelMode="floating" labelLocation="left">
+            <dxi-item itemType="group" verticalAlignment="">
+              <dxi-item dataField="er" [label]="{text:'ER'}"></dxi-item>
+              <dxi-item dataField="projectId" [label]="{text:'Project Id'}"></dxi-item>
+              <dxi-item dataField="projectName" [label]="{text:'Project Name'}"></dxi-item>
+              <dxi-item dataField="budget" [label]="{text:'Budget'}"> </dxi-item>
+            </dxi-item>
+
+            <dxi-item itemType="button" type="default" stylingMode="contained" [buttonOptions]="submitButtonOptions">
+            </dxi-item>
+          </dx-form>
+        </form>
+      </div>
+      <br />
+      <div>
+
+        <div style="height: calc(100vh - 480px); float: left; margin: 0px; padding: 0px; ">
+          <dx-list #grid id="gridContainer" [dataSource]="changeLocSearchResult" [hoverStateEnabled]="true"
+            selectionMode="single" [selectedItemKeys]="[selectedProductId]" height="100vh" [focusStateEnabled]="true"
+            pageLoadMode="scrollBottom" (onSelectionChanged)="onSelectionChanged($event)"
+            (keyDown)="onSelectionChanged($event)">
+            <div *dxTemplate="let item of 'item'">
+              <div>
+                <div class="name">{{ item.project}}</div>
+
+              </div>
+            </div>
+          </dx-list>
+        </div>
+      </div>
+
+    </div>
+  </dxi-item>
+  <dxi-item>
+    <dxi-location [row]="0" [col]="1"></dxi-location>
+    <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+      <dx-form [(formData)]="changeLocProjDetails" id="form" [colCount]="4" labelMode="floating">
+        <dxi-item dataField="projectName" [colSpan]="1" [label]="{text:'Project Name'}">
+
+        </dxi-item>
+        <dxi-item itemtype="empty" [colSpan]="2"></dxi-item>
+        <dxi-item itemtype="empty" [colSpan]="4"></dxi-item>
+        <dxi-item dataField="wareHouse" [colSpan]="1" [label]="{text:'Warehouse'}">
+        </dxi-item>
+        <dxi-item dataField="location" [colSpan]="1" [label]="{text:'Location'}">
+        </dxi-item>
+
+        <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
+        <dxi-item itemType="empty" [colSpan]="4"></dxi-item>
+
+        <dxi-item [colSpan]="4">
+          <dx-data-grid #grid id="gridContainer" [dataSource]="locViewGridList" keyExpr="soLinesId"
+            [hoverStateEnabled]="true" [showBorders]="true" [selectedRowKeys]="[]" height="30vh"
+            (onSelectionChanged)="onSelectionChangedView($event)" (keyDown)="onSelectionChangedView($event)">
+            <dxo-scrolling mode="infinite"></dxo-scrolling>
+            <dxo-sorting mode="multiple"></dxo-sorting>
+            <dxo-selection mode="single"></dxo-selection>
+            <dxi-column dataField="soMain" caption="Equip Request"></dxi-column>
+            <dxi-column dataField="lineNum" caption="Line No"></dxi-column>
+            <dxi-column dataField="itemnumber" caption="Part Number"></dxi-column>
+            <dxi-column dataField="description" caption="Description"></dxi-column>
+            <dxi-column dataField="itemType" caption="Mfgr"></dxi-column>
+            <dxi-column dataField="quantity" caption="Qty"></dxi-column>
+          </dx-data-grid>
+        </dxi-item>
+
+      </dx-form>
+    </div>
+  </dxi-item>
+  <dxi-item>
+    <dxi-location [row]="1" [col]="1"></dxi-location>
+    <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+      <dx-form id="form" labelMode="floating">
+        <dxi-item>
+          <div class="tables">
+            <div class="column1">
+              <dx-data-grid [dataSource]="changeLocDetailsResult" [height]="200" [showBorders]="true">
+                <dxo-row-dragging [data]="1" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
+                <dxo-scrolling mode="virtual"></dxo-scrolling>
+
+                <dxi-column dataField="warehouse" dataType="string" ></dxi-column>
+                <dxi-column dataField="location" dataType="string"></dxi-column>
+                <dxi-column dataField="serNo" dataType="string" caption="Serial No"></dxi-column>
+                <dxi-column dataField="tagNo" dataType="string"></dxi-column>
+                <dxi-column dataField="quantity" dataType="Pick Qty"></dxi-column>
+              </dx-data-grid>
+            </div>
+            <div class="separator"></div>
+            <div class="column2">
+              <dx-data-grid [dataSource]="tableRight" [height]="200" [showBorders]="true">
+                <dxo-row-dragging [data]="2" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
+                <dxo-scrolling mode="virtual"></dxo-scrolling>
+
+                <dxi-column dataField="warehouse" dataType="string"></dxi-column>
+                <dxi-column dataField="location" dataType="string"></dxi-column>
+                <dxi-column dataField="serNo" dataType="string"></dxi-column>
+                <dxi-column dataField="tagNo" dataType="string"></dxi-column>
+              </dx-data-grid>
+            </div>
+          </div>
+        </dxi-item>
+
+      </dx-form>
+    </div>
+  </dxi-item>
+  <dxi-item>
+    <dxi-location [row]="2" [col]="0" [colspan]="2"></dxi-location>
+    <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+      <dx-form id="form" [colCount]="5">
+        <dxi-item [colSpan]="1" style="text-align: center;">
+          <dx-button stylingMode="contained" text="search" type="default">
+          </dx-button>
+        </dxi-item>
+        <dxi-item [colSpan]="2" style="float: right;">
+          <dx-button stylingMode="contained" text="Select All" type="default">
+          </dx-button> &nbsp;
+          <dx-button stylingMode="contained" text="Clear All" type="default">
+          </dx-button>
+        </dxi-item>
+        <dxi-item [colSpan]="1" style="text-align: center;">
+          <dx-button stylingMode="contained" text="Transfer" type="default">
+          </dx-button> &nbsp;
+          <dx-button stylingMode="contained" text="Exit" type="default">
+          </dx-button>
+        </dxi-item>
+      </dx-form>
+    </div>
+  </dxi-item>

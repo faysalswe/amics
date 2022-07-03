@@ -42,74 +42,37 @@ export class InventoryService {
     });
   }
 
-  updateReceipt(obj: IncreaseInventoryInt) {
-    // var transNum$ = this.extractTransNum();
-    // var updateReceipt$ = this.httpClient.post(`${this.api}/UpdateReceipt`, obj);
-
-    return this.extractTransNum().pipe(
-      map((num: TransNumberRecInt) => {
-        obj.transNum = num.sp_rec;
-        return obj;
-      }),
-      tap(console.log),
-      concatMap((val) => this.updateReceiptApi(val))
-    );
-  }
-
-  extractTransNum() {
+  extractTransNum(): Observable<TransNumberRecInt> {
     return this.httpClient.get<TransNumberRecInt>(
       `${this.api}/getTransNumberRec`
     );
   }
 
-  invSerLotApi(serLotArray: SerialLotInt[]) {
+  invSerLotApi_1(num: TransNumberRecInt, serLotArray: SerialLotInt[]) {
+    serLotArray.forEach((a) => {
+      a.transnum = Number(num.sp_rec);
+    });
     return this.httpClient.post(`${this.api}/InsertInvSerLot`, serLotArray);
   }
 
-  updateReceiptApi(obj: IncreaseInventoryInt) {
+  updateReceiptApi_2(num: TransNumberRecInt, obj: IncreaseInventoryInt) {
+    obj.transNum = Number(num.sp_rec);
     return this.httpClient.post(`${this.api}/UpdateReceipt`, obj);
   }
 
-  insertInvSerLot(serLotArray: SerialLotInt[], obj: IncreaseInventoryInt) {
-    var dataArray: any[] = [];
-    this.extractTransNum().subscribe((num: TransNumberRecInt) => {
-      var seq = num.sp_rec;
+  insertInvSerLot(serLotArray: SerialLotInt[], val: IncreaseInventoryInt) {
+    return this.extractTransNum().pipe(
+      concatMap((obj: any) =>
+        this.invSerLotApi_1(obj, serLotArray).pipe(
+          concatMap((res) => this.updateReceiptApi_2(obj, val))
+        )
+      )
+    );
+  }
 
-      serLotArray.forEach((obj) => {
-        obj.transnum = Number(seq);
-      });
-
-      obj.transNum = Number(seq);
-
-      this.invSerLotApi(serLotArray).subscribe((obj1) => {
-        this.updateReceiptApi(obj).subscribe((obj2) => {
-          console.log('Completed');
-        });
-      });
-    });
-
-    /*return this.extractTransNum().pipe(
-      map((num: TransNumberRecInt) => {
-        // obj.transNum = num.sp_rec;
-        return num.sp_rec
-      }),
-      tap(console.log),
-      of((val : string) => {
-        console.log("testing 69....");
-        serLotArray.forEach(obj => {
-          obj.transnum = Number(val);
-        })
-        console.log(serLotArray);
-        this.invSerLotApi(serLotArray);
-        return val
-      }),
-      of((val : string) => {
-        console.log("testing 77....");
-        obj.transNum = Number(val);
-        return this.updateReceiptApi(obj)
-      }),
-      concatAll()
-    )*/
+  insertReceipt(val: IncreaseInventoryInt) {
+    return this.extractTransNum().pipe(
+      concatMap((obj) => this.updateReceiptApi_2(obj, val))
+    );
   }
 }
-
