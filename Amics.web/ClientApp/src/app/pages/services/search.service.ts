@@ -6,6 +6,7 @@ import { pmSearch, pmItemSearchResult } from "../models/pmsearch";
 import { ItemClass, ItemCode, ItemType, Uom } from "../models/searchModels";
 import { Warehouse, WarehouseLocation } from "../models/warehouse";
 import { CompanyOptionsInt, LabelInt, ReasonInt } from "src/app/shared/models/rest.api.interface.model";
+import { changeLocRequest } from "../models/changeLoc";
 
 @Injectable({
   providedIn: "root",
@@ -69,5 +70,6 @@ export class SearchService {
     let url = `${this.api}/ItemNumber?itemNumber=${pmSearch.itemnumber}&description=${pmSearch.description}&itemType=${pmSearch.itemtype}&itemCode=${pmSearch.itemcode}&itemclass=${pmSearch.itemclass}`;
     return this.httpClient.get<pmItemSearchResult[]>(url);
   }
+
 
 }
