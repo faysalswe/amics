@@ -24,6 +24,7 @@ import {
   FormArray,
   FormBuilder,
   FormGroup,
+  FormGroupDirective,
   Validators,
 } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -38,6 +39,7 @@ import notify from 'devextreme/ui/notify';
 import { PMSearchComponent } from '../PartMaster/search/pmsearch.component';
 import { Employee, HomeService } from '../../services/home.service';
 import { TransNumberRecInt } from '../../../shared/models/rest.api.interface.model';
+import dxForm from 'devextreme/ui/form';
 
 @Component({
   selector: 'app-increase-inventory',
@@ -142,6 +144,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   currentIncreaseInventoryIntObj!: IncreaseInventoryInt;
 
   loadingVisible = false;
+  @ViewChild(DxFormComponent) dxForm!: DxFormComponent
 
   constructor(
     private pmdataTransfer: PartMasterDataTransService,
@@ -162,63 +165,26 @@ export class IncreaseInventoryComponent implements AfterViewInit {
     this.closeButtonOptions = {
       text: 'Save and Close',
       onClick(e: any) {
+        that.loadingVisible = true;
         that.popupVisible = false;
         var serialLst: SerialLotInt[] = that.serialInvDetForms.value;
         serialLst.forEach((obj) => {
           obj.qty = 1;
           obj.createdBy = String(that.user);
         });
-        /*var newObj = serialLst.map(obj => {
-          return {
-            ...obj,
-            qty: 1,
-            createdBy: that.user
-          }
-        });*/
-        console.log(serialLst);
         const body = that.increaseInvObj();
-        //that.inventoryService.insertInvSerLot(serialLst, body).su
-
-        that.inventoryService
-          .extractTransNum()
-          .subscribe((num: TransNumberRecInt) => {
-            var seq = num.sp_rec;
-
-            serialLst.forEach((obj) => {
-              obj.transnum = Number(seq);
-            });
-
-            body.transNum = Number(seq);
-
-            that.inventoryService
-              .invSerLotApi(serialLst)
-              .subscribe((obj1: any) => {
-                that.inventoryService
-                  .updateReceiptApi(body)
-                  .subscribe((obj2: any) => {
-                    console.log('Completed');
-                    that.refreshLog();
-                    that.initializeFormData();
-                    that.pmDetails = new pmDetails();
-                    setTimeout(() => {
-                      that.loadingVisible = false;
-                      notify(obj2['message'], 'info', 500);
-                    }, 500);
-                  });
-              });
-          });
-
-        /*    .subscribe((res: any) => {
+        that.inventoryService.insertInvSerLot(serialLst, body).subscribe(() => {
+          setTimeout(() => {
             that.refreshLog();
+            // that.formDirective.
+            // that.myForm.reset();
+            that.resetMyForm();
             that.initializeFormData();
             that.pmDetails = new pmDetails();
-            // that.varPmSearch.search();
-            // that.varInvStatus.search();
-            setTimeout(() => {
-              that.loadingVisible = false;
-              notify(res["message"], "info", 500);
-            }, 2000);
-          });*/
+            that.loadingVisible = false;
+            notify('Successfully Saved', 'info', 500);
+          }, 500);
+        });
       },
     };
   }
@@ -308,12 +274,12 @@ export class IncreaseInventoryComponent implements AfterViewInit {
 
     this.fromDate.setMonth(this.fromDate.getMonth() - 1);
 
-    var initData$ = forkJoin(
-      [this.incInvService.getDefaultValues(),
+    var initData$ = forkJoin([
+      this.incInvService.getDefaultValues(),
       this.searchService.getWarehouseInfo(''),
       this.searchService.getReasonCode(),
-      this.inventoryService.getTransLog(this.fromDateStr(), this.toDateStr())]
-    ).pipe(
+      this.inventoryService.getTransLog(this.fromDateStr(), this.toDateStr()),
+    ]).pipe(
       tap((obj) => {
         console.log(obj);
         this.defaultVals = obj[0];
@@ -457,7 +423,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
       this.currentIncreaseInventoryIntObj = body;
       this.loadingVisible = false;
     } else {
-      this.inventoryService.updateReceipt(body).subscribe((res: any) => {
+      this.inventoryService.insertReceipt(body).subscribe((res: any) => {
         this.refreshLogs();
         this.isVisible = true;
         this.initializeFormData();
@@ -498,4 +464,8 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   }
 
   ngOnDestroy() {}
+
+  resetMyForm() {
+    this.dxForm.instance.resetValues();
+  }
 }
