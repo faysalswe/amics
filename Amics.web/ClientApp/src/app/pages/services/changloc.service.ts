@@ -44,4 +44,22 @@ export class ChangeLocService {
         return this.httpClient.get<changeLocSearchResult[]>(url);
     }
 
+    UpdateInvTransLoc(req: changeLocSearchResult) {
+        if (req.itemnumber == "null") { req.itemnumber = ''; }
+        if (req.soMain == "null") { req.soMain = ''; }
+        if (req.soLinesId == "null") { req.soLinesId = ''; }
+
+        let url = `${this.api}/UpdateInvTransLoc`;
+        return this.httpClient.get<changeLocSearchResult[]>(url);
+    }
+
+    UpdateChangeLoc(req: changeLocSearchResult) {
+        if (req.itemnumber == "null") { req.itemnumber = ''; }
+        if (req.soMain == "null") { req.soMain = ''; }
+        if (req.soLinesId == "null") { req.soLinesId = ''; }
+
+        let url = `${this.api}/UpdateChangeLoc?somain=${req.soMain}&itemnumber=${req.itemnumber}&userId="admin"&soLinesId=${req.soLinesId}&invType=${req.invType}`;
+        return this.httpClient.get<changeLocSearchResult[]>(url);
+    }
+
 }

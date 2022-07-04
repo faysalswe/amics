@@ -15,13 +15,14 @@ import { SearchService } from "src/app/pages/services/search.service";
 import { AuthService } from "src/app/shared/services";
 import { PartMasterService } from "../../../services/partmaster.service";
 import { PartMasterDataTransService } from "../../../services/pmdatatransfer.service";
-import { DxDataGridComponent } from "devextreme-angular"; 
+import { DxDataGridComponent } from "devextreme-angular";
 import { pmSerial } from "src/app/pages/models/pmSerial";
 import { Workbook } from "exceljs";
 import { saveAs } from "file-saver";
 import { exportDataGrid } from "devextreme/excel_exporter";
 import { pmNotes } from "src/app/pages/models/pmNotes";
 import { ComponentType } from "src/app/pages/models/componentType";
+import { ThisReceiver } from "@angular/compiler";
 @Component({
     selector: "app-pmdetails",
     templateUrl: "./pmdetails.component.html",
@@ -34,7 +35,7 @@ export class PMDetailsComponent {
     warehouseNames: string[] = [];
     pmWHLocations: pmWHLocation[] = [];
     pmSerials: pmSerial[] = [];
-    pmNotes:pmNotes[]=[];
+    pmNotes: pmNotes[] = [];
     groupedLocations: any;
     groupedWarehouses: any;
     locations: WarehouseLocation[] = [];
@@ -67,10 +68,24 @@ export class PMDetailsComponent {
     popupF2Visible = false;
     popupVSVisible = false;
     lookupItemNumbers: pmItemSearchResult[] = [];
+    selectedRowIndex = -1;
     editRowKey!: number;
-    componentType: ComponentType = ComponentType.PartMasterF2;
+    componentTypeF2: ComponentType = ComponentType.PartMasterF2;
     constructor(private searchService: SearchService, private pmdataTransfer: PartMasterDataTransService, private pmService: PartMasterService, private authService: AuthService) {
         this.childType = PmChildType;
+        this.searchService.getWarehouseInfo('').subscribe(w => {
+            this.warehouses = w;
+            this.warehouseNames = w.map(w => w.warehouse);
+            this.groupedWarehouses = this.groupByKey(w, 'warehouse');
+        })
+
+        this.searchService.getLocationInfo('', '').subscribe(l => {
+            this.locations = l;
+            this.groupedLocations = this.groupByKey(l, 'warehouseId');
+            console.log(this.groupedLocations);
+            //   console.log(this.groupedLocations['f062f282-ad8e-4743-b01f-2fb9c7ba9f7d']);
+        })
+
         const that = this;
         this.yesButtonOptions = {
             text: 'Yes',
@@ -118,12 +133,8 @@ export class PMDetailsComponent {
         this.rowUpdated = this.rowUpdated.bind(this);
         this.rowRemoved = this.rowRemoved.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
-    }
-    onKeyDown(e:any) {
-        if (e.event.ctrlKey && e.event.key === "F2") {
-            console.log("Ctrl + F2 was pressed"); 
-            this.popupF2Visible = true;
-        }
+        this.selectedChanged = this.selectedChanged.bind(this);
+        this.setCellValue = this.setCellValue.bind(this);
     }
     logEvent(eventName: any) {
         console.log(eventName);
@@ -158,20 +169,18 @@ export class PMDetailsComponent {
         this.searchService.getUom('', '').subscribe(l => {
             this.uomList = l;
         })
+        this.pmdataTransfer.itemSelectedSubjectForBomGrid$.subscribe(e => {
+            if (this.readOnly) { return; }
+            console.log(e);
+            this.popupF2Visible = false;
+            this.dataGrid.instance.saveEditData();
+            this.addRow();
+            this.dataGrid.instance.cellValue(this.bomDetails.length, 3, e.itemNumber);
+            this.dataGrid.instance.cellValue(this.bomDetails.length, 5, 1);
+            this.dataGrid.instance.saveEditData();
+            this.editRow(e.itemNumber);
 
-        this.searchService.getWarehouseInfo('').subscribe(w => {
-            this.warehouses = w;
-            this.warehouseNames = w.map(w => w.warehouse);
-            this.groupedWarehouses = this.groupByKey(w, 'warehouse');
-        })
-
-        this.searchService.getLocationInfo('', '').subscribe(l => {
-            this.locations = l;
-            this.groupedLocations = this.groupByKey(l, 'warehouseId');
-            console.log(this.groupedLocations);
-         //   console.log(this.groupedLocations['f062f282-ad8e-4743-b01f-2fb9c7ba9f7d']);
-        })
-
+        });
         this.pmdataTransfer.selectedItemForPMDetails$.subscribe(item => {
             console.log(item);
             this.pmDetails = item;
@@ -259,17 +268,20 @@ export class PMDetailsComponent {
     }
 
     updateWarehouseSelection(location: string = '', onload: boolean = false) {
-        if (!this.pmDetails.warehouse || !location) {
-            this.validLocationNames = [];
-            this.pmDetails.location = '';
-            return;
-        }
+        setTimeout(() => {
+            if (!this.pmDetails.warehouse || !location) {
+                this.validLocationNames = [];
+                this.pmDetails.location = '';
+                return;
+            }
 
-        let wid = this.groupedWarehouses[this.pmDetails.warehouse];
-        if (!!wid) {
-            let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
-            this.validLocationNames = locations.map(l => l.location);
-        } else { this.validLocationNames = []; }
+            let wid = this.groupedWarehouses[this.pmDetails.warehouse];
+            if (!!wid) {
+                let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
+                this.validLocationNames = locations.map(l => l.location);
+            } else { this.validLocationNames = []; }
+
+        }, 1000);
 
     }
 
@@ -282,7 +294,7 @@ export class PMDetailsComponent {
             this.getLocations(e.value);
         }
     }
-  
+
 
     ItemNumberSelection(e: any) {
         console.log(e);
@@ -477,9 +489,7 @@ export class PMDetailsComponent {
         this.pmService.deletePMDetails(this.pmDetails.itemNumber, this.pmDetails.rev).subscribe(x => {
             if (x.length === 0) {
                 notify({ message: "deleted successfully", shading: true, position: top }, "success", 1000);
-                this.pmDetails = new pmDetails();
-                this.bomDetails = [];
-                this.poDetails = [];
+                this.pmdataTransfer.selectedCRUDActionChanged(CRUD.DoneDelete, ComponentType.PartMaster);
             } else {
                 this.reasonsDelete = x;
                 this.popupDeleteMessages = true;
@@ -496,16 +506,9 @@ export class PMDetailsComponent {
         this.searchService.getItemNumberSearchResults(search).subscribe(x => this.lookupItemNumbers = x);
     }
 
-    onSetCellValue(rowData: any, value: any): void {
-        console.log('onSetCellValue')
-        console.log(rowData);
-        console.log(value);
-
-        //this.defaultSetCellValue(rowData, value);  
-    }
     validateItem(e: any) {
         console.log(e);
-        var item = this.lookupItemNumbers.find(u => u.itemNumber === e.value);
+        var item = this.lookupItemNumbers.find(u => u.itemNumber.toLocaleLowerCase() === e.value.toLocaleLowerCase());
         if (!!item) {
             e.data.description = item.description;
             e.data.itemType = item.itemType;
@@ -565,7 +568,7 @@ export class PMDetailsComponent {
         console.log(e);
         let key = e.key;
         let newData = e.data;
-        var item = this.lookupItemNumbers.find(i => i.itemNumber == newData.itemNumber);
+        var item = this.lookupItemNumbers.find(i => i.itemNumber.toLocaleLowerCase() == newData.itemNumber.toLocaleLowerCase());
         if (!!item) {
             let bitem = this.bomDetails.find(b => b.itemNumber === key);
             if (!!bitem) {
@@ -586,40 +589,47 @@ export class PMDetailsComponent {
         }
     }
     onSaving(e: any) {
-        // console.log("onSaving");
-        // console.log(e);
-        // if (e.changes) {
-        //     let key = e.changes[0].key;
-        //     if (!!e.changes[0].data.itemNumber) {
-        //         var item = this.lookupItemNumbers.find(u => u.itemNumber === e.changes[0].data.itemNumber);
-        //         if (!!item) {
-        //             let bitem = this.bomDetails.find(b => b.itemNumber === key);
-        //             if (!!bitem) {
-        //                 bitem.itemNumber = item.itemNumber;
-        //                 bitem.itemtype = item.itemType;
-        //                 bitem.description = item.description;
-        //                 bitem.itemsid_Parent = Guid.parse(this.pmDetails.id);
-        //                 bitem.itemsid_Child = item.id;
-        //                 bitem.rev = item.rev;
-        //                 bitem.uomref = item.uomref;
-        //                 bitem.cost = item.cost;
-        //                 bitem.lineNum = bitem.lineNum;
-        //                 if (e.changes[0].type === "insert") { //update
-        //                     bitem.id = Guid.createEmpty();
-        //                     bitem.lineNum = this.bomDetails.length + 1;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
+        console.log("onSaving");
     }
 
     getCellValue() {
         const editRowIndex = this.dataGrid.instance.getRowIndexByKey(this.editRowKey);
         if (editRowIndex >= 0) {
-            return this.dataGrid.instance.cellValue(editRowIndex, "EmployeeName");
+            return this.dataGrid.instance.cellValue(editRowIndex, "itemNumber");
         }
         return null;
     }
+    onKeyDown(e: any) {
+        if (this.readOnly) { return; }
+        console.log(e);
+        if (e.event.ctrlKey && e.event.key === "ArrowDown") {
+            this.dataGrid.instance.saveEditData();
+            this.addRow();
+        } else if (e.event.ctrlKey && e.event.key === "F2") {
+            this.popupF2Visible = true;
+        }
+    }
+
+    addRow() {
+        this.dataGrid.instance.addRow();
+        this.dataGrid.instance.deselectAll();
+    }
+
+    selectedChanged(e: any) {
+        console.log(e);
+        this.selectedRowIndex = e.component.getRowIndexByKey(e.selectedRowKeys[0]);
+    }
+    editRow(key: any) {
+        //let selectedRowIndex = this.dataGrid.instance.getRowIndexByKey(key);
+        let selectedRowIndex = this.bomDetails.findIndex(b => b.itemNumber === key);
+        this.dataGrid.instance.editRow(selectedRowIndex);
+        this.dataGrid.instance.deselectAll();
+    }
+    setCellValue(newData: any, value: any, currentRowData: any) {
+        newData.extCost = (currentRowData.cost * currentRowData.quantity);
+        let selectedRowIndex = this.bomDetails.findIndex(b => b.itemNumber === currentRowData.itemNumber);
+        this.dataGrid.instance.cellValue(selectedRowIndex, 5, currentRowData.quantity);
+        this.dataGrid.instance.cellValue(selectedRowIndex, 6, newData.extCost);
+    }
 }
+

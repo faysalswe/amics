@@ -11,6 +11,7 @@ export enum CRUD {
     Edit = 'Edit',
     Save = 'Save',
     Delete = 'Delete',
+    DoneDelete = 'DoneDelete',
     Cancel = 'Cancel',
 }
 
