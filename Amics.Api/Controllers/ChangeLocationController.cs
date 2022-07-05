@@ -88,8 +88,8 @@ namespace Amics.Api.Controllers
         /// <param name="userName">UserName</param>   
         /// <param name="toWarehouse">To Warehouse</param>   
         /// <param name="toLocation">To Location</param>           
-        [HttpGet, Route("UpdateChangeLoc")]
-        public LstMessage UpdateChangeLoc([FromQuery] string userName, [FromQuery] string toWarehouse, [FromQuery] string toLocation)
+        [HttpPost, Route("UpdateChangeLoc")]
+        public LstMessage UpdateChangeLoc(string userName, string toWarehouse, string toLocation)
         {
             var updChangeLocResult = _changeLocService.UpdateChangeLocation(userName, toWarehouse, toLocation);
 

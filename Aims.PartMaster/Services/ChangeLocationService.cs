@@ -404,7 +404,7 @@ namespace Aims.Core.Services
         }
         
         /// This method ChangeLocationTransCount() gets count from the table inv_transfer_location for passing parameter 'username'        
-        public int ChangeLocationTransCount(string userName)
+        private int ChangeLocationTransCount(string userName)
         {
             int dataExistCnt = 0;
 
@@ -441,7 +441,7 @@ namespace Aims.Core.Services
 
         /// This method GetTransLogNum() updates translognum+1 for translognum field in the table list_next_number and
         /// fetch the translognum to insert into translog and update inv_transfer_location table
-        public int GetTransLogNum()
+        private int GetTransLogNum()
         {
             int transNumber = 0;
                         
@@ -473,7 +473,7 @@ namespace Aims.Core.Services
             return transNumber;
         }
 
-        public string GetTransDatefmTransNum(int transNumber)
+        private string GetTransDatefmTransNum(int transNumber)
         {
             string transDate = "";
                        
