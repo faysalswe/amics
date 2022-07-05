@@ -266,7 +266,7 @@ namespace Aims.Core.Services
                             sqlCommand.CommandType = CommandType.StoredProcedure;
                             sqlCommand.Parameters.Add(new SqlParameter("@id", lstchgloc[i].Id));
                             sqlCommand.ExecuteNonQuery();
-                        }
+                        }                        
                     }
                     else
                     {
@@ -370,7 +370,7 @@ namespace Aims.Core.Services
             int nCount = ChangeLocationTransCount(userName);
 
             if (nCount == 0)
-                return new LstMessage() { Message = "No data"};
+                return new LstMessage() { Message = "There is no data"};
 
             int transNum = GetTransLogNum();
             string transdate = "";
@@ -508,7 +508,7 @@ namespace Aims.Core.Services
         {
             string transDate = "";
 
-            var conn = (SqlConnection)_amicsDbContext.Database.GetDbConnection();
+           // var conn = (SqlConnection)_amicsDbContext.Database.GetDbConnection();
             using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
             {
                 try
@@ -516,7 +516,7 @@ namespace Aims.Core.Services
                     sqlCommand.CommandText = "amics_sp_chgloc_transnumdate";
                     sqlCommand.Parameters.Add(new SqlParameter("@transnum", transNumber));
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    conn.Open();
+                    //conn.Open();
                     var dataReader = sqlCommand.ExecuteReader();
 
                     if (dataReader.Read())
@@ -531,7 +531,7 @@ namespace Aims.Core.Services
                 }
                 finally {
                     sqlCommand.Dispose();
-                    conn.Close();
+                   // conn.Close();
                 }
             }
             return transDate;
