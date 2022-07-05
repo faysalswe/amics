@@ -42,13 +42,11 @@ export class ChangeLocationComponent {
   groupedWarehouses: any;
   groupedLocations: any;
 
-  warehouseNames: string[] = [];
+  
   warehouses: Warehouse[] = [];
-  groupedWarehouses: any;
+  
 
   locations: WarehouseLocation[] = [];
-  groupedLocations: any;
-  validLocationNames: string[] = [];
   tableRight: Array<ChangeLocSearchResult> = [];
   chgLocTransItems: ChgLocTransItem[] = [];
   chgLocTransItemsAdded: ChgLocTransItem[] = [];
