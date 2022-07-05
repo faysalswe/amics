@@ -211,7 +211,8 @@ namespace Aims.Core.Services
         /// <param name="toWarehouse">To Warehouse</param>                
         /// <param name="toLocation">To Location</param>        
         public string UpdateInvTransLocation(List<LstChgLocTransItems> lstchgloc)
-        {            
+        {
+            var id = "";
             try
             {
                 var con = (SqlConnection)_amicsDbContext.Database.GetDbConnection();
@@ -225,7 +226,7 @@ namespace Aims.Core.Services
                             sqlCommand.CommandText = "amics_sp_chgloc_translocupdate";
                             sqlCommand.CommandType = CommandType.StoredProcedure;
                             sqlCommand.Parameters.Add(new SqlParameter("@id", lstchgloc[i].Id));
-                            sqlCommand.ExecuteNonQuery();
+                            id = sqlCommand.ExecuteScalar().ToString();
                         }
                     }
                     else
@@ -242,14 +243,15 @@ namespace Aims.Core.Services
                             {                               
                                 sqlCommand.CommandText = "amics_sp_chgloc_translocupdate";
                                 sqlCommand.CommandType = CommandType.StoredProcedure;
-                                sqlCommand.Parameters.Add(new SqlParameter("@id", lstchgloc[i].Id));
+                                sqlCommand.Parameters.Add(new SqlParameter("@id", null));
                                 sqlCommand.Parameters.Add(new SqlParameter("@action", lstchgloc[i].Action));
                                 sqlCommand.Parameters.Add(new SqlParameter("@solinesid", lstchgloc[i].SoLinesId));
                                 sqlCommand.Parameters.Add(new SqlParameter("@quantity", lstchgloc[i].TransQuantity));
                                 sqlCommand.Parameters.Add(new SqlParameter("@invserialid", lstchgloc[i].InvSerialId));
                                 sqlCommand.Parameters.Add(new SqlParameter("@invbasicid", lstchgloc[i].InvBasicId));
                                 sqlCommand.Parameters.Add(new SqlParameter("@createdby", lstchgloc[i].CreatedBy));
-                                sqlCommand.ExecuteNonQuery();
+                                id =  sqlCommand.ExecuteScalar().ToString();
+
                             }                            
                         }
                         else
@@ -263,7 +265,7 @@ namespace Aims.Core.Services
             catch (Exception ex) {
                 return ex.Message;
             }            
-            return "Success";
+            return id;
         }
 
         public string PickDataCheckTransLocation(string soLinesId,string invSerialId, string invBasicId, int availQty)

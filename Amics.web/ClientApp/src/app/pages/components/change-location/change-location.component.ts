@@ -2,9 +2,9 @@ import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import 'devextreme/data/odata/store';
 import notify from 'devextreme/ui/notify';
-import { changeLocProjDetails, changeLocRequest, changeLocSearchResult } from '../../models/changeLoc';
+import { ChangeLocProjDetails, ChangeLocRequest, ChangeLocSearchResult, ChgLocTransItem } from '../../models/changeLoc';
 import { taskItemSearchResult } from '../../models/pmsearch';
-import { WarehouseLocation } from '../../models/warehouse';
+import { Warehouse, WarehouseLocation } from '../../models/warehouse';
 import { ChangeLocService } from '../../services/changloc.service';
 import { SearchService } from '../../services/search.service';
 
@@ -14,9 +14,11 @@ import { SearchService } from '../../services/search.service';
   styleUrls: ['./change-location.component.scss']
 })
 
-export class ChangeLocationComponent implements OnInit {
-  changeLocRequest: changeLocRequest = new changeLocRequest();
-  changeLocProjDetails: changeLocProjDetails = new changeLocProjDetails();
+export class ChangeLocationComponent {
+  warehouse: string = '';
+  location: string = '';
+  changeLocRequest: ChangeLocRequest = new ChangeLocRequest();
+  changeLocProjDetails: ChangeLocProjDetails = new ChangeLocProjDetails();
   submitButtonOptions = {
     text: "Search",
     useSubmitBehavior: true,
@@ -24,9 +26,9 @@ export class ChangeLocationComponent implements OnInit {
     type: "default",
 
   };
-  locViewGridList: changeLocSearchResult[] = [];
-  changeLocSearchResult: changeLocSearchResult[] = [];
-  changeLocDetailsResult: changeLocSearchResult[] = [];
+  locViewGridList: ChangeLocSearchResult[] = [];
+  changeLocSearchResult: ChangeLocSearchResult[] = [];
+  changeLocDetailsResult: ChangeLocSearchResult[] = [];
   selectedProject: any;
   selectedView: any;
   selectedProductId: string = '';
@@ -40,34 +42,54 @@ export class ChangeLocationComponent implements OnInit {
   groupedWarehouses: any;
   groupedLocations: any;
 
-  tableRight: Array<Task> = [];
-  tableLeft: Array<Task> = [
-    { wareHouse: "house 1", location: "England", serialNo: "11", tagNo: "tag-66", qty: "111" },
-    { wareHouse: "house 2", location: "France", serialNo: "11", tagNo: "tag-66", qty: "111" },
-    { wareHouse: "house 3", location: "America", serialNo: "11", tagNo: "tag-66", qty: "111" },
-    { wareHouse: "house 4", location: "Russia", serialNo: "11", tagNo: "tag-66", qty: "111" },
-    { wareHouse: "house 5", location: "Pakistan", serialNo: "11", tagNo: "tag-66", qty: "111" },
-  ];
+  warehouseNames: string[] = [];
+  warehouses: Warehouse[] = [];
+  groupedWarehouses: any;
 
-  constructor(
-    private changeLocService: ChangeLocService,
-    private searchService: SearchService,
-  ) {
+  locations: WarehouseLocation[] = [];
+  groupedLocations: any;
+  validLocationNames: string[] = [];
+  tableRight: Array<ChangeLocSearchResult> = [];
+  chgLocTransItems: ChgLocTransItem[] = [];
+  chgLocTransItemsAdded: ChgLocTransItem[] = [];
+
+  constructor(private searchService: SearchService, private changeLocService: ChangeLocService) {
     this.onAdd = this.onAdd.bind(this);
-    this.updateWarehouseSelection = this.updateWarehouseSelection.bind(this);
-  }
-  ngOnInit(): void {
     this.searchService.getWarehouseInfo('').subscribe(w => {
-      //this.warehouses = w;
+      this.warehouses = w;
       this.warehouseNames = w.map(w => w.warehouse);
       this.groupedWarehouses = this.groupByKey(w, 'warehouse');
     });
 
     this.searchService.getLocationInfo('', '').subscribe(l => {
+      this.locations = l;
       this.groupedLocations = this.groupByKey(l, 'warehouseId');
-  })
+      console.log(this.groupedLocations);
+      //   console.log(this.groupedLocations['f062f282-ad8e-4743-b01f-2fb9c7ba9f7d']);
+    });
   }
+  groupByKey(array: any, key: any) {
+    return array
+      .reduce((hash: any, obj: any) => {
+        if (obj[key] === undefined) return hash;
+        return Object.assign(hash, { [obj[key]]: (hash[obj[key]] || []).concat(obj) })
+      }, {})
+  }
+  updateWarehouseSelection(location: string = '', onload: boolean = false) {
 
+    if (!this.warehouse || !location) {
+      this.validLocationNames = [];
+      this.location = '';
+      return;
+    }
+    this.location = '';
+
+    let wid = this.groupedWarehouses[this.warehouse];
+    if (!!wid) {
+      let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
+      this.validLocationNames = locations.map(l => l.location);
+    } else { this.validLocationNames = []; }
+  }
   onFormSubmit(e: any) {
     console.log(this.changeLocRequest);
     this.search();
@@ -80,8 +102,8 @@ export class ChangeLocationComponent implements OnInit {
     if (!!this.selectedProject) {
       this.selectedProductId = this.selectedProject.project;
       this.changeLocProjDetails.projectName = this.selectedProject.name;
-      this.changeLocProjDetails.location = this.selectedProject.location;
-      this.changeLocProjDetails.warehouse = this.selectedProject.wareHouse;
+      this.location = '';
+      this.warehouse = '';
 
       this.changeLocService.getChangeLocView(this.selectedProject).subscribe(r => {
         console.log(r);
@@ -105,6 +127,7 @@ export class ChangeLocationComponent implements OnInit {
     this.changeLocService.getChangeLocItemsDetailsView(this.selectedView).subscribe(r => {
       console.log(r);
       this.changeLocDetailsResult = r;
+      this.tableRight = [];
     });
   }
 
@@ -117,26 +140,25 @@ export class ChangeLocationComponent implements OnInit {
 
 
   onAdd(event: any) {
-    debugger
-
-    let rowData = new Task();
+    let rowData = new ChangeLocSearchResult();
     let itemData = event.itemData;
-    rowData.wareHouse = itemData.wareHouse;
+    rowData.warehouse = itemData.warehouse;
     rowData.location = itemData.location;
-    rowData.serialNo = itemData.serialNo;
+    rowData.serNo = itemData.serNo;
     rowData.tagNo = itemData.tagNo;
-    rowData.qty = itemData.qty;
+    rowData.quantity = itemData.quantity;
 
     let element = event.element.parentElement.className;
-
+    let action = 0;
     if (element == 'column1') {
-      if (this.tableLeft[event.toIndex] !== undefined) {
-        this.tableLeft.splice(event.toIndex, 0, rowData);
+      if (this.changeLocDetailsResult[event.toIndex] !== undefined) {
+        this.changeLocDetailsResult.splice(event.toIndex, 0, rowData);
       }
       else {
-        this.tableLeft.push(rowData);
+        this.changeLocDetailsResult.push(rowData);
       }
       this.tableRight.splice(event.fromIndex, 1);
+      action = 2;
     }
     else if (element == 'column2') {
       if (this.tableRight[event.toIndex] !== undefined) {
@@ -145,33 +167,30 @@ export class ChangeLocationComponent implements OnInit {
       else {
         this.tableRight.push(rowData);
       }
-      this.tableLeft.splice(event.fromIndex, 1);
+      this.changeLocDetailsResult.splice(event.fromIndex, 1);
+      action = 1;
     }
+    var transItem = new ChgLocTransItem();
+    transItem.action = action;
+    transItem.availQuantity = rowData.quantity;
+    transItem.transQuantity = rowData.quantity;
+    transItem.soLinesId = rowData.soLinesId;
+    transItem.invBasicId = rowData.invBasicId;
+    transItem.invSerialId = rowData.invSerialId;
+    transItem.id = "";
+    transItem.createdBy = 'admin';
+    this.chgLocTransItems.push(transItem);
+    this.changeLocService.UpdateInvTransLoc(this.chgLocTransItems).subscribe(id => {
+      if (action == 1) {
+        let item = this.tableRight.find(r => r.soLinesId === rowData.soLinesId);
+        transItem.id = id;
+        if (action == 1) {
+          this.chgLocTransItemsAdded.push(transItem);
+        }
+      }
+    }, err => { notify({ message: "Error occured during transfer", shading: true, position: top }, "error", 1500) });
+    this.chgLocTransItems = [];
   }
-
-  updateWarehouseSelection(location: string = '', onload: boolean = false) {
-    debugger
-    if (!this.changeLocProjDetails?.warehouse || !location) {
-      this.validLocationNames = [];
-      this.changeLocProjDetails.location = '';
-      return;
-    }
-
-    let wid = this.groupedWarehouses[this.changeLocProjDetails.warehouse];
-    if (!!wid) {
-      let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
-      this.validLocationNames = locations.map(l => l.location);
-    } else { this.validLocationNames = []; }
-
-  }
-
-  groupByKey(array: any, key: any) {
-    return array
-        .reduce((hash: any, obj: any) => {
-            if (obj[key] === undefined) return hash;
-            return Object.assign(hash, { [obj[key]]: (hash[obj[key]] || []).concat(obj) })
-        }, {})
-}
 }
 
 export class Task {

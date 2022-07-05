@@ -52,19 +52,24 @@
         </dxi-item>
         <dxi-item itemtype="empty" [colSpan]="2"></dxi-item>
         <dxi-item itemtype="empty" [colSpan]="4"></dxi-item>
-        <dxi-item dataField="warehouse" editorType="dxLookup" [colSpan]="1"
+        <!-- <dxi-item dataField="warehouse"  editorType="dxLookup" [colSpan]="1"
           [editorOptions]="{ label:'Warehouse',items: warehouseNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains',onValueChanged:updateWarehouseSelection  }">
           <dxi-validation-rule type="required" message="Warehouse is required"></dxi-validation-rule>
+        </dxi-item> -->
+        <dxi-item>
+          <dx-lookup [items]="warehouseNames" [(value)]="warehouse" (onValueChanged)="updateWarehouseSelection($event)" label="Warehouse" >
+            <dxo-drop-down-options [showTitle]="false"></dxo-drop-down-options>
+          </dx-lookup>
         </dxi-item>
-        <dxi-item dataField="location" editorType="dxLookup" [colSpan]="1"
+        <!-- <dxi-item dataField="location" editorType="dxLookup" [colSpan]="1"
           [editorOptions]="{ label:'Location',items: validLocationNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains' }">
           <dxi-validation-rule type="required" message="Location is required"></dxi-validation-rule>
-        </dxi-item>
-        <!-- <dxi-item dataField="wareHouse" [colSpan]="1" [label]="{text:'Warehouse'}">
-        </dxi-item>
-        <dxi-item dataField="location" [colSpan]="1" [label]="{text:'Location'}">
         </dxi-item> -->
-
+        <dxi-item>
+          <dx-lookup [items]="validLocationNames" [(value)]="location" label="Location">
+            <dxo-drop-down-options [showTitle]="false"></dxo-drop-down-options>
+          </dx-lookup>
+        </dxi-item>
         <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
         <dxi-item itemType="empty" [colSpan]="4"></dxi-item>
 
