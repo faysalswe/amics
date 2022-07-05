@@ -4,7 +4,9 @@ import 'devextreme/data/odata/store';
 import notify from 'devextreme/ui/notify';
 import { changeLocProjDetails, changeLocRequest, changeLocSearchResult } from '../../models/changeLoc';
 import { taskItemSearchResult } from '../../models/pmsearch';
+import { WarehouseLocation } from '../../models/warehouse';
 import { ChangeLocService } from '../../services/changloc.service';
+import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: "app-change-loc",
@@ -12,7 +14,7 @@ import { ChangeLocService } from '../../services/changloc.service';
   styleUrls: ['./change-location.component.scss']
 })
 
-export class ChangeLocationComponent {
+export class ChangeLocationComponent implements OnInit {
   changeLocRequest: changeLocRequest = new changeLocRequest();
   changeLocProjDetails: changeLocProjDetails = new changeLocProjDetails();
   submitButtonOptions = {
@@ -30,9 +32,13 @@ export class ChangeLocationComponent {
   selectedProductId: string = '';
   statusList = [];
   locationList = [];
+  warehouseNames: string[] = [];
+  validLocationNames: string[] = [];
   selectedProjectName = '';
   selectedWarehouse = '';
   selectedLocation = '';
+  groupedWarehouses: any;
+  groupedLocations: any;
 
   tableRight: Array<Task> = [];
   tableLeft: Array<Task> = [
@@ -43,8 +49,23 @@ export class ChangeLocationComponent {
     { wareHouse: "house 5", location: "Pakistan", serialNo: "11", tagNo: "tag-66", qty: "111" },
   ];
 
-  constructor(private changeLocService: ChangeLocService) {
+  constructor(
+    private changeLocService: ChangeLocService,
+    private searchService: SearchService,
+  ) {
     this.onAdd = this.onAdd.bind(this);
+    this.updateWarehouseSelection = this.updateWarehouseSelection.bind(this);
+  }
+  ngOnInit(): void {
+    this.searchService.getWarehouseInfo('').subscribe(w => {
+      //this.warehouses = w;
+      this.warehouseNames = w.map(w => w.warehouse);
+      this.groupedWarehouses = this.groupByKey(w, 'warehouse');
+    });
+
+    this.searchService.getLocationInfo('', '').subscribe(l => {
+      this.groupedLocations = this.groupByKey(l, 'warehouseId');
+  })
   }
 
   onFormSubmit(e: any) {
@@ -59,8 +80,8 @@ export class ChangeLocationComponent {
     if (!!this.selectedProject) {
       this.selectedProductId = this.selectedProject.project;
       this.changeLocProjDetails.projectName = this.selectedProject.name;
-      this.changeLocProjDetails.location = '';
-      this.changeLocProjDetails.warehouse = '';
+      this.changeLocProjDetails.location = this.selectedProject.location;
+      this.changeLocProjDetails.warehouse = this.selectedProject.wareHouse;
 
       this.changeLocService.getChangeLocView(this.selectedProject).subscribe(r => {
         console.log(r);
@@ -127,6 +148,30 @@ export class ChangeLocationComponent {
       this.tableLeft.splice(event.fromIndex, 1);
     }
   }
+
+  updateWarehouseSelection(location: string = '', onload: boolean = false) {
+    debugger
+    if (!this.changeLocProjDetails?.warehouse || !location) {
+      this.validLocationNames = [];
+      this.changeLocProjDetails.location = '';
+      return;
+    }
+
+    let wid = this.groupedWarehouses[this.changeLocProjDetails.warehouse];
+    if (!!wid) {
+      let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
+      this.validLocationNames = locations.map(l => l.location);
+    } else { this.validLocationNames = []; }
+
+  }
+
+  groupByKey(array: any, key: any) {
+    return array
+        .reduce((hash: any, obj: any) => {
+            if (obj[key] === undefined) return hash;
+            return Object.assign(hash, { [obj[key]]: (hash[obj[key]] || []).concat(obj) })
+        }, {})
+}
 }
 
 export class Task {

@@ -52,10 +52,18 @@
         </dxi-item>
         <dxi-item itemtype="empty" [colSpan]="2"></dxi-item>
         <dxi-item itemtype="empty" [colSpan]="4"></dxi-item>
-        <dxi-item dataField="wareHouse" [colSpan]="1" [label]="{text:'Warehouse'}">
+        <dxi-item dataField="warehouse" editorType="dxLookup" [colSpan]="1"
+          [editorOptions]="{ label:'Warehouse',items: warehouseNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains',onValueChanged:updateWarehouseSelection  }">
+          <dxi-validation-rule type="required" message="Warehouse is required"></dxi-validation-rule>
+        </dxi-item>
+        <dxi-item dataField="location" editorType="dxLookup" [colSpan]="1"
+          [editorOptions]="{ label:'Location',items: validLocationNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains' }">
+          <dxi-validation-rule type="required" message="Location is required"></dxi-validation-rule>
+        </dxi-item>
+        <!-- <dxi-item dataField="wareHouse" [colSpan]="1" [label]="{text:'Warehouse'}">
         </dxi-item>
         <dxi-item dataField="location" [colSpan]="1" [label]="{text:'Location'}">
-        </dxi-item>
+        </dxi-item> -->
 
         <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
         <dxi-item itemType="empty" [colSpan]="4"></dxi-item>
@@ -90,7 +98,7 @@
                 <dxo-row-dragging [data]="1" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
                 <dxo-scrolling mode="virtual"></dxo-scrolling>
 
-                <dxi-column dataField="warehouse" dataType="string" ></dxi-column>
+                <dxi-column dataField="warehouse" dataType="string"></dxi-column>
                 <dxi-column dataField="location" dataType="string"></dxi-column>
                 <dxi-column dataField="serNo" dataType="string" caption="Serial No"></dxi-column>
                 <dxi-column dataField="tagNo" dataType="string"></dxi-column>
