@@ -275,14 +275,11 @@ export class PMDetailsComponent {
                 return;
             }
 
-            let wid = this.groupedWarehouses[this.pmDetails.warehouse];
-            if (!!wid) {
-                let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
-                this.validLocationNames = locations.map(l => l.location);
-            } else { this.validLocationNames = []; }
-
-        }, 1000);
-
+        let wid = this.groupedWarehouses[this.pmDetails.warehouse];
+        if (!!wid) {
+            let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
+            this.validLocationNames = locations.map(l => l.location);
+        } else { this.validLocationNames = []; }
     }
 
     WarehouseLocationSelection(e: any) {
