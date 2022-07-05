@@ -183,17 +183,17 @@ namespace Aims.Core.Services
                             changeLoc.TagNo = dataReader["tagno"].ToString();
                             changeLoc.InvSerialId = dataReader["serid"].ToString();
                             changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
-                        lstChangeLocSerial.Add(changeLoc);
+                            lstChangeLocSerial.Add(changeLoc);
                         }
                         else
-                        {
-                        LstChangeLocSearch changeLoc = new LstChangeLocSearch();
+                        {                     
                             changeLoc.Warehouse = dataReader["wh"].ToString();
                             changeLoc.Location = dataReader["loc"].ToString();
                             changeLoc.InvBasicId = dataReader["basid"].ToString();
                             changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            lstChangeLocSerial.Add(changeLoc);
                         }
-                        lstChangeLocSerial.Add(changeLoc);
+                        
                     }
                     dataReader.Close();
                 }
@@ -476,16 +476,14 @@ namespace Aims.Core.Services
         public string GetTransDatefmTransNum(int transNumber)
         {
             string transDate = "";
-
-           // var conn = (SqlConnection)_amicsDbContext.Database.GetDbConnection();
+                       
             using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
             {
                 try
                 {                    
                     sqlCommand.CommandText = "amics_sp_chgloc_transnumdate";
                     sqlCommand.Parameters.Add(new SqlParameter("@transnum", transNumber));
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    //conn.Open();
+                    sqlCommand.CommandType = CommandType.StoredProcedure;                    
                     var dataReader = sqlCommand.ExecuteReader();
 
                     if (dataReader.Read())
@@ -499,8 +497,7 @@ namespace Aims.Core.Services
 
                 }
                 finally {
-                    sqlCommand.Dispose();
-                   // conn.Close();
+                    sqlCommand.Dispose();                 
                 }
             }
             return transDate;
