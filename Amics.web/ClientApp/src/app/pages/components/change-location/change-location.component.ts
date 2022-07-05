@@ -143,6 +143,10 @@ export class ChangeLocationComponent {
     rowData.serNo = itemData.serNo;
     rowData.tagNo = itemData.tagNo;
     rowData.quantity = itemData.quantity;
+    rowData.invBasicId = itemData.invBasicId;
+    rowData.invSerialId = itemData.invSerialId;
+    rowData.invType = itemData.invType;
+    rowData.itemsId = itemData.itemsid;
 
     let element = event.element.parentElement.className;
     let action = 0;
@@ -168,18 +172,18 @@ export class ChangeLocationComponent {
     }
     var transItem = new ChgLocTransItem();
     transItem.action = action;
-    transItem.availQuantity = rowData.quantity;
-    transItem.transQuantity = rowData.quantity;
-    transItem.soLinesId = rowData.soLinesId;
+    transItem.availQuantity = Number(rowData.quantity);
+    transItem.transQuantity =  Number(rowData.quantity);
+    transItem.soLinesId = this.selectedView.soLinesId;
     transItem.invBasicId = rowData.invBasicId;
     transItem.invSerialId = rowData.invSerialId;
     transItem.id = "";
     transItem.createdBy = 'admin';
     this.chgLocTransItems.push(transItem);
-    this.changeLocService.UpdateInvTransLoc(this.chgLocTransItems).subscribe(id => {
+    this.changeLocService.UpdateInvTransLoc(this.chgLocTransItems).subscribe((res:any) => {
       if (action == 1) {
         let item = this.tableRight.find(r => r.soLinesId === rowData.soLinesId);
-        transItem.id = id;
+        transItem.id = res.message;
         if (action == 1) {
           this.chgLocTransItemsAdded.push(transItem);
         }
