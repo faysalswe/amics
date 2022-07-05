@@ -268,12 +268,11 @@ export class PMDetailsComponent {
     }
 
     updateWarehouseSelection(location: string = '', onload: boolean = false) {
-        setTimeout(() => {
-            if (!this.pmDetails.warehouse || !location) {
-                this.validLocationNames = [];
-                this.pmDetails.location = '';
-                return;
-            }
+        if (!this.pmDetails.warehouse || !location) {
+            this.validLocationNames = [];
+            this.pmDetails.location = '';
+            return;
+        }
 
         let wid = this.groupedWarehouses[this.pmDetails.warehouse];
         if (!!wid) {
