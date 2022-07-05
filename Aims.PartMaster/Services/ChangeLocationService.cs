@@ -16,8 +16,7 @@ namespace Aims.Core.Services
     {
         List<LstChangeLocSearch> ChangeLocSearch(string projectId, string projectName, string er, string budget, string user);
         List<LstChangeLocSearch> ChangeLocationView(string projectId, string somain);
-        List<LstChangeLocSearch> ChangeLocationSerialView(string soMain, string itemnumber, string userId, string soLineId);
-        List<LstChangeLocSearch> ChangeLocationBasicView(string soMain, string itemnumber, string userId, string soLineId);
+        List<LstChangeLocSearch> ChangeLocViewDetails(string soMain, string itemnumber, string userId, string soLineId,string invType);
         LstMessage UpdateChangeLocation(string userName, string toWarehouse, string toLocation);      
         string UpdateInvTransLocation(List<LstChgLocTransItems> lstchgloc);
         LstMessage DeleteInvTransferLoc(string userName);
@@ -51,10 +50,10 @@ namespace Aims.Core.Services
                     conn.Open();
 
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.Parameters.Add(new SqlParameter("@projectid", projectId));
-                    sqlCommand.Parameters.Add(new SqlParameter("@projectname", projectName));
-                    sqlCommand.Parameters.Add(new SqlParameter("@er", er));
-                    sqlCommand.Parameters.Add(new SqlParameter("@budgetauthority", budget));
+                    sqlCommand.Parameters.Add(new SqlParameter("@projectid", string.IsNullOrWhiteSpace(projectId)?string.Empty:projectId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@projectname", string.IsNullOrWhiteSpace(projectName) ? string.Empty :projectName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@er", string.IsNullOrWhiteSpace(er) ? string.Empty:er)) ;
+                    sqlCommand.Parameters.Add(new SqlParameter("@budgetauthority", string.IsNullOrWhiteSpace(budget)?string.Empty:budget));
                     sqlCommand.Parameters.Add(new SqlParameter("@user2", user));
 
                     var dataReader = sqlCommand.ExecuteReader();
@@ -153,7 +152,7 @@ namespace Aims.Core.Services
         /// <param name="itemnumber">Item Number</param>        
         /// <param name="userId">User Id</param>        
         /// <param name="soLineId">SO LineId</param> 
-        public List<LstChangeLocSearch> ChangeLocationSerialView(string soMain, string itemnumber, string userId, string soLineId)
+        public List<LstChangeLocSearch> ChangeLocViewDetails(string soMain, string itemnumber, string userId, string soLineId, string invType)
         {
             List<LstChangeLocSearch> lstChangeLocSerial = new List<LstChangeLocSearch>();
             string strCurr = util.ReturnZeros(2);
@@ -177,56 +176,23 @@ namespace Aims.Core.Services
                     while (dataReader.Read())
                     {
                         LstChangeLocSearch changeLoc = new LstChangeLocSearch();
-                        changeLoc.Warehouse = dataReader["wh"].ToString();
-                        changeLoc.Location = dataReader["loc"].ToString();
-                        changeLoc.SerNo = dataReader["serno"].ToString();
-                        changeLoc.TagNo = dataReader["tagno"].ToString();                        
-                        changeLoc.InvSerialId = dataReader["serid"].ToString();                        
-                        changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                        if (invType == "SERIAL") {
+                            changeLoc.Warehouse = dataReader["wh"].ToString();
+                            changeLoc.Location = dataReader["loc"].ToString();
+                            changeLoc.SerNo = dataReader["serno"].ToString();
+                            changeLoc.TagNo = dataReader["tagno"].ToString();
+                            changeLoc.InvSerialId = dataReader["serid"].ToString();
+                            changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
                         lstChangeLocSerial.Add(changeLoc);
-                    }
-                }
-                catch (Exception ex)
-                {
-
-                }
-            }
-            return lstChangeLocSerial.ToList();
-        }
-        /// <summary>
-        /// API Service to get change location details for Basic
-        /// </summary>
-        /// <param name="soMain">SO Main</param>        
-        /// <param name="itemnumber">Item Number</param>        
-        /// <param name="userId">User Id</param>        
-        /// <param name="soLineId">SO LineId</param>                
-        public List<LstChangeLocSearch> ChangeLocationBasicView(string soMain, string itemnumber, string userId, string soLineId)
-        {
-            List<LstChangeLocSearch> lstChangeLocSerial = new List<LstChangeLocSearch>();
-            string strCurr = util.ReturnZeros(2);
-            string strQty = util.ReturnZeros(2);
-
-            using (var conn = _amicsDbContext.Database.GetDbConnection())
-            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
-            {
-                try
-                {
-                    sqlCommand.CommandText = "sp_inv_somain_details_items_transfer_ship";
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.Parameters.Add(new SqlParameter("@so", soMain.Trim()));
-                    sqlCommand.Parameters.Add(new SqlParameter("@item", itemnumber.Trim()));
-                    sqlCommand.Parameters.Add(new SqlParameter("@user", userId.Trim()));
-                    sqlCommand.Parameters.Add(new SqlParameter("@solinesid", soLineId.Trim()));
-
-                    conn.Open();
-                    var dataReader = sqlCommand.ExecuteReader();
-                    while (dataReader.Read())
-                    {
+                        }
+                        else
+                        {
                         LstChangeLocSearch changeLoc = new LstChangeLocSearch();
-                        changeLoc.Warehouse = dataReader["wh"].ToString();
-                        changeLoc.Location = dataReader["loc"].ToString();
-                        changeLoc.InvBasicId = dataReader["basid"].ToString();
-                        changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            changeLoc.Warehouse = dataReader["wh"].ToString();
+                            changeLoc.Location = dataReader["loc"].ToString();
+                            changeLoc.InvBasicId = dataReader["basid"].ToString();
+                            changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                        }
                         lstChangeLocSerial.Add(changeLoc);
                     }
                     dataReader.Close();
@@ -242,6 +208,7 @@ namespace Aims.Core.Services
             }
             return lstChangeLocSerial.ToList();
         }
+       
 
         /// <summary>
         /// API Service to get change location details for Basic
@@ -251,7 +218,8 @@ namespace Aims.Core.Services
         /// <param name="toWarehouse">To Warehouse</param>                
         /// <param name="toLocation">To Location</param>        
         public string UpdateInvTransLocation(List<LstChgLocTransItems> lstchgloc)
-        {            
+        {
+            var id = "";
             try
             {
                 var con = (SqlConnection)_amicsDbContext.Database.GetDbConnection();
@@ -265,8 +233,8 @@ namespace Aims.Core.Services
                             sqlCommand.CommandText = "amics_sp_chgloc_translocupdate";
                             sqlCommand.CommandType = CommandType.StoredProcedure;
                             sqlCommand.Parameters.Add(new SqlParameter("@id", lstchgloc[i].Id));
-                            sqlCommand.ExecuteNonQuery();
-                        }                        
+                            id = sqlCommand.ExecuteScalar().ToString();
+                        }
                     }
                     else
                     {
@@ -282,14 +250,15 @@ namespace Aims.Core.Services
                             {                               
                                 sqlCommand.CommandText = "amics_sp_chgloc_translocupdate";
                                 sqlCommand.CommandType = CommandType.StoredProcedure;
-                                sqlCommand.Parameters.Add(new SqlParameter("@id", lstchgloc[i].Id));
+                                sqlCommand.Parameters.Add(new SqlParameter("@id", null));
                                 sqlCommand.Parameters.Add(new SqlParameter("@action", lstchgloc[i].Action));
                                 sqlCommand.Parameters.Add(new SqlParameter("@solinesid", lstchgloc[i].SoLinesId));
                                 sqlCommand.Parameters.Add(new SqlParameter("@quantity", lstchgloc[i].TransQuantity));
                                 sqlCommand.Parameters.Add(new SqlParameter("@invserialid", lstchgloc[i].InvSerialId));
                                 sqlCommand.Parameters.Add(new SqlParameter("@invbasicid", lstchgloc[i].InvBasicId));
                                 sqlCommand.Parameters.Add(new SqlParameter("@createdby", lstchgloc[i].CreatedBy));
-                                sqlCommand.ExecuteNonQuery();
+                                id =  sqlCommand.ExecuteScalar().ToString();
+
                             }                            
                         }
                         else
@@ -303,7 +272,7 @@ namespace Aims.Core.Services
             catch (Exception ex) {
                 return ex.Message;
             }            
-            return "Success";
+            return id;
         }
 
         public string PickDataCheckTransLocation(string soLinesId,string invSerialId, string invBasicId, int availQty)
@@ -370,7 +339,7 @@ namespace Aims.Core.Services
             int nCount = ChangeLocationTransCount(userName);
 
             if (nCount == 0)
-                return new LstMessage() { Message = "There is no data"};
+                return new LstMessage() { Message = "No data"};
 
             int transNum = GetTransLogNum();
             string transdate = "";

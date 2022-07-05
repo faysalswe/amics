@@ -1,9 +1,10 @@
 export enum ComponentType {
   PartMaster = 'PartMaster',
+  PartMasterF2 = 'PartMasterF2',
   Profile = 'Profile',
-  Tasks = 'Tasks',
+  ChangeLocation = 'ChangeLocation',
   IncreaseInventory = 'IncreaseInventory',
-  inquiry = "inquiry",
+  Inquiry = "Inquiry",
   SerialDocuments = "serialDocuments",
   ChangeSerial = "changeSerial",
   Reports = "reports",

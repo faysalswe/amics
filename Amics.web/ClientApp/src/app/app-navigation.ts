@@ -32,13 +32,13 @@ export const navigation = [
         text: 'Change Location',
         path: '/changeLocation',
         title: 'Change Location',
-        type: ComponentType.Tasks
+        type: ComponentType.ChangeLocation
       },
       {
         text: 'Inquiry',
         path: '/inquiry',
         title: 'Inquiry',
-        type: ComponentType.inquiry
+        type: ComponentType.Inquiry
       },
       {
         text: 'Serial Documents',

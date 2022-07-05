@@ -50,16 +50,16 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Route Controller to get Change Location view details for Serial
+        /// API Route Controller to get Change Location view details for Serial/Basic
         /// </summary>
         /// <param name="somain">SO Main</param>   
         /// <param name="itemnumber">Item Number</param>   
         /// <param name="userId">User Id</param>   
         /// <param name="soLinesId">SO Lines Id</param>           
-        [HttpGet, Route("ChangeLocViewSerial")]
-        public IList<LstChangeLocSearch> ChangeLocViewSerial([FromQuery] string somain, [FromQuery] string itemnumber, [FromQuery] string userId, [FromQuery] string soLinesId)
+        [HttpGet, Route("ChangeLocViewDetails")]
+        public IList<LstChangeLocSearch> ChangeLocViewDetails([FromQuery] string somain, [FromQuery] string itemnumber, [FromQuery] string userId, [FromQuery] string soLinesId, [FromQuery] string invType)
         {
-            var vwChgLocViewResult = _changeLocService.ChangeLocationSerialView(somain, itemnumber, userId, soLinesId);
+            var vwChgLocViewResult = _changeLocService.ChangeLocViewDetails(somain, itemnumber, userId, soLinesId,invType);
 
             return vwChgLocViewResult;
         }
@@ -78,7 +78,7 @@ namespace Amics.Api.Controllers
 
             return vwChgLocViewResult;
         }
-
+        
         /// <summary>
         /// API Route Controller to check pick items exist in inv_transfer_location table and also checks available quantity 
         /// from inv_serial/inv_basic table, update invserialid/invbasicid, transqty, solinesid details into inv_transfer_location table

@@ -8,6 +8,7 @@ using Aims.Core.Models;
 using Aims.PartMaster.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Aims.Core.Services
 {
@@ -30,9 +31,11 @@ namespace Aims.Core.Services
     public class PartmasterService: IPartmasterService
     {
         private readonly AmicsDbContext _amicsDbContext;
-        public PartmasterService(AmicsDbContext aimsDbContext)
+        private ILogger<PartmasterService> _logger;
+        public PartmasterService(AmicsDbContext aimsDbContext, ILogger<PartmasterService> logger)
         {
             _amicsDbContext = aimsDbContext;
+            _logger = logger;
         }
 
         /// <summary>
@@ -197,6 +200,7 @@ namespace Aims.Core.Services
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError($"LoadPartmaster - {ex.Message} - {ex.StackTrace}");
                     //Log.ErrorLog(ex.Message, "Search : LoadPartmaster");
                 }
                 finally
@@ -204,6 +208,7 @@ namespace Aims.Core.Services
                     conn.Close();
                 }
             }
+
             return itemDetails;
         }
 
