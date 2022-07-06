@@ -71,11 +71,11 @@ namespace Amics.Api.Controllers
         /// </summary>
         /// <param name="LstChgLocTransItems">LstChgLocTransItems</param>                  
         [HttpPost, Route("UpdateInvTransLoc")]
-        public string UpdateTransloc([FromBody] List<LstChgLocTransItems> lstchgloc)
+        public LstMessage UpdateTransloc([FromBody] List<LstChgLocTransItems> lstchgloc)
         {          
             var translocResult = _changeLocService.UpdateInvTransLocation(lstchgloc);
 
-            return translocResult;
+            return new LstMessage() { Message = translocResult };
         }
 
         /// <summary>
