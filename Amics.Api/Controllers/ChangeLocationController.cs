@@ -63,8 +63,7 @@ namespace Amics.Api.Controllers
 
             return vwChgLocViewResult;
         }
-
-        
+              
         /// <summary>
         /// API Route Controller to check pick items exist in inv_transfer_location table and also checks available quantity 
         /// from inv_serial/inv_basic table, update invserialid/invbasicid, transqty, solinesid details into inv_transfer_location table
@@ -89,8 +88,8 @@ namespace Amics.Api.Controllers
         /// <param name="userName">UserName</param>   
         /// <param name="toWarehouse">To Warehouse</param>   
         /// <param name="toLocation">To Location</param>           
-        [HttpGet, Route("UpdateChangeLoc")]
-        public LstMessage UpdateChangeLoc([FromQuery] string userName, [FromQuery] string toWarehouse, [FromQuery] string toLocation)
+        [HttpPost, Route("UpdateChangeLoc")]
+        public LstMessage UpdateChangeLoc(string userName, string toWarehouse, string toLocation)
         {
             var updChangeLocResult = _changeLocService.UpdateChangeLocation(userName, toWarehouse, toLocation);
 
