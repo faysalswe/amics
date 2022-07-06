@@ -6,6 +6,8 @@ import {
     ViewChild,
     ViewContainerRef,
     SimpleChanges,
+    Output,
+    EventEmitter
 } from '@angular/core';
 import { ComponentType } from "../../models/componentType";
 import { PartMasterComponent } from "../PartMaster/partmaster.component";
@@ -19,6 +21,7 @@ import { ProfileComponent } from "../profile/profile.component";
 })
 export class HostComponent implements OnInit {
     @Input() type: ComponentType | undefined;
+    @Output() action : EventEmitter<any> =new EventEmitter<any>();
     componentType: typeof ComponentType;
     constructor() { this.componentType = ComponentType; }
 
@@ -26,5 +29,8 @@ export class HostComponent implements OnInit {
         console.log(`loading.. ${this.type} `);
     }
 
+    onExit(){
+        this.action.emit();
+    }
 
 }

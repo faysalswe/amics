@@ -49,6 +49,4 @@ export class HomeComponent implements OnInit {
   showCloseButton() {
     return this.tabs.length > 1;
   }
-
-
 }

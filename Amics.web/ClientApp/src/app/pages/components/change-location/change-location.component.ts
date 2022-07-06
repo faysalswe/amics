@@ -1,7 +1,8 @@
 import { ThisReceiver } from '@angular/compiler';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import 'devextreme/data/odata/store';
 import notify from 'devextreme/ui/notify';
+import { EventEmitter } from '@angular/core';
 import { ChangeLocProjDetails, ChangeLocRequest, ChangeLocSearchResult, ChgLocTransItem } from '../../models/changeLoc';
 import { taskItemSearchResult } from '../../models/pmsearch';
 import { Warehouse, WarehouseLocation } from '../../models/warehouse';
@@ -15,6 +16,9 @@ import { SearchService } from '../../services/search.service';
 })
 
 export class ChangeLocationComponent {
+
+  @Output() exit : EventEmitter<any> =new EventEmitter<any>();
+
   warehouse: string = '';
   location: string = '';
   changeLocRequest: ChangeLocRequest = new ChangeLocRequest();
@@ -188,6 +192,10 @@ export class ChangeLocationComponent {
       }
     }, err => { notify({ message: "Error occured during transfer", shading: true, position: top }, "error", 1500) });
     this.chgLocTransItems = [];
+  }
+
+  onExit(){
+    this.exit.emit();
   }
 }
 

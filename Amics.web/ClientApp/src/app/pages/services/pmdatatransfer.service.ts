@@ -37,6 +37,11 @@ export class PartMasterDataTransService {
                 this.itemSelectedSubjectForBomGrid$.next(selectedProductId);
             }
         }
+        else if (componentType === ComponentType.ChangeSerial) {
+            if (!!selectedProductId) {
+                this.itemSelectedSubjectForBomGrid$.next(selectedProductId);
+            }
+        }
     }
     selectedChildChanged(selectedChild: PmChildType, componentType: ComponentType): void {
         if (componentType === ComponentType.PartMaster) {

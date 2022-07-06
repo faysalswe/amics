@@ -1,44 +1,32 @@
 <div class="details-container content-block dx-card responsive-paddings">
-  <div class="row"><h6>Change SerialDocuments </h6></div>
+  <div class="row">
+    <h6>Change SerialDocuments </h6>
+  </div>
   <div class="row" style="align-items: center">
-    <dx-form id="form" [colCount]="7">
-      <!-- <dxi-item [colSpan]="1">
-         <dxo-label text="Item #"></dxo-label>
-             </dxi-item> -->
-      <dxi-item [colSpan]="1">
-        <!-- <dx-text-box value=" "></dx-text-box> -->
-        <dx-text-box dataField="teIm#" label="Item#"></dx-text-box>
-    </dxi-item>
-    <dxi-item [colSpan]="1">
-        <dx-button
-          stylingMode="contained"
-          text="search"
-          type="default"
-        >
-        </dx-button>
-      </dxi-item>
+    <form (submit)="handleSubmit($event)">
+      <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="7" labelMode="floating">
+        <dxi-item [colSpan]="1" dataField="itemNumber"  [label]="{text:'item#'}"></dxi-item>
+        <dxi-item [colSpan]="1" itemType="button" type="default" stylingMode="contained" 
+        [buttonOptions]="submitButtonOptions" style="text-align: center;">
+        </dxi-item>
         <dxi-item [colSpan]="1">
-        <dx-text-box dataField="From Ser No" label="From Ser No"></dx-text-box>
-      </dxi-item>
+          <dx-text-box dataField="From Ser No" label="From Ser No"></dx-text-box>
+        </dxi-item>
         <dxi-item [colSpan]="1">
-        <dx-text-box dataField=" To Ser No" label="To Ser No"></dx-text-box>
-      </dxi-item>
+          <dx-text-box dataField=" To Ser No" label="To Ser No"></dx-text-box>
+        </dxi-item>
         <dxi-item [colSpan]="1">
-        <dx-text-box dataField="From Tag No" label="From Tag No"></dx-text-box>
-      </dxi-item>
+          <dx-text-box dataField="From Tag No" label="From Tag No"></dx-text-box>
+        </dxi-item>
         <dxi-item [colSpan]="1">
-        <dx-text-box dataField="To Tag No" label="To Tag No#"></dx-text-box>
-    </dxi-item>
-  </dx-form>
-   </div>
-    <div class="row">
-      <dx-data-grid
-      id="gridContainer"
-      [dataSource]="changesserialArray"
-      keyExpr="ID"
-      height="40vh"
-      [showBorders]="true"
-    >
+          <dx-text-box dataField="To Tag No" label="To Tag No#"></dx-text-box>
+        </dxi-item>
+      </dx-form>
+    </form>
+
+  </div>
+  <div class="row">
+    <dx-data-grid id="gridContainer" [dataSource]="changesserialArray" keyExpr="ID" height="40vh" [showBorders]="true">
       <dxi-column dataField="Warehouse"></dxi-column>
       <dxi-column dataField="Location"></dxi-column>
       <dxi-column dataField="cost"></dxi-column>
@@ -48,7 +36,6 @@
       <dxi-column dataField="Exp Date"></dxi-column>
       <dxi-column dataField="Original ER"></dxi-column>
       <dxi-column dataField="Current ER"></dxi-column>
-      </dx-data-grid>
+    </dx-data-grid>
   </div>
 </div>
-
