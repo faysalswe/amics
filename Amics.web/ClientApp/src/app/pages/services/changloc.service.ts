@@ -45,18 +45,16 @@ export class ChangeLocService {
     }
 
     UpdateInvTransLoc(req: ChgLocTransItem[]) {
-
         let url = `${this.api}/UpdateInvTransLoc`;
         return this.httpClient.post<string>(url, req);
     }
-
-    UpdateChangeLoc(req: ChangeLocSearchResult) {
-        if (req.itemnumber == "null") { req.itemnumber = ''; }
-        if (req.soMain == "null") { req.soMain = ''; }
-        if (req.soLinesId == "null") { req.soLinesId = ''; }
-
-        let url = `${this.api}/UpdateChangeLoc?somain=${req.soMain}&itemnumber=${req.itemnumber}&userId="admin"&soLinesId=${req.soLinesId}&invType=${req.invType}`;
-        return this.httpClient.get<ChangeLocSearchResult[]>(url);
+    DeleteInvTransLoc(userName: string) {
+        let url = `${this.api}/DeleteInvTransLoc`;
+        return this.httpClient.post<string>(url, userName);
+    }
+    UpdateChangeLoc(userName: string, toWarehouse: string, toLocation: string) {
+        let url = `${this.api}/UpdateChangeLoc`;
+        return this.httpClient.post<ChangeLocSearchResult[]>(url, { 'userName': userName, 'toWarehouse': toWarehouse, 'toLocation': toLocation });
     }
 
 

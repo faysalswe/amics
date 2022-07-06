@@ -89,9 +89,9 @@ namespace Amics.Api.Controllers
         /// <param name="toWarehouse">To Warehouse</param>   
         /// <param name="toLocation">To Location</param>           
         [HttpPost, Route("UpdateChangeLoc")]
-        public LstMessage UpdateChangeLoc(string userName, string toWarehouse, string toLocation)
+        public LstMessage UpdateChangeLoc([FromBody] UpdateChangeLocItem updateChangeLoc)
         {
-            var updChangeLocResult = _changeLocService.UpdateChangeLocation(userName, toWarehouse, toLocation);
+            var updChangeLocResult = _changeLocService.UpdateChangeLocation(updateChangeLoc.UserName, updateChangeLoc.ToWarehouse, updateChangeLoc.ToLocation);
 
             return updChangeLocResult;
         }
@@ -100,8 +100,8 @@ namespace Amics.Api.Controllers
         /// API Route Controller to clear the data in the table inv_transfer_location when page load.
         /// </summary>
         /// <param name="userName">UserName</param>                   
-        [HttpGet, Route("DeleteInvTransLoc")]
-        public LstMessage DeleteInvTransLoc([FromQuery] string userName)
+        [HttpPost, Route("DeleteInvTransLoc")]
+        public LstMessage DeleteInvTransLoc([FromBody] string userName)
         {
             var delTransLocResult = _changeLocService.DeleteInvTransferLoc(userName);
 

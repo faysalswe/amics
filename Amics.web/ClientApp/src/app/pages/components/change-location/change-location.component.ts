@@ -120,6 +120,7 @@ export class ChangeLocationComponent {
   }
 
   getDetails() {
+    this.changeLocService.DeleteInvTransLoc("admin").subscribe(r => { console.log(r) });
     this.changeLocService.getChangeLocItemsDetailsView(this.selectedView).subscribe(r => {
       console.log(r);
       this.changeLocDetailsResult = r;
@@ -173,23 +174,34 @@ export class ChangeLocationComponent {
     var transItem = new ChgLocTransItem();
     transItem.action = action;
     transItem.availQuantity = Number(rowData.quantity);
-    transItem.transQuantity =  Number(rowData.quantity);
+    transItem.transQuantity = Number(rowData.quantity);
     transItem.soLinesId = this.selectedView.soLinesId;
     transItem.invBasicId = rowData.invBasicId;
     transItem.invSerialId = rowData.invSerialId;
     transItem.id = "";
     transItem.createdBy = 'admin';
     this.chgLocTransItems.push(transItem);
-    this.changeLocService.UpdateInvTransLoc(this.chgLocTransItems).subscribe((res:any) => {
+    this.changeLocService.UpdateInvTransLoc(this.chgLocTransItems).subscribe((res: any) => {
       if (action == 1) {
         let item = this.tableRight.find(r => r.soLinesId === rowData.soLinesId);
-        transItem.id = res.message;
         if (action == 1) {
           this.chgLocTransItemsAdded.push(transItem);
         }
       }
     }, err => { notify({ message: "Error occured during transfer", shading: true, position: top }, "error", 1500) });
     this.chgLocTransItems = [];
+  }
+
+  transfer() {
+    if (this.warehouse === "" || this.location === "") {
+      notify({ message: "warehouse and location are required", shading: true, position: top }, "error", 1500);
+
+    } else {
+      if (this.tableRight.length !== 0) {
+        this.changeLocService.UpdateChangeLoc("admin", this.warehouse, this.location).subscribe(r => { this.getDetails(); });
+      }
+      console.log("transfer clicked");
+    }
   }
 }
 
