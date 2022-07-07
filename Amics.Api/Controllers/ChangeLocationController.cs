@@ -63,8 +63,7 @@ namespace Amics.Api.Controllers
 
             return vwChgLocViewResult;
         }
-
-        
+              
         /// <summary>
         /// API Route Controller to check pick items exist in inv_transfer_location table and also checks available quantity 
         /// from inv_serial/inv_basic table, update invserialid/invbasicid, transqty, solinesid details into inv_transfer_location table
@@ -89,10 +88,10 @@ namespace Amics.Api.Controllers
         /// <param name="userName">UserName</param>   
         /// <param name="toWarehouse">To Warehouse</param>   
         /// <param name="toLocation">To Location</param>           
-        [HttpGet, Route("UpdateChangeLoc")]
-        public LstMessage UpdateChangeLoc([FromQuery] string userName, [FromQuery] string toWarehouse, [FromQuery] string toLocation)
+        [HttpPost, Route("UpdateChangeLoc")]
+        public LstMessage UpdateChangeLoc([FromBody] UpdateChangeLocItem updateChangeLoc)
         {
-            var updChangeLocResult = _changeLocService.UpdateChangeLocation(userName, toWarehouse, toLocation);
+            var updChangeLocResult = _changeLocService.UpdateChangeLocation(updateChangeLoc.UserName, updateChangeLoc.ToWarehouse, updateChangeLoc.ToLocation);
 
             return updChangeLocResult;
         }
@@ -101,12 +100,17 @@ namespace Amics.Api.Controllers
         /// API Route Controller to clear the data in the table inv_transfer_location when page load.
         /// </summary>
         /// <param name="userName">UserName</param>                   
-        [HttpGet, Route("DeleteInvTransLoc")]
-        public LstMessage DeleteInvTransLoc([FromQuery] string userName)
+        [HttpPost, Route("DeleteInvTransLoc")]
+        public LstMessage DeleteInvTransLoc([FromBody] UserInfo User)
         {
-            var delTransLocResult = _changeLocService.DeleteInvTransferLoc(userName);
+            var delTransLocResult = _changeLocService.DeleteInvTransferLoc(User.UserName);
 
             return delTransLocResult;
         }
+    }
+
+    public class UserInfo
+    {
+        public string UserName { get; set; }
     }
 }

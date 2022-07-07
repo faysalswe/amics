@@ -57,8 +57,11 @@
           <dxi-validation-rule type="required" message="Warehouse is required"></dxi-validation-rule>
         </dxi-item> -->
         <dxi-item>
-          <dx-lookup [items]="warehouseNames" [(value)]="warehouse" (onValueChanged)="updateWarehouseSelection($event)" label="Warehouse" >
+          <dx-lookup [items]="warehouseNames" [(value)]="warehouse" (onValueChanged)="updateWarehouseSelection($event)"
+            label="Warehouse">
             <dxo-drop-down-options [showTitle]="false"></dxo-drop-down-options>
+            <dxi-validation-rule type="required" message="warehouse is required">
+            </dxi-validation-rule>
           </dx-lookup>
         </dxi-item>
         <!-- <dxi-item dataField="location" editorType="dxLookup" [colSpan]="1"
@@ -68,6 +71,8 @@
         <dxi-item>
           <dx-lookup [items]="validLocationNames" [(value)]="location" label="Location">
             <dxo-drop-down-options [showTitle]="false"></dxo-drop-down-options>
+            <dxi-validation-rule type="required" message="location is required">
+            </dxi-validation-rule>
           </dx-lookup>
         </dxi-item>
         <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
@@ -95,59 +100,63 @@
   <dxi-item>
     <dxi-location [row]="1" [col]="1"></dxi-location>
     <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
-      <dx-form id="form" labelMode="floating">
-        <dxi-item>
-          <div class="tables">
-            <div class="column1">
-              <dx-data-grid [dataSource]="changeLocDetailsResult" [height]="200" [showBorders]="true">
-                <dxo-row-dragging [data]="1" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
-                <dxo-scrolling mode="virtual"></dxo-scrolling>
 
-                <dxi-column dataField="warehouse" dataType="string"></dxi-column>
-                <dxi-column dataField="location" dataType="string"></dxi-column>
-                <dxi-column dataField="serNo" dataType="string" caption="Serial No"></dxi-column>
-                <dxi-column dataField="tagNo" dataType="string"></dxi-column>
-                <dxi-column dataField="quantity" dataType="Pick Qty"></dxi-column>
-              </dx-data-grid>
-            </div>
-            <div class="separator"></div>
-            <div class="column2">
-              <dx-data-grid [dataSource]="tableRight" [height]="200" [showBorders]="true">
-                <dxo-row-dragging [data]="2" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
-                <dxo-scrolling mode="virtual"></dxo-scrolling>
+      <dxi-item>
+        <div class="tables">
+          <div class="column1">
+            <dx-data-grid [dataSource]="changeLocDetailsResult" [height]="200" [showBorders]="true"
+              [keyExpr]="['invSerialId', 'invBasicId']" (onSelectionChanged)="leftSelectionChanged($event)">
+              <dxo-row-dragging [data]="1" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
+              <dxo-editing mode="row" [allowUpdating]="true" newRowPosition="last">
+              </dxo-editing>
 
-                <dxi-column dataField="warehouse" dataType="string"></dxi-column>
-                <dxi-column dataField="location" dataType="string"></dxi-column>
-                <dxi-column dataField="serNo" dataType="string"></dxi-column>
-                <dxi-column dataField="tagNo" dataType="string"></dxi-column>
-              </dx-data-grid>
+              <dxo-scrolling mode="virtual"></dxo-scrolling>
+              <dxo-selection mode="multiple"></dxo-selection>
+              <dxi-column dataField="warehouse" dataType="string" [allowEditing]="false"></dxi-column>
+              <dxi-column dataField="location" dataType="string" [allowEditing]="false"></dxi-column>
+              <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="serNo" dataType="string" caption="Serial No"
+                [allowEditing]="false">
+              </dxi-column>
+              <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="tagNo" dataType="string"
+                [allowEditing]="false"></dxi-column>
+              <dxi-column dataField="quantity" [allowEditing]="false"></dxi-column>
+              <dxi-column *ngIf="selectedInvType != 'SERIAL'" dataField="pickQty" [allowEditing]="true"></dxi-column>
+            </dx-data-grid>
+          </div>
+          <div class="separator" style="text-align: center; vertical-align:middle;">
+            <div>
+              <dx-button stylingMode="contained" text="-->" type="normal" (onClick)="moveToRight()">
+              </dx-button> &nbsp;
+              <dx-button stylingMode="contained" text="<--" type="normal" (onClick)="moveToLeft()">
+              </dx-button> &nbsp;
             </div>
           </div>
-        </dxi-item>
+          <div class="column2">
+            <dx-data-grid [dataSource]="tableRight" [height]="200" [showBorders]="true"
+              [keyExpr]="['invSerialId', 'invBasicId']" (onSelectionChanged)="rightSelectionChanged($event)">
+              <dxo-row-dragging [data]="2" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
+              <dxo-scrolling mode="virtual"></dxo-scrolling>
+              <dxo-selection mode="multiple"></dxo-selection>
+              <dxi-column dataField="warehouse" dataType="string"></dxi-column>
+              <dxi-column dataField="location" dataType="string"></dxi-column>
+              <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="serNo" dataType="string"></dxi-column>
+              <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="tagNo" dataType="string"></dxi-column>
+              <dxi-column *ngIf="selectedInvType != 'SERIAL'" dataField="pickQty"></dxi-column>
+            </dx-data-grid>
+          </div>
+        </div>
+      </dxi-item>
 
-      </dx-form>
     </div>
   </dxi-item>
   <dxi-item>
     <dxi-location [row]="2" [col]="0" [colspan]="2"></dxi-location>
     <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
-      <dx-form id="form" [colCount]="5">
-        <dxi-item [colSpan]="1" style="text-align: center;">
-          <dx-button stylingMode="contained" text="search" type="default">
-          </dx-button>
-        </dxi-item>
-        <dxi-item [colSpan]="2" style="float: right;">
-          <dx-button stylingMode="contained" text="Select All" type="default">
-          </dx-button> &nbsp;
-          <dx-button stylingMode="contained" text="Clear All" type="default">
-          </dx-button>
-        </dxi-item>
-        <dxi-item [colSpan]="1" style="text-align: center;">
-          <dx-button stylingMode="contained" text="Transfer" type="default">
-          </dx-button> &nbsp;
-          <dx-button stylingMode="contained" text="Exit" type="default" (onClick)="onExit()">
-          </dx-button>
-        </dxi-item>
-      </dx-form>
+
+      <dxi-item style="text-align: center;">
+        <dx-button stylingMode="contained" text="Transfer" type="default" (onClick)="transfer()">
+        </dx-button> &nbsp;
+
+      </dxi-item>
     </div>
   </dxi-item>
