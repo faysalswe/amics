@@ -21,7 +21,7 @@
   </div>
   <div class="row">
     <dx-data-grid id="gridContainer" [dataSource]="changesserialArray" keyExpr="id" height="70vh" 
-    [showBorders]="true" [focusedRowEnabled]="rowSelection" (onRowClick)="onRowSelection($event)">
+    [showBorders]="true" [hoverStateEnabled]="true" (onRowClick)="onRowSelection($event)">
       <dxo-selection mode="single"></dxo-selection>
       <dxi-column dataField="warehouse"></dxi-column>
       <dxi-column dataField="location"></dxi-column>
