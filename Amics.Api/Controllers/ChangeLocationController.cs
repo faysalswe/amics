@@ -101,11 +101,16 @@ namespace Amics.Api.Controllers
         /// </summary>
         /// <param name="userName">UserName</param>                   
         [HttpPost, Route("DeleteInvTransLoc")]
-        public LstMessage DeleteInvTransLoc([FromBody] string userName)
+        public LstMessage DeleteInvTransLoc([FromBody] UserInfo User)
         {
-            var delTransLocResult = _changeLocService.DeleteInvTransferLoc(userName);
+            var delTransLocResult = _changeLocService.DeleteInvTransferLoc(User.UserName);
 
             return delTransLocResult;
         }
+    }
+
+    public class UserInfo
+    {
+        public string UserName { get; set; }
     }
 }

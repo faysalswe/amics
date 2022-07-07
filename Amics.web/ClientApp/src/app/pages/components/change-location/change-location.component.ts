@@ -29,8 +29,11 @@ export class ChangeLocationComponent {
   locViewGridList: ChangeLocSearchResult[] = [];
   changeLocSearchResult: ChangeLocSearchResult[] = [];
   changeLocDetailsResult: ChangeLocSearchResult[] = [];
+  changeLocDetailsResultCopy: ChangeLocSearchResult[] = [];
   selectedProject: any;
   selectedView: any;
+  selectedInvType = "BASIC";
+
   selectedProductId: string = '';
   statusList = [];
   locationList = [];
@@ -49,7 +52,11 @@ export class ChangeLocationComponent {
   chgLocTransItems: ChgLocTransItem[] = [];
   chgLocTransItemsAdded: ChgLocTransItem[] = [];
 
+  leftSelectedItemKeys: any[] = [];
+  rightSelectedItemKeys: any[] = [];
+
   constructor(private searchService: SearchService, private changeLocService: ChangeLocService) {
+
     this.onAdd = this.onAdd.bind(this);
     this.searchService.getWarehouseInfo('').subscribe(w => {
       this.warehouses = w;
@@ -63,6 +70,9 @@ export class ChangeLocationComponent {
       console.log(this.groupedLocations);
       //   console.log(this.groupedLocations['f062f282-ad8e-4743-b01f-2fb9c7ba9f7d']);
     });
+
+    this.leftSelectionChanged = this.leftSelectionChanged.bind(this);
+    this.rightSelectionChanged = this.rightSelectionChanged.bind(this);
   }
   groupByKey(array: any, key: any) {
     return array
@@ -106,6 +116,7 @@ export class ChangeLocationComponent {
         this.locViewGridList = r;
         if (r.length !== 0) {
           this.selectedView = r[0];
+          this.selectedInvType = this.selectedView.invType;
           this.getDetails();
         }
       });
@@ -115,6 +126,7 @@ export class ChangeLocationComponent {
   onSelectionChangedView(e: any) {
     console.log(e);
     this.selectedView = e.selectedRowsData[0];
+    this.selectedInvType = this.selectedView.invType;
     console.log(this.selectedView);
     this.getDetails();
   }
@@ -123,7 +135,20 @@ export class ChangeLocationComponent {
     this.changeLocService.DeleteInvTransLoc("admin").subscribe(r => { console.log(r) });
     this.changeLocService.getChangeLocItemsDetailsView(this.selectedView).subscribe(r => {
       console.log(r);
-      this.changeLocDetailsResult = r;
+      this.changeLocDetailsResult = [];
+      if (this.selectedInvType === "BASIC") {
+        for (let i = 0; i < r.length; i++) {
+          let d = r[i];
+          d.pickQty = d.quantity;
+          this.changeLocDetailsResult.push(d);
+        }
+        this.changeLocDetailsResultCopy = [...this.changeLocDetailsResult];
+      }
+      else {
+        this.changeLocDetailsResult = r;
+        this.changeLocDetailsResultCopy = [...r];
+      }
+
       this.tableRight = [];
     });
   }
@@ -147,7 +172,8 @@ export class ChangeLocationComponent {
     rowData.invBasicId = itemData.invBasicId;
     rowData.invSerialId = itemData.invSerialId;
     rowData.invType = itemData.invType;
-    rowData.itemsId = itemData.itemsid;
+    rowData.itemsId = itemData.itemsId;
+    rowData.pickQty = this.selectedInvType === 'SERIAL' ? itemData.quantity : itemData.pickQty;
 
     let element = event.element.parentElement.className;
     let action = 0;
@@ -174,22 +200,28 @@ export class ChangeLocationComponent {
     var transItem = new ChgLocTransItem();
     transItem.action = action;
     transItem.availQuantity = Number(rowData.quantity);
-    transItem.transQuantity = Number(rowData.quantity);
+    transItem.transQuantity = Number(rowData.pickQty);
     transItem.soLinesId = this.selectedView.soLinesId;
     transItem.invBasicId = rowData.invBasicId;
     transItem.invSerialId = rowData.invSerialId;
     transItem.id = "";
     transItem.createdBy = 'admin';
     this.chgLocTransItems.push(transItem);
-    this.changeLocService.UpdateInvTransLoc(this.chgLocTransItems).subscribe((res: any) => {
-      if (action == 1) {
-        let item = this.tableRight.find(r => r.soLinesId === rowData.soLinesId);
-        if (action == 1) {
-          this.chgLocTransItemsAdded.push(transItem);
-        }
+
+    if (action == 1) {
+      if (rowData.quantity !== rowData.pickQty) {
+        rowData.quantity = rowData.quantity - rowData.pickQty;
+        rowData.pickQty = rowData.quantity;
+        this.changeLocDetailsResult.push(rowData);
       }
+    }
+
+    this.changeLocService.UpdateInvTransLoc(this.chgLocTransItems).subscribe((res: any) => {
     }, err => { notify({ message: "Error occured during transfer", shading: true, position: top }, "error", 1500) });
+
     this.chgLocTransItems = [];
+
+
   }
 
   transfer() {
@@ -202,6 +234,102 @@ export class ChangeLocationComponent {
       }
       console.log("transfer clicked");
     }
+  }
+
+  updateTempTransactionTable() {
+    if (this.chgLocTransItems.length > 0) {
+      this.changeLocService.UpdateInvTransLoc(this.chgLocTransItems).subscribe((res: any) => {
+
+      }, err => { notify({ message: "Error occured during transfer", shading: true, position: top }, "error", 1500) });
+      this.chgLocTransItems = [];
+
+    }
+  }
+
+  moveToRight() {
+    let action = 1;
+    for (let i = 0; i < this.leftSelectedItemKeys.length; i++) {
+      var index = this.changeLocDetailsResult.findIndex(d => d.invBasicId === this.leftSelectedItemKeys[i].invBasicId && d.invSerialId === this.leftSelectedItemKeys[i].invSerialId);
+      let rowData = new ChangeLocSearchResult();
+      let itemData = this.changeLocDetailsResult.filter(d => d.invBasicId === this.leftSelectedItemKeys[i].invBasicId && d.invSerialId === this.leftSelectedItemKeys[i].invSerialId)[0];
+      rowData.warehouse = itemData.warehouse;
+      rowData.location = itemData.location;
+      rowData.serNo = itemData.serNo;
+      rowData.tagNo = itemData.tagNo;
+      rowData.quantity = itemData.quantity;
+      rowData.invBasicId = itemData.invBasicId;
+      rowData.invSerialId = itemData.invSerialId;
+      rowData.invType = itemData.invType;
+      rowData.itemsId = itemData.itemsId;
+      rowData.pickQty = this.selectedInvType === 'SERIAL' ? itemData.quantity : itemData.pickQty;
+
+      let transItem = new ChgLocTransItem();
+      transItem.action = action;
+      transItem.availQuantity = Number(rowData.quantity);
+      transItem.transQuantity = Number(rowData.pickQty);
+      transItem.soLinesId = this.selectedView.soLinesId;
+      transItem.invBasicId = rowData.invBasicId;
+      transItem.invSerialId = rowData.invSerialId;
+      transItem.id = "";
+      transItem.createdBy = 'admin';
+      this.chgLocTransItems.push(transItem);
+
+      this.tableRight.push(rowData);
+      this.changeLocDetailsResult.splice(index, 1);
+      if (rowData.quantity !== rowData.pickQty) {
+        rowData.quantity = rowData.quantity - rowData.pickQty;
+        rowData.pickQty = rowData.quantity;
+        this.changeLocDetailsResult.push(rowData);
+      }
+
+    }
+    console.log("move to right");
+    this.updateTempTransactionTable();
+
+  }
+
+
+  moveToLeft() {
+    let action = 2;
+    for (let i = 0; i < this.rightSelectedItemKeys.length; i++) {
+      var index = this.tableRight.findIndex(d => d.invBasicId === this.rightSelectedItemKeys[i].invBasicId && d.invSerialId === this.rightSelectedItemKeys[i].invSerialId);
+      let rowData = new ChangeLocSearchResult();
+      let itemData = this.changeLocDetailsResultCopy.filter(d => d.invBasicId === this.rightSelectedItemKeys[i].invBasicId && d.invSerialId === this.rightSelectedItemKeys[i].invSerialId)[0];
+      rowData.warehouse = itemData.warehouse;
+      rowData.location = itemData.location;
+      rowData.serNo = itemData.serNo;
+      rowData.tagNo = itemData.tagNo;
+      rowData.quantity = itemData.quantity;
+      rowData.pickQty = itemData.quantity;
+      rowData.invBasicId = itemData.invBasicId;
+      rowData.invSerialId = itemData.invSerialId;
+      rowData.invType = itemData.invType;
+      rowData.itemsId = itemData.itemsId;
+      this.changeLocDetailsResult.push(rowData);
+      this.tableRight.splice(index, 1);
+
+      let transItem = new ChgLocTransItem();
+      transItem.action = action;
+      transItem.availQuantity = Number(rowData.quantity);
+      transItem.transQuantity = Number(rowData.quantity);
+      transItem.soLinesId = this.selectedView.soLinesId;
+      transItem.invBasicId = rowData.invBasicId;
+      transItem.invSerialId = rowData.invSerialId;
+      transItem.id = "";
+      transItem.createdBy = 'admin';
+      this.chgLocTransItems.push(transItem);
+
+    }
+    console.log("move to left");
+    this.updateTempTransactionTable();
+
+  }
+  leftSelectionChanged(data: any) {
+    this.leftSelectedItemKeys = data.selectedRowKeys;
+
+  }
+  rightSelectionChanged(data: any) {
+    this.rightSelectedItemKeys = data.selectedRowKeys;
   }
 }
 

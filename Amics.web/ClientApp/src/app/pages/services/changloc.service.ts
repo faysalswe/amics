@@ -50,7 +50,7 @@ export class ChangeLocService {
     }
     DeleteInvTransLoc(userName: string) {
         let url = `${this.api}/DeleteInvTransLoc`;
-        return this.httpClient.post<string>(url, userName);
+        return this.httpClient.post<string>(url, { 'userName': userName });
     }
     UpdateChangeLoc(userName: string, toWarehouse: string, toLocation: string) {
         let url = `${this.api}/UpdateChangeLoc`;
