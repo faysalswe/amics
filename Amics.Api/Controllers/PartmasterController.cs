@@ -27,7 +27,7 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Route Controller to get Partmaster details for parent form, pass Item number and rev as parameter.
+        /// API Route Controller to get Partmaster details for parent form
         /// </summary>
         /// <param name="itemnumber">itemnumber</param>  
         /// <param name="rev">rev</param>      
@@ -40,7 +40,7 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Route Controller to get Partmaster BOM details, pass itemsId as parameter.
+        /// API Route Controller to get Partmaster BOM details using parameter itemsId
         /// </summary>
         /// <param name="itemsId">Items Id</param>          
         [HttpGet, Route("BomDetails")]
@@ -52,7 +52,7 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Route Controller to get Partmaster PO details for grid, pass itemsId as parameter.
+        /// API Route Controller to get Partmaster PO details for show in the partmaser grid
         /// </summary>
         /// <param name="itemsId">Items Id</param>          
         [HttpGet, Route("PODetails")]
@@ -64,7 +64,7 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Route Controller to get Partmaster PO details for grid, pass itemsId as parameter.
+        /// API Route Controller to check Items Bom exist or not in the table for Copy to new functionality
         /// </summary>
         /// <param name="itemsId">Items Id</param>          
         [HttpGet, Route("BOMCount")]
@@ -76,8 +76,8 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Route Controller for deletion of Item Num details, column 'flag_delete' is update with 1 in the table 
-        /// list items(item num deleted) if return message is null. Message will appear if item num is used in some other tables, so item num can't delete.
+        /// API Route Controller to update column 'flag_delete' with 1 in the table list items for item number, can not access
+        /// that item number. Item numnber cannot delete if it is used in some other tables.
         /// </summary>
         /// <param name="itemnum">Item Number</param>          
         /// /// <param name="rev">Rev</param>          
@@ -90,7 +90,7 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Route Controller to get Partmaster PO details for grid, pass itemsId as parameter.
+        /// API Route Controller to get Partmaster PO details for option PO
         /// </summary>
         /// <param name="itemsId">Items Id</param>          
         [HttpPost, Route("")]
@@ -126,7 +126,7 @@ namespace Amics.Api.Controllers
         }
 
         // <summary>
-        /// API Route Controller to get list of records from Item Number/Descrption/SerialNo/TagNo/Location/ER/MdatIn search
+        /// API Route Controller to get item number details from Item Number/Descrption/SerialNo/TagNo/Location/ER/MdatIn search
         /// </summary>
         /// <param name="itemnum">Item Number</param>                  
         [HttpPost, Route("Inquiry")]
@@ -207,5 +207,18 @@ namespace Amics.Api.Controllers
 
             return NotesUpdate;
         }
+
+        /// <summary>
+        /// API Route Controller to change Serial No/Tag No/Model No/Cost, to provide From Serial No - To Serial No,etc.
+        /// </summary> 
+        /// <param name="LstChangeSerial">LstChangeSerial</param>            
+        [HttpPost, Route("ChangeSerialUpdate")]
+        public string ChangeSerialTagUpdate([FromBody] LstChangeSerial lstChgSerial)
+        {
+            var ChgSerialTagUpdate = _partMastService.ChangeSerialTag(lstChgSerial);
+
+            return ChgSerialTagUpdate;
+        }
+
     }
 }

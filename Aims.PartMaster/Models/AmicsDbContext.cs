@@ -40,9 +40,8 @@ namespace Aims.Core.Models
         public DbSet<LstNotes> LstNotes { get; set; }
         public DbSet<LstMessagetext> LstMessagetext { get; set; }
         public DbSet<LstChangeLocSearch> LstChangeLocSearch { get; set; }
-        
-
         public DbSet<OutValidateSerTag> OutValidateSerTag { get; set; }
+        public DbSet<LstMdat> LstMdat { get; set; }
 
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)
