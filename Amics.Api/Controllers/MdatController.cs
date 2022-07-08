@@ -54,16 +54,7 @@ namespace Amics.Api.Controllers
         /// <summary>
         /// API Route Controller to insert/update/delete Mdat details in the table inv_mdat_out
         /// </summary>
-        /// <param name="actionFlag">ActionFlag</param>  
-        /// <param name="id">Id</param>  
-        /// <param name="mdatNum">Mdat Out Number</param>  
-        /// <param name="somain">Somain</param> 
-        /// <param name="status">status</param> 
-        /// <param name="submittedDate">submittedDate</param>
-        /// <param name="approvedDate">approvedDate</param>
-        /// <param name="shippedDate">shippedDate</param>
-        /// <param name="cancelledDate">cancelledDate</param>
-        /// <param name="createdBy">createdBy</param>      
+        /// <param name="LstMdat">LstMdat</param>         
         [HttpPost, Route("UpdateMdatOutDetails")]
         public string UpdateMdatOutDetails([FromBody] LstMdat lstMdat)
         {
