@@ -232,8 +232,14 @@ namespace Aims.Core.Services
                         {
                             sqlCommand.CommandText = "amics_sp_chgloc_translocupdate";
                             sqlCommand.CommandType = CommandType.StoredProcedure;
-                            sqlCommand.Parameters.Add(new SqlParameter("@id", lstchgloc[i].Id));
-                            id = sqlCommand.ExecuteScalar().ToString();
+                            sqlCommand.Parameters.Add(new SqlParameter("@id", null));
+                            sqlCommand.Parameters.Add(new SqlParameter("@action", lstchgloc[i].Action));
+                            sqlCommand.Parameters.Add(new SqlParameter("@solinesid", lstchgloc[i].SoLinesId));
+                            sqlCommand.Parameters.Add(new SqlParameter("@quantity", lstchgloc[i].TransQuantity));
+                            sqlCommand.Parameters.Add(new SqlParameter("@invserialid", lstchgloc[i].InvSerialId));
+                            sqlCommand.Parameters.Add(new SqlParameter("@invbasicid", lstchgloc[i].InvBasicId));
+                            sqlCommand.Parameters.Add(new SqlParameter("@createdby", lstchgloc[i].CreatedBy));
+                            sqlCommand.ExecuteNonQuery();
                         }
                     }
                     else
@@ -257,7 +263,7 @@ namespace Aims.Core.Services
                                 sqlCommand.Parameters.Add(new SqlParameter("@invserialid", lstchgloc[i].InvSerialId));
                                 sqlCommand.Parameters.Add(new SqlParameter("@invbasicid", lstchgloc[i].InvBasicId));
                                 sqlCommand.Parameters.Add(new SqlParameter("@createdby", lstchgloc[i].CreatedBy));
-                                id =  sqlCommand.ExecuteScalar().ToString();
+                                sqlCommand.ExecuteNonQuery();
 
                             }                            
                         }
@@ -272,7 +278,7 @@ namespace Aims.Core.Services
             catch (Exception ex) {
                 return ex.Message;
             }            
-            return id;
+            return "Success";
         }
 
         public string PickDataCheckTransLocation(string soLinesId,string invSerialId, string invBasicId, int availQty)

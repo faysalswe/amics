@@ -70,11 +70,11 @@ namespace Amics.Api.Controllers
         /// </summary>
         /// <param name="LstChgLocTransItems">LstChgLocTransItems</param>                  
         [HttpPost, Route("UpdateInvTransLoc")]
-        public string UpdateTransloc([FromBody] List<LstChgLocTransItems> lstchgloc)
+        public LstMessage UpdateTransloc([FromBody] List<LstChgLocTransItems> lstchgloc)
         {          
             var translocResult = _changeLocService.UpdateInvTransLocation(lstchgloc);
 
-            return translocResult;
+            return new LstMessage() { Message = translocResult };
         }
 
         /// <summary>
@@ -89,9 +89,9 @@ namespace Amics.Api.Controllers
         /// <param name="toWarehouse">To Warehouse</param>   
         /// <param name="toLocation">To Location</param>           
         [HttpPost, Route("UpdateChangeLoc")]
-        public LstMessage UpdateChangeLoc(string userName, string toWarehouse, string toLocation)
+        public LstMessage UpdateChangeLoc([FromBody] UpdateChangeLocItem updateChangeLoc)
         {
-            var updChangeLocResult = _changeLocService.UpdateChangeLocation(userName, toWarehouse, toLocation);
+            var updChangeLocResult = _changeLocService.UpdateChangeLocation(updateChangeLoc.UserName, updateChangeLoc.ToWarehouse, updateChangeLoc.ToLocation);
 
             return updChangeLocResult;
         }
@@ -100,12 +100,17 @@ namespace Amics.Api.Controllers
         /// API Route Controller to clear the data in the table inv_transfer_location when page load.
         /// </summary>
         /// <param name="userName">UserName</param>                   
-        [HttpGet, Route("DeleteInvTransLoc")]
-        public LstMessage DeleteInvTransLoc([FromQuery] string userName)
+        [HttpPost, Route("DeleteInvTransLoc")]
+        public LstMessage DeleteInvTransLoc([FromBody] UserInfo User)
         {
-            var delTransLocResult = _changeLocService.DeleteInvTransferLoc(userName);
+            var delTransLocResult = _changeLocService.DeleteInvTransferLoc(User.UserName);
 
             return delTransLocResult;
         }
+    }
+
+    public class UserInfo
+    {
+        public string UserName { get; set; }
     }
 }

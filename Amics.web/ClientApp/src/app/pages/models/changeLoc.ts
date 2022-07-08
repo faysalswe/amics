@@ -30,6 +30,7 @@ export class ChangeLocSearchResult {
     tagNo: string = "";
     invSerialId: string = "";
     invBasicId: string = ""; 
+    pickQty:number=0;
 }
 
 export class ChgLocTransItem {

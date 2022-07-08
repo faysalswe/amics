@@ -21,13 +21,7 @@ export const navigation = [
         path: '/increase-inventory',
         title: 'Increase Inventory',
         type: ComponentType.IncreaseInventory
-      },
-      {
-        text: 'Adjust Inventory',
-        path: '/adjustInventory',
-        title: 'Adjust Inventory',
-        type: ComponentType.Profile
-      },
+      },     
       {
         text: 'Change Location',
         path: '/changeLocation',
@@ -71,15 +65,15 @@ export const navigation = [
     icon: 'folder',
     items: [
       {
-        text: 'mdat',
+        text: 'MDAT',
         path: '/mdat',
         title: 'mdat',
         type: ComponentType.Mdat
       },
       {
-        text: 'equipment',
+        text: 'Equipment Request',
         path: '/equipment',
-        title: 'eqipment',
+        title: 'eqipment request',
         type: ComponentType.ER
       },
       {
