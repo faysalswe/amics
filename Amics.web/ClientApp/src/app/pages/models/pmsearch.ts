@@ -24,3 +24,12 @@ export class pmItemSearchResult {
     dwgNo: string = '';
     conversion: number = 0;
 }
+
+export class taskItemSearchResult {
+    itemnumber: string = '';
+    description: string = '';
+    project: string = '';
+    projectname: string = '';
+    statuslist: string ='';
+    locationlist: string ='';
+}

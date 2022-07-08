@@ -178,7 +178,7 @@
                     <h6>{{notesHeader}}</h6>
                     <dx-form id="form" [colCount]="1" labelMode="floating">
                      <dxi-item dataField="description"
-                        style="height: 40vh;" editorType="dxTextArea"
+                          editorType="dxTextArea"
                         [label]="{text: 'Description (Max 300 characters)'}">
                     </dxi-item>
                     </dx-form>
@@ -249,7 +249,7 @@
                         [label]="{text: 'Line Notes (Max 150 characters)'}">
                     </dxi-item>
                     <dxi-item [colSpan]="2">
-                        <dx-button stylingMode="contained" text="Entarget View" type="default" width="350">
+                        <dx-button stylingMode="contained" text="Enlarged View" type="default" width="350">
                         </dx-button>
                     </dxi-item>
                     <dxi-item itemType="empty" [colSpan]="12"></dxi-item>
@@ -282,12 +282,12 @@
                     </dx-radio-group>
                 </dxi-item>
             </dx-form>
-            <dx-form id="form" [colCount]="5" labelMode="floating">
+            <dx-form id="form" [colCount]="6" labelMode="floating">
                 <dxi-item [colSpan]="1">
                     <dx-button stylingMode="contained" text="Copy to new" type="default">
                     </dx-button>
                 </dxi-item>
-                <dxi-item [colSpan]="1">
+                <dxi-item [colSpan]="2">
                     <dx-button stylingMode="contained" text="Add" type="default">
                     </dx-button> &nbsp;
                     <dx-button stylingMode="contained" text="Edit" type="default">

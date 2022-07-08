@@ -9928,7 +9928,7 @@
 
 .dx-list.dx-list-select-decorator-enabled .dx-list-item.dx-state-focused .dx-checkbox.dx-checkbox-checked .dx-checkbox-icon::after,
 .dx-list.dx-list-select-decorator-enabled .dx-list-item.dx-state-focused .dx-checkbox.dx-checkbox-indeterminate .dx-checkbox-icon::after {
- background-color: #03A9F4;
+  background-color: #03A9F4;
   -webkit-transform: scale(1);
   transform: scale(1);
 }
@@ -11946,6 +11946,11 @@
 
 .dx-datebox-calendar.dx-rtl.dx-dropdowneditor-active .dx-dropdowneditor-button .dx-dropdowneditor-icon {
   opacity: 1;
+}
+
+.dx-datebox-calendar.dx-dropdowneditor .dx-dropdowneditor-icon::before,
+.dx-datebox-calendar.dx-dropdowneditor.dx-dropdowneditor-active .dx-dropdowneditor-icon::before {
+  content: "";
 }
 
 .dx-datebox-wrapper-calendar .dx-popup-content {

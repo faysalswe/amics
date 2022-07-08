@@ -15,9 +15,9 @@
     </ng-container>
   </ng-container>
 
-  <ng-container *ngSwitchCase="this.componentType.Tasks">
+  <ng-container *ngSwitchCase="this.componentType.ChangeLocation">
     <ng-container>
-      <app-tasks></app-tasks>
+      <app-change-loc></app-change-loc>
     </ng-container>
   </ng-container>
 
@@ -27,7 +27,7 @@
     </ng-container>
   </ng-container>
 
-  <ng-container *ngSwitchCase="this.componentType.inquiry">
+  <ng-container *ngSwitchCase="this.componentType.Inquiry">
     <ng-container>
       <app-inquiry></app-inquiry>
     </ng-container>
@@ -61,4 +61,23 @@
       <app-equipment></app-equipment>
     </ng-container>
   </ng-container>
+
+  <ng-container *ngSwitchCase="this.componentType.Shipment">
+    <ng-container>
+      <app-shipment></app-shipment>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="this.componentType.Report2">
+    <ng-container>
+      <app-report2></app-report2>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="this.componentType.BulkTransfer">
+    <ng-container>
+      <app-bulk-transfer></app-bulk-transfer>
+    </ng-container>
+  </ng-container>
+
   <ng-container *ngSwitchDefault>Default Template</ng-container>

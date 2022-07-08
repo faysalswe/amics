@@ -3,16 +3,19 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginFormComponent, ResetPasswordFormComponent, CreateAccountFormComponent, ChangePasswordFormComponent } from './shared/components';
 import { AuthGuardService } from './shared/services';
 import { HomeComponent } from './pages/components/home/home.component';
-import { ProfileComponent } from './pages/components/profile/profile.component';
-import { TasksComponent } from './pages/components/tasks/tasks.component'; 
+import { ProfileComponent } from './pages/components/profile/profile.component'; 
 import { IncreaseInventoryComponent } from "./pages/components/IncreaseInventory/increase.inventory.component";
 import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
 import { EquipmentComponent } from './pages/components/equipment/equipment.component';
+import { ShipmentComponent } from './pages/components/shipment/shipment.component';
+import { Report2Component } from './pages/components/report2/report2.component';
+import { BulkTransferComponent } from './pages/components/bulk-transfer/bulk-transfer.component';
+import { ChangeLocationComponent } from './pages/components/change-location/change-location.component';
 
 const routes: Routes = [
   {
     path: 'tasks',
-    component: TasksComponent,
+    component: ChangeLocationComponent,
     canActivate: [AuthGuardService]
   },
   {
@@ -58,6 +61,21 @@ const routes: Routes = [
   {
     path: 'equipment',
     component: EquipmentComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'shipment',
+    component: ShipmentComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'report2',
+    component: Report2Component,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'bulkTransfer',
+    component: BulkTransferComponent,
     canActivate: [AuthGuardService]
   },
   {

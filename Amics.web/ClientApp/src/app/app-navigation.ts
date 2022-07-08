@@ -21,24 +21,18 @@ export const navigation = [
         path: '/increase-inventory',
         title: 'Increase Inventory',
         type: ComponentType.IncreaseInventory
-      },
-      {
-        text: 'Adjust Inventory',
-        path: '/adjustInventory',
-        title: 'Adjust Inventory',
-        type: ComponentType.Profile
-      },
+      },     
       {
         text: 'Change Location',
         path: '/changeLocation',
         title: 'Change Location',
-        type: ComponentType.Tasks
+        type: ComponentType.ChangeLocation
       },
       {
         text: 'Inquiry',
         path: '/inquiry',
         title: 'Inquiry',
-        type: ComponentType.inquiry
+        type: ComponentType.Inquiry
       },
       {
         text: 'Serial Documents',
@@ -58,6 +52,12 @@ export const navigation = [
         title: 'Reports',
         type: ComponentType.Reports
       },
+      {
+        text: 'Bulk Transfer',
+        path: '/bulkTransfer',
+        title: 'Bulk Transfer',
+        type: ComponentType.BulkTransfer
+      },
     ]
   },
   {
@@ -65,17 +65,29 @@ export const navigation = [
     icon: 'folder',
     items: [
       {
-        text: 'mdat',
+        text: 'MDAT',
         path: '/mdat',
         title: 'mdat',
         type: ComponentType.Mdat
       },
       {
-        text: 'equipment',
+        text: 'Equipment Request',
         path: '/equipment',
-        title: 'eqipment',
+        title: 'eqipment request',
         type: ComponentType.ER
-      }
+      },
+      {
+        text: 'Shipment',
+        path: '/shipment',
+        title: 'Shipment',
+        type: ComponentType.Shipment
+      },
+      {
+        text: 'Reports',
+        path: '/report2',
+        title: 'Reports',
+        type: ComponentType.Report2
+      },
     ]
   }
 
