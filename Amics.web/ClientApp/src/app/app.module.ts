@@ -35,6 +35,8 @@ import { BulkTransferComponent } from './pages/components/bulk-transfer/bulk-tra
 import {ReactiveFormsModule} from "@angular/forms";
 import { TransLogComponent } from './pages/components/IncreaseInventory/trans-log/trans-log.component';
 import { TransLogSubDetailsComponent } from './pages/components/IncreaseInventory/trans-log/trans-log-sub-details/trans-log-sub-details.component';
+import { StatusComponent } from './shared/components/status/status.component';
+import { DecreaseInventoryComponent } from './pages/components/DecreaseInventory/decrease.inventory.component';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -67,7 +69,9 @@ export function appEnvironmentFactory(
     TransLogSubDetailsComponent,
     ShipmentComponent,
     Report2Component,
-    BulkTransferComponent
+    BulkTransferComponent,
+    StatusComponent,
+    DecreaseInventoryComponent
   ],
   imports: [
     CommonModule,

@@ -11,6 +11,7 @@ import { EquipmentComponent } from './pages/components/equipment/equipment.compo
 import { ShipmentComponent } from './pages/components/shipment/shipment.component';
 import { Report2Component } from './pages/components/report2/report2.component';
 import { BulkTransferComponent } from './pages/components/bulk-transfer/bulk-transfer.component';
+import { DecreaseInventoryComponent } from './pages/components/DecreaseInventory/decrease.inventory.component';
 
 const routes: Routes = [
   {
@@ -51,6 +52,11 @@ const routes: Routes = [
   {
     path: 'increase-inventory',
     component: IncreaseInventoryComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'decrease-inventory',
+    component: DecreaseInventoryComponent,
     canActivate: [AuthGuardService]
   },
   {

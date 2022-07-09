@@ -23,6 +23,12 @@ export const navigation = [
         type: ComponentType.IncreaseInventory
       },
       {
+        text: 'Decrease Inventory',
+        path: '/decrease-inventory',
+        title: 'Decrease Inventory',
+        type: ComponentType.DecreaseInventory
+      },
+      {
         text: 'Adjust Inventory',
         path: '/adjustInventory',
         title: 'Adjust Inventory',

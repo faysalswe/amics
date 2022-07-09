@@ -44,13 +44,13 @@ import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplica
 import { DuplicateSerTagCheck } from 'src/app/shared/validator/duplicate.sertag.validator';
 
 @Component({
-  selector: 'app-increase-inventory',
-  templateUrl: 'increase.inventory.component.html',
-  styleUrls: ['./increase.inventory.component.scss'],
+  selector: 'app-decrease-inventory',
+  templateUrl: 'decrease.inventory.component.html',
+  styleUrls: ['./decrease.inventory.component.scss'],
   providers: [IncreaseInventoryService, DatePipe],
   //,changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IncreaseInventoryComponent implements AfterViewInit {
+export class DecreaseInventoryComponent implements AfterViewInit {
   @ViewChild(DxFormComponent, { static: false }) form!: DxFormComponent;
   @ViewChild('quantityVar', { static: false }) quantityVar!: DxTextBoxComponent;
   @ViewChild('varReasonCode', { static: false })
@@ -65,7 +65,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   labelMap: typeof LabelMap;
   optionIdMap: typeof OptionIdMap;
 
-  componentType: ComponentType = ComponentType.IncreaseInventory;
+  componentType: ComponentType = ComponentType.DecreaseInventory;
 
   todayDate = new Date();
   pmpoviewArray: PMPOView[] = [];
@@ -143,7 +143,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   positionOf: string = 'window';
   employees!: Employee[];
 
-  currentIncreaseInventoryIntObj!: IncreaseInventoryInt;
+  currentdecreaseInventoryIntObj!: IncreaseInventoryInt;
 
   loadingVisible = false;
 
@@ -479,7 +479,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
     if (this.pmDetails.invType == 'SERIAL') {
       this.dupsertagerrormsg.add('');
       this.popupVisible = true;
-      this.currentIncreaseInventoryIntObj = body;
+      this.currentdecreaseInventoryIntObj = body;
       this.loadingVisible = false;
     } else {
       this.inventoryService.insertReceipt(body).subscribe((res: any) => {
