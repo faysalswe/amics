@@ -49,46 +49,6 @@
             [colCount]="4"
             #formDirective="ngForm"
           >
-            <!-- Quantity Starts  -->
-            <dxi-item [colSpan]="1" *ngDisplayLabel="100">
-              <dx-number-box
-                formControlName="quantity"
-                [stylingMode]="'outlined'"
-                [labelMode]="'floating'"
-                [elementAttr]="{ class: 'myclass' }"
-                [inputAttr]="{ id: 'quantityId' }"
-                [ngAddLabel]="labelMap.quan_num"
-                #quantityVar
-                [isValid]="isValid(quantityCntl)"
-                [validationError]="{ message: 'Quantity is required' }"
-              >
-              </dx-number-box>
-
-              <!-- <dxi-validation-rule
-                type="required"
-                message="Quantity is required"
-              >
-              </dxi-validation-rule> -->
-            </dxi-item>
-            <!-- Quantity Ends  -->
-            <!-- Unit Cost Starts  -->
-            <dxi-item [colSpan]="1">
-              <dx-number-box
-                formControlName="cost"
-                [stylingMode]="'outlined'"
-                [labelMode]="'floating'"
-                [elementAttr]="{ class: 'myclass' }"
-                [inputAttr]="{ id: 'costId' }"
-                [ngAddLabel]="labelMap.unitCost_num"
-                #unitCostVar
-                format="$ #,##0.####"
-                [isValid]="isValid(costCntl)"
-                [validationError]="{ message: 'Cost is required' }"
-              >
-              </dx-number-box>
-            </dxi-item>
-            <!-- Unit Cost Ends  -->
-
             <!-- Reason Code Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
               <dx-select-box
@@ -108,6 +68,7 @@
               ></dx-select-box>
             </dxi-item>
             <!-- Reason Code Ends  -->
+
             <!-- Transaction Date Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
               <dx-date-box
@@ -123,45 +84,7 @@
               ></dx-date-box>
             </dxi-item>
             <!-- Transaction Date Ends  -->
-            <!-- Warehouse Search Starts  -->
-            <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-select-box
-                formControlName="warehouse"
-                [ngAddLabel]="labelMap.warehouse_num"
-                [items]="warehousesStr"
-                value="{{ pmDetails?.warehouse }}"
-                [searchEnabled]="true"
-                (onValueChanged)="updateSelectedWarehouse($event)"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
-                placeholder="Search"
-                style="width: 100%"
-                #varWarehouse
-                (onFocusIn)="openWarehouseBox()"
-                [isValid]="isValid(warehouseCntl)"
-                [validationError]="{ message: 'Warehouse is required' }"
-              ></dx-select-box>
-            </dxi-item>
-            <!-- Warehouse Search Ends  -->
-            <!-- Location Search Starts  -->
-            <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-select-box
-                formControlName="location"
-                width="100%"
-                [ngAddLabel]="labelMap.location_num"
-                [items]="locationsStr"
-                value="{{ pmDetails?.location }}"
-                [searchEnabled]="true"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
-                placeholder="Search"
-                #varLocation
-                (onFocusIn)="openLocationBox()"
-                [isValid]="isValid(locationCntl)"
-                [validationError]="{ message: 'Location is required' }"
-              ></dx-select-box>
-            </dxi-item>
-            <!-- Location Search Ends  -->
+
             <!-- Source Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
               <dx-text-box
@@ -182,6 +105,7 @@
               ></dx-check-box>
             </dxi-item>
             <!-- Source Ends  -->
+
             <!-- Ref Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
               <dx-text-box
@@ -203,22 +127,7 @@
               ></dx-check-box>
             </dxi-item>
             <!-- Ref Ends  -->
-            <!-- User or ER Starts  -->
-            <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-select-box
-                formControlName="sourcesRefId"
-                label="ER"
-                width="100%"
-                [ngAddLabel]="labelMap.er_num"
-                [items]="ersStr"
-                [value]="er"
-                [searchEnabled]="true"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
-                placeholder="Search"
-              ></dx-select-box>
-            </dxi-item>
-            <!-- User or ER Ends  -->
+
             <!-- Notes Starts  -->
             <dxi-item [colSpan]="2">
               <label>Notes</label>
