@@ -39,9 +39,8 @@ import notify from 'devextreme/ui/notify';
 import { PMSearchComponent } from '../PartMaster/search/pmsearch.component';
 import { Employee, HomeService } from '../../services/home.service';
 import { TransNumberRecInt } from '../../../shared/models/rest.api.interface.model';
-import dxForm from 'devextreme/ui/form';
-import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplicate.sertag.msg.service';
 import { DuplicateSerTagCheck } from 'src/app/shared/validator/duplicate.sertag.validator';
+import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplicate.sertag.msg.service';
 
 @Component({
   selector: 'app-increase-inventory',
@@ -146,7 +145,6 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   currentIncreaseInventoryIntObj!: IncreaseInventoryInt;
 
   loadingVisible = false;
-  @ViewChild(DxFormComponent) dxForm!: DxFormComponent
 
   @ViewChild('formDirective', {static: false}) formDirective!: FormGroupDirective;
 
@@ -177,48 +175,27 @@ export class IncreaseInventoryComponent implements AfterViewInit {
           obj.createdBy = String(that.user);
         });
         const body = that.increaseInvObj();
-        //that.inventoryService.insertInvSerLot(serialLst, body).su
-
-        that.inventoryService
-          .extractTransNum()
-          .subscribe((num: TransNumberRecInt) => {
-            var seq = num.sp_rec;
-
-            serialLst.forEach((obj) => {
-              obj.transnum = Number(seq);
-            });
-
-            body.transNum = Number(seq);
-
-            that.inventoryService
-              .invSerLotApi(serialLst)
-              .subscribe((obj1: any) => {
-                that.inventoryService
-                  .updateReceiptApi(body)
-                  .subscribe((obj2: any) => {
-                    console.log('Completed');
-                    that.refreshLog();
-                    that.initializeFormData();
-                    that.pmDetails = new pmDetails();
-                    setTimeout(() => {
-                      that.loadingVisible = false;
-                      notify(obj2['message'], 'info', 500);
-                    }, 500);
-                  });
-              });
-          });
-
-        /*    .subscribe((res: any) => {
+        that.loadingVisible = false;
+        that.inventoryService.insertInvSerLot(serialLst, body).subscribe(() => {
+          setTimeout(() => {
             that.refreshLog();
+            that.formDirective.resetForm();
+            that.myForm.reset();
             that.initializeFormData();
             that.pmDetails = new pmDetails();
-            // that.varPmSearch.search();
-            // that.varInvStatus.search();
-            setTimeout(() => {
-              that.loadingVisible = false;
-              notify(res["message"], "info", 500);
-            }, 2000);
-          });*/
+            that.loadingVisible = false;
+            notify('Successfully Saved', 'info', 500);
+          }, 500);
+        });
+      },
+    };
+
+    this.emailButtonOptions = {
+      text: 'Cancel and Exit',
+      onClick(e: any) {
+        //that.initializeFormData();
+        //that.pmDetails = new pmDetails();
+        that.popupVisible = false;
       },
     };
   }
@@ -548,4 +525,16 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   }
 
   ngOnDestroy() {}
+
+  private focusOnItemNumber() {
+    setTimeout(() => {
+      (<HTMLInputElement>document.getElementsByName('itemnumber')[0]).value =
+        '';
+      document.getElementsByName('itemnumber')[0].focus();
+    }, 0);
+  }
+
+  isValid(c: AbstractControl) {
+    return !(c.invalid && (c.dirty || c.touched));
+  }
 }
