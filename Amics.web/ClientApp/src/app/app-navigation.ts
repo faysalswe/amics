@@ -34,12 +34,12 @@ export const navigation = [
         title: 'Inquiry',
         type: ComponentType.Inquiry
       },
-      {
-        text: 'Serial Documents',
-        path: '/serialDocuments',
-        title: 'Serial Documents',
-        type: ComponentType.SerialDocuments
-      },
+      // {
+      //   text: 'Serial Documents',
+      //   path: '/serialDocuments',
+      //   title: 'Serial Documents',
+      //   type: ComponentType.SerialDocuments
+      // },
       {
         text: 'Change Serial',
         path: '/changeSerial',
