@@ -1,5 +1,7 @@
-import { AfterContentInit, AfterViewInit, Component, Input, OnInit } from "@angular/core";
+import { ThisReceiver } from "@angular/compiler";
+import { Component, Input, OnInit, AfterViewInit } from "@angular/core";
 import { ComponentType } from "src/app/pages/models/componentType";
+import { CRUD } from "src/app/pages/models/pmChildType";
 import { pmSearch, pmItemSearchResult } from "src/app/pages/models/pmsearch";
 import { ItemClass, ItemCode, ItemType } from "src/app/pages/models/searchModels";
 import { SearchService } from "src/app/pages/services/search.service";
@@ -24,7 +26,7 @@ export class PMSearchComponent implements OnInit, AfterViewInit {
     itemClassList: ItemClass[] = [];
     itemCodeList: ItemCode[] = [];
     itemTypeList: ItemType[] = [];
-
+    disabled = false;
     selectedItem: any;
     selectedItemNumber: string = '';
     constructor(private searchService: SearchService, private pmDataTransService: PartMasterDataTransService) {
@@ -49,6 +51,25 @@ export class PMSearchComponent implements OnInit, AfterViewInit {
             this.itemTypeList = l;
         })
 
+        this.pmDataTransService.selectedCRUD$.subscribe(crud => {
+            if (crud === CRUD.Add || crud === CRUD.Edit && this.componentType === ComponentType.PartMaster) {
+
+                this.disabled = true;
+            }
+            else {
+                this.disabled = false;
+                if (crud === CRUD.Cancel) {
+                    if (!!this.selectedItem) {
+                        this.selectedItemNumber = this.selectedItem.itemNumber;
+                        this.pmDataTransService.selectedItemChanged(this.selectedItem, this.componentType);
+                    }
+                }
+                else if (crud === CRUD.DoneDelete) {
+                    this.search();
+                }
+            }
+        });
+
     }
 
 
@@ -69,9 +90,9 @@ export class PMSearchComponent implements OnInit, AfterViewInit {
     }
     onSelectionChanged(e: any) {
         console.log(e);
-        this.selectedItem = e.addedItems[0];
-        console.log(this.selectedItem);
-        if (!!this.selectedItem) {
+        if (!!e.addedItems[0]) {
+            this.selectedItem = e.addedItems[0];
+            console.log(this.selectedItem);
             this.selectedItemNumber = this.selectedItem.itemNumber;
             this.pmDataTransService.selectedItemChanged(this.selectedItem, this.componentType);
         }

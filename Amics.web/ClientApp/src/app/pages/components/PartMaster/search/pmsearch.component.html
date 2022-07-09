@@ -2,7 +2,7 @@
 
 <div class="search-container content-block dx-card responsive-paddings">
     <div class="pmsearch-container ">
-        <form action="your-action" (submit)="handleSubmit($event)">
+        <form   (submit)="handleSubmit($event)">
             <dx-form [(formData)]="pmsearchInfo" [colCount]="1" labelMode="floating" labelLocation="left">
                 <dxi-item itemType="group" verticalAlignment="">
                     <dxi-item dataField="itemnumber"  [label]="{text:'Part Number'}"></dxi-item>
@@ -30,7 +30,7 @@
       <div style="height: calc(100vh - 480px); float: left; margin: 0px; padding: 0px; ">
         <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
                  selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="100vh" [focusStateEnabled]="true"
-                 (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom"
+                 (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom" [(disabled)]="disabled"
                  (keyDown)="onSelectionChanged($event)">
           <div *dxTemplate="let item of 'item'">
             <div>

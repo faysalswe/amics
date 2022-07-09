@@ -13,6 +13,7 @@ export class PartMasterDataTransService {
     constructor(private pmService: PartMasterService) { }
 
     private itemSelectedSubjectForPMScreen$ = new Subject<pmItemSearchResult>();
+    public itemSelectedSubjectForBomGrid$ = new Subject<pmItemSearchResult>();
     private itemSelectedSubjectForIncInvScreen$ = new Subject<pmItemSearchResult>();
     public itemSelectedChild$ = new Subject<PmChildType>();
     public selectedCRUD$ = new Subject<CRUD>();
@@ -23,13 +24,17 @@ export class PartMasterDataTransService {
     selectedItemChanged(selectedProductId: pmItemSearchResult, componentType: ComponentType): void {
         if (componentType === ComponentType.PartMaster) {
             if (!!selectedProductId) {
-                this.itemSelectedSubjectForPMScreen$.next(selectedProductId);
-                //  this.selectedCRUD$.next(CRUD.Edit);
+                this.itemSelectedSubjectForPMScreen$.next(selectedProductId);                
             }
         }
         else if (componentType === ComponentType.IncreaseInventory) {
             if (!!selectedProductId) {
                 this.itemSelectedSubjectForIncInvScreen$.next(selectedProductId);
+            }
+        }
+        else if (componentType === ComponentType.PartMasterF2) {
+            if (!!selectedProductId) {
+                this.itemSelectedSubjectForBomGrid$.next(selectedProductId);
             }
         }
     }

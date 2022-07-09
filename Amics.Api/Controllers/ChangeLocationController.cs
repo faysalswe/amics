@@ -50,46 +50,31 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Route Controller to get Change Location view details for Serial
+        /// API Route Controller to get Change Location view details for Serial/Basic
         /// </summary>
         /// <param name="somain">SO Main</param>   
         /// <param name="itemnumber">Item Number</param>   
         /// <param name="userId">User Id</param>   
         /// <param name="soLinesId">SO Lines Id</param>           
-        [HttpGet, Route("ChangeLocViewSerial")]
-        public IList<LstChangeLocSearch> ChangeLocViewSerial([FromQuery] string somain, [FromQuery] string itemnumber, [FromQuery] string userId, [FromQuery] string soLinesId)
+        [HttpGet, Route("ChangeLocViewDetails")]
+        public IList<LstChangeLocSearch> ChangeLocViewDetails([FromQuery] string somain, [FromQuery] string itemnumber, [FromQuery] string userId, [FromQuery] string soLinesId, [FromQuery] string invType)
         {
-            var vwChgLocViewResult = _changeLocService.ChangeLocationSerialView(somain, itemnumber, userId, soLinesId);
+            var vwChgLocViewResult = _changeLocService.ChangeLocViewDetails(somain, itemnumber, userId, soLinesId,invType);
 
             return vwChgLocViewResult;
         }
-
-        /// <summary>
-        /// API Route Controller to get Change Location view details for Basic
-        /// </summary>
-        /// <param name="somain">SO Main</param>   
-        /// <param name="itemnumber">Item Number</param>   
-        /// <param name="userId">User Id</param>   
-        /// <param name="soLinesId">SO Lines Id</param>           
-        [HttpGet, Route("ChangeLocViewBasic")]
-        public IList<LstChangeLocSearch> ChangeLocViewBasic([FromQuery] string somain, [FromQuery] string itemnumber, [FromQuery] string userId, [FromQuery] string soLinesId)
-        {
-            var vwChgLocViewResult = _changeLocService.ChangeLocationBasicView(somain, itemnumber, userId, soLinesId);
-
-            return vwChgLocViewResult;
-        }
-
+              
         /// <summary>
         /// API Route Controller to check pick items exist in inv_transfer_location table and also checks available quantity 
         /// from inv_serial/inv_basic table, update invserialid/invbasicid, transqty, solinesid details into inv_transfer_location table
         /// </summary>
         /// <param name="LstChgLocTransItems">LstChgLocTransItems</param>                  
         [HttpPost, Route("UpdateInvTransLoc")]
-        public string UpdateTransloc([FromBody] List<LstChgLocTransItems> lstchgloc)
+        public LstMessage UpdateTransloc([FromBody] List<LstChgLocTransItems> lstchgloc)
         {          
             var translocResult = _changeLocService.UpdateInvTransLocation(lstchgloc);
 
-            return translocResult;
+            return new LstMessage() { Message = translocResult };
         }
 
         /// <summary>
@@ -103,10 +88,10 @@ namespace Amics.Api.Controllers
         /// <param name="userName">UserName</param>   
         /// <param name="toWarehouse">To Warehouse</param>   
         /// <param name="toLocation">To Location</param>           
-        [HttpGet, Route("UpdateChangeLoc")]
-        public LstMessage UpdateChangeLoc([FromQuery] string userName, [FromQuery] string toWarehouse, [FromQuery] string toLocation)
+        [HttpPost, Route("UpdateChangeLoc")]
+        public LstMessage UpdateChangeLoc([FromBody] UpdateChangeLocItem updateChangeLoc)
         {
-            var updChangeLocResult = _changeLocService.UpdateChangeLocation(userName, toWarehouse, toLocation);
+            var updChangeLocResult = _changeLocService.UpdateChangeLocation(updateChangeLoc.UserName, updateChangeLoc.ToWarehouse, updateChangeLoc.ToLocation);
 
             return updChangeLocResult;
         }
@@ -115,12 +100,17 @@ namespace Amics.Api.Controllers
         /// API Route Controller to clear the data in the table inv_transfer_location when page load.
         /// </summary>
         /// <param name="userName">UserName</param>                   
-        [HttpGet, Route("DeleteInvTransLoc")]
-        public LstMessage DeleteInvTransLoc([FromQuery] string userName)
+        [HttpPost, Route("DeleteInvTransLoc")]
+        public LstMessage DeleteInvTransLoc([FromBody] UserInfo User)
         {
-            var delTransLocResult = _changeLocService.DeleteInvTransferLoc(userName);
+            var delTransLocResult = _changeLocService.DeleteInvTransferLoc(User.UserName);
 
             return delTransLocResult;
         }
+    }
+
+    public class UserInfo
+    {
+        public string UserName { get; set; }
     }
 }

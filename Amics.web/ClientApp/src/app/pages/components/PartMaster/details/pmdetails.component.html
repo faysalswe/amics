@@ -101,19 +101,20 @@
         <ng-container *ngSwitchCase="childType.BOM">
             <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="itemNumber" height="52vh"
                 [focusedRowEnabled]="true" [allowColumnResizing]="true" [allowColumnReordering]="true"
-                [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true" (onKeyDown)="onKeyDown($event)"
-                (onEditingStart)="logEvent('EditingStart')" (onInitNewRow)="logEvent('InitNewRow')"
-                (onRowInserting)="logEvent('RowInserting')" (onRowInserted)="rowInserted($event)"
-                (onRowUpdating)="rowUpdated($event)" (onRowUpdated)="logEvent('RowUpdated')"
-                (onRowRemoving)="logEvent('RowRemoving')" (onRowRemoved)="rowRemoved($event)"
-                (onSaving)="onSaving($event)" (onSaved)="logEvent('Saved')"
-                (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')">
+                [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true"
+                (onKeyDown)="onKeyDown($event)" (onEditingStart)="logEvent('EditingStart')"
+                (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
+                (onRowInserted)="rowInserted($event)" (onRowUpdating)="rowUpdated($event)"
+                (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')"
+                (onRowRemoved)="rowRemoved($event)" (onSaving)="onSaving($event)" (onSaved)="logEvent('Saved')"
+                (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')"
+                (onSelectionChanged)="selectedChanged($event)">
                 <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true">
                 </dxo-row-dragging>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
                 <dxo-editing mode="row" [allowUpdating]="!this.readOnly" [allowDeleting]="!this.readOnly"
-                    [allowAdding]="!this.readOnly">
+                    [allowAdding]="!this.readOnly" newRowPosition="last">
                 </dxo-editing>
 
                 <dxi-column dataField="lineNum" dataType="number" [allowEditing]="false"></dxi-column>
@@ -178,7 +179,7 @@
             [(visible)]="popupF2Visible">
             <br />
 
-            <app-pmsearch [componentType]="componentType"></app-pmsearch>
+            <app-pmsearch [componentType]="componentTypeF2"></app-pmsearch>
             <dxo-position at="center" my="center"> </dxo-position>
         </dx-popup>
     </div>
