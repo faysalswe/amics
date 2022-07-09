@@ -41,6 +41,7 @@ import { Employee, HomeService } from '../../services/home.service';
 import { TransNumberRecInt } from '../../../shared/models/rest.api.interface.model';
 import { DuplicateSerTagCheck } from 'src/app/shared/validator/duplicate.sertag.validator';
 import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplicate.sertag.msg.service';
+import { ValidationService } from 'src/app/shared/services/validation.service';
 
 @Component({
   selector: 'app-increase-inventory',
@@ -157,7 +158,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
     private datePipe: DatePipe,
     private authService: AuthService,
     public dupsertagerrormsg: DuplicateSerTagErrorMsgService,
-    public httpService: HttpClient
+    public validationService: ValidationService
   ) {
     this.labelMap = LabelMap;
     this.optionIdMap = OptionIdMap;
@@ -269,7 +270,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
           DuplicateSerTagCheck.validate(
             this.serialInvDetForms,
             this.dupsertagerrormsg,
-            this.httpService,
+            this.validationService,
             this.itemsId,
             'SERIAL'
           ),
@@ -279,7 +280,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
           DuplicateSerTagCheck.validate(
             this.serialInvDetForms,
             this.dupsertagerrormsg,
-            this.httpService,
+            this.validationService,
             this.itemsId,
             'TAG'
           ),

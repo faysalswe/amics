@@ -42,6 +42,7 @@ import { TransNumberRecInt } from '../../../shared/models/rest.api.interface.mod
 import dxForm from 'devextreme/ui/form';
 import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplicate.sertag.msg.service';
 import { DuplicateSerTagCheck } from 'src/app/shared/validator/duplicate.sertag.validator';
+import { ValidationService } from 'src/app/shared/services/validation.service';
 
 @Component({
   selector: 'app-decrease-inventory',
@@ -158,7 +159,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
     private datePipe: DatePipe,
     private authService: AuthService,
     public dupsertagerrormsg: DuplicateSerTagErrorMsgService,
-    public httpService: HttpClient
+    public validationService: ValidationService
   ) {
     this.labelMap = LabelMap;
     this.optionIdMap = OptionIdMap;
@@ -270,7 +271,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
           DuplicateSerTagCheck.validate(
             this.serialInvDetForms,
             this.dupsertagerrormsg,
-            this.httpService,
+            this.validationService,
             this.itemsId,
             'SERIAL'
           ),
@@ -280,7 +281,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
           DuplicateSerTagCheck.validate(
             this.serialInvDetForms,
             this.dupsertagerrormsg,
-            this.httpService,
+            this.validationService,
             this.itemsId,
             'TAG'
           ),
@@ -356,7 +357,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       this.loadingVisible = false;
     });
 
-    this.pmdataTransfer.selectedItemForInvDetails$.subscribe((item) => {
+    this.pmdataTransfer.selectedItemForDecInvDetails$.subscribe((item) => {
       this.focusAdjustQuantity();
       this.er = '';
       // this.initializeFormData();

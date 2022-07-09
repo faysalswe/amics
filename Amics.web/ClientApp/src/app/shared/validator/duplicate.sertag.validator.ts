@@ -10,13 +10,14 @@ import {
 import { map, tap } from 'rxjs';
 import { DuplicateSerTagErrorMsgService } from './duplicate.sertag.msg.service';
 import { SerTagValidateInt } from '../models/rest.api.interface.model';
+import { ValidationService } from '../services/validation.service';
 
 export class DuplicateSerTagCheck {
   constructor(private elementRef: ElementRef) {}
   static validate(
     controls: FormArray,
     dupsertagerrormsg: DuplicateSerTagErrorMsgService,
-    httpClient: HttpClient,
+    validationService: ValidationService,
     itemsid: string,
     sertag: string
   ): ValidatorFn {
@@ -40,18 +41,11 @@ export class DuplicateSerTagCheck {
             control
           );
         } else {
-          var param = {
-            itemsid: itemsid,
-            sertag: control.value,
-            option: sertag === 'SERIAL' ? 'SERIAL' : 'TAG',
-          };
-
-          httpClient
-            .get<SerTagValidateInt>(
-              'https://localhost:44327/api/Inventory/ValidateSerTag',
-              {
-                params: param,
-              }
+          validationService
+            .validateSerTag(
+              itemsid,
+              control.value,
+              sertag === 'SERIAL' ? 'SERIAL' : 'TAG'
             )
             .pipe(
               tap((obj) => console.log(obj)),
@@ -83,22 +77,27 @@ export class DuplicateSerTagCheck {
     c: AbstractControl
   ) {
     console.log('Duplicate Found');
-    if (finalVals[0]?.value != null && finalVals[0]?.value != ''){
-      dupsertagerrormsg.add(`Found Duplicate in client - ${finalVals[0]?.value}`);
+    if (finalVals[0]?.value != null && finalVals[0]?.value != '') {
+      dupsertagerrormsg.add(
+        `Found Duplicate in client - ${finalVals[0]?.value}`
+      );
       if (sertag === 'SERIAL') {
         setTimeout(() => {
-          document.getElementById(c.parent?.get('serElementId')?.value)?.focus();
+          document
+            .getElementById(c.parent?.get('serElementId')?.value)
+            ?.focus();
         }, 0);
       }
-  
+
       if (sertag === 'TAG') {
         setTimeout(() => {
-          document.getElementById(c.parent?.get('tagElementId')?.value)?.focus();
+          document
+            .getElementById(c.parent?.get('tagElementId')?.value)
+            ?.focus();
         }, 0);
       }
-  
+
       c.setValue(null);
     }
-    
   }
 }
