@@ -71,6 +71,18 @@ namespace Aims.PartMaster.Services
         /// </summary>        
         /// <param name="ValidateSerTag">InputValidateSerTag</param> 
         public OutValidateSerTag ValidateSerTag(InputValidateSerTag ValidateSerTag);
+        /// <summary>
+        ///Interface for Insert the decrease values into the inv_trans table
+        /// </summary>   
+
+        public LstMessage InsertInvTrans(List<InvTrans> InvTransData);
+
+
+        /// <summary>
+        ///Interface for execute the inv pick sp for decrease the inventory
+        /// </summary> 
+        public LstMessage ExecuteSpPick(SpPick Pick);
+
     }
     public class InventoryService : IInventoryService
     {
@@ -235,6 +247,87 @@ namespace Aims.PartMaster.Services
 
             return validateSerTag;
         }
+
+
+        public LstMessage InsertInvTrans(List<InvTrans> InvTransData)
+        {
+            for (int i = 0; i < InvTransData.Count; i++)
+            {
+                InvTrans invTrans = InvTransData[i];
+                var sql = $"exec sp_webapi_insert_inv_serlot @TransNum={invTrans.TransNum}";
+               
+                if (invTrans.InvBasicId != null)
+                    sql += $",@InvBasicId='{invTrans.InvBasicId}'";
+
+                if (invTrans.InvSerialId != null)
+                    sql += $",@InvSerialId='{invTrans.InvSerialId}'";
+
+                if (invTrans.ItemsId != null)
+                    sql += $",@ItemsId='{invTrans.ItemsId}'";
+
+                if (invTrans.FromLocationId != null)
+                    sql += $",@FromLocationId='{invTrans.FromLocationId}'";
+
+                if (invTrans.ToLocationId != null)
+                    sql += $",@ToLocationId='{invTrans.ToLocationId}'";
+
+                //if (invTrans.TransQty != null)
+                    sql += $",@TransQty='{invTrans.TransQty}'";
+
+                if (invTrans.BoxNum != null)
+                    sql += $",@BoxNum='{invTrans.BoxNum}'";
+                 
+                sql += $",@Createdby='{invTrans.CreatedBy}'";               
+            
+                var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
+            }
+
+            return new LstMessage() { Message = "Successfully Saved" };
+
+        }
+
+
+        /// <summary>
+        /// API Service for execute receipt stored procedure and increase the quantity.
+        /// </summary>   
+
+        public LstMessage ExecuteSpPick(SpPick Pick)
+        {
+
+            var sql = "";
+            
+            //InvReceipts.SourcesRefId == null ? Guid.Empty : InvReceipts.SourcesRefId;
+            //var recExtedId = InvReceipts.ExtendedId == null ? Guid.Empty : InvReceipts.ExtendedId;
+
+            //var sql = $"exec sp_receipts_R5 @rec_sourcesrefid='{sourcesRefId}'";
+            //sql += $",@rec_extedid='{recExtedId}'";
+            //sql += $",@rec_source='{InvReceipts.Source}'";
+            //sql += $",@rec_warehouse='{InvReceipts.Warehouse}'";
+            //sql += $",@rec_location='{InvReceipts.Location}'";
+            //sql += $",@rec_item='{InvReceipts.ItemNumber}'";
+            //sql += $",@rec_rev='{InvReceipts.Rev}'";
+            //sql += $",@rec_cost={InvReceipts.Cost}";
+            //sql += $",@rec_quantity={InvReceipts.Quantity}";
+            //sql += $",@rec_misc_reason='{InvReceipts.MiscReason}'";
+            //sql += $",@rec_misc_ref='{InvReceipts.MiscRef}'";
+            //sql += $",@rec_misc_source='{InvReceipts.MiscSource}'";
+            //sql += $",@rec_notes='{InvReceipts.Notes}'";
+            //sql += $",@rec_transdate='{InvReceipts.TransDate}'";
+            //sql += $",@rec_user='{InvReceipts.User1}'";
+            //sql += $",@rec_transnum='{InvReceipts.TransNum}'";
+            //sql += $",@potype='{InvReceipts.PoType}'";
+            //sql += $",@rec_account='{InvReceipts.RecAccount}'";
+            //sql += $",@rec_packlist='{InvReceipts.RecPackList}'";
+            //sql += $",@lic_plate_flag={InvReceipts.LicPlatFlage}";
+            //sql += $",@rec_receiver={InvReceipts.ReceiverNum}";
+            //sql += $",@user2='{InvReceipts.User2}'";
+
+
+            var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
+            return receiptResult;
+        }
+
+
 
     }
 }

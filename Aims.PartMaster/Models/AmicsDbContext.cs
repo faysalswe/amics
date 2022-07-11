@@ -59,6 +59,9 @@ namespace Aims.Core.Models
             modelBuilder.Entity<TransNextNum>().HasNoKey();
             modelBuilder.Entity<InvSerLot>().HasNoKey();
 
+            modelBuilder.Entity<InvTrans>().HasNoKey();
+            modelBuilder.Entity<SpPick>().HasNoKey();
+
 
             modelBuilder.Entity<InvReceipts>().HasNoKey();
             modelBuilder.Entity<TransNextNum>().HasNoKey();
