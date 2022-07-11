@@ -254,7 +254,7 @@ namespace Aims.PartMaster.Services
             for (int i = 0; i < InvTransData.Count; i++)
             {
                 InvTrans invTrans = InvTransData[i];
-                var sql = $"exec sp_webapi_insert_inv_serlot @TransNum={invTrans.TransNum}";
+                var sql = $"exec sp_webapi_insert_inv_trans @TransNum={invTrans.TransNum}";
                
                 if (invTrans.InvBasicId != null)
                     sql += $",@InvBasicId='{invTrans.InvBasicId}'";
