@@ -19,16 +19,17 @@ namespace Aims.Core.Services
         List<LstItemsPO> LoadItemsPO(string parentId);
         LstBomCount ItemsBomCount(string parentId);
         Task<List<string>> ItemNumDelete(string itemNo, string rev);
-        Task<LstMessage> ItemNumDetailsAddUpdateAsync(LstItemDetails item); 
+        Task<LstMessage> ItemNumDetailsAddUpdateAsync(LstItemDetails item);
         List<LstViewLocation> ViewLocationWarehouse(string itemsId, string secUsersId, string warehouse);
         Task<LstMessage> BomGridDetailsUpdation(List<LstBomGridItems> LstBomGridItems);
         List<LstInquiry> InquiryDetails(InquiryRequestDetails request);
         List<LstSerial> ViewSerial(string itemsId, string secUsersId, string warehouse, string serNo, string tagNo);
         List<LstNotes> ViewNotes(string parentId);
         LstMessage NotesUpdation(List<LstNotes> notesLst, string user);
+        string ChangeSerialTag(LstChangeSerial lstChSerial);
     }
 
-    public class PartmasterService: IPartmasterService
+    public class PartmasterService : IPartmasterService
     {
         private readonly AmicsDbContext _amicsDbContext;
         private ILogger<PartmasterService> _logger;
@@ -39,43 +40,33 @@ namespace Aims.Core.Services
         }
 
         /// <summary>
-        /// API Service to get Partmaster details
+        /// API Service to load Partmaster details
         /// </summary>
         /// <param name="itemnumber">itemnumber</param>  
         /// <param name="rev">rev</param>    
         public LstItemDetails LoadPartmaster(string itemNumber, string rev)
-        {            
+        {
             var itemNum = string.IsNullOrEmpty(itemNumber) ? string.Empty : itemNumber;
             var revDef = string.IsNullOrEmpty(rev) ? "-" : rev;
-            
-       
+
+
             LstItemDetails itemDetails = new LstItemDetails();
             Utility util = new Utility();
             string strCurr = string.Empty;
             string strQty = string.Empty;
 
-            //CompanyOptions CompOptions = (CompanyOptions)HttpContext.Current.Session["CompanyOptions"];
-
-            //if (CompOptions != null)
-            //{
-            //    strCurr = util.ReturnZeros(CompOptions.DecimalsinCurrency);
-            //    strQty = util.ReturnZeros(CompOptions.DecimalsinInventory);
-            //}
-            //else
-            //{
-                strCurr = util.ReturnZeros(2);
-                strQty = util.ReturnZeros(2);
-            //}
-
+            strCurr = util.ReturnZeros(2);
+            strQty = util.ReturnZeros(2);
+          
             using (var conn = _amicsDbContext.Database.GetDbConnection())
             using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
             {
                 try
                 {
                     sqlCommand.CommandText = "sp_webservice_load_partmaster5";
-                  
-                    sqlCommand.CommandType = CommandType.StoredProcedure;  
-                    
+
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+
                     sqlCommand.Parameters.Add(new SqlParameter("@item", itemNum));
                     sqlCommand.Parameters.Add(new SqlParameter("@rev", revDef));
 
@@ -108,7 +99,7 @@ namespace Aims.Core.Services
                             itemDetails.Markup = Convert.ToDecimal(dataReader["markup"].ToString());
                         }
                         if ((dataReader["price"] != DBNull.Value) || (dataReader["price"].ToString() != ""))
-                        {                         
+                        {
                             itemDetails.Price = Convert.ToDecimal(String.Format("{0:0." + strCurr + "}", dataReader["price"]));
                         }
                         if ((dataReader["price2"] != DBNull.Value) || (dataReader["price2"].ToString() != ""))
@@ -169,13 +160,13 @@ namespace Aims.Core.Services
 
                         //taa
                         if (dataReader["userbit"] != DBNull.Value)
-                            itemDetails.UserBit = Convert.ToBoolean(dataReader["userbit"]); 
+                            itemDetails.UserBit = Convert.ToBoolean(dataReader["userbit"]);
 
                         //createpo
                         if (dataReader["userbit2"] != DBNull.Value)
                             itemDetails.UserBit2 = Convert.ToBoolean(dataReader["userbit2"]);
 
-                        
+
                         itemDetails.Quantity = Convert.ToDouble(String.Format("{0:0." + strQty + "}", dataReader["quantity"]));
 
                         itemDetails.Notes = dataReader["notes"].ToString().Trim();
@@ -195,7 +186,7 @@ namespace Aims.Core.Services
                         itemDetails.User13 = dataReader["user13"].ToString().Trim();
                         itemDetails.User14 = dataReader["user14"].ToString().Trim();
                         itemDetails.User15 = dataReader["user15"].ToString().Trim();
-                         
+
                     }
                 }
                 catch (Exception ex)
@@ -219,7 +210,7 @@ namespace Aims.Core.Services
         public List<LstItemsBom> LoadItemsBom(string parentId)
         {
             var itemsId = string.IsNullOrEmpty(parentId) ? Guid.Empty : new Guid(parentId.ToString());
-            
+
             var bomItemresult = _amicsDbContext.LstItemsBom
                 .FromSqlRaw($"exec sp_view_items_bom5 @parentid ='{itemsId}'").ToList();
 
@@ -241,7 +232,7 @@ namespace Aims.Core.Services
         }
 
         /// <summary>
-        /// API Service to check whether Item BOM is exist or not in database
+        /// API Service to check whether Item BOM is exist or not in the Items Bom table for Copy to New functionality
         /// </summary>
         /// <param name="parentId">Parent Item Id</param>          
         public LstBomCount ItemsBomCount(string parentId)
@@ -254,17 +245,17 @@ namespace Aims.Core.Services
         }
 
         /// <summary>
-        /// API Service for deletion of Item Num details, column 'flag_delete' is update with 1 in the table 
-        /// list items(item num deleted) if return message is null. Message will appear if item num is used in some other tables, so item num can't delete.
+        /// API Route Controller to update column 'flag_delete' with 1 in the table list items for item number, can not access
+        /// that item number. Item numnber cannot delete if it is used in some other tables.
         /// </summary>
         /// <param name="itemNo">Item Number</param> 
         /// <param name="Rev">Rev</param> 
         public async Task<List<string>> ItemNumDelete(string itemNo, string rev)
         {
-            var itemNum = string.IsNullOrEmpty(itemNo) ? string.Empty : itemNo;            
+            var itemNum = string.IsNullOrEmpty(itemNo) ? string.Empty : itemNo;
             var revDef = string.IsNullOrEmpty(rev) ? "-" : rev;
             List<string> messages = new List<string>();
-          
+
             using (var conn = _amicsDbContext.Database.GetDbConnection())
             using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
             {
@@ -290,14 +281,15 @@ namespace Aims.Core.Services
                 finally
                 {
                     conn.Close();
-                }               
-             }
+                }
+            }
             return messages;
         }
 
         /// <summary>
         /// API Service for Add/Update of Item details
-        /// Insert/Update the Item details from the Parent form into list_items table. If id is null, data will be added in the table. Data will be updated if id is not null. 
+        /// Insert/Update the Item details from the Parent form into list_items table. If id is null, data will be added in the table. 
+        /// Data will be updated if id is not null. 
         /// </summary>
         /// <param name="LstItemDetails">Item Details</param>         
         public async Task<LstMessage> ItemNumDetailsAddUpdateAsync(LstItemDetails item)
@@ -308,10 +300,10 @@ namespace Aims.Core.Services
             else
                 actionFlag = 2;
 
-            var itemsid = (string.IsNullOrEmpty(item.Id)) ? Guid.Empty.ToString() : item.Id;          
+            var itemsid = (string.IsNullOrEmpty(item.Id)) ? Guid.Empty.ToString() : item.Id;
             var uomid = (item.Uomid == null || item.Uomid == Guid.Empty) ? Guid.Empty : item.Uomid;
             var revDef = string.IsNullOrEmpty(item.Rev) ? "-" : item.Rev;
-            using (var conn = _amicsDbContext.Database.GetDbConnection())          
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
             using (var command = _amicsDbContext.Database.GetDbConnection().CreateCommand())
             {
                 command.CommandText = "sp_maintain_partmaster25";
@@ -333,7 +325,7 @@ namespace Aims.Core.Services
                 command.Parameters.Add(new SqlParameter("@markup", item.Markup));
                 command.Parameters.Add(new SqlParameter("@price", item.Price));
                 command.Parameters.Add(new SqlParameter("@price2", item.Price2));
-                command.Parameters.Add(new SqlParameter("@price3", item.Price3));             
+                command.Parameters.Add(new SqlParameter("@price3", item.Price3));
                 command.Parameters.Add(new SqlParameter("@leadtime", item.LeadTime));
                 command.Parameters.Add(new SqlParameter("@weight", item.Weight));
                 command.Parameters.Add(new SqlParameter("@uomid", uomid));
@@ -366,12 +358,12 @@ namespace Aims.Core.Services
                 returnValue.Direction = System.Data.ParameterDirection.ReturnValue;
                 command.Parameters.Add(returnValue);
                 await command.ExecuteNonQueryAsync();
-                await  command.DisposeAsync();
+                await command.DisposeAsync();
 
                 var command2 = _amicsDbContext.Database.GetDbConnection().CreateCommand();
                 command2.CommandText = "select id from list_items where itemnumber='" + item.ItemNumber + "' and rev='" + item.Rev + "'";
                 var dataReader = command2.ExecuteReader();
-                var itemId ="";
+                var itemId = "";
                 if (dataReader.Read())
                 {
                     itemId = dataReader["id"].ToString();
@@ -380,7 +372,7 @@ namespace Aims.Core.Services
                 var hasRows = dataReader.Read();
                 conn.Close();
                 return new LstMessage() { Message = itemId };
-            }           
+            }
 
         }
 
@@ -400,7 +392,7 @@ namespace Aims.Core.Services
                         command.CommandType = CommandType.StoredProcedure;
                         conn.Open();
                         try
-                        {                       
+                        {
                             command.Parameters.Add(new SqlParameter("@actionflag", itemsBOM[i].ActionFlag));
                             command.Parameters.Add(new SqlParameter("@itemsid_parent", itemsBOM[i].Parent_ItemsId));
                             command.Parameters.Add(new SqlParameter("@itemsid_child", itemsBOM[i].Child_ItemsId));
@@ -413,7 +405,7 @@ namespace Aims.Core.Services
                             if (itemsId != Guid.Empty)
                                 command.Parameters.Add(new SqlParameter("@id", itemsBOM[i].Id));
                             await command.ExecuteNonQueryAsync();
-                            command.Dispose();                      
+                            command.Dispose();
                         }
                         catch (Exception ex)
                         {
@@ -425,13 +417,13 @@ namespace Aims.Core.Services
                         }
                     }
 
-                   
+
                 }
             }
             return new LstMessage() { Message = "Successfully Saved" };
         }
 
-        
+
         /// <summary>
         /// API Service to get location, somain, quantity & name details for given Warehouse
         /// </summary>
@@ -442,15 +434,17 @@ namespace Aims.Core.Services
         {
             var itmId = string.IsNullOrEmpty(itemsId) ? string.Empty : itemsId;
             var usersId = string.IsNullOrEmpty(secUsersId) ? string.Empty : secUsersId;
-            if (string.IsNullOrEmpty(warehouse)){
+            if (string.IsNullOrEmpty(warehouse))
+            {
                 var viewLocResult = _amicsDbContext.LstViewLocation.FromSqlRaw($"select * from fn_view_location_summary_essex('{itmId}','{usersId}')").ToList();
                 return viewLocResult;
             }
-            else {
+            else
+            {
                 var viewLocWhResult = _amicsDbContext.LstViewLocationWh.FromSqlRaw($"select * from fn_view_location_summary_whs_essex('{itmId}','{usersId}','{warehouse}')").ToList();
-                var viewLocResult = viewLocWhResult.Any()? viewLocWhResult.Select(r => new LstViewLocation() { Location = r.Location, Warehouse = "", Somain = r.Somain, Name = r.Name, Quantity = r.Quantity }).ToList(): new List<LstViewLocation>();
+                var viewLocResult = viewLocWhResult.Any() ? viewLocWhResult.Select(r => new LstViewLocation() { Location = r.Location, Warehouse = "", Somain = r.Somain, Name = r.Name, Quantity = r.Quantity }).ToList() : new List<LstViewLocation>();
                 return viewLocResult;
-            }         
+            }
         }
 
         /// <summary>
@@ -476,11 +470,11 @@ namespace Aims.Core.Services
                 {
                     Utility util = new Utility();
                     string strCurr = util.ReturnZeros(2);
-                    string strQty =util.ReturnZeros(2);
+                    string strQty = util.ReturnZeros(2);
 
                     sqlCommand.CommandText = "sp_inquiry5";
                     conn.Open();
-                     
+
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.Parameters.Add(new SqlParameter("@part", sp_inquiry.ItemNumber));
                     sqlCommand.Parameters.Add(new SqlParameter("@er", sp_inquiry.ER));
@@ -493,7 +487,7 @@ namespace Aims.Core.Services
                     sqlCommand.Parameters.Add(new SqlParameter("@action", actionFlag));
                     sqlCommand.Parameters.Add(new SqlParameter("@mdatIn", sp_inquiry.MDATIn));
 
-                  
+
                     var dataReader = sqlCommand.ExecuteReader();
 
                     while (dataReader.Read())
@@ -544,7 +538,7 @@ namespace Aims.Core.Services
                             InquiryDetails.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
                             InquiryDetails.Serial = dataReader["serial"].ToString();
                             InquiryDetails.Lotno = dataReader["lotno"].ToString();
-                        }                       
+                        }
 
                         InquiryDetails.Color = "";
                         if (dataReader["mdatin"].ToString() != "")
@@ -558,10 +552,10 @@ namespace Aims.Core.Services
 
                         ItemList.Add(InquiryDetails);
                     }
-                }            
+                }
                 catch (Exception ex)
                 {
-               
+
                 }
                 finally
                 {
@@ -570,7 +564,7 @@ namespace Aims.Core.Services
             }
             return ItemList.ToList();
 
- 
+
         }
 
         /// <summary>
@@ -578,7 +572,7 @@ namespace Aims.Core.Services
         /// </summary>
         /// <param name="itemsId">Items Id</param> 
         /// <param name="secUsersId">Sec_Users Id</param> 
-        public List<LstSerial> ViewSerial(string itemsId, string secUsersId,string warehouse, string serNo, string tagNo)
+        public List<LstSerial> ViewSerial(string itemsId, string secUsersId, string warehouse, string serNo, string tagNo)
         {
             var viewSerialResult = (dynamic)null;
             var itmId = string.IsNullOrEmpty(itemsId) ? string.Empty : itemsId;
@@ -615,7 +609,7 @@ namespace Aims.Core.Services
 
 
         /// <summary>
-        /// API Service to add/update/delete notes for item number
+        /// API Service to add/update/delete notes for parent item number
         /// </summary>
         /// <param name="LstNotes">Notes details</param>        
         /// <param name="user">user</param>        
@@ -634,5 +628,47 @@ namespace Aims.Core.Services
             return notesResult;
         }
 
+
+        /// <summary>
+        /// API Service to update From Serial No/Tag No/Model No/Cost to Serial No/Tag No/Model No/Cost
+        /// </summary>
+        /// <param name="LstChangeSerial">LstChangeSerial</param>                   
+        public string ChangeSerialTag(LstChangeSerial lstChSerial)
+        {
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_process_change_sertag";
+                    conn.Open();
+
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.Parameters.Add(new SqlParameter("@serialid", lstChSerial.SerialId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@serno_prior", lstChSerial.SerNoFm));
+                    sqlCommand.Parameters.Add(new SqlParameter("@serno_current", string.IsNullOrWhiteSpace(lstChSerial.SerNoTo) ? string.Empty : lstChSerial.SerNoTo));
+                    sqlCommand.Parameters.Add(new SqlParameter("@tagno_prior", string.IsNullOrWhiteSpace(lstChSerial.TagNoFm) ? string.Empty : lstChSerial.TagNoFm));
+                    sqlCommand.Parameters.Add(new SqlParameter("@tagno_current", string.IsNullOrWhiteSpace(lstChSerial.TagNoTo) ? string.Empty : lstChSerial.TagNoTo));
+                    sqlCommand.Parameters.Add(new SqlParameter("@memo", lstChSerial.Notes));
+                    sqlCommand.Parameters.Add(new SqlParameter("@createdby", string.IsNullOrWhiteSpace(lstChSerial.User) ? string.Empty : lstChSerial.User));
+                    sqlCommand.Parameters.Add(new SqlParameter("@model_prior", string.IsNullOrWhiteSpace(lstChSerial.ModelFm) ? string.Empty : lstChSerial.ModelFm));
+                    sqlCommand.Parameters.Add(new SqlParameter("@model_current", string.IsNullOrWhiteSpace(lstChSerial.ModelTo) ? string.Empty : lstChSerial.ModelTo));
+                    sqlCommand.Parameters.Add(new SqlParameter("@cost_prior", string.IsNullOrWhiteSpace(lstChSerial.CostFm) ? string.Empty : lstChSerial.CostFm));
+                    sqlCommand.Parameters.Add(new SqlParameter("@cost_current", string.IsNullOrWhiteSpace(lstChSerial.CostTo) ? string.Empty : lstChSerial.CostTo));                    
+                    sqlCommand.ExecuteNonQuery();
+
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return "Successfully Saved";
+
+        }
     }
 }
