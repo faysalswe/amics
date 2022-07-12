@@ -1,44 +1,44 @@
 
 
 <div class="search-container content-block dx-card responsive-paddings">
-    <div class="pmsearch-container ">
-        <form   (submit)="handleSubmit($event)">
-            <dx-form [(formData)]="pmsearchInfo" [colCount]="1" labelMode="floating" labelLocation="left">
-                <dxi-item itemType="group" verticalAlignment="">
-                    <dxi-item dataField="itemnumber"  [label]="{text:'Part Number'}"></dxi-item>
-                    <dxi-item dataField="description"></dxi-item>
-                    <dxi-item dataField="itemtype" editorType="dxLookup"
-                        [editorOptions]="{ label:'MFR',items: itemTypeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemtype', displayExpr:'itemtype', valueExpr:'itemtype', showClearButton:true, searchMode:'contains' }">
-                    </dxi-item>
-                    <dxi-item dataField="itemclass" editorType="dxLookup"
-                        [editorOptions]="{ label:'Item Class',items: itemClassList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemclass', displayExpr:'itemclass', valueExpr:'itemclass', showClearButton:true, searchMode:'contains'  }">
-                    </dxi-item>
-                    <dxi-item dataField="itemcode" editorType="dxLookup"
-                        [editorOptions]="{ label:'Item Code',items: itemCodeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemcode', displayExpr:'itemcode', valueExpr:'itemcode', showClearButton:true, searchMode:'contains'  }">
-                    </dxi-item>
-                </dxi-item>
+  <div class="pmsearch-container ">
+    <form (submit)="handleSubmit($event)">
+      <dx-form [(formData)]="pmsearchInfo" [colCount]="1" labelMode="floating" labelLocation="left">
+        <dxi-item itemType="group" verticalAlignment="">
+          <dxi-item dataField="itemnumber" [label]="{text:'Part Number'}"></dxi-item>
+          <dxi-item dataField="description"></dxi-item>
+          <dxi-item dataField="itemtype" editorType="dxLookup"
+                    [editorOptions]="{ label:'MFR',items: itemTypeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemtype', displayExpr:'itemtype', valueExpr:'itemtype', showClearButton:true, searchMode:'contains' }">
+          </dxi-item>
+          <dxi-item dataField="itemclass" editorType="dxLookup"
+                    [editorOptions]="{ label:'Item Class',items: itemClassList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemclass', displayExpr:'itemclass', valueExpr:'itemclass', showClearButton:true, searchMode:'contains'  }">
+          </dxi-item>
+          <dxi-item dataField="itemcode" editorType="dxLookup"
+                    [editorOptions]="{ label:'Item Code',items: itemCodeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemcode', displayExpr:'itemcode', valueExpr:'itemcode', showClearButton:true, searchMode:'contains'  }">
+          </dxi-item>
+        </dxi-item>
 
-                <dxi-item itemType="button" type="default" stylingMode="contained"
-                    [buttonOptions]="submitButtonOptions">
-                </dxi-item>
-            </dx-form>
-        </form>
-    </div>
-    <br />
-    <div>
+        <dxi-item itemType="button" type="default" stylingMode="contained"
+                  [buttonOptions]="submitButtonOptions">
+        </dxi-item>
+      </dx-form>
+    </form>
+  </div>
+  <br />
+  <div>
 
-      <div style="height: calc(100vh - 480px); float: left; margin: 0px; padding: 0px; ">
-        <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
-                 selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="100vh" [focusStateEnabled]="true"
-                 (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom" [(disabled)]="disabled"
-                 (keyDown)="onSelectionChanged($event)">
-          <div *dxTemplate="let item of 'item'">
-            <div>
-              <div class="name">{{ item.itemNumber}}</div>
-              <div class="description">{{ item.description }}</div>
-            </div>
+    <div style="height: calc(100vh - 480px); float: left; margin: 0px; padding: 0px; ">
+      <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
+               selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="100vh" [focusStateEnabled]="true"
+               (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom" [(disabled)]="disabled"
+               (keyDown)="onSelectionChanged($event)">
+        <div *dxTemplate="let item of 'item'">
+          <div>
+            <div class="name">{{ item.itemNumber}}</div>
+            <div class="description">{{ item.description }}</div>
           </div>
-        </dx-list>
         </div>
-      </div>
+      </dx-list>
     </div>
+  </div>
+</div>

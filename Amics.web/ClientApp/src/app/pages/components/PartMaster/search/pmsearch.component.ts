@@ -1,5 +1,5 @@
 import { ThisReceiver } from "@angular/compiler";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, AfterViewInit } from "@angular/core";
 import { ComponentType } from "src/app/pages/models/componentType";
 import { CRUD } from "src/app/pages/models/pmChildType";
 import { pmSearch, pmItemSearchResult } from "src/app/pages/models/pmsearch";
@@ -13,7 +13,7 @@ import { PartMasterDataTransService } from "../../../services/pmdatatransfer.ser
     templateUrl: "./pmsearch.component.html",
     styleUrls: ['./pmsearch.component.scss']
 })
-export class PMSearchComponent implements OnInit {
+export class PMSearchComponent implements OnInit, AfterViewInit {
     @Input() componentType: ComponentType = ComponentType.PartMaster;
     pmsearchInfo: pmSearch = new pmSearch();
     pmSearchResults: pmItemSearchResult[] = [];
@@ -32,6 +32,10 @@ export class PMSearchComponent implements OnInit {
     constructor(private searchService: SearchService, private pmDataTransService: PartMasterDataTransService) {
         this.search();
     }
+    ngAfterViewInit(): void {
+        this.focusOnItemNumber();
+    }
+    
 
 
     ngOnInit(): void {
@@ -77,11 +81,11 @@ export class PMSearchComponent implements OnInit {
     search() {
         this.searchService.getItemNumberSearchResults(this.pmsearchInfo).subscribe(r => {
             this.pmSearchResults = r;
-            if (this.pmSearchResults.length !== 0) {
+            /* if (this.pmSearchResults.length !== 0) {
                 this.pmDataTransService.selectedItemChanged(this.pmSearchResults[0], this.componentType);
                 this.selectedItem = this.pmSearchResults[0];
                 this.selectedItemNumber = this.selectedItem.itemNumber;
-            }
+            } */
         });
     }
     onSelectionChanged(e: any) {
@@ -93,4 +97,12 @@ export class PMSearchComponent implements OnInit {
             this.pmDataTransService.selectedItemChanged(this.selectedItem, this.componentType);
         }
     }
+
+    private focusOnItemNumber() {
+        setTimeout(() => {
+          (<HTMLInputElement>document.getElementsByName('itemnumber')[0]).value =
+            '';
+          document.getElementsByName('itemnumber')[0].focus();
+        }, 0);
+      }
 }

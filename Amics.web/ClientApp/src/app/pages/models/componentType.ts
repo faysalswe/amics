@@ -12,5 +12,6 @@ export enum ComponentType {
   ER = "ER",
   Shipment = "shipment",
   Report2 = "report2",
-  BulkTransfer = "bulkTransfer"
+  BulkTransfer = "bulkTransfer",
+  DecreaseInventory = 'DecreaseInventory',
 }

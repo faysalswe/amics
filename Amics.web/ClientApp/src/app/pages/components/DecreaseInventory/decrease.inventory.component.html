@@ -1,0 +1,356 @@
+<dx-load-panel
+  #loadPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: 'window' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+>
+</dx-load-panel>
+
+<dx-responsive-box singleColumnScreen="sm" style="height: 100vh">
+  <dxi-row [ratio]="1"></dxi-row>
+  <dxi-row [ratio]="0.05"></dxi-row>
+  <dxi-col [ratio]="0.75"></dxi-col>
+  <dxi-col [ratio]="3"></dxi-col>
+
+  <dxi-item>
+    <dxi-location [row]="0" [col]="0"></dxi-location>
+    <div *dxTemplate class="left-side-bar item">
+      <app-pmsearch [componentType]="componentType" #varPmSearch></app-pmsearch>
+    </div>
+  </dxi-item>
+
+  <dxi-item>
+    <dxi-location [row]="0" [col]="1"></dxi-location>
+    <div *dxTemplate class="content item">
+      <div class="details-container content-block dx-card responsive-paddings">
+        <div style="border-bottom: 2px solid #eee; padding-bottom: 10px">
+          <app-inventory-status
+            [itemsId]="itemsId"
+            [secUserId]="secUserId"
+          ></app-inventory-status>
+
+          <h3 style="padding-bottom: 0px; margin-bottom: 0px">
+            <span style="color: darkgrey"
+              >PN : {{ pmDetails?.itemNumber }}</span
+            >
+            / {{ pmDetails?.description }}
+          </h3>
+        </div>
+        <br />
+
+        <!-- Form Container starts        -->
+        <div id="form-container">
+          <dx-form
+            id="form"
+            [formGroup]="myForm"
+            [colCount]="4"
+            #formDirective="ngForm"
+          >
+            <!-- Reason Code Starts  -->
+            <dxi-item [colSpan]="1" style="margin-top: 20px">
+              <dx-select-box
+                formControlName="miscReason"
+                width="100%"
+                [items]="reasonsStr"
+                [value]="defaultReason"
+                [searchEnabled]="true"
+                [stylingMode]="'underlined'"
+                [labelMode]="'floating'"
+                placeholder="Search"
+                [ngAddLabel]="labelMap.reasonCode_num"
+                #varReasonCode
+                (onFocusIn)="openReasonCodeBox()"
+                [isValid]="isValid(miscReasonCntl)"
+                [validationError]="{ message: 'Reason Code is required' }"
+              ></dx-select-box>
+            </dxi-item>
+            <!-- Reason Code Ends  -->
+
+            <!-- Transaction Date Starts  -->
+            <dxi-item [colSpan]="1" style="margin-top: 20px">
+              <dx-date-box
+                formControlName="transDate"
+                [value]="todayDate"
+                [ngAddLabel]="labelMap.txnDate_num"
+                placeholder="Select..."
+                [stylingMode]="'underlined'"
+                [labelMode]="'floating'"
+                style="margin-top: 10px"
+                [isValid]="isValid(transDateCntl)"
+                [validationError]="{ message: 'Txn Date is required' }"
+              ></dx-date-box>
+            </dxi-item>
+            <!-- Transaction Date Ends  -->
+
+            <!-- Source Starts  -->
+            <dxi-item [colSpan]="1" style="margin-top: 20px">
+              <dx-text-box
+                formControlName="miscSource"
+                [value]="defaultSource"
+                width="100%"
+                [ngAddLabel]="labelMap.source_num"
+                placeholder="Type..."
+                [stylingMode]="'underlined'"
+                [labelMode]="'floating'"
+              ></dx-text-box>
+
+              <dx-check-box
+                [value]="true"
+                text="Remember"
+                class="mt-1"
+                style="font-size: 10px"
+              ></dx-check-box>
+            </dxi-item>
+            <!-- Source Ends  -->
+
+            <!-- Ref Starts  -->
+            <dxi-item [colSpan]="1" style="margin-top: 20px">
+              <dx-text-box
+                formControlName="miscRef"
+                [value]="defaultRef"
+                width="100%"
+                label="Ref"
+                [ngAddLabel]="labelMap.ref_num"
+                placeholder="Type..."
+                [stylingMode]="'underlined'"
+                [labelMode]="'floating'"
+              ></dx-text-box>
+
+              <dx-check-box
+                [value]="true"
+                text="Remember"
+                class="mt-1"
+                style="font-size: 10px"
+              ></dx-check-box>
+            </dxi-item>
+            <!-- Ref Ends  -->
+
+            <!-- Notes Starts  -->
+            <dxi-item [colSpan]="2">
+              <label>Notes</label>
+              <textarea
+                formControlName="notes"
+                style="width: 100%; height: 40px"
+              ></textarea>
+            </dxi-item>
+            <!-- Notes Ends  -->
+            <dxi-item>
+              <dx-button
+                stylingMode="contained"
+                text="Update"
+                type="default"
+                style="width: 150px; margin-top: 25px"
+                (click)="update()"
+                [disabled]="!myForm.valid"
+              ></dx-button>
+            </dxi-item>
+          </dx-form>
+        </div>
+        <!-- Form Container Ends-->
+      </div>
+
+      <div class="details-container content-block dx-card responsive-paddings">
+        <div class="container">
+          <div class="row">
+            <div class="row p-0" style="display: flex">
+              <span style="flex: 1 1 0"></span>
+
+              <div class="col-2">
+                <dx-date-box
+                  [value]="fromDate"
+                  [ngAddLabel]="labelMap.fromDate_num"
+                  placeholder="From Date"
+                  [stylingMode]="'underlined'"
+                  [labelMode]="'floating'"
+                  style="margin-top: 5px"
+                  (onValueChanged)="fromDatehandler($event)"
+                ></dx-date-box>
+              </div>
+
+              <div class="col-2">
+                <dx-date-box
+                  [value]="toDate"
+                  [ngAddLabel]="labelMap.toDate_num"
+                  placeholder="To Date"
+                  [stylingMode]="'underlined'"
+                  [labelMode]="'floating'"
+                  style="margin-top: 5px"
+                  (onValueChanged)="toDatehandler($event)"
+                ></dx-date-box>
+              </div>
+
+              <div class="col-2">
+                <div
+                  style="margin-top: 17px; font-size: 17px; font-weight: bold"
+                >
+                  <a href="#" (click)="refreshLog()">Refresh Log</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            height: calc(100vh - 530px);
+            float: left;
+            margin: 0px;
+            margin-bottom: 10px;
+            padding: 0px;
+          "
+        >
+          <app-trans-log [data]="trasLogArray"></app-trans-log>
+        </div>
+      </div>
+    </div>
+  </dxi-item>
+</dx-responsive-box>
+
+<dx-popup
+  [width]="650"
+  [height]="550"
+  [showTitle]="true"
+  title="Serial Inventory"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  [(visible)]="popupVisible"
+>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="after"
+    [options]="emailButtonOptions"
+  ></dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="after"
+    [options]="closeButtonOptions"
+  >
+  </dxi-toolbar-item>
+  <dxo-position at="center" my="center" of="window"></dxo-position>
+
+  <div *dxTemplate="let data of 'content'">
+    <app-status></app-status>
+    <div
+      class="row"
+      style="
+        background-color: #eee;
+        padding: 10px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        margin-left: 0px;
+        margin-right: 0px;
+      "
+    >
+      <div class="col">Serial #</div>
+      <div class="col">Tag #</div>
+      <div class="col">Model #</div>
+    </div>
+    <dx-scroll-view width="100%" height="100%">
+      <div id="textBlock" style="margin-top: 10px; margin-bottom: 10px">
+        <form [formGroup]="myForm">
+          <div formArrayName="serialInvDet" class="container">
+            <div
+              *ngFor="let obj of serialInvDetForms.controls; let i = index"
+              [formGroupName]="i"
+              class="row"
+            >
+              <div class="col" style="padding: 1px">
+                <input
+                  formControlName="serNo"
+                  class="form-control"
+                  style="width: 100%"
+                  id="{{ getSerElementIdValue(i) }}"
+                />
+              </div>
+              <div class="col" style="padding: 1px">
+                <input
+                  formControlName="tagNo"
+                  class="form-control"
+                  style="width: 100%"
+                  id="{{ getTagElementIdValue(i) }}"
+                />
+              </div>
+              <div class="col" style="padding: 1px">
+                <input
+                  formControlName="model"
+                  class="form-control"
+                  style="width: 100%"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </dx-scroll-view>
+  </div>
+
+  <!-- <div *dxTemplate="let data of 'content'">
+    <dxi-toolbar-item
+      widget="dxButton"
+      toolbar="bottom"
+      location="before"
+      [options]="closeButtonOptions"
+    >
+    </dxi-toolbar-item>
+
+    <dxi-toolbar-item
+      widget="dxButton"
+      toolbar="bottom"
+      location="after"
+      [options]="emailButtonOptions"
+    ></dxi-toolbar-item>
+    <dxo-position at="center" my="center" of="window"></dxo-position>
+
+    <form [formGroup]="myForm">
+      <div class="row">
+        <div class="col">Serial #</div>
+        <div class="col">Tag #</div>
+        <div class="col">Model #</div>
+      </div>
+      <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+          <div
+            formArrayName="serialInvDet"
+            class="container"
+            style="width: 550px; height: 400px; overflow-y: auto"
+          >
+            <div
+              *ngFor="let obj of serialInvDetForms.controls; let i = index"
+              [formGroupName]="i"
+              class="row"
+            >
+              <div class="col" style="padding: 1px">
+                <input
+                  formControlName="serNo"
+                  class="form-control"
+                  style="width: 100%"
+                  id="{{ getSerElementIdValue(i) }}"
+                />
+              </div>
+              <div class="col" style="padding: 1px">
+                <input
+                  formControlName="tagNo"
+                  class="form-control"
+                  style="width: 100%"
+                  id="{{ getTagElementIdValue(i) }}"
+                />
+              </div>
+              <div class="col" style="padding: 1px">
+                <input
+                  formControlName="model"
+                  class="form-control"
+                  style="width: 100%"
+                />
+              </div>
+            </div>
+          </div>
+        </dx-scroll-view>
+      </div>
+    </form>
+  </div> -->
+</dx-popup>

@@ -39,7 +39,11 @@ export class InventoryService {
     };
     return this.httpClient.get<TransLogInt[]>(`${this.api}/getTransLog`, {
       params: param,
-    });
+    }); 
+
+    /*  return this.httpClient.get<TransLogInt[]>("http://localhost:3000/getTransLog", {
+      params: param,
+    });  */
   }
 
   extractTransNum(): Observable<TransNumberRecInt> {
