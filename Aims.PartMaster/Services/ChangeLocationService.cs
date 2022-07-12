@@ -145,8 +145,9 @@ namespace Aims.Core.Services
             }
             return lstChangeLoc.ToList();
         }
+
         /// <summary>
-        /// API Service to get change location details for Serial
+        /// API Service to change location pick quantity details for Basic/Serial
         /// </summary>
         /// <param name="soMain">SO Main</param>        
         /// <param name="itemnumber">Item Number</param>        
@@ -208,15 +209,12 @@ namespace Aims.Core.Services
             }
             return lstChangeLocSerial.ToList();
         }
-       
+
 
         /// <summary>
         /// API Service to get change location details for Basic
-
         /// </summary>
-        /// <param name="userName">SO Main</param>        
-        /// <param name="toWarehouse">To Warehouse</param>                
-        /// <param name="toLocation">To Location</param>        
+        /// <param name="LstChgLocTransItems">LstChgLocTransItems</param>                
         public string UpdateInvTransLocation(List<LstChgLocTransItems> lstchgloc)
         {
             var id = "";

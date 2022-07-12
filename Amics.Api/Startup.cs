@@ -84,6 +84,7 @@ namespace Amics.Api
             services.AddScoped<IConfigService, ConfigService>();
             services.AddScoped<IChangeLocService, ChangeLocationService>();
             services.AddScoped<IMdatService, MdatService>();
+            services.AddScoped<IBulkTransferService, BulkTransferService>();
 
             services.AddHealthChecks();
             services.AddSession(options =>

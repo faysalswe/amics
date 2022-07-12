@@ -18,6 +18,7 @@ namespace Aims.Core.Models
         public string Shipped_date { get; set; }
         public string Cancelled_date { get; set; }
         public string Createdby { get; set; }
-      
+        public Guid ShippingId { get; set; }
+
     }
 }

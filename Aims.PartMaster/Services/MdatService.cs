@@ -127,16 +127,7 @@ namespace Aims.Core.Services
         /// <summary>
         /// API Service to insert/update/delete Mdat details in the table inv_mdat_out
         /// </summary>
-        /// <param name="actionFlag">ActionFlag</param>  
-        /// <param name="id">Id</param>  
-        /// <param name="mdatNum">Mdat Out Number</param>  
-        /// <param name="somain">Somain</param> 
-        /// <param name="status">status</param> 
-        /// <param name="submittedDate">submittedDate</param>
-        /// <param name="approvedDate">approvedDate</param>
-        /// <param name="shippedDate">shippedDate</param>
-        /// <param name="cancelledDate">cancelledDate</param>
-        /// <param name="createdBy">createdBy</param>       
+        /// <param name="LstMdat">LstMdat</param>          
         public string MdatOutUpdateDetails(LstMdat lstMdatOut)
         {
             string strMsg = "";
@@ -162,6 +153,7 @@ namespace Aims.Core.Services
                     sqlCommand.Parameters.Add(new SqlParameter("@shipped_date", string.IsNullOrWhiteSpace(lstMdatOut.Shipped_date) ? string.Empty : lstMdatOut.Shipped_date));
                     sqlCommand.Parameters.Add(new SqlParameter("@cancelled_date", string.IsNullOrWhiteSpace(lstMdatOut.Cancelled_date) ? string.Empty : lstMdatOut.Cancelled_date));
                     sqlCommand.Parameters.Add(new SqlParameter("@createdBy", string.IsNullOrWhiteSpace(lstMdatOut.Createdby) ? string.Empty : lstMdatOut.Createdby));
+                    sqlCommand.Parameters.Add(new SqlParameter("@shippingId", lstMdatOut.ShippingId));
                     sqlCommand.ExecuteNonQuery();
                     
                     if (lstMdatOut.ActionFlag == 3)
