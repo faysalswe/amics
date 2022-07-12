@@ -122,7 +122,7 @@ export class ChangeLocationComponent {
         this.locViewGridList = r;
         if (r.length !== 0) {
           this.selectedView = r[0];
-          this.selectedInvType = this.selectedView.invType;
+          this.selectedInvType = !!this.selectedView.invType? this.selectedView.invType : "BASIC" ;
           this.getDetails();
         }
       });
@@ -132,7 +132,7 @@ export class ChangeLocationComponent {
   onSelectionChangedView(e: any) {
     console.log(e);
     this.selectedView = e.selectedRowsData[0];
-    this.selectedInvType = this.selectedView.invType;
+    this.selectedInvType =!!this.selectedView.invType? this.selectedView.invType : "BASIC" ;
     console.log(this.selectedView);
     this.getDetails();
   }
