@@ -90,3 +90,14 @@ export interface SerialLotInt {
   createdBy: string
   expDate: string
 }
+
+export interface SerTagValidateInt {
+  itemsid: string
+  serialid: string
+  locationsid: string
+  itemnumber: string
+  rev: string
+  serno: string
+  tagno: string
+}
+

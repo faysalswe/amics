@@ -18,6 +18,7 @@ import {
   DxRadioGroupModule,
   DxRangeSliderModule,
   DxResponsiveBoxModule,
+  DxScrollViewModule,
   DxSelectBoxModule,
   DxSortableModule,
   DxTabPanelModule,
@@ -57,7 +58,8 @@ import {
     DxTabsModule, 
     DxToastModule,
     DxLoadPanelModule,
-    DxValidatorModule
+    DxValidatorModule,
+    DxScrollViewModule
   ],
   exports: [
     DxButtonModule,
@@ -86,7 +88,8 @@ import {
     DxTabsModule, 
     DxToastModule,
     DxLoadPanelModule,
-    DxValidatorModule
+    DxValidatorModule,
+    DxScrollViewModule
   ]
 })
 export class DevExpressModule { }

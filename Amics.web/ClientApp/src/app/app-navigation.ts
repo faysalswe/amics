@@ -23,6 +23,18 @@ export const navigation = [
         type: ComponentType.IncreaseInventory
       },     
       {
+        text: 'Decrease Inventory',
+        path: '/decrease-inventory',
+        title: 'Decrease Inventory',
+        type: ComponentType.DecreaseInventory
+      },
+      {
+        text: 'Adjust Inventory',
+        path: '/adjustInventory',
+        title: 'Adjust Inventory',
+        type: ComponentType.Profile
+      },
+      {
         text: 'Change Location',
         path: '/changeLocation',
         title: 'Change Location',
@@ -34,12 +46,12 @@ export const navigation = [
         title: 'Inquiry',
         type: ComponentType.Inquiry
       },
-      {
-        text: 'Serial Documents',
-        path: '/serialDocuments',
-        title: 'Serial Documents',
-        type: ComponentType.SerialDocuments
-      },
+      // {
+      //   text: 'Serial Documents',
+      //   path: '/serialDocuments',
+      //   title: 'Serial Documents',
+      //   type: ComponentType.SerialDocuments
+      // },
       {
         text: 'Change Serial',
         path: '/changeSerial',
