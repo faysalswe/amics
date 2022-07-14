@@ -144,6 +144,7 @@
                 type="default"
                 style="width: 150px; margin-top: 25px"
                 (click)="update()"
+                [disabled]="!myForm.valid"
               ></dx-button>
             </dxi-item>
           </dx-form>
@@ -209,35 +210,50 @@
 </dx-responsive-box>
 
 <ng-container *ngIf="this.pmDetails.invType == 'SERIAL'">
-  <dx-popup
+<dx-popup
     [width]="850"
-    [height]="550"
-    [showTitle]="true"
+  [height]="550"
+  [showTitle]="true"
     title="Decrease Serial"
-    [dragEnabled]="false"
-    [showCloseButton]="true"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
     [(visible)]="serialPopupVisible"
+>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="after"
+    [options]="emailButtonOptions"
+  ></dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="after"
+    [options]="closeButtonOptions"
   >
-    <dxi-toolbar-item
-      widget="dxButton"
-      toolbar="bottom"
-      location="after"
-      [options]="emailButtonOptions"
-    ></dxi-toolbar-item>
-    <dxi-toolbar-item
-      widget="dxButton"
-      toolbar="bottom"
-      location="after"
-      [options]="closeButtonOptions"
-    >
-    </dxi-toolbar-item>
-    <dxo-position at="center" my="center" of="window"></dxo-position>
+  </dxi-toolbar-item>
+  <dxo-position at="center" my="center" of="window"></dxo-position>
 
-    <div *dxTemplate="let data of 'content'">
-      <app-status></app-status>
-      <dx-scroll-view width="100%" height="100%">
+  <div *dxTemplate="let data of 'content'">
+    <app-status></app-status>
+    <div
+      class="row"
+      style="
+        background-color: #eee;
+        padding: 10px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        margin-left: 0px;
+        margin-right: 0px;
+      "
+    >
+      <div class="col">Serial #</div>
+      <div class="col">Tag #</div>
+      <div class="col">Model #</div>
+    </div>
+    <dx-scroll-view width="100%" height="100%">
         <div id="textBlock" style="margin-top: 3px; margin-bottom: 10px">
-          <form [formGroup]="myForm">
+        <form [formGroup]="myForm">
             <table class="pure-table pure-table-horizontal" style="width: 100%">
               <thead>
                 <tr>
@@ -254,9 +270,10 @@
 
               <tbody formArrayName="serialInvDet">
                 <tr
-                  *ngFor="let obj of serialInvDetForms.controls; let i = index"
-                  [formGroupName]="i"
-                >
+              *ngFor="let obj of serialInvDetForms.controls; let i = index"
+              [formGroupName]="i"
+              class="row"
+            >
                   <td>{{ i + 1 }}</td>
                   <td>{{ obj.get("warehouse")?.value }}</td>
                   <td>{{ obj.get("location")?.value }}</td>
@@ -265,18 +282,18 @@
                   <td>{{ obj.get("model")?.value }}</td>
                   <td>{{ obj.get("cost")?.value }}</td>
                   <td>
-                    <input
+                <input
                       type="checkbox"
                       formControlName="isQuantitySelectedForDecrease"
-                    />
+                />
                   </td>
                 </tr>
               </tbody>
             </table>
-          </form>
-        </div>
-      </dx-scroll-view>
-    </div>
+        </form>
+      </div>
+    </dx-scroll-view>
+  </div>
   </dx-popup>
 </ng-container>
 
@@ -305,9 +322,15 @@
     </dxi-toolbar-item>
     <dxo-position at="center" my="center" of="window"></dxo-position>
 
-    <div *dxTemplate="let data of 'content'">
+    <form [formGroup]="myForm">
+      <div class="row">
+        <div class="col">Serial #</div>
+        <div class="col">Tag #</div>
+        <div class="col">Model #</div>
+      </div>
+      <div *dxTemplate="let data of 'content'">
       <app-status></app-status>
-      <dx-scroll-view width="100%" height="100%">
+        <dx-scroll-view width="100%" height="100%">
         <div id="textBlock" style="margin-top: 3px; margin-bottom: 10px">
           <form [formGroup]="myForm">
             <table class="pure-table pure-table-horizontal" style="width: 100%">
@@ -325,9 +348,10 @@
 
               <tbody formArrayName="serialInvDet">
                 <tr
-                  *ngFor="let obj of serialInvDetForms.controls; let i = index"
-                  [formGroupName]="i"
-                >
+              *ngFor="let obj of serialInvDetForms.controls; let i = index"
+              [formGroupName]="i"
+              class="row"
+            >
                   <td>{{ i + 1 }}</td>
                   <td>{{ obj.get("warehouse")?.value }}</td>
                   <td>{{ obj.get("location")?.value }}</td>
@@ -341,8 +365,10 @@
               </tbody>
             </table>
           </form>
-        </div>
-      </dx-scroll-view>
-    </div>
-  </dx-popup>
+          </div>
+        </dx-scroll-view>
+      </div>
+    </form>
+  </div> -->
+</dx-popup>
 </ng-container>

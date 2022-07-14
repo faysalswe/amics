@@ -1,12 +1,10 @@
-<dx-load-panel
-  #loadPanel
-  shadingColor="rgba(0,0,0,0.4)"
-  [position]="{ of: 'window' }"
-  [(visible)]="loadingVisible"
-  [showIndicator]="true"
-  [showPane]="true"
-  [shading]="true"
->
+<dx-load-panel #loadPanel
+               shadingColor="rgba(0,0,0,0.4)"
+               [position]="{ of: 'window' }"
+               [(visible)]="loadingVisible"
+               [showIndicator]="true"
+               [showPane]="true"
+               [shading]="true">
 </dx-load-panel>
 
 <dx-responsive-box singleColumnScreen="sm" style="height: 100vh">
@@ -27,15 +25,11 @@
     <div *dxTemplate class="content item">
       <div class="details-container content-block dx-card responsive-paddings">
         <div style="border-bottom: 2px solid #eee; padding-bottom: 10px">
-          <app-inventory-status
-            [itemsId]="itemsId"
-            [secUserId]="secUserId"
-          ></app-inventory-status>
+          <app-inventory-status [itemsId]="itemsId"
+                                [secUserId]="secUserId"></app-inventory-status>
 
           <h3 style="padding-bottom: 0px; margin-bottom: 0px">
-            <span style="color: darkgrey"
-              >PN : {{ pmDetails?.itemNumber }}</span
-            >
+            <span style="color: darkgrey">PN : {{ pmDetails?.itemNumber }}</span>
             / {{ pmDetails?.description }}
           </h3>
         </div>
@@ -164,43 +158,35 @@
             <!-- Location Search Ends  -->
             <!-- Source Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-text-box
-                formControlName="miscSource"
-                [value]="defaultSource"
-                width="100%"
-                [ngAddLabel]="labelMap.source_num"
-                placeholder="Type..."
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
-              ></dx-text-box>
+              <dx-text-box formControlName="miscSource"
+                           [value]="defaultSource"
+                           width="100%"
+                           [ngAddLabel]="labelMap.source_num"
+                           placeholder="Type..."
+                           [stylingMode]="'underlined'"
+                           [labelMode]="'floating'"></dx-text-box>
 
-              <dx-check-box
-                [value]="true"
-                text="Remember"
-                class="mt-1"
-                style="font-size: 10px"
-              ></dx-check-box>
+              <dx-check-box [value]="true"
+                            text="Remember"
+                            class="mt-1"
+                            style="font-size: 10px"></dx-check-box>
             </dxi-item>
             <!-- Source Ends  -->
             <!-- Ref Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-text-box
-                formControlName="miscRef"
-                [value]="defaultRef"
-                width="100%"
-                label="Ref"
-                [ngAddLabel]="labelMap.ref_num"
-                placeholder="Type..."
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
-              ></dx-text-box>
+              <dx-text-box formControlName="miscRef"
+                           [value]="defaultRef"
+                           width="100%"
+                           label="Ref"
+                           [ngAddLabel]="labelMap.ref_num"
+                           placeholder="Type..."
+                           [stylingMode]="'underlined'"
+                           [labelMode]="'floating'"></dx-text-box>
 
-              <dx-check-box
-                [value]="true"
-                text="Remember"
-                class="mt-1"
-                style="font-size: 10px"
-              ></dx-check-box>
+              <dx-check-box [value]="true"
+                            text="Remember"
+                            class="mt-1"
+                            style="font-size: 10px"></dx-check-box>
             </dxi-item>
             <!-- Ref Ends  -->
             <!-- User or ER Starts  -->
@@ -222,21 +208,17 @@
             <!-- Notes Starts  -->
             <dxi-item [colSpan]="2">
               <label>Notes</label>
-              <textarea
-                formControlName="notes"
-                style="width: 100%; height: 40px"
-              ></textarea>
+              <textarea formControlName="notes"
+                        style="width: 100%; height: 40px"></textarea>
             </dxi-item>
             <!-- Notes Ends  -->
             <dxi-item>
-              <dx-button
-                stylingMode="contained"
-                text="Update"
-                type="default"
-                style="width: 150px; margin-top: 25px"
-                (click)="update()"
-                [disabled]="!myForm.valid"
-              ></dx-button>
+              <dx-button stylingMode="contained"
+                         text="Update"
+                         type="default"
+                         style="width: 150px; margin-top: 25px"
+                         (click)="update()"
+                         [disabled]="!myForm.valid"></dx-button>
             </dxi-item>
           </dx-form>
         </div>
@@ -250,33 +232,27 @@
               <span style="flex: 1 1 0"></span>
 
               <div class="col-2">
-                <dx-date-box
-                  [value]="fromDate"
-                  [ngAddLabel]="labelMap.fromDate_num"
-                  placeholder="From Date"
-                  [stylingMode]="'underlined'"
-                  [labelMode]="'floating'"
-                  style="margin-top: 5px"
-                  (onValueChanged)="fromDatehandler($event)"
-                ></dx-date-box>
+                <dx-date-box [value]="fromDate"
+                             [ngAddLabel]="labelMap.fromDate_num"
+                             placeholder="From Date"
+                             [stylingMode]="'underlined'"
+                             [labelMode]="'floating'"
+                             style="margin-top: 5px"
+                             (onValueChanged)="fromDatehandler($event)"></dx-date-box>
               </div>
 
               <div class="col-2">
-                <dx-date-box
-                  [value]="toDate"
-                  [ngAddLabel]="labelMap.toDate_num"
-                  placeholder="To Date"
-                  [stylingMode]="'underlined'"
-                  [labelMode]="'floating'"
-                  style="margin-top: 5px"
-                  (onValueChanged)="toDatehandler($event)"
-                ></dx-date-box>
+                <dx-date-box [value]="toDate"
+                             [ngAddLabel]="labelMap.toDate_num"
+                             placeholder="To Date"
+                             [stylingMode]="'underlined'"
+                             [labelMode]="'floating'"
+                             style="margin-top: 5px"
+                             (onValueChanged)="toDatehandler($event)"></dx-date-box>
               </div>
 
               <div class="col-2">
-                <div
-                  style="margin-top: 17px; font-size: 17px; font-weight: bold"
-                >
+                <div style="margin-top: 17px; font-size: 17px; font-weight: bold">
                   <a href="#" (click)="refreshLog()">Refresh Log</a>
                 </div>
               </div>
@@ -284,15 +260,13 @@
           </div>
         </div>
 
-        <div
-          style="
+        <div style="
             height: calc(100vh - 530px);
             float: left;
             margin: 0px;
             margin-bottom: 10px;
             padding: 0px;
-          "
-        >
+          ">
           <app-trans-log [data]="trasLogArray"></app-trans-log>
         </div>
       </div>

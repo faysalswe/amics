@@ -1,5 +1,25 @@
 import { DatePipe } from '@angular/common';
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { PMPOView } from '../../models/pmpoview';
+import { HttpClient } from '@angular/common/http';
+import { IncreaseInventoryService } from '../../services/increase.inventory.service';
+import { ComponentType } from '../../models/componentType';
+import { pmDetails } from '../../models/pmdetails';
+import { Warehouse, WarehouseLocation } from '../../models/warehouse';
+import {
+  DefaultValInt,
+  ERInt,
+  IncreaseInventoryInt,
+  ReasonInt,
+  SerialLotInt,
+  TransLogInt,
+} from 'src/app/shared/models/rest.api.interface.model';
+import { forkJoin, Subscription, tap } from 'rxjs';
+import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
+import { SearchService } from '../../services/search.service';
+import { LabelMap } from '../../models/Label';
+import { OptionIdMap } from '../../models/optionIdMap';
+import { InventoryService } from '../../services/inventory.service';
 import {
   AbstractControl,
   FormArray,
@@ -8,6 +28,9 @@ import {
   FormGroupDirective,
   Validators,
 } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { AuthService } from '../../../shared/services';
+import Guid from 'devextreme/core/guid';
 import {
   DxFormComponent,
   DxSelectBoxComponent,
@@ -43,6 +66,12 @@ import { PartMasterService } from '../../services/partmaster.service';
 import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
 import { SearchService } from '../../services/search.service';
 import { PMSearchComponent } from '../PartMaster/search/pmsearch.component';
+import { Employee, HomeService } from '../../services/home.service';
+import { TransNumberRecInt } from '../../../shared/models/rest.api.interface.model';
+import dxForm from 'devextreme/ui/form';
+import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplicate.sertag.msg.service';
+import { DuplicateSerTagCheck } from 'src/app/shared/validator/duplicate.sertag.validator';
+import { ValidationService } from 'src/app/shared/services/validation.service';
 
 @Component({
   selector: 'app-decrease-inventory',
@@ -273,6 +302,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       licPlatFlage: [true],
       user1: [null],
       user2: [null],
+      serialInvDet: this.fb.array([]),
     });
 
     this.sourcesRefIdCntl = this.myForm.controls['sourcesRefId'];
@@ -378,7 +408,14 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       },
       { updateOn: 'blur' }
     );
+
+    //serialInvDet.markAsTouched();
+    //serialInvDet.updateValueAndValidity();
+    //serialInvDet.markAsPending();
+    // serialInvDet.markAsPristine();
+
     this.serialInvDetForms.push(serialInvDet);
+    // this.myForm.markAllAsTouched();
   }
 
   removeSerialInvDet() {
@@ -443,6 +480,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       this.defaultWarehouse = item.warehouse;
       this.defaultLocation = item.location;
       this.itemsId = item.id.toString();
+      console.log(this.itemsId);
 
       // Initialize the form values
       this.quantityCntl?.setValue(null);
