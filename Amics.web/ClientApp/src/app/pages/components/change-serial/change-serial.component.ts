@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DxDataGridComponent } from 'devextreme-angular';
 import { ComponentType } from '../../models/componentType';
 import { pmItemSearchResult, pmSearch } from '../../models/pmsearch';
 import { pmSerial } from '../../models/pmSerial';
@@ -12,10 +13,18 @@ import { SearchService } from '../../services/search.service';
   styleUrls: ['./change-serial.component.scss']
 })
 export class ChangeSerialComponent implements OnInit {
+  @ViewChild(DxDataGridComponent, { static: false }) dataGrid!: DxDataGridComponent
   changeSerialSearchInfo: changeSerialInfo = new changeSerialInfo();
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
+  popupVisible = false;
   submitButtonOptions = {
     text: "Search",
+    useSubmitBehavior: true,
+    type: "default"
+
+  };
+  submitPopupButtonOptions = {
+    text: "Save",
     useSubmitBehavior: true,
     type: "default"
 
@@ -67,6 +76,14 @@ export class ChangeSerialComponent implements OnInit {
     });
   }
 
+  saveSerial(e: any){
+
+  }
+
+  edit() {
+    this.popupVisible = true;
+  }
+
   onRowSelection(e: any) {
     let selectedRow = e.data;
     this.rowSelection = true;
@@ -74,6 +91,11 @@ export class ChangeSerialComponent implements OnInit {
     this.changeSerialSearchInfo.toSerial = selectedRow?.serlot;
     this.changeSerialSearchInfo.fromTagNo = selectedRow?.tagcol;
     this.changeSerialSearchInfo.toTagNo = selectedRow?.tagcol;
+    this.changeSerialSearchInfo.fromModel = selectedRow?.color_model;
+    this.changeSerialSearchInfo.toModel = selectedRow?.color_model;
+    this.changeSerialSearchInfo.fromCost = selectedRow?.cost;
+    this.changeSerialSearchInfo.toCost = selectedRow?.cost;
+    this.popupVisible = true;
   }
 
 }
@@ -84,4 +106,8 @@ export class changeSerialInfo {
   toSerial: string = "";
   fromTagNo: string = "";
   toTagNo: string = "";
+  fromModel: string = "";
+  toModel: string = "";
+  fromCost: string = "";
+  toCost: string = "";
 }
