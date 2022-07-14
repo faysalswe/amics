@@ -325,7 +325,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
     var initData$ = forkJoin([
       this.incInvService.getDefaultValues(),
       this.searchService.getWarehouseInfo(''),
-      this.searchService.getReasonCode(),
+      this.searchService.getReasonCode('increase'),
       this.inventoryService.getTransLog(this.fromDateStr(), this.toDateStr()),
     ]).pipe(
       tap((obj) => {

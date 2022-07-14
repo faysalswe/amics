@@ -29,8 +29,8 @@ export class SearchService {
     return this.httpClient.get<Warehouse[]>(`${this.api}/Warehouse?searchWarehouse=${warehouse}`);
   }
 
-  getReasonCode(): Observable<ReasonInt[]> {
-    let url = `${this.api}/GetReasonCode?CodeFor=increase`;
+  getReasonCode(codeFor: string): Observable<ReasonInt[]> {
+    let url = `${this.api}/GetReasonCode?CodeFor=${codeFor}`;
     return this.httpClient.get<ReasonInt[]>(url);
   }
 
