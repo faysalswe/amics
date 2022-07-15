@@ -1,5 +1,3 @@
-USE [amicsperaton]
-GO
 
 /****** Object:  Table [dbo].[inv_allocate]    Script Date: 13-07-2022 11:36:31 AM ******/
 SET ANSI_NULLS ON

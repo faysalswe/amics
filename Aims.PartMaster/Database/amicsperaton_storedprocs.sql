@@ -1,5 +1,4 @@
-USE [amicsperaton]
-GO
+
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_search_items]    Script Date: 12-07-2022 07:48:32 PM ******/
 SET ANSI_NULLS ON
 GO
