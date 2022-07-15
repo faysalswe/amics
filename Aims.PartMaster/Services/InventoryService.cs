@@ -251,6 +251,9 @@ namespace Aims.PartMaster.Services
 
         public LstMessage InsertInvTrans(List<InvTrans> InvTransData)
         {
+
+            //Insert Into inv_trans(Source, invbasicid, itemsid, transqty, transnum) Values('MISC PICK', 'fd6346b6-50da-458f-b05c-ecfd32238941', '5fc61219-de9d-46bd-b3a0-398dec32153c', '3', '43782')
+ 
             for (int i = 0; i < InvTransData.Count; i++)
             {
                 InvTrans invTrans = InvTransData[i];
@@ -291,43 +294,54 @@ namespace Aims.PartMaster.Services
         /// API Service for execute receipt stored procedure and increase the quantity.
         /// </summary>   
 
-        public LstMessage ExecuteSpPick(SpPick Pick)
+        public LstMessage ExecuteSpPick(SpPick spPick)
         {
+              
+            var sql = $"exec sp_pick5 ";
+             
+            if (spPick.PickTransdate != null)
+            sql += $"@pick_transdate='{spPick.PickTransdate}'";
 
-            var sql = "";
+            if (spPick.PickSourcesrefId != null)
+                sql += $"@pick_sourcesrefid='{spPick.PickSourcesrefId}'";
+
+            sql += $"@pick_misc_reason='{spPick.PickMiscReason}'";
+            sql += $"@pick_misc_ref='{spPick.PickMiscRef}'";
+            sql += $"@pick_misc_source='{spPick.PickMiscSource}'";
+
+            if (spPick.PickShipvia != null)
+                sql += $"@Pick_Shipvia='{spPick.PickShipvia}'";
+            sql += $"@pick_source='{spPick.PickSource}'";
+
+            if (spPick.PickShipCharge != null)
+                sql += $"@Pick_Shipcharge='{spPick.PickShipCharge}'";
+            if (spPick.PickTrackingNum != null)
+                sql += $"@Pick_Trackingnum='{spPick.PickTrackingNum}'";
+
+
+            sql += $"@pick_notes='{spPick.PickNotes}'";
+
+            if (spPick.PickPackNote != null)
+                sql += $"@Pick_PackNote='{spPick.PickPackNote}'";
+
+            if (spPick.PickInvoiceNote != null)
+                sql += $"@Pick_InvoiceNote='{spPick.PickInvoiceNote}'";
+
+            sql += $"@Pick_SalesTax='{spPick.PickSalesTax}'";
+            sql += $"@Pick_Shipdate='{spPick.PickTransdate}'";
+            sql += $"@pick_user='{spPick.PickUser}'";
+            sql += $"@pick_transnum='{spPick.PickTransnum}'";
+            sql += $"@pick_setnum='{spPick.PickSetnum}'";
+
+            if (spPick.PickWarehouse != null)
+                sql += $"@pick_warehouse='{spPick.PickWarehouse}'";
+
+            if (spPick.PickOriginalReceiptsid != null)
+                sql += $"@original_receiptsid='{spPick.PickOriginalReceiptsid}'";
             
-            //InvReceipts.SourcesRefId == null ? Guid.Empty : InvReceipts.SourcesRefId;
-            //var recExtedId = InvReceipts.ExtendedId == null ? Guid.Empty : InvReceipts.ExtendedId;
-
-            //var sql = $"exec sp_receipts_R5 @rec_sourcesrefid='{sourcesRefId}'";
-            //sql += $",@rec_extedid='{recExtedId}'";
-            //sql += $",@rec_source='{InvReceipts.Source}'";
-            //sql += $",@rec_warehouse='{InvReceipts.Warehouse}'";
-            //sql += $",@rec_location='{InvReceipts.Location}'";
-            //sql += $",@rec_item='{InvReceipts.ItemNumber}'";
-            //sql += $",@rec_rev='{InvReceipts.Rev}'";
-            //sql += $",@rec_cost={InvReceipts.Cost}";
-            //sql += $",@rec_quantity={InvReceipts.Quantity}";
-            //sql += $",@rec_misc_reason='{InvReceipts.MiscReason}'";
-            //sql += $",@rec_misc_ref='{InvReceipts.MiscRef}'";
-            //sql += $",@rec_misc_source='{InvReceipts.MiscSource}'";
-            //sql += $",@rec_notes='{InvReceipts.Notes}'";
-            //sql += $",@rec_transdate='{InvReceipts.TransDate}'";
-            //sql += $",@rec_user='{InvReceipts.User1}'";
-            //sql += $",@rec_transnum='{InvReceipts.TransNum}'";
-            //sql += $",@potype='{InvReceipts.PoType}'";
-            //sql += $",@rec_account='{InvReceipts.RecAccount}'";
-            //sql += $",@rec_packlist='{InvReceipts.RecPackList}'";
-            //sql += $",@lic_plate_flag={InvReceipts.LicPlatFlage}";
-            //sql += $",@rec_receiver={InvReceipts.ReceiverNum}";
-            //sql += $",@user2='{InvReceipts.User2}'";
-
-
             var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
             return receiptResult;
         }
-
-
 
     }
 }
