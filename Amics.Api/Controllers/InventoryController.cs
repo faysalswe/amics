@@ -130,7 +130,7 @@ namespace Amics.Api.Controllers
         /// <summary>
         /// API Route Controller for Insert the decrease values into the inv_trans table
         /// </summary>        
-        [HttpGet, Route("InsertInvTrans")]
+        [HttpPost, Route("InsertInvTrans")]
         public LstMessage InsertInvTrans([FromQuery] List<InvTrans> TransData)
         {
             var Message = _inventoryService.InsertInvTrans(TransData);
@@ -141,7 +141,7 @@ namespace Amics.Api.Controllers
         /// <summary>
         /// API Route Controller for execute the inv pick sp for decrease the inventory
         /// </summary>        
-        [HttpGet, Route("ExecuteSpPick")]
+        [HttpPost, Route("ExecuteSpPick")]
         public LstMessage ExecuteSpPick([FromQuery] SpPick Pick)
         {
             var Message = _inventoryService.ExecuteSpPick(Pick);
