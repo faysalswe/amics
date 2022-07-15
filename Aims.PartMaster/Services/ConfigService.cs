@@ -43,7 +43,7 @@ namespace Aims.Core.Services
             var screenName = string.IsNullOrEmpty(ScreenName) ? string.Empty : ScreenName;
 
             var searchResult = _amicsDbContext.ListCompanyOptions
-                .FromSqlRaw($"exec sp_webapi_get_list_company_options @optionid={OptionId},@screenname='{screenName}'")
+                .FromSqlRaw($"exec amics_sp_api_get_list_company_options @optionid={OptionId},@screenname='{screenName}'")
                 .ToList<LstCompanyOptions>();
 
             return searchResult;
@@ -56,7 +56,7 @@ namespace Aims.Core.Services
         public List<LstFieldProperties> LoadFieldProperties(string labelNum)
         {
             var optResult = _amicsDbContext.LstFieldProperties
-                            .FromSqlRaw($"amics_sp_list_fieldproperties @labelnumber='{labelNum}'").ToList<LstFieldProperties>();
+                            .FromSqlRaw($"amics_sp_api_list_fieldproperties @labelnumber='{labelNum}'").ToList<LstFieldProperties>();
 
             return optResult;
         }
@@ -68,7 +68,7 @@ namespace Aims.Core.Services
         public List<LstMessagetext> ListMessages(string messagetext)
         {
             var optMessageResult = _amicsDbContext.LstMessagetext
-                            .FromSqlRaw($"amics_sp_list_messages @messagetext='{messagetext}'").ToList<LstMessagetext>();
+                            .FromSqlRaw($"amics_sp_api_list_messages @messagetext='{messagetext}'").ToList<LstMessagetext>();
 
             return optMessageResult;
         }
