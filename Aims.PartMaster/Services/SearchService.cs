@@ -56,7 +56,7 @@ namespace Aims.PartMaster.Services
             var name = string.IsNullOrEmpty(searchWarehouse) ? string.Empty : searchWarehouse;
              
             var whresult = _amicsDbContext.LstWarehouses
-                .FromSqlRaw($"exec amics_sp_warehouse_lookup @whid ='{whId}',@warehouse = '{name}'")
+                .FromSqlRaw($"exec amics_sp_api_warehouse_lookup @whid ='{whId}',@warehouse = '{name}'")
                 .ToList();
 
             return whresult;
@@ -76,7 +76,7 @@ namespace Aims.PartMaster.Services
             var location = string.IsNullOrEmpty(searchLocation) ? string.Empty : searchLocation;
              
             var locresult = _amicsDbContext.LstLocations
-                .FromSqlRaw($"exec amics_sp_location_lookup @whid='{whId}',@locid='{locId}',@location='{location}'")
+                .FromSqlRaw($"exec amics_sp_api_location_lookup @whid='{whId}',@locid='{locId}',@location='{location}'")
                 .ToList();
 
             return locresult;
@@ -94,7 +94,7 @@ namespace Aims.PartMaster.Services
             string itemtype = string.IsNullOrEmpty(searchItemtype) ? string.Empty : searchItemtype;
             
             var result = _amicsDbContext.LstItemTypes
-                .FromSqlRaw($"exec amics_sp_itemtype_lookup @id ='{itmtypeId}',@itemtype = '{itemtype}'")
+                .FromSqlRaw($"exec amics_sp_api_itemtype_lookup @id ='{itmtypeId}',@itemtype = '{itemtype}'")
                 .ToList();
 
             return result;
@@ -111,7 +111,7 @@ namespace Aims.PartMaster.Services
             string itemClass = string.IsNullOrEmpty(searchItemclass) ? string.Empty : searchItemclass;
 
             var itemclsresult = _amicsDbContext.LstItemClasses
-                .FromSqlRaw($"exec amics_sp_itemclass_lookup @id ='{itmclassId}',@itemclass = '{itemClass}'")
+                .FromSqlRaw($"exec amics_sp_api_itemclass_lookup @id ='{itmclassId}',@itemclass = '{itemClass}'")
                 .ToList();
 
             return itemclsresult;
@@ -128,7 +128,7 @@ namespace Aims.PartMaster.Services
             string itemCode = string.IsNullOrEmpty(searchItemcodes) ? string.Empty : searchItemcodes;
 
             var itmcodresult = _amicsDbContext.LstItemCodes
-                .FromSqlRaw($"exec amics_sp_itemcode_lookup @id ='{itmcodeId}',@itemcode = '{itemCode}'")
+                .FromSqlRaw($"exec amics_sp_api_itemcode_lookup @id ='{itmcodeId}',@itemcode = '{itemCode}'")
                 .ToList();
 
             return itmcodresult;
@@ -145,7 +145,7 @@ namespace Aims.PartMaster.Services
             string uomRefVal = string.IsNullOrEmpty(uomRef) ? string.Empty : uomRef;
 
             var result = _amicsDbContext.LstUoms
-                .FromSqlRaw($"exec amics_sp_uom_lookup @id ='{uomRefId}',@uomref = '{uomRefVal}'")
+                .FromSqlRaw($"exec amics_sp_api_uom_lookup @id ='{uomRefId}',@uomref = '{uomRefVal}'")
                 .ToList();
 
             return result;
@@ -189,7 +189,7 @@ namespace Aims.PartMaster.Services
             {
                 try
                 {
-                    sqlCommand .CommandText = "sp_webservice_search_items5";
+                    sqlCommand .CommandText = "amics_sp_api_search_items";
                     conn.Open(); 
                    sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.Parameters.Add(new SqlParameter("@item", itmnumber));
@@ -253,7 +253,7 @@ namespace Aims.PartMaster.Services
             var rev = string.IsNullOrEmpty(Rev) ? string.Empty : Rev;
           
             var searchResult = _amicsDbContext.LstItemsInfo
-                .FromSqlRaw($"exec sp_webapi_get_iteminfo @item='{itemNo}',@rev='{rev}',@itemsid='{itemsGuId}'")
+                .FromSqlRaw($"exec amics_sp_api_get_iteminfo @item='{itemNo}',@rev='{rev}',@itemsid='{itemsGuId}'")
                 .ToList<LstItemInfo>();
              
             return searchResult;
@@ -272,7 +272,7 @@ namespace Aims.PartMaster.Services
             var resCodeFor = string.IsNullOrEmpty(CodeFor) ? string.Empty : CodeFor;
 
             var searchResult = _amicsDbContext.ListReasonCodes
-                .FromSqlRaw($"exec sp_webapi_get_reasoncode @reasoncode='{resCode}',@codefor='{resCodeFor}'")
+                .FromSqlRaw($"exec amics_sp_api_get_reasoncode @reasoncode='{resCode}',@codefor='{resCodeFor}'")
                 .ToList<LstReasonCodes>();
 
             return searchResult;
