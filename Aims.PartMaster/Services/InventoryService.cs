@@ -297,7 +297,7 @@ namespace Aims.PartMaster.Services
         public LstMessage ExecuteSpPick(SpPick spPick)
         {
               
-            var sql = $"exec sp_pick5 ";
+            var sql = $"exec amics_sp_api_pick ";
              
             if (spPick.PickTransdate != null)
             sql += $"@pick_transdate='{spPick.PickTransdate}'";
