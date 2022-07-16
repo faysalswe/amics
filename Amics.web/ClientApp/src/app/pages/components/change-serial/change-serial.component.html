@@ -5,23 +5,26 @@
   <div class="row" style="align-items: center">
     <form (submit)="handleSubmit($event)">
       <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="7" labelMode="floating">
-        <dxi-item [colSpan]="1" dataField="itemNumber"  [label]="{text:'item#'}"></dxi-item>
-        <dxi-item [colSpan]="1" itemType="button" width="150" type="default" stylingMode="contained" 
-        [buttonOptions]="submitButtonOptions" style="text-align: center;">
+        <dxi-item [colSpan]="1" dataField="itemNumber" [label]="{text:'item#'}"></dxi-item>
+        <dxi-item [colSpan]="1" itemType="button" width="200" type="default" stylingMode="contained"
+          [buttonOptions]="submitButtonOptions" style="text-align: center;">
+          (onSelectionChanged)="onSelectionChanged($event)"
         </dxi-item>
-        <dxi-item [colSpan]="1" dataField="fromSerial"  [label]="{text:'From Ser No'}"></dxi-item>
-        <dxi-item [colSpan]="1" dataField="toSerial"  [label]="{text:'To Ser No'}"></dxi-item>
-        <dxi-item [colSpan]="1" dataField="fromTagNo"  [label]="{text:'From Tag No'}"></dxi-item>
-        <dxi-item [colSpan]="1" dataField="toTagNo"  [label]="{text:'To Tag No#'}"></dxi-item>
-        <dxi-item [colSpan]="1" itemType="button" type="default" stylingMode="contained"
-        [buttonOptions]="{text: 'Save', useSubmitBehavior: false, type: 'default', width: '150'}"></dxi-item>
+        <!-- <dxi-item [colSpan]="1" dataField="fromSerial" [label]="{text:'From Ser No'}"></dxi-item>
+        <dxi-item [colSpan]="1" dataField="toSerial" [label]="{text:'To Ser No'}"></dxi-item>
+        <dxi-item [colSpan]="1" dataField="fromTagNo" [label]="{text:'From Tag No'}"></dxi-item>
+        <dxi-item [colSpan]="1" dataField="toTagNo" [label]="{text:'To Tag No#'}"></dxi-item> -->
+        <!-- <dxi-item [colSpan]="1">
+          <dx-button stylingMode="contained" text="edit" width="400" type="default" (onClick)="edit()">
+          </dx-button>
+        </dxi-item> -->
       </dx-form>
     </form>
 
   </div>
   <div class="row">
-    <dx-data-grid id="gridContainer" [dataSource]="changesserialArray" keyExpr="id" height="70vh" 
-    [showBorders]="true" [hoverStateEnabled]="true" (onRowClick)="onRowSelection($event)">
+    <dx-data-grid id="gridContainer" [dataSource]="changesserialArray" keyExpr="id" height="70vh"
+      [focusedRowEnabled]="true" [showBorders]="true" [hoverStateEnabled]="true" (onRowClick)="onRowSelection($event)">
       <dxo-selection mode="single"></dxo-selection>
       <dxi-column dataField="warehouse"></dxi-column>
       <dxi-column dataField="location"></dxi-column>
@@ -34,4 +37,41 @@
       <dxi-column dataField="currentSo" caption="Current ER"></dxi-column>
     </dx-data-grid>
   </div>
+  <br>
+  <br>
+  <div class="row" style="justify-content: center;">
+    <dx-button stylingMode="contained" text="edit" width="150" type="default" (onClick)="edit()">
+    </dx-button>
+  </div>
 </div>
+
+
+<dx-popup [width]="500" [height]="500" [showTitle]="true" title="Update Serial" [dragEnabled]="false"
+  [showCloseButton]="true" container=".dx-viewport" [(visible)]="popupVisible">
+  <form (submit)="saveSerial($event)">
+    <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="2" labelMode="floating">
+      <dxi-item [colSpan]="1" dataField="fromSerial" [label]="{text:'From Ser No'}" [editorOptions]="{readOnly: true}">
+      </dxi-item>
+      <dxi-item [colSpan]="1" dataField="toSerial" [label]="{text:'To Ser No'}"></dxi-item>
+      <dxi-item [colSpan]="1" dataField="fromTagNo" [label]="{text:'From Tag No'}" [editorOptions]="{readOnly: true}">
+      </dxi-item>
+      <dxi-item [colSpan]="1" dataField="toTagNo" [label]="{text:'To Tag No'}"></dxi-item>
+
+      <dxi-item [colSpan]="1" dataField="fromModel" [label]="{text:'From Model'}" [editorOptions]="{readOnly: true}">
+      </dxi-item>
+      <dxi-item [colSpan]="1" dataField="toModel" [label]="{text:'To Model'}"></dxi-item>
+      <dxi-item [colSpan]="1" dataField="fromCost" [label]="{text:'From Cost'}" [editorOptions]="{readOnly: true}">
+      </dxi-item>
+      <dxi-item [colSpan]="1" dataField="toCost" [label]="{text:'To Cost'}"></dxi-item>
+
+      <dxi-item [colSpan]="2" dataField="notes" editorType="dxTextArea" [label]="{text: 'Notes'}">
+      </dxi-item>
+    </dx-form>
+    <dx-form [colCount]="3" labelMode="floating">
+      <dxi-item></dxi-item>
+      <dxi-item [colSpan]="1" itemType="button" width="150" type="default" stylingMode="contained"
+        [buttonOptions]="submitPopupButtonOptions" style="text-align: center;">
+      </dxi-item>
+    </dx-form>
+  </form>
+</dx-popup>
