@@ -101,3 +101,37 @@ export interface SerTagValidateInt {
   tagno: string
 }
 
+export interface SerBasicFormArrayModel {
+  line: number;
+  basicId: string;
+  serialId: string;
+  warehouse: string;
+  location: string;
+  er: string;
+  quantity: number;
+  cost: number;
+  selectedQuantity: number;
+  serNo: string;
+  tagNo: string;
+  model: string;
+  isQuantitySelectedForDecrease: boolean;
+}
+
+export interface TransData {
+  transNum: number;
+  invBasicId: string;
+  invSerialId: string;
+  itemsId: string;
+  source: string;
+  refId: string;
+  fromLocationId: string;
+  toLocationId: string;
+  transQty: number;
+  itemNumber: string;
+  rev: string;
+  boxNum: number;
+  lineWeight: number;
+  createdBy?: string;
+}
+
+

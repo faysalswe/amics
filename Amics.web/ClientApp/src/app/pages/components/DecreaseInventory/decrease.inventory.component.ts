@@ -1,56 +1,25 @@
 import { DatePipe } from '@angular/common';
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { PMPOView } from '../../models/pmpoview';
-import { HttpClient } from '@angular/common/http';
-import { IncreaseInventoryService } from '../../services/increase.inventory.service';
-import { ComponentType } from '../../models/componentType';
-import { pmDetails } from '../../models/pmdetails';
-import { Warehouse, WarehouseLocation } from '../../models/warehouse';
 import {
-  DefaultValInt,
-  ERInt,
-  IncreaseInventoryInt,
-  ReasonInt,
-  SerialLotInt,
-  TransLogInt,
-} from 'src/app/shared/models/rest.api.interface.model';
-import { forkJoin, Subscription, tap } from 'rxjs';
-import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
-import { SearchService } from '../../services/search.service';
-import { LabelMap } from '../../models/Label';
-import { OptionIdMap } from '../../models/optionIdMap';
-import { InventoryService } from '../../services/inventory.service';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
   FormGroup,
+  AbstractControl,
   FormGroupDirective,
+  FormBuilder,
   Validators,
+  FormArray,
 } from '@angular/forms';
-import { DatePipe } from '@angular/common';
-import { AuthService } from '../../../shared/services';
-import Guid from 'devextreme/core/guid';
 import {
   DxFormComponent,
-  DxSelectBoxComponent,
   DxTextBoxComponent,
+  DxSelectBoxComponent,
 } from 'devextreme-angular';
-import Guid from 'devextreme/core/guid';
 import notify from 'devextreme/ui/notify';
-import { forkJoin, Subscription, tap } from 'rxjs';
-import {
-  DefaultValInt,
-  ERInt,
-  IncreaseInventoryInt,
-  ReasonInt,
-  SerialLotInt,
-  TransLogInt,
-} from 'src/app/shared/models/rest.api.interface.model';
+import Guid from 'devextreme/core/guid';
+import { Subscription, forkJoin, tap } from 'rxjs';
+import { AuthService } from 'src/app/shared/services';
 import { ValidationService } from 'src/app/shared/services/validation.service';
 import { BasicQuantityValidator } from 'src/app/shared/validator/basic.quantity.validator';
 import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplicate.sertag.msg.service';
-import { AuthService } from '../../../shared/services';
 import { ComponentType } from '../../models/componentType';
 import { LabelMap } from '../../models/Label';
 import { OptionIdMap } from '../../models/optionIdMap';
@@ -58,20 +27,30 @@ import { pmDetails } from '../../models/pmdetails';
 import { PMPOView } from '../../models/pmpoview';
 import { pmSerial } from '../../models/pmSerial';
 import { pmWHLocation } from '../../models/pmWHLocation';
+
+import {
+  DefaultValInt,
+  ERInt,
+  IncreaseInventoryInt,
+  ReasonInt,
+  SerBasicFormArrayModel,
+  SerialLotInt,
+  TransLogInt,
+  TransData
+} from 'src/app/shared/models/rest.api.interface.model';
+
+//import { ReasonInt, ERInt, DefaultValInt, TransLogInt, IncreaseInventoryInt, SerialLotInt } from "../../models/rest.api.interface.model";
 import { Warehouse, WarehouseLocation } from '../../models/warehouse';
-import { Employee } from '../../services/home.service';
-import { IncreaseInventoryService } from '../../services/increase.inventory.service';
+import {
+  IncreaseInventoryService,
+  Employee,
+} from '../../services/increase.inventory.service';
 import { InventoryService } from '../../services/inventory.service';
 import { PartMasterService } from '../../services/partmaster.service';
 import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
 import { SearchService } from '../../services/search.service';
 import { PMSearchComponent } from '../PartMaster/search/pmsearch.component';
-import { Employee, HomeService } from '../../services/home.service';
-import { TransNumberRecInt } from '../../../shared/models/rest.api.interface.model';
-import dxForm from 'devextreme/ui/form';
-import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplicate.sertag.msg.service';
-import { DuplicateSerTagCheck } from 'src/app/shared/validator/duplicate.sertag.validator';
-import { ValidationService } from 'src/app/shared/services/validation.service';
+import { DecreaseInventoryService } from '../../services/decrease.inventory.service';
 
 @Component({
   selector: 'app-decrease-inventory',
@@ -191,6 +170,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
     private incInvService: IncreaseInventoryService,
     private searchService: SearchService,
     private inventoryService: InventoryService,
+    private decInvService: DecreaseInventoryService,
     private fb: FormBuilder,
     private datePipe: DatePipe,
     private authService: AuthService,
@@ -243,23 +223,26 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       onClick(e: any) {
         that.loadingVisible = true;
         that.basicPopupVisible = false;
-        var serialLst: SerialLotInt[] = that.serialInvDetForms.value;
+
+        var serialLst: SerBasicFormArrayModel[] = that.serialInvDetForms.value;
+        let tmpObjLst: TransData[] = [];
         serialLst.forEach((obj) => {
-          obj.qty = 1;
-          obj.createdBy = String(that.user);
+          let tmpObj = <TransData>{};
+          tmpObj.invBasicId = obj.basicId;
+          tmpObj.itemsId = that.itemsId;
+          tmpObj.source = '';
+          tmpObj.transQty = obj.selectedQuantity;
+          tmpObj.itemNumber = that.pmDetails.itemNumber;
+          tmpObj.rev = 'rev';
+          tmpObj.boxNum = 0;
+          tmpObj.lineWeight = 0;
+          tmpObj.createdBy = that.user;
+          tmpObjLst.push(tmpObj);
         });
-        const body = that.increaseInvObj();
-        that.loadingVisible = false;
-        that.inventoryService.insertInvSerLot(serialLst, body).subscribe(() => {
-          setTimeout(() => {
-            that.refreshLog();
-            that.formDirective.resetForm();
-            that.myForm.reset();
-            that.initializeFormData();
-            that.pmDetails = new pmDetails();
-            that.loadingVisible = false;
-            notify('Successfully Saved', 'info', 500);
-          }, 500);
+        console.log(tmpObjLst);
+
+        that.decInvService.decreaseBasicInventory(tmpObjLst).subscribe(() => {
+          that.loadingVisible = false;
         });
       },
     };
@@ -281,7 +264,6 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       miscSource: [this.defaultSource, [Validators.required]],
       miscRef: [this.defaultRef, [Validators.required]],
       notes: [null],
-      serialInvDet: this.fb.array([]),
       transNum: [null],
       rev: ['-', [Validators.required]],
       receiverNum: [0, [Validators.required]],
@@ -367,6 +349,8 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   addSerial(ele: pmSerial, i: number) {
     const serialInvDet = this.fb.group({
       line: [i + 1],
+      basicId: [],
+      serialId: [ele.id],
       warehouse: [ele.warehouse],
       location: [ele.location],
       er: [],
@@ -392,6 +376,8 @@ export class DecreaseInventoryComponent implements AfterViewInit {
     const serialInvDet = this.fb.group(
       {
         line: [i + 1],
+        basicId: [ele.id],
+        serialId: [],
         warehouse: [ele.warehouse],
         location: [ele.location],
         er: [ele.somain],
@@ -598,19 +584,23 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       this.viewWarehouseLocation$ = this.partmasterService
         .getViewWHLocation(this.itemsId, this.secUserId, '')
         .subscribe((res: pmWHLocation[]) => {
-          // console.log(res);
+          console.log(res);
 
           if (res.length > 0) {
             this.removeSerialInvDet();
             this.addAllBasic(res);
+            this.basicPopupVisible = true;
+            const body = this.increaseInvObj();
+            this.currentdecreaseInventoryIntObj = body;
+            //this.loadingVisible = false;
           } else {
             alert('There is no quantity to decrease');
           }
         });
     }
 
-    this.loadingVisible = true;
-    const body = this.increaseInvObj();
+    //this.loadingVisible = true;
+    //const body = this.increaseInvObj();
     //body.quantity = Number(body.quantity);
     /* this.removeSerialInvDet();
     for (var i = 0; i < body.quantity; i++) {
@@ -619,7 +609,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
 
     //this.pmDetails.invType = 'SERIAL';
 
-    if (this.pmDetails.invType == 'SERIAL') {
+    /* if (this.pmDetails.invType == 'SERIAL') {
       this.dupsertagerrormsg.add('');
       this.serialPopupVisible = true;
       this.currentdecreaseInventoryIntObj = body;
@@ -628,21 +618,8 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       this.basicPopupVisible = true;
       this.currentdecreaseInventoryIntObj = body;
       this.loadingVisible = false;
-      /* this.inventoryService.insertReceipt(body).subscribe((res: any) => {
-        this.refreshLogs();
-        this.isVisible = true;
-        this.formDirective.resetForm();
-        this.myForm.reset();
-        this.initializeFormData();
-        // this.itemsId = this.itemsId;
-        this.pmDetails = new pmDetails();
-        setTimeout(() => {
-          this.loadingVisible = false;
-          notify(res['message'], 'info', 500);
-        }, 500);
-      }); */
-    }
-    this.focusOnItemNumber();
+    } */
+    //this.focusOnItemNumber();
   }
 
   increaseInvObj() {
