@@ -21,4 +21,12 @@ namespace Aims.Core.Models
         public string Packlist { get; set; }
 
     }
+    
+    public class LstPacklist
+    {
+        [Key]
+        public string Packlist { get; set; }
+
+    }
+
 }

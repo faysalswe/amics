@@ -41,7 +41,7 @@ namespace Aims.Core.Services
             {
                 try
                 {
-                    sqlCommand.CommandText = "amics_sp_search_mdat_out";
+                    sqlCommand.CommandText = "amics_sp_api_search_mdat_out";
                     conn.Open();
 
                     sqlCommand.CommandType = CommandType.StoredProcedure;                  
@@ -90,7 +90,7 @@ namespace Aims.Core.Services
             {
                 try
                 {
-                    sqlCommand.CommandText = "amics_sp_view_mdat_out";
+                    sqlCommand.CommandText = "amics_sp_api_view_mdat_out";
                     conn.Open();
 
                     sqlCommand.CommandType = CommandType.StoredProcedure;
@@ -137,7 +137,7 @@ namespace Aims.Core.Services
             {
                 try
                 {
-                    sqlCommand.CommandText = "amics_sp_maintain_mdatout";
+                    sqlCommand.CommandText = "amics_sp_api_maintain_mdatout";
                     conn.Open();
 
                     sqlCommand.CommandType = CommandType.StoredProcedure;

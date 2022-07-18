@@ -14,12 +14,14 @@ namespace Aims.Core.Models
         public Guid? RefId { get; set; } = null;
         public Guid? FromLocationId { get; set; } = null;
         public Guid? ToLocationId { get; set; } = null;
-        public double TransQty { get; set; }      
+        public double TransQty { get; set; }
         public string ItemNumber { get; set; }
         public string Rev { get; set; }
         public int BoxNum { get; set; }
         public string lineWeight { get; set; }
         public string CreatedBy { get; set; }
     }
+
+
 
 }

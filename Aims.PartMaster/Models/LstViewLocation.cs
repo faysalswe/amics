@@ -15,4 +15,6 @@ namespace Aims.Core.Models
         public string Name { get; set; }
         public Int16 Quantity { get; set; }
     }
+
+
 }
