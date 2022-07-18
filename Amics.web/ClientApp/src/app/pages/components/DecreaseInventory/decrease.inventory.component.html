@@ -26,19 +26,20 @@
     <dxi-location [row]="0" [col]="1"></dxi-location>
     <div *dxTemplate class="content item">
       <div class="details-container content-block dx-card responsive-paddings">
-        <div style="border-bottom: 2px solid #eee; padding-bottom: 10px">
-          <app-inventory-status
-            [itemsId]="itemsId"
-            [secUserId]="secUserId"
-          ></app-inventory-status>
+        <ng-container *ngIf="pmDetails?.itemNumber != ''">
+          <div style="border-bottom: 2px solid #eee; padding-bottom: 10px">
+            <app-inventory-status
+              [itemsId]="itemsId"
+              [secUserId]="secUserId"
+            ></app-inventory-status>
 
-          <h3 style="padding-bottom: 0px; margin-bottom: 0px">
-            <span style="color: darkgrey"
-              >PN : {{ pmDetails?.itemNumber }}</span
-            >
-            / {{ pmDetails?.description }}
-          </h3>
-        </div>
+            <h3 style="padding-bottom: 0px; margin-bottom: 0px">
+              <span>{{ pmDetails?.itemNumber }}</span>
+              <span style="font-style: italic;color: rgb(93, 124, 224);">
+                ({{ pmDetails?.description }})</span>
+            </h3>
+          </div>
+        </ng-container>
         <br />
 
         <!-- Form Container starts        -->
@@ -210,50 +211,36 @@
 </dx-responsive-box>
 
 <ng-container *ngIf="this.pmDetails.invType == 'SERIAL'">
-<dx-popup
+  <dx-popup
     [width]="850"
-  [height]="550"
-  [showTitle]="true"
+    [height]="550"
+    [showTitle]="true"
     title="Decrease Serial"
-  [dragEnabled]="false"
-  [showCloseButton]="true"
+    [dragEnabled]="false"
+    [showCloseButton]="true"
     [(visible)]="serialPopupVisible"
->
-  <dxi-toolbar-item
-    widget="dxButton"
-    toolbar="bottom"
-    location="after"
-    [options]="emailButtonOptions"
-  ></dxi-toolbar-item>
-  <dxi-toolbar-item
-    widget="dxButton"
-    toolbar="bottom"
-    location="after"
-    [options]="closeButtonOptions"
   >
-  </dxi-toolbar-item>
-  <dxo-position at="center" my="center" of="window"></dxo-position>
-
-  <div *dxTemplate="let data of 'content'">
-    <app-status></app-status>
-    <div
-      class="row"
-      style="
-        background-color: #eee;
-        padding: 10px;
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-        margin-left: 0px;
-        margin-right: 0px;
-      "
+    <dxi-toolbar-item
+      widget="dxButton"
+      toolbar="bottom"
+      location="after"
+      [options]="saveSerialPopUp"
+    ></dxi-toolbar-item>
+    <dxi-toolbar-item
+      widget="dxButton"
+      toolbar="bottom"
+      location="after"
+      [options]="closeSerialPopUp"
     >
-      <div class="col">Serial #</div>
-      <div class="col">Tag #</div>
-      <div class="col">Model #</div>
-    </div>
-    <dx-scroll-view width="100%" height="100%">
+    </dxi-toolbar-item>
+    <dxo-position at="center" my="center" of="window"></dxo-position>
+
+    <div *dxTemplate="let data of 'content'">
+      <app-status></app-status>
+
+      <dx-scroll-view width="100%" height="100%">
         <div id="textBlock" style="margin-top: 3px; margin-bottom: 10px">
-        <form [formGroup]="myForm">
+          <form [formGroup]="myForm">
             <table class="pure-table pure-table-horizontal" style="width: 100%">
               <thead>
                 <tr>
@@ -270,10 +257,9 @@
 
               <tbody formArrayName="serialInvDet">
                 <tr
-              *ngFor="let obj of serialInvDetForms.controls; let i = index"
-              [formGroupName]="i"
-              class="row"
-            >
+                  *ngFor="let obj of serialInvDetForms.controls; let i = index"
+                  [formGroupName]="i"
+                >
                   <td>{{ i + 1 }}</td>
                   <td>{{ obj.get("warehouse")?.value }}</td>
                   <td>{{ obj.get("location")?.value }}</td>
@@ -282,18 +268,18 @@
                   <td>{{ obj.get("model")?.value }}</td>
                   <td>{{ obj.get("cost")?.value }}</td>
                   <td>
-                <input
+                    <input
                       type="checkbox"
                       formControlName="isQuantitySelectedForDecrease"
-                />
+                    />
                   </td>
                 </tr>
               </tbody>
             </table>
-        </form>
-      </div>
-    </dx-scroll-view>
-  </div>
+          </form>
+        </div>
+      </dx-scroll-view>
+    </div>
   </dx-popup>
 </ng-container>
 
@@ -323,52 +309,54 @@
     <dxo-position at="center" my="center" of="window"></dxo-position>
 
     <form [formGroup]="myForm">
-      <div class="row">
-        <div class="col">Serial #</div>
-        <div class="col">Tag #</div>
-        <div class="col">Model #</div>
-      </div>
       <div *dxTemplate="let data of 'content'">
-      <app-status></app-status>
+        <app-status></app-status>
         <dx-scroll-view width="100%" height="100%">
-        <div id="textBlock" style="margin-top: 3px; margin-bottom: 10px">
-          <form [formGroup]="myForm">
-            <table class="pure-table pure-table-horizontal" style="width: 100%">
-              <thead>
-                <tr>
-                  <th>Line</th>
-                  <th>Warehouse</th>
-                  <th>Location</th>
-                  <th>ER</th>
-                  <th>Quantity</th>
-                  <th>Cost</th>
-                  <th>Pick Quantity</th>
-                </tr>
-              </thead>
+          <div id="textBlock" style="margin-top: 3px; margin-bottom: 10px">
+            <form [formGroup]="myForm">
+              <table
+                class="pure-table pure-table-horizontal"
+                style="width: 100%"
+              >
+                <thead>
+                  <tr>
+                    <th>Line</th>
+                    <th>Warehouse</th>
+                    <th>Location</th>
+                    <th>ER</th>
+                    <th>Quantity</th>
+                    <th>Cost</th>
+                    <th>Pick Quantity</th>
+                  </tr>
+                </thead>
 
-              <tbody formArrayName="serialInvDet">
-                <tr
-              *ngFor="let obj of serialInvDetForms.controls; let i = index"
-              [formGroupName]="i"
-              class="row"
-            >
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ obj.get("warehouse")?.value }}</td>
-                  <td>{{ obj.get("location")?.value }}</td>
-                  <td>{{ obj.get("er")?.value }}</td>
-                  <td>{{ obj.get("quantity")?.value }}</td>
-                  <td>{{ obj.get("cost")?.value }}</td>
-                  <td>
-                    <input formControlName="selectedQuantity" style="text-align: right;width: 100px;"/>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </form>
+                <tbody formArrayName="serialInvDet">
+                  <tr
+                    *ngFor="
+                      let obj of serialInvDetForms.controls;
+                      let i = index
+                    "
+                    [formGroupName]="i"
+                  >
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ obj.get("warehouse")?.value }}</td>
+                    <td>{{ obj.get("location")?.value }}</td>
+                    <td>{{ obj.get("er")?.value }}</td>
+                    <td>{{ obj.get("quantity")?.value }}</td>
+                    <td>{{ obj.get("cost")?.value }}</td>
+                    <td>
+                      <input
+                        formControlName="selectedQuantity"
+                        style="text-align: right; width: 100px"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
           </div>
         </dx-scroll-view>
       </div>
     </form>
-
-</dx-popup>
+  </dx-popup>
 </ng-container>

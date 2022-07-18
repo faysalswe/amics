@@ -17,7 +17,7 @@ namespace Aims.Core.Models
         public double TransQty { get; set; }      
         public string ItemNumber { get; set; }
         public string Rev { get; set; }
-        public string BoxNum { get; set; }
+        public int BoxNum { get; set; }
         public string lineWeight { get; set; }
         public string CreatedBy { get; set; }
     }

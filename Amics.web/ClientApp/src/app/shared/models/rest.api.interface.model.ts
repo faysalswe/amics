@@ -130,7 +130,7 @@ export interface TransData {
   itemNumber: string;
   rev: string;
   boxNum: number;
-  lineWeight: number;
+  lineWeight: string;
   createdBy?: string;
 }
 

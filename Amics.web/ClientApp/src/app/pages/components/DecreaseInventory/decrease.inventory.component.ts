@@ -36,7 +36,7 @@ import {
   SerBasicFormArrayModel,
   SerialLotInt,
   TransLogInt,
-  TransData
+  TransData,
 } from 'src/app/shared/models/rest.api.interface.model';
 
 //import { ReasonInt, ERInt, DefaultValInt, TransLogInt, IncreaseInventoryInt, SerialLotInt } from "../../models/rest.api.interface.model";
@@ -51,6 +51,7 @@ import { PartMasterDataTransService } from '../../services/pmdatatransfer.servic
 import { SearchService } from '../../services/search.service';
 import { PMSearchComponent } from '../PartMaster/search/pmsearch.component';
 import { DecreaseInventoryService } from '../../services/decrease.inventory.service';
+import { DecreaseRequestModel } from '../../models/rest.api.interface.model';
 
 @Component({
   selector: 'app-decrease-inventory',
@@ -165,6 +166,9 @@ export class DecreaseInventoryComponent implements AfterViewInit {
 
   closeBasicPopUp: any;
   saveBasicPopUp: any;
+
+  closeSerialPopUp: any;
+  saveSerialPopUp: any;
   constructor(
     private pmdataTransfer: PartMasterDataTransService,
     private incInvService: IncreaseInventoryService,
@@ -183,33 +187,66 @@ export class DecreaseInventoryComponent implements AfterViewInit {
 
     const that = this;
 
-    this.closeButtonOptions = {
+    this.saveSerialPopUp = {
       text: 'Save and Exit',
       onClick(e: any) {
         that.loadingVisible = true;
         that.serialPopupVisible = false;
-        var serialLst: SerialLotInt[] = that.serialInvDetForms.value;
-        serialLst.forEach((obj) => {
-          obj.qty = 1;
-          obj.createdBy = String(that.user);
-        });
-        const body = that.increaseInvObj();
-        that.loadingVisible = false;
-        that.inventoryService.insertInvSerLot(serialLst, body).subscribe(() => {
-          setTimeout(() => {
-            that.refreshLog();
-            that.formDirective.resetForm();
-            that.myForm.reset();
-            that.initializeFormData();
-            that.pmDetails = new pmDetails();
-            that.loadingVisible = false;
-            notify('Successfully Saved', 'info', 500);
-          }, 500);
-        });
+
+        var serialLst: SerBasicFormArrayModel[] = that.serialInvDetForms.value;
+        let tmpObjLst: TransData[] = [];
+        serialLst
+          .filter((d) => d.isQuantitySelectedForDecrease)
+          .forEach((obj) => {
+            let tmpObj = <TransData>{};
+            tmpObj.invSerialId = obj.serialId;
+            tmpObj.itemsId = that.itemsId;
+            tmpObj.source = '';
+            tmpObj.transQty = Number(1);
+            tmpObj.itemNumber = that.pmDetails.itemNumber;
+            tmpObj.rev = '-';
+            tmpObj.boxNum = 0;
+            tmpObj.lineWeight = '';
+            tmpObj.createdBy = that.user;
+            tmpObjLst.push(tmpObj);
+          });
+        console.log(tmpObjLst);
+
+        const adjstedQuantity = serialLst.filter(
+          (d) => d.isQuantitySelectedForDecrease
+        ).length;
+
+        const decModel = <DecreaseRequestModel>{};
+        /* decModel.pickTransdate = that.datePipe
+          .transform(that.transDateCntl.value, 'MM/dd/yy')
+          ?.toString(); */
+        decModel.pickTransdate = that.transDateCntl.value;
+        decModel.pickMiscReason = that.miscReasonCntl.value;
+        decModel.pickMiscRef = that.miscRefCntl.value;
+        decModel.pickMiscSource = that.miscSourceCntl.value;
+        decModel.pickSource = 'MISC PICK';
+        decModel.pickNotes = that.notesCntl.value;
+        decModel.pickUser = that.user;
+        decModel.pickItemId = that.itemsId;
+        decModel.pickQty = adjstedQuantity;
+
+        that.decInvService
+          .decreaseBasicInventory(tmpObjLst, decModel)
+          .subscribe(() => {
+            setTimeout(() => {
+              that.refreshLog();
+              that.formDirective.resetForm();
+              that.myForm.reset();
+              that.initializeFormData();
+              that.pmDetails = new pmDetails();
+              that.loadingVisible = false;
+              notify('Successfully Saved', 'info', 1000);
+            }, 1000);
+          });
       },
     };
 
-    this.emailButtonOptions = {
+    this.closeSerialPopUp = {
       text: 'Cancel and Exit',
       onClick(e: any) {
         //that.initializeFormData();
@@ -231,19 +268,48 @@ export class DecreaseInventoryComponent implements AfterViewInit {
           tmpObj.invBasicId = obj.basicId;
           tmpObj.itemsId = that.itemsId;
           tmpObj.source = '';
-          tmpObj.transQty = obj.selectedQuantity;
+          tmpObj.transQty = Number(obj.selectedQuantity);
           tmpObj.itemNumber = that.pmDetails.itemNumber;
-          tmpObj.rev = 'rev';
+          tmpObj.rev = '-';
           tmpObj.boxNum = 0;
-          tmpObj.lineWeight = 0;
+          tmpObj.lineWeight = '';
           tmpObj.createdBy = that.user;
           tmpObjLst.push(tmpObj);
         });
         console.log(tmpObjLst);
 
-        that.decInvService.decreaseBasicInventory(tmpObjLst).subscribe(() => {
-          that.loadingVisible = false;
-        });
+        const adjstedQuantity = tmpObjLst.reduce(
+          (a, obj) => a + obj.transQty,
+          0
+        );
+
+        const decModel = <DecreaseRequestModel>{};
+        /* decModel.pickTransdate = that.datePipe
+          .transform(that.transDateCntl.value, 'MM/dd/yy')
+          ?.toString(); */
+        decModel.pickTransdate = that.transDateCntl.value;
+        decModel.pickMiscReason = that.miscReasonCntl.value;
+        decModel.pickMiscRef = that.miscRefCntl.value;
+        decModel.pickMiscSource = that.miscSourceCntl.value;
+        decModel.pickSource = 'MISC PICK';
+        decModel.pickNotes = that.notesCntl.value;
+        decModel.pickUser = that.user;
+        decModel.pickItemId = that.itemsId;
+        decModel.pickQty = adjstedQuantity;
+
+        that.decInvService
+          .decreaseBasicInventory(tmpObjLst, decModel)
+          .subscribe(() => {
+            setTimeout(() => {
+              that.refreshLog();
+              that.formDirective.resetForm();
+              that.myForm.reset();
+              that.initializeFormData();
+              that.pmDetails = new pmDetails();
+              that.loadingVisible = false;
+              notify('Successfully Saved', 'info', 1000);
+            }, 1000);
+          });
       },
     };
 
@@ -418,15 +484,21 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   }
 
   ngOnInit(): void {
+    console.log(this.pmDetails);
     this.loadingVisible = true;
     this.initializeFormData();
-    this.fromDate.setMonth(this.fromDate.getMonth() - 1);
+    //this.fromDate.setMonth(this.fromDate.getMonth() - 1);
+    this.fromDate.setDate(this.fromDate.getDate() - 1);
 
     var initData$ = forkJoin([
       this.incInvService.getDefaultValues(),
       this.searchService.getWarehouseInfo(''),
       this.searchService.getReasonCode('decrease'),
-      this.inventoryService.getTransLog(this.fromDateStr(), this.toDateStr()),
+      this.inventoryService.getTransLog(
+        this.fromDateStr(),
+        this.toDateStr(),
+        'MISC PICK'
+      ),
     ]).pipe(
       tap((obj) => {
         console.log(obj);
@@ -498,13 +570,13 @@ export class DecreaseInventoryComponent implements AfterViewInit {
     }, 0);
   }
 
-  private refreshLogs() {
+  /*  private refreshLogs() {
     this.inventoryService
-      .getTransLog(this.fromDateStr(), this.toDateStr())
+      .getTransLog(this.fromDateStr(), this.toDateStr(), 'MISC PICK')
       .subscribe((obj: TransLogInt[]) => {
         this.trasLogArray = obj;
       });
-  }
+  } */
 
   updateSelectedWarehouse(event$: any) {
     if (event$ != null) {
@@ -527,7 +599,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   refreshLog() {
     this.loadingVisible = true;
     this.inventoryService
-      .getTransLog(this.fromDateStr(), this.toDateStr())
+      .getTransLog(this.fromDateStr(), this.toDateStr(), 'MISC PICK')
       .subscribe((obj: TransLogInt[]) => {
         this.trasLogArray = obj;
         this.loadingVisible = false;
@@ -569,6 +641,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   update() {
     alert(this.pmDetails.invType);
     if (this.pmDetails.invType === 'SERIAL') {
+      // alert(this.pmDetails.invType);
       this.viewSerial$ = this.partmasterService
         .getViewSerial(this.itemsId, this.secUserId)
         .subscribe((res: pmSerial[]) => {
@@ -576,6 +649,9 @@ export class DecreaseInventoryComponent implements AfterViewInit {
           if (res.length > 0) {
             this.removeSerialInvDet();
             this.addAllSerial(res);
+            this.serialPopupVisible = true;
+            //const body = this.increaseInvObj();
+            // this.currentdecreaseInventoryIntObj = body;
           } else {
             alert('There is no quantity to decrease');
           }

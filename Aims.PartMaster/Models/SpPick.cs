@@ -27,7 +27,7 @@ namespace Aims.Core.Models
         public string PickWarehouse { get; set; }
         public Guid? PickOriginalReceiptsid { get; set; } = null;
         public Guid? PickItemId { get; set; } = null;
-        public string PickQty { get; set; }
+        public decimal PickQty { get; set; }
 
 
     }

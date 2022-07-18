@@ -81,7 +81,7 @@ namespace Aims.PartMaster.Services
         /// <summary>
         ///Interface for execute the inv pick sp for decrease the inventory
         /// </summary> 
-        public LstMessage ExecuteSpPick(SpPick Pick);
+        public LstPacklist ExecuteSpPick(SpPick Pick);
 
     }
     public class InventoryService : IInventoryService
@@ -294,53 +294,55 @@ namespace Aims.PartMaster.Services
         /// API Service for execute receipt stored procedure and increase the quantity.
         /// </summary>   
 
-        public LstMessage ExecuteSpPick(SpPick spPick)
+        public LstPacklist ExecuteSpPick(SpPick spPick)
         {
               
             var sql = $"exec sp_pick5 ";
-             
+
+            sql += $"@pick_transnum='{spPick.PickTransnum}'";
             if (spPick.PickTransdate != null)
-            sql += $"@pick_transdate='{spPick.PickTransdate}'";
+            sql += $",@pick_transdate='{spPick.PickTransdate}'";
 
             if (spPick.PickSourcesrefId != null)
-                sql += $"@pick_sourcesrefid='{spPick.PickSourcesrefId}'";
+                sql += $",@pick_sourcesrefid='{spPick.PickSourcesrefId}'";
 
-            sql += $"@pick_misc_reason='{spPick.PickMiscReason}'";
-            sql += $"@pick_misc_ref='{spPick.PickMiscRef}'";
-            sql += $"@pick_misc_source='{spPick.PickMiscSource}'";
+            sql += $",@pick_misc_reason='{spPick.PickMiscReason}'";
+            sql += $",@pick_misc_ref='{spPick.PickMiscRef}'";
+            sql += $",@pick_misc_source='{spPick.PickMiscSource}'";
 
             if (spPick.PickShipvia != null)
-                sql += $"@Pick_Shipvia='{spPick.PickShipvia}'";
-            sql += $"@pick_source='{spPick.PickSource}'";
+                sql += $",@Pick_Shipvia='{spPick.PickShipvia}'";
+            sql += $",@pick_source='{spPick.PickSource}'";
 
             if (spPick.PickShipCharge != null)
-                sql += $"@Pick_Shipcharge='{spPick.PickShipCharge}'";
+                sql += $",@Pick_Shipcharge='{spPick.PickShipCharge}'";
             if (spPick.PickTrackingNum != null)
-                sql += $"@Pick_Trackingnum='{spPick.PickTrackingNum}'";
+                sql += $",@Pick_Trackingnum='{spPick.PickTrackingNum}'";
 
 
-            sql += $"@pick_notes='{spPick.PickNotes}'";
+            sql += $",@pick_notes='{spPick.PickNotes}'";
 
             if (spPick.PickPackNote != null)
-                sql += $"@Pick_PackNote='{spPick.PickPackNote}'";
+                sql += $",@Pick_PackNote='{spPick.PickPackNote}'";
 
             if (spPick.PickInvoiceNote != null)
-                sql += $"@Pick_InvoiceNote='{spPick.PickInvoiceNote}'";
+                sql += $",@Pick_InvoiceNote='{spPick.PickInvoiceNote}'";
 
-            sql += $"@Pick_SalesTax='{spPick.PickSalesTax}'";
-            sql += $"@Pick_Shipdate='{spPick.PickTransdate}'";
-            sql += $"@pick_user='{spPick.PickUser}'";
-            sql += $"@pick_transnum='{spPick.PickTransnum}'";
-            sql += $"@pick_setnum='{spPick.PickSetnum}'";
+            sql += $",@Pick_SalesTax='{spPick.PickSalesTax}'";
+            sql += $",@Pick_Shipdate='{spPick.PickTransdate}'";
+            sql += $",@pick_user='{spPick.PickUser}'";
+
+            sql += $",@pick_setnum='{spPick.PickSetnum}'";
 
             if (spPick.PickWarehouse != null)
-                sql += $"@pick_warehouse='{spPick.PickWarehouse}'";
+                sql += $",@pick_warehouse='{spPick.PickWarehouse}'";
 
             if (spPick.PickOriginalReceiptsid != null)
-                sql += $"@original_receiptsid='{spPick.PickOriginalReceiptsid}'";
+                sql += $",@original_receiptsid='{spPick.PickOriginalReceiptsid}'";
             
-            var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
-            return receiptResult;
+            var receiptResult = _amicsDbContext.LstPacklist.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
+
+            return new LstPacklist() { Packlist = "Successfully Saved" };
         }
 
     }

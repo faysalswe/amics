@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TransNumberRecInt } from '../models/rest.api.interface.model';
+import {
+  DecreaseRequestModel,
+  TransNumberRecInt,
+} from '../models/rest.api.interface.model';
 import { concatMap, Observable } from 'rxjs';
 import { TransData } from 'src/app/shared/models/rest.api.interface.model';
+import { resolveAny, resolveMx } from 'dns';
 
 @Injectable({ providedIn: 'root' })
 export class DecreaseInventoryService {
@@ -22,10 +26,17 @@ export class DecreaseInventoryService {
     return this.httpClient.post(`${this.api}/InsertInvTrans`, lst);
   }
 
-  public decreaseBasicInventory(lst: TransData[]) {
+  updateReceiptApi_3(num: TransNumberRecInt, obj: DecreaseRequestModel) {
+    obj.pickTransnum = Number(num.sp_rec);
+
+    return this.httpClient.post(`${this.api}/ExecuteSpPick`, obj);
+  }
+
+  public decreaseBasicInventory(lst: TransData[], decModel: DecreaseRequestModel) {
     console.log('calling dec service');
     return this.extractTransNum().pipe(
-      concatMap((obj) => this.updateReceiptApi_2(obj, lst))
-    );
+      concatMap((obj) => this.updateReceiptApi_2(obj, lst).pipe(
+        concatMap((res) => this.updateReceiptApi_3(obj, decModel))))
+    )
   }
 }

@@ -9,6 +9,16 @@ namespace Aims.Core.Models
     {
         [Key] 
         public string Message { get; set; }
-        
+
+    
+
+
+    }
+
+    public class LstPacklist
+    {
+        [Key]
+        public string Packlist { get; set; }
+
     }
 }

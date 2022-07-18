@@ -24,15 +24,20 @@
     <dxi-location [row]="0" [col]="1"></dxi-location>
     <div *dxTemplate class="content item">
       <div class="details-container content-block dx-card responsive-paddings">
-        <div style="border-bottom: 2px solid #eee; padding-bottom: 10px">
-          <app-inventory-status [itemsId]="itemsId"
-                                [secUserId]="secUserId"></app-inventory-status>
+        <ng-container *ngIf="pmDetails?.itemNumber != ''">
+          <div style="border-bottom: 2px solid #eee; padding-bottom: 10px">
+            <app-inventory-status
+              [itemsId]="itemsId"
+              [secUserId]="secUserId"
+            ></app-inventory-status>
 
-          <h3 style="padding-bottom: 0px; margin-bottom: 0px">
-            <span style="color: darkgrey">PN : {{ pmDetails?.itemNumber }}</span>
-            / {{ pmDetails?.description }}
-          </h3>
-        </div>
+            <h3 style="padding-bottom: 0px; margin-bottom: 0px">
+              <span>{{ pmDetails?.itemNumber }}</span>
+              <span style="font-style: italic;color: rgb(93, 124, 224);">
+                ({{ pmDetails?.description }})</span>
+            </h3>
+          </div>
+        </ng-container>
         <br />
 
         <!-- Form Container starts        -->
