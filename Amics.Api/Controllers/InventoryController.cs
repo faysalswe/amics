@@ -142,7 +142,7 @@ namespace Amics.Api.Controllers
         /// API Route Controller for execute the inv pick sp for decrease the inventory
         /// </summary>        
         [HttpPost, Route("ExecuteSpPick")]
-        public LstMessage ExecuteSpPick([FromQuery] SpPick Pick)
+        public LstPacklist ExecuteSpPick([FromQuery] SpPick Pick)
         {
             var Message = _inventoryService.ExecuteSpPick(Pick);
             return Message;
