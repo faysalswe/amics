@@ -63,7 +63,7 @@ namespace Aims.Core.Services
             {
                 try
                 {
-                    sqlCommand.CommandText = "sp_webservice_load_partmaster5";
+                    sqlCommand.CommandText = "amics_sp_api_load_partmaster";
 
                     sqlCommand.CommandType = CommandType.StoredProcedure;
 
@@ -212,7 +212,7 @@ namespace Aims.Core.Services
             var itemsId = string.IsNullOrEmpty(parentId) ? Guid.Empty : new Guid(parentId.ToString());
 
             var bomItemresult = _amicsDbContext.LstItemsBom
-                .FromSqlRaw($"exec sp_view_items_bom5 @parentid ='{itemsId}'").ToList();
+                .FromSqlRaw($"exec amics_sp_api_view_items_bom @parentid ='{itemsId}'").ToList();
 
             return bomItemresult;
         }
@@ -226,7 +226,7 @@ namespace Aims.Core.Services
             var itemsId = string.IsNullOrEmpty(parentId) ? Guid.Empty : new Guid(parentId.ToString());
 
             var poItemresult = _amicsDbContext.LstItemsPO
-                .FromSqlRaw($"exec sp_view_items_po5 @parentid ='{itemsId}'").ToList();
+                .FromSqlRaw($"exec amics_sp_api_view_items_po @parentid ='{itemsId}'").ToList();
 
             return poItemresult;
         }
@@ -239,7 +239,7 @@ namespace Aims.Core.Services
         {
             var itemsId = string.IsNullOrEmpty(parentId) ? Guid.Empty : new Guid(parentId.ToString());
 
-            var bomexist = _amicsDbContext.LstBomCount.FromSqlRaw($"exec amics_sp_itembom_exist @parentid ='{itemsId}'").AsEnumerable().FirstOrDefault();
+            var bomexist = _amicsDbContext.LstBomCount.FromSqlRaw($"exec amics_sp_api_itembom_exist @parentid ='{itemsId}'").AsEnumerable().FirstOrDefault();
 
             return bomexist;
         }
@@ -261,12 +261,12 @@ namespace Aims.Core.Services
             {
                 try
                 {
-                    sqlCommand.CommandText = "sp_delete_list_items5";
+                    sqlCommand.CommandText = "amics_sp_api_delete_list_items";
                     conn.Open();
 
                     sqlCommand.CommandType = CommandType.StoredProcedure;
-                    sqlCommand.Parameters.Add(new SqlParameter("@item", itemNo));
-                    sqlCommand.Parameters.Add(new SqlParameter("@rev", rev));
+                    sqlCommand.Parameters.Add(new SqlParameter("@item", itemNum));
+                    sqlCommand.Parameters.Add(new SqlParameter("@rev", revDef));
                     var dataReader = await sqlCommand.ExecuteReaderAsync();
 
                     while (await dataReader.ReadAsync())
@@ -306,7 +306,7 @@ namespace Aims.Core.Services
             using (var conn = _amicsDbContext.Database.GetDbConnection())
             using (var command = _amicsDbContext.Database.GetDbConnection().CreateCommand())
             {
-                command.CommandText = "sp_maintain_partmaster25";
+                command.CommandText = "amics_sp_api_maintain_partmaster";
                 conn.Open();
 
                 command.CommandType = CommandType.StoredProcedure;
@@ -388,7 +388,7 @@ namespace Aims.Core.Services
                 {
                     using (var command = _amicsDbContext.Database.GetDbConnection().CreateCommand())
                     {
-                        command.CommandText = "sp_maintain_item_bom5";
+                        command.CommandText = "amics_sp_api_maintain_item_bom";
                         command.CommandType = CommandType.StoredProcedure;
                         conn.Open();
                         try
@@ -436,12 +436,12 @@ namespace Aims.Core.Services
             var usersId = string.IsNullOrEmpty(secUsersId) ? string.Empty : secUsersId;
             if (string.IsNullOrEmpty(warehouse))
             {
-                var viewLocResult = _amicsDbContext.LstViewLocation.FromSqlRaw($"select * from fn_view_location_summary_essex('{itmId}','{usersId}')").ToList();
+                var viewLocResult = _amicsDbContext.LstViewLocation.FromSqlRaw($"select * from amics_fn_api_view_location_summary('{itmId}','{usersId}')").ToList();
                 return viewLocResult;
             }
             else
             {
-                var viewLocWhResult = _amicsDbContext.LstViewLocationWh.FromSqlRaw($"select * from fn_view_location_summary_whs_essex('{itmId}','{usersId}','{warehouse}')").ToList();
+                var viewLocWhResult = _amicsDbContext.LstViewLocationWh.FromSqlRaw($"select * from amics_fn_api_view_location_summary_whs('{itmId}','{usersId}','{warehouse}')").ToList();
                 var viewLocResult = viewLocWhResult.Any() ? viewLocWhResult.Select(r => new LstViewLocation() { Location = r.Location, Warehouse = "", Somain = r.Somain, Name = r.Name, Quantity = r.Quantity }).ToList() : new List<LstViewLocation>();
                 return viewLocResult;
             }
@@ -472,7 +472,7 @@ namespace Aims.Core.Services
                     string strCurr = util.ReturnZeros(2);
                     string strQty = util.ReturnZeros(2);
 
-                    sqlCommand.CommandText = "sp_inquiry5";
+                    sqlCommand.CommandText = "amics_sp_api_Inquiry";
                     conn.Open();
 
                     sqlCommand.CommandType = CommandType.StoredProcedure;
@@ -579,17 +579,17 @@ namespace Aims.Core.Services
             var usersId = string.IsNullOrEmpty(secUsersId) ? string.Empty : secUsersId;
 
             if ((warehouse == null || warehouse == "") && (serNo == null || serNo == "") && (tagNo == null || tagNo == ""))
-                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where quantity > 0").ToList();
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from amics_fn_api_view_location_detail('{itmId}','{usersId}') where quantity > 0").ToList();
             else if ((warehouse != null || warehouse != "") && (serNo == null || serNo == "") && (tagNo == null || tagNo == ""))
-                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where warehouse='{warehouse}'").ToList();
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from amics_fn_api_view_location_detail('{itmId}','{usersId}') where warehouse='{warehouse}'").ToList();
             else if ((warehouse == null || warehouse == "") && (serNo != null || serNo != "") && (tagNo == null || tagNo == ""))
-                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where serlot like '{serNo}%'").ToList();
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from amics_fn_api_view_location_detail('{itmId}','{usersId}') where serlot like '{serNo}%'").ToList();
             else if ((warehouse != null || warehouse != "") && (serNo != null || serNo != "") && (tagNo == null || tagNo == ""))
-                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where serlot like '{serNo}%' and warehouse='{warehouse}'").ToList();
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from amics_fn_api_view_location_detail('{itmId}','{usersId}') where serlot like '{serNo}%' and warehouse='{warehouse}'").ToList();
             else if ((warehouse == null || warehouse == "") && (serNo == null || serNo == "") && (tagNo != null || tagNo != ""))
-                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where tagcol like '{tagNo}%'").ToList();
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from amics_fn_api_view_location_detail('{itmId}','{usersId}') where tagcol like '{tagNo}%'").ToList();
             else if ((warehouse != null || warehouse != "") && (serNo == null || serNo == "") && (tagNo != null || tagNo != ""))
-                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from fn_view_location_detail('{itmId}','{usersId}') where tagcol like '{tagNo}%' and warehouse='{warehouse}'").ToList();
+                viewSerialResult = _amicsDbContext.LstSerial.FromSqlRaw($"select * from amics_fn_api_view_location_detail('{itmId}','{usersId}') where tagcol like '{tagNo}%' and warehouse='{warehouse}'").ToList();
 
             return viewSerialResult;
         }
@@ -602,7 +602,7 @@ namespace Aims.Core.Services
         {
             var itemsId = string.IsNullOrEmpty(parentId) ? Guid.Empty : new Guid(parentId.ToString());
 
-            var notesResult = _amicsDbContext.LstNotes.FromSqlRaw($"exec amics_sp_view_notes @itemsid='{itemsId}'").ToList();
+            var notesResult = _amicsDbContext.LstNotes.FromSqlRaw($"exec amics_sp_api_view_notes @itemsid='{itemsId}'").ToList();
 
             return notesResult;
         }
@@ -623,7 +623,7 @@ namespace Aims.Core.Services
                 if ((notesId == null || notesId == Guid.Empty) && (notes.ActionFlag == 0))
                     notes.ActionFlag = 1;
 
-                notesResult = _amicsDbContext.LstMessage.FromSqlRaw($"exec sp_maintain_notes_general5 @actionflag='{notes.ActionFlag}', @parentid='{notes.ParentId}',@linenum='{notes.LineNum}',@notesref='{notes.NotesRef}', @notes='{notes.Notes}',@createdby='{user}',@id='{notesId}'").AsEnumerable().FirstOrDefault();
+                notesResult = _amicsDbContext.LstMessage.FromSqlRaw($"exec amics_sp_api_maintain_notes_general @actionflag='{notes.ActionFlag}', @parentid='{notes.ParentId}',@linenum='{notes.LineNum}',@notesref='{notes.NotesRef}', @notes='{notes.Notes}',@createdby='{user}',@id='{notesId}'").AsEnumerable().FirstOrDefault();
             }
             return notesResult;
         }
@@ -640,7 +640,7 @@ namespace Aims.Core.Services
             {
                 try
                 {
-                    sqlCommand.CommandText = "amics_sp_process_change_sertag";
+                    sqlCommand.CommandText = "amics_sp_api_process_change_sertag";
                     conn.Open();
 
                     sqlCommand.CommandType = CommandType.StoredProcedure;

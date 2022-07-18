@@ -33,7 +33,7 @@ namespace Lookup.Dapper
         {
             using IDbConnection conn = new SqlConnection(_connectionString);
 
-            var userDbSql = $"Select dbname from login_cred where username = '{userName}' and password = (select dbo.amics_fn_encrypt('{encryptedPassword}'))";
+            var userDbSql = $"Select dbname from login_cred where username = '{userName}' and password = (select dbo.amics_fn_api_encrypt('{encryptedPassword}'))";
             try
             {
                 var result = conn.Query<string>(userDbSql);
