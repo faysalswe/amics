@@ -29,6 +29,8 @@ namespace Aims.Core.Models
         public DbSet<LstErLookup> ListErLookup { get; set; }        
         public DbSet<LstBomCount> LstBomCount { get; set; }
         public DbSet<LstMessage> LstMessage { get; set; }
+        public DbSet<LstPacklist> LstPacklist { get; set; }
+        
         public DbSet<LstViewLocationWh> LstViewLocationWh { get; set; }
         public DbSet<LstViewLocation> LstViewLocation { get; set; }
         public DbSet<LstBomGridItems> LstBomGridItems { get; set; }
