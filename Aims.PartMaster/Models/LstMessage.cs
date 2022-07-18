@@ -11,4 +11,12 @@ namespace Aims.Core.Models
         public string Message { get; set; }
         
     }
+    
+    public class LstPacklist
+    {
+        [Key]
+        public string Packlist { get; set; }
+
+    }
+
 }

@@ -249,16 +249,20 @@ namespace Aims.PartMaster.Services
         }
 
 
+
+        /// <summary>
+        /// API Service for Insert into inv_trans table for decreasing inventory.
+        /// </summary>   
+
         public LstMessage InsertInvTrans(List<InvTrans> InvTransData)
         {
-
             //Insert Into inv_trans(Source, invbasicid, itemsid, transqty, transnum) Values('MISC PICK', 'fd6346b6-50da-458f-b05c-ecfd32238941', '5fc61219-de9d-46bd-b3a0-398dec32153c', '3', '43782')
- 
+
             for (int i = 0; i < InvTransData.Count; i++)
             {
                 InvTrans invTrans = InvTransData[i];
                 var sql = $"exec amics_sp_api_insert_inv_trans @TransNum={invTrans.TransNum}";
-               
+
                 if (invTrans.InvBasicId != null)
                     sql += $",@InvBasicId='{invTrans.InvBasicId}'";
 
@@ -275,13 +279,13 @@ namespace Aims.PartMaster.Services
                     sql += $",@ToLocationId='{invTrans.ToLocationId}'";
 
                 //if (invTrans.TransQty != null)
-                    sql += $",@TransQty='{invTrans.TransQty}'";
+                sql += $",@TransQty='{invTrans.TransQty}'";
 
                 if (invTrans.BoxNum != null)
                     sql += $",@BoxNum='{invTrans.BoxNum}'";
-                 
-                sql += $",@Createdby='{invTrans.CreatedBy}'";               
-            
+
+                sql += $",@Createdby='{invTrans.CreatedBy}'";
+
                 var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
             }
 
@@ -289,59 +293,61 @@ namespace Aims.PartMaster.Services
 
         }
 
-
         /// <summary>
         /// API Service for execute receipt stored procedure and increase the quantity.
         /// </summary>   
 
-        public LstMessage ExecuteSpPick(SpPick spPick)
+        public LstPacklist ExecuteSpPick(SpPick spPick)
         {
-              
+
             var sql = $"exec amics_sp_api_pick ";
-             
+
+            sql += $"@pick_transnum='{spPick.PickTransnum}'";
             if (spPick.PickTransdate != null)
-            sql += $"@pick_transdate='{spPick.PickTransdate}'";
+                sql += $",@pick_transdate='{spPick.PickTransdate}'";
 
             if (spPick.PickSourcesrefId != null)
-                sql += $"@pick_sourcesrefid='{spPick.PickSourcesrefId}'";
+                sql += $",@pick_sourcesrefid='{spPick.PickSourcesrefId}'";
 
-            sql += $"@pick_misc_reason='{spPick.PickMiscReason}'";
-            sql += $"@pick_misc_ref='{spPick.PickMiscRef}'";
-            sql += $"@pick_misc_source='{spPick.PickMiscSource}'";
+            sql += $",@pick_misc_reason='{spPick.PickMiscReason}'";
+            sql += $",@pick_misc_ref='{spPick.PickMiscRef}'";
+            sql += $",@pick_misc_source='{spPick.PickMiscSource}'";
 
             if (spPick.PickShipvia != null)
-                sql += $"@Pick_Shipvia='{spPick.PickShipvia}'";
-            sql += $"@pick_source='{spPick.PickSource}'";
+                sql += $",@Pick_Shipvia='{spPick.PickShipvia}'";
+            sql += $",@pick_source='{spPick.PickSource}'";
 
             if (spPick.PickShipCharge != null)
-                sql += $"@Pick_Shipcharge='{spPick.PickShipCharge}'";
+                sql += $",@Pick_Shipcharge='{spPick.PickShipCharge}'";
             if (spPick.PickTrackingNum != null)
-                sql += $"@Pick_Trackingnum='{spPick.PickTrackingNum}'";
+                sql += $",@Pick_Trackingnum='{spPick.PickTrackingNum}'";
 
 
-            sql += $"@pick_notes='{spPick.PickNotes}'";
+            sql += $",@pick_notes='{spPick.PickNotes}'";
 
             if (spPick.PickPackNote != null)
-                sql += $"@Pick_PackNote='{spPick.PickPackNote}'";
+                sql += $",@Pick_PackNote='{spPick.PickPackNote}'";
 
             if (spPick.PickInvoiceNote != null)
-                sql += $"@Pick_InvoiceNote='{spPick.PickInvoiceNote}'";
+                sql += $",@Pick_InvoiceNote='{spPick.PickInvoiceNote}'";
 
-            sql += $"@Pick_SalesTax='{spPick.PickSalesTax}'";
-            sql += $"@Pick_Shipdate='{spPick.PickTransdate}'";
-            sql += $"@pick_user='{spPick.PickUser}'";
-            sql += $"@pick_transnum='{spPick.PickTransnum}'";
-            sql += $"@pick_setnum='{spPick.PickSetnum}'";
+            sql += $",@Pick_SalesTax='{spPick.PickSalesTax}'";
+            sql += $",@Pick_Shipdate='{spPick.PickTransdate}'";
+            sql += $",@pick_user='{spPick.PickUser}'";
+
+            sql += $",@pick_setnum='{spPick.PickSetnum}'";
 
             if (spPick.PickWarehouse != null)
-                sql += $"@pick_warehouse='{spPick.PickWarehouse}'";
+                sql += $",@pick_warehouse='{spPick.PickWarehouse}'";
 
             if (spPick.PickOriginalReceiptsid != null)
-                sql += $"@original_receiptsid='{spPick.PickOriginalReceiptsid}'";
-            
-            var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
-            return receiptResult;
+                sql += $",@original_receiptsid='{spPick.PickOriginalReceiptsid}'";
+
+            var receiptResult = _amicsDbContext.LstPacklist.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
+
+            return new LstPacklist() { Packlist = "Successfully Saved" };
         }
+
 
     }
 }
