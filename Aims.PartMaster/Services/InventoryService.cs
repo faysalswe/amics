@@ -81,7 +81,7 @@ namespace Aims.PartMaster.Services
         /// <summary>
         ///Interface for execute the inv pick sp for decrease the inventory
         /// </summary> 
-        public LstMessage ExecuteSpPick(SpPick Pick);
+        public LstPacklist ExecuteSpPick(SpPick Pick);
 
     }
     public class InventoryService : IInventoryService
