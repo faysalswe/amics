@@ -24,34 +24,43 @@
     <dxi-location [row]="0" [col]="1"></dxi-location>
     <div *dxTemplate class="content item">
       <div class="details-container content-block dx-card responsive-paddings">
-        <div style="border-bottom: 2px solid #eee; padding-bottom: 10px">
-          <app-inventory-status [itemsId]="itemsId"
-                                [secUserId]="secUserId"></app-inventory-status>
+        <ng-container *ngIf="pmDetails?.itemNumber != ''">
+          <div style="border-bottom: 2px solid #eee; padding-bottom: 10px">
+            <app-inventory-status
+              [itemsId]="itemsId"
+              [secUserId]="secUserId"
+            ></app-inventory-status>
 
-          <h3 style="padding-bottom: 0px; margin-bottom: 0px">
-            <span style="color: darkgrey">PN : {{ pmDetails?.itemNumber }}</span>
-            / {{ pmDetails?.description }}
-          </h3>
-        </div>
+            <h3 style="padding-bottom: 0px; margin-bottom: 0px">
+              <span>{{ pmDetails?.itemNumber }}</span>
+              <span style="font-style: italic;color: rgb(93, 124, 224);">
+                ({{ pmDetails?.description }})</span>
+            </h3>
+          </div>
+        </ng-container>
         <br />
 
         <!-- Form Container starts        -->
         <div id="form-container">
-          <dx-form id="form"
-                   [formGroup]="myForm"
-                   [colCount]="4"
-                   #formDirective="ngForm">
+          <dx-form
+            id="form"
+            [formGroup]="myForm"
+            [colCount]="4"
+            #formDirective="ngForm"
+          >
             <!-- Quantity Starts  -->
             <dxi-item [colSpan]="1" *ngDisplayLabel="100">
-              <dx-number-box formControlName="quantity"
-                             [stylingMode]="'outlined'"
-                             [labelMode]="'floating'"
-                             [elementAttr]="{ class: 'myclass' }"
-                             [inputAttr]="{ id: 'quantityId' }"
-                             [ngAddLabel]="labelMap.quan_num"
-                             #quantityVar
-                             [isValid]="isValid(quantityCntl)"
-                             [validationError]="{ message: 'Quantity is required' }">
+              <dx-number-box
+                formControlName="quantity"
+                [stylingMode]="'outlined'"
+                [labelMode]="'floating'"
+                [elementAttr]="{ class: 'myclass' }"
+                [inputAttr]="{ id: 'quantityId' }"
+                [ngAddLabel]="labelMap.quan_num"
+                #quantityVar
+                [isValid]="isValid(quantityCntl)"
+                [validationError]="{ message: 'Quantity is required' }"
+              >
               </dx-number-box>
 
               <!-- <dxi-validation-rule
@@ -63,82 +72,93 @@
             <!-- Quantity Ends  -->
             <!-- Unit Cost Starts  -->
             <dxi-item [colSpan]="1">
-              <dx-number-box formControlName="cost"
-                             [stylingMode]="'outlined'"
-                             [labelMode]="'floating'"
-                             [elementAttr]="{ class: 'myclass' }"
-                             [inputAttr]="{ id: 'costId' }"
-                             [ngAddLabel]="labelMap.unitCost_num"
-                             #unitCostVar
-                             format="$ #,##0.####"
-                             [isValid]="isValid(costCntl)"
-                             [validationError]="{ message: 'Cost is required' }">
+              <dx-number-box
+                formControlName="cost"
+                [stylingMode]="'outlined'"
+                [labelMode]="'floating'"
+                [elementAttr]="{ class: 'myclass' }"
+                [inputAttr]="{ id: 'costId' }"
+                [ngAddLabel]="labelMap.unitCost_num"
+                #unitCostVar
+                format="$ #,##0.####"
+                [isValid]="isValid(costCntl)"
+                [validationError]="{ message: 'Cost is required' }"
+              >
               </dx-number-box>
             </dxi-item>
             <!-- Unit Cost Ends  -->
+
             <!-- Reason Code Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-select-box formControlName="miscReason"
-                             width="100%"
-                             [items]="reasonsStr"
-                             [value]="defaultReason"
-                             [searchEnabled]="true"
-                             [stylingMode]="'underlined'"
-                             [labelMode]="'floating'"
-                             placeholder="Search"
-                             [ngAddLabel]="labelMap.reasonCode_num"
-                             #varReasonCode
-                             (onFocusIn)="openReasonCodeBox()"
-                             [isValid]="isValid(miscReasonCntl)"
-                             [validationError]="{ message: 'Reason Code is required' }"></dx-select-box>
+              <dx-select-box
+                formControlName="miscReason"
+                width="100%"
+                [items]="reasonsStr"
+                [value]="defaultReason"
+                [searchEnabled]="true"
+                [stylingMode]="'underlined'"
+                [labelMode]="'floating'"
+                placeholder="Search"
+                [ngAddLabel]="labelMap.reasonCode_num"
+                #varReasonCode
+                (onFocusIn)="openReasonCodeBox()"
+                [isValid]="isValid(miscReasonCntl)"
+                [validationError]="{ message: 'Reason Code is required' }"
+              ></dx-select-box>
             </dxi-item>
             <!-- Reason Code Ends  -->
             <!-- Transaction Date Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-date-box formControlName="transDate"
-                           [value]="todayDate"
-                           [ngAddLabel]="labelMap.txnDate_num"
-                           placeholder="Select..."
-                           [stylingMode]="'underlined'"
-                           [labelMode]="'floating'"
-                           style="margin-top: 10px"
-                           [isValid]="isValid(transDateCntl)"
-                           [validationError]="{ message: 'Txn Date is required' }"></dx-date-box>
+              <dx-date-box
+                formControlName="transDate"
+                [value]="todayDate"
+                [ngAddLabel]="labelMap.txnDate_num"
+                placeholder="Select..."
+                [stylingMode]="'underlined'"
+                [labelMode]="'floating'"
+                style="margin-top: 10px"
+                [isValid]="isValid(transDateCntl)"
+                [validationError]="{ message: 'Txn Date is required' }"
+              ></dx-date-box>
             </dxi-item>
             <!-- Transaction Date Ends  -->
             <!-- Warehouse Search Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-select-box formControlName="warehouse"
-                             [ngAddLabel]="labelMap.warehouse_num"
-                             [items]="warehousesStr"
-                             value="{{ pmDetails?.warehouse }}"
-                             [searchEnabled]="true"
-                             (onValueChanged)="updateSelectedWarehouse($event)"
-                             [stylingMode]="'underlined'"
-                             [labelMode]="'floating'"
-                             placeholder="Search"
-                             style="width: 100%"
-                             #varWarehouse
-                             (onFocusIn)="openWarehouseBox()"
-                             [isValid]="isValid(warehouseCntl)"
-                             [validationError]="{ message: 'Warehouse is required' }"></dx-select-box>
+              <dx-select-box
+                formControlName="warehouse"
+                [ngAddLabel]="labelMap.warehouse_num"
+                [items]="warehousesStr"
+                value="{{ pmDetails?.warehouse }}"
+                [searchEnabled]="true"
+                (onValueChanged)="updateSelectedWarehouse($event)"
+                [stylingMode]="'underlined'"
+                [labelMode]="'floating'"
+                placeholder="Search"
+                style="width: 100%"
+                #varWarehouse
+                (onFocusIn)="openWarehouseBox()"
+                [isValid]="isValid(warehouseCntl)"
+                [validationError]="{ message: 'Warehouse is required' }"
+              ></dx-select-box>
             </dxi-item>
             <!-- Warehouse Search Ends  -->
             <!-- Location Search Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-select-box formControlName="location"
-                             width="100%"
-                             [ngAddLabel]="labelMap.location_num"
-                             [items]="locationsStr"
-                             value="{{ pmDetails?.location }}"
-                             [searchEnabled]="true"
-                             [stylingMode]="'underlined'"
-                             [labelMode]="'floating'"
-                             placeholder="Search"
-                             #varLocation
-                             (onFocusIn)="openLocationBox()"
-                             [isValid]="isValid(locationCntl)"
-                             [validationError]="{ message: 'Location is required' }"></dx-select-box>
+              <dx-select-box
+                formControlName="location"
+                width="100%"
+                [ngAddLabel]="labelMap.location_num"
+                [items]="locationsStr"
+                value="{{ pmDetails?.location }}"
+                [searchEnabled]="true"
+                [stylingMode]="'underlined'"
+                [labelMode]="'floating'"
+                placeholder="Search"
+                #varLocation
+                (onFocusIn)="openLocationBox()"
+                [isValid]="isValid(locationCntl)"
+                [validationError]="{ message: 'Location is required' }"
+              ></dx-select-box>
             </dxi-item>
             <!-- Location Search Ends  -->
             <!-- Source Starts  -->
@@ -176,16 +196,18 @@
             <!-- Ref Ends  -->
             <!-- User or ER Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-select-box formControlName="sourcesRefId"
-                             label="ER"
-                             width="100%"
-                             [ngAddLabel]="labelMap.er_num"
-                             [items]="ersStr"
-                             [value]="er"
-                             [searchEnabled]="true"
-                             [stylingMode]="'underlined'"
-                             [labelMode]="'floating'"
-                             placeholder="Search"></dx-select-box>
+              <dx-select-box
+                formControlName="sourcesRefId"
+                label="ER"
+                width="100%"
+                [ngAddLabel]="labelMap.er_num"
+                [items]="ersStr"
+                [value]="er"
+                [searchEnabled]="true"
+                [stylingMode]="'underlined'"
+                [labelMode]="'floating'"
+                placeholder="Search"
+              ></dx-select-box>
             </dxi-item>
             <!-- User or ER Ends  -->
             <!-- Notes Starts  -->
@@ -257,35 +279,43 @@
   </dxi-item>
 </dx-responsive-box>
 
-<dx-popup [width]="650"
-          [height]="550"
-          [showTitle]="true"
-          title="Serial Inventory"
-          [dragEnabled]="false"
-          [showCloseButton]="true"
-          [(visible)]="popupVisible">
-  <dxi-toolbar-item widget="dxButton"
-                    toolbar="bottom"
-                    location="after"
-                    [options]="emailButtonOptions"></dxi-toolbar-item>
-  <dxi-toolbar-item widget="dxButton"
-                    toolbar="bottom"
-                    location="after"
-                    [options]="closeButtonOptions">
+<dx-popup
+  [width]="650"
+  [height]="550"
+  [showTitle]="true"
+  title="Serial Inventory"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  [(visible)]="popupVisible"
+>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="after"
+    [options]="emailButtonOptions"
+  ></dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="after"
+    [options]="closeButtonOptions"
+  >
   </dxi-toolbar-item>
   <dxo-position at="center" my="center" of="window"></dxo-position>
 
   <div *dxTemplate="let data of 'content'">
     <app-status></app-status>
-    <div class="row"
-         style="
+    <div
+      class="row"
+      style="
         background-color: #eee;
         padding: 10px;
         border-top-left-radius: 15px;
         border-top-right-radius: 15px;
         margin-left: 0px;
         margin-right: 0px;
-      ">
+      "
+    >
       <div class="col">Serial #</div>
       <div class="col">Tag #</div>
       <div class="col">Model #</div>
@@ -294,25 +324,33 @@
       <div id="textBlock" style="margin-top: 10px; margin-bottom: 10px">
         <form [formGroup]="myForm">
           <div formArrayName="serialInvDet" class="container">
-            <div *ngFor="let obj of serialInvDetForms.controls; let i = index"
-                 [formGroupName]="i"
-                 class="row">
+            <div
+              *ngFor="let obj of serialInvDetForms.controls; let i = index"
+              [formGroupName]="i"
+              class="row"
+            >
               <div class="col" style="padding: 1px">
-                <input formControlName="serNo"
-                       class="form-control"
-                       style="width: 100%"
-                       id="{{ getSerElementIdValue(i) }}" />
+                <input
+                  formControlName="serNo"
+                  class="form-control"
+                  style="width: 100%"
+                  id="{{ getSerElementIdValue(i) }}"
+                />
               </div>
               <div class="col" style="padding: 1px">
-                <input formControlName="tagNo"
-                       class="form-control"
-                       style="width: 100%"
-                       id="{{ getTagElementIdValue(i) }}" />
+                <input
+                  formControlName="tagNo"
+                  class="form-control"
+                  style="width: 100%"
+                  id="{{ getTagElementIdValue(i) }}"
+                />
               </div>
               <div class="col" style="padding: 1px">
-                <input formControlName="model"
-                       class="form-control"
-                       style="width: 100%" />
+                <input
+                  formControlName="model"
+                  class="form-control"
+                  style="width: 100%"
+                />
               </div>
             </div>
           </div>

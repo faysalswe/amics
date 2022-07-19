@@ -8,15 +8,14 @@ namespace Aims.Core.Models
     public class LstMessage
     {
         [Key] 
-        public string Message { get; set; }
-        
+        public string Message { get; set; }        
     }
-    
+
     public class LstPacklist
     {
         [Key]
         public string Packlist { get; set; }
-
     }
+     
 
 }

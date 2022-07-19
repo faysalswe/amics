@@ -185,8 +185,9 @@ export class IncreaseInventoryComponent implements AfterViewInit {
             that.initializeFormData();
             that.pmDetails = new pmDetails();
             that.loadingVisible = false;
-            notify('Successfully Saved', 'info', 500);
-          }, 500);
+            that.focusOnItemNumber();
+            notify('Successfully Saved', 'info', 1000);
+          }, 1000);
         });
       },
     };
@@ -320,12 +321,13 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   ngOnInit(): void {
     this.loadingVisible = true;
     this.initializeFormData();
-    this.fromDate.setMonth(this.fromDate.getMonth() - 1);
+    this.fromDate.setDate(this.fromDate.getDate() - 1);
+    // this.fromDate.setMonth(this.fromDate.getMonth() - 1);
 
     var initData$ = forkJoin([
       this.incInvService.getDefaultValues(),
       this.searchService.getWarehouseInfo(''),
-      this.searchService.getReasonCode(),
+      this.searchService.getReasonCode('increase'),
       this.inventoryService.getTransLog(this.fromDateStr(), this.toDateStr()),
     ]).pipe(
       tap((obj) => {
@@ -492,11 +494,12 @@ export class IncreaseInventoryComponent implements AfterViewInit {
         this.pmDetails = new pmDetails();
         setTimeout(() => {
           this.loadingVisible = false;
-          notify(res['message'], 'info', 500);
-        }, 500);
+          notify(res['message'], 'info', 1000);
+        }, 1000);
+        this.focusOnItemNumber();
       });
     }
-    this.focusOnItemNumber();
+
   }
 
   increaseInvObj() {
