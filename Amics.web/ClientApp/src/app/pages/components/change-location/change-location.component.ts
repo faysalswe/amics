@@ -1,5 +1,5 @@
 import { ThisReceiver } from '@angular/compiler';
-import { Component, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, OnInit, Output, ViewChild } from '@angular/core';
 import 'devextreme/data/odata/store';
 import notify from 'devextreme/ui/notify';
 import { EventEmitter } from '@angular/core';
@@ -8,6 +8,9 @@ import { taskItemSearchResult } from '../../models/pmsearch';
 import { Warehouse, WarehouseLocation } from '../../models/warehouse';
 import { ChangeLocService } from '../../services/changloc.service';
 import { SearchService } from '../../services/search.service';
+import { LabelMap } from "src/app/pages/models/Label";
+import { TextboxStyle } from '../textbox-style/textbox-style';
+import { DxSelectBoxComponent } from 'devextreme-angular';
 
 @Component({
   selector: "app-change-loc",
@@ -16,8 +19,10 @@ import { SearchService } from '../../services/search.service';
 })
 
 export class ChangeLocationComponent {
-
+  @ViewChild('warehouseVar', { static: false }) warehouseVar!: DxSelectBoxComponent;
+  @ViewChild('locationVar', { static: false }) locationVar!: DxSelectBoxComponent;
   @Output() exit : EventEmitter<any> =new EventEmitter<any>();
+  
 
   warehouse: string = '';
   location: string = '';
@@ -61,8 +66,12 @@ export class ChangeLocationComponent {
   leftSelectedItemKeys: any[] = [];
   rightSelectedItemKeys: any[] = [];
 
-  constructor(private searchService: SearchService, private changeLocService: ChangeLocService) {
+  labelMap: typeof LabelMap;
+  StylingMode : string = TextboxStyle.StylingMode;
+  LabelMode : string =  TextboxStyle.LabelMode;
 
+  constructor(private searchService: SearchService, private changeLocService: ChangeLocService) {
+    this.labelMap = LabelMap;
     this.onAdd = this.onAdd.bind(this);
     this.searchService.getWarehouseInfo('').subscribe(w => {
       this.warehouses = w;
@@ -73,6 +82,7 @@ export class ChangeLocationComponent {
     this.searchService.getLocationInfo('', '').subscribe(l => {
       this.locations = l;
       this.groupedLocations = this.groupByKey(l, 'warehouseId');
+      this.validLocationNames = this.locations.map(l => l.location);
       console.log(this.groupedLocations);
       //   console.log(this.groupedLocations['f062f282-ad8e-4743-b01f-2fb9c7ba9f7d']);
     });
@@ -80,6 +90,7 @@ export class ChangeLocationComponent {
     this.leftSelectionChanged = this.leftSelectionChanged.bind(this);
     this.rightSelectionChanged = this.rightSelectionChanged.bind(this);
   }
+  
   groupByKey(array: any, key: any) {
     return array
       .reduce((hash: any, obj: any) => {
@@ -110,10 +121,12 @@ export class ChangeLocationComponent {
   onSelectionChanged(e: any) {
     console.log(e);
     this.selectedProject = e.addedItems[0];
-    console.log(this.selectedProject);
+    console.log("selectedproj" + this.selectedProject);
     if (!!this.selectedProject) {
       this.selectedProductId = this.selectedProject.project;
       this.changeLocProjDetails.projectName = this.selectedProject.name;
+      // this.changeLocProjDetails.warehouse = this.selectedProject.warehouse;
+      // this.changeLocProjDetails.location = this.selectedProject.location;
       this.location = '';
       this.warehouse = '';
 
@@ -166,6 +179,13 @@ export class ChangeLocationComponent {
     });
   }
 
+  openWarehouseCodeBox() {
+    this.warehouseVar?.instance.open();
+}
+
+openLocationCodeBox() {
+  this.locationVar?.instance.open();
+}
 
   onAdd(event: any) {
     let rowData = new ChangeLocSearchResult();

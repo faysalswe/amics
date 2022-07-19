@@ -43,6 +43,7 @@ import dxForm from 'devextreme/ui/form';
 import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplicate.sertag.msg.service';
 import { DuplicateSerTagCheck } from 'src/app/shared/validator/duplicate.sertag.validator';
 import { ValidationService } from 'src/app/shared/services/validation.service';
+import { TextboxStyle } from "./../textbox-style/textbox-style";
 
 @Component({
   selector: 'app-decrease-inventory',
@@ -99,6 +100,8 @@ export class DecreaseInventoryComponent implements AfterViewInit {
 
   itemsId: string = '';
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
+  StylingMode : string = TextboxStyle.StylingMode;
+  LabelMode : string =  TextboxStyle.LabelMode;
 
   trasLogArray: TransLogInt[] = [];
 

@@ -53,8 +53,8 @@
             <dxi-item [colSpan]="1" *ngDisplayLabel="100">
               <dx-number-box
                 formControlName="quantity"
-                [stylingMode]="'outlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 [elementAttr]="{ class: 'myclass' }"
                 [inputAttr]="{ id: 'quantityId' }"
                 [ngAddLabel]="labelMap.quan_num"
@@ -75,8 +75,8 @@
             <dxi-item [colSpan]="1">
               <dx-number-box
                 formControlName="cost"
-                [stylingMode]="'outlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 [elementAttr]="{ class: 'myclass' }"
                 [inputAttr]="{ id: 'costId' }"
                 [ngAddLabel]="labelMap.unitCost_num"
@@ -97,8 +97,8 @@
                 [items]="reasonsStr"
                 [value]="defaultReason"
                 [searchEnabled]="true"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 placeholder="Search"
                 [ngAddLabel]="labelMap.reasonCode_num"
                 #varReasonCode
@@ -115,8 +115,8 @@
                 [value]="todayDate"
                 [ngAddLabel]="labelMap.txnDate_num"
                 placeholder="Select..."
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 style="margin-top: 10px"
                 [isValid]="isValid(transDateCntl)"
                 [validationError]="{ message: 'Txn Date is required' }"
@@ -132,8 +132,8 @@
                 value="{{ pmDetails?.warehouse }}"
                 [searchEnabled]="true"
                 (onValueChanged)="updateSelectedWarehouse($event)"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 placeholder="Search"
                 style="width: 100%"
                 #varWarehouse
@@ -152,8 +152,8 @@
                 [items]="locationsStr"
                 value="{{ pmDetails?.location }}"
                 [searchEnabled]="true"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 placeholder="Search"
                 #varLocation
                 (onFocusIn)="openLocationBox()"
@@ -170,8 +170,8 @@
                 width="100%"
                 [ngAddLabel]="labelMap.source_num"
                 placeholder="Type..."
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
               ></dx-text-box>
 
               <dx-check-box
@@ -191,8 +191,8 @@
                 label="Ref"
                 [ngAddLabel]="labelMap.ref_num"
                 placeholder="Type..."
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
               ></dx-text-box>
 
               <dx-check-box
@@ -213,8 +213,8 @@
                 [items]="ersStr"
                 [value]="er"
                 [searchEnabled]="true"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 placeholder="Search"
               ></dx-select-box>
             </dxi-item>
@@ -230,7 +230,7 @@
             <!-- Notes Ends  -->
             <dxi-item>
               <dx-button
-                stylingMode="contained"
+                stylingMode="StylingMode"
                 text="Update"
                 type="default"
                 style="width: 150px; margin-top: 25px"
