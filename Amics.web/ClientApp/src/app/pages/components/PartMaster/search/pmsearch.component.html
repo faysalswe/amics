@@ -4,7 +4,7 @@
       <dx-form [(formData)]="pmsearchInfo" [colCount]="1" labelMode="floating" labelLocation="left">
         <dxi-item itemType="group" verticalAlignment="">
           <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-            <dx-text-box [value]="pmsearchInfo.itemnumber" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+            <dx-text-box [(value)]="pmsearchInfo.itemnumber" [stylingMode]="StylingMode" [labelMode]="LabelMode"
               [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.partNumber_num" #partNumberVar>
             </dx-text-box>
           </dxi-item>
@@ -12,15 +12,15 @@
           <!-- <dxi-item dataField="description"></dxi-item> -->
                               <!-- DESCRIPTION -->
           <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-            <dx-text-box [value]="pmsearchInfo.description" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+            <dx-text-box [(value)]="pmsearchInfo.description" [stylingMode]="StylingMode" [labelMode]="LabelMode"
               [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.description_num" #descriptionVar>
             </dx-text-box>
           </dxi-item>
 
                             <!-- MFR -->
-          <dxi-item [colSpan]="1" [isRequired]="true">
+          <dxi-item [colSpan]="1" [isRequired]="false">
             <dx-select-box formControlName="itemType" width="100%" [items]="itemTypeList"
-              [value]="pmsearchInfo.itemtype" [searchEnabled]="true" [stylingMode]="StylingMode"
+              [(value)]="pmsearchInfo.itemtype" [searchEnabled]="true" [stylingMode]="StylingMode"
               [labelMode]="LabelMode" placeholder="Search" [label] = "'Manufacture'"
               displayExpr="itemtype" valueExpr="itemtype" #mfrVar (onFocusIn)="openMFRCodeBox()"></dx-select-box>
       
@@ -44,7 +44,7 @@
                 <!-- ITEM CODE -->
           <dxi-item [colSpan]="1" [isRequired]="false">
             <dx-select-box formControlName="itemCode" width="100%" [items]="itemCodeList"
-                [value]="pmsearchInfo.itemcode" [searchEnabled]="true" [stylingMode]="StylingMode"
+                [(value)]="pmsearchInfo.itemcode" [searchEnabled]="true" [stylingMode]="StylingMode"
                 [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.itemCode_num"
                 displayExpr="itemcode" valueExpr="itemcode" #itemCodeVar
                 (onFocusIn)="openItemCodeCodeBox()"></dx-select-box>
