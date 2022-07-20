@@ -17,7 +17,7 @@
         <span>{{ content.title }}</span><i class="dx-icon dx-icon-close" (click)="closeButtonHandler(content)"></i>
       </div>
       <div *dxTemplate="let tab of 'item'">
-        <app-host [type]="tab.type" (action)="closeButtonHandler(tab)"> </app-host>
+        <app-host [type]="tab.type"> </app-host>
       </div>
     </dx-tab-panel>
   </dx-sortable>

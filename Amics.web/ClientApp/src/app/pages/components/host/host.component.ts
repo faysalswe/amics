@@ -25,4 +25,6 @@ export class HostComponent implements OnInit {
     ngOnInit(): void {
         console.log(`loading.. ${this.type} `);
     }
+
+    
 }
