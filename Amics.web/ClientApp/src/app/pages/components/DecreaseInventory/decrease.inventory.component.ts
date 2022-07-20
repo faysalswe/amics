@@ -52,6 +52,7 @@ import { SearchService } from '../../services/search.service';
 import { PMSearchComponent } from '../PartMaster/search/pmsearch.component';
 import { DecreaseInventoryService } from '../../services/decrease.inventory.service';
 import { DecreaseRequestModel } from '../../models/rest.api.interface.model';
+import { TextboxStyle } from '../textbox-style/textbox-style';
 
 @Component({
   selector: 'app-decrease-inventory',
