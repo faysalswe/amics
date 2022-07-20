@@ -126,5 +126,28 @@ namespace Amics.Api.Controllers
             return validateSerTag;
         }
 
+
+        /// <summary>
+        /// API Route Controller for Insert the decrease values into the inv_trans table
+        /// </summary>        
+        [HttpPost, Route("InsertInvTrans")]
+        public LstMessage InsertInvTrans([FromBody] List<InvTrans> TransData)
+        {
+            var Message = _inventoryService.InsertInvTrans(TransData);
+            return Message;
+        }
+
+
+        /// <summary>
+        /// API Route Controller for execute the inv pick sp for decrease the inventory
+        /// </summary>        
+        [HttpPost, Route("ExecuteSpPick")]
+        public LstPacklist ExecuteSpPick([FromBody] SpPick Pick)
+        {
+            var Message = _inventoryService.ExecuteSpPick(Pick);
+            return Message;
+        }
+
+
     }
 }

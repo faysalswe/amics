@@ -71,6 +71,18 @@ namespace Aims.PartMaster.Services
         /// </summary>        
         /// <param name="ValidateSerTag">InputValidateSerTag</param> 
         public OutValidateSerTag ValidateSerTag(InputValidateSerTag ValidateSerTag);
+        /// <summary>
+        ///Interface for Insert the decrease values into the inv_trans table
+        /// </summary>   
+
+        public LstMessage InsertInvTrans(List<InvTrans> InvTransData);
+
+
+        /// <summary>
+        ///Interface for execute the inv pick sp for decrease the inventory
+        /// </summary> 
+        public LstPacklist ExecuteSpPick(SpPick Pick);
+
     }
     public class InventoryService : IInventoryService
     {
@@ -93,7 +105,7 @@ namespace Aims.PartMaster.Services
 
             var itemsGuId = string.IsNullOrEmpty(ItemsId) ? Guid.Empty : new Guid(ItemsId.ToString());
             var secUserGuId = string.IsNullOrEmpty(SecUserId) ? Guid.Empty : new Guid(SecUserId.ToString());
-            var statusResult = _amicsDbContext.DbxInvStatus.FromSqlRaw($"select * from dbo.webapi_fn_inv_status ('{itemsGuId}','{secUserGuId}')").AsEnumerable().FirstOrDefault();
+            var statusResult = _amicsDbContext.DbxInvStatus.FromSqlRaw($"select * from dbo.amics_fn_api_inv_status ('{itemsGuId}','{secUserGuId}')").AsEnumerable().FirstOrDefault();
             
             return statusResult;
         }
@@ -107,7 +119,7 @@ namespace Aims.PartMaster.Services
         {            
           
             var defaustResult = _amicsDbContext.ListDefaultsValues
-                .FromSqlRaw($"exec sp_webapi_get_list_defaults @formname='{FormName}'")
+                .FromSqlRaw($"exec amics_sp_api_get_list_defaults @formname='{FormName}'")
                 .ToList();
 
             return defaustResult;
@@ -123,7 +135,7 @@ namespace Aims.PartMaster.Services
         {
             var itemsGuId = string.IsNullOrEmpty(ItemsId) ? Guid.Empty : new Guid(ItemsId.ToString());
             var erResult = _amicsDbContext.ListErLookup
-              .FromSqlRaw($"exec sp_webapi_get_er_by_pn @itemsid='{itemsGuId}',@somain='{SoMain}'")
+              .FromSqlRaw($"exec amics_sp_api_get_er_by_pn @itemsid='{itemsGuId}',@somain='{SoMain}'")
               .ToList();
             return erResult;
         }
@@ -139,7 +151,7 @@ namespace Aims.PartMaster.Services
 
         public List<LstTransLog> TransLog(string FromDate, string ToDate,string Reason)
         {                       
-            var ViewTransLog = _amicsDbContext.ListTransLog.FromSqlRaw($"select newid() as id,* from [dbo].[fn_translog_view] ('{FromDate}','{ToDate}','{Reason}')").ToList();
+            var ViewTransLog = _amicsDbContext.ListTransLog.FromSqlRaw($"select newid() as id,* from [dbo].[amics_fn_api_translog_view] ('{FromDate}','{ToDate}','{Reason}')").ToList();
             return ViewTransLog;
         }
 
@@ -149,7 +161,7 @@ namespace Aims.PartMaster.Services
         /// </summary>      
         public TransNextNum TransNumberRec()
         {            
-            var transnumResult = _amicsDbContext.DbxTransNextNum.FromSqlRaw($"exec sp_get_transnum").AsEnumerable().FirstOrDefault();
+            var transnumResult = _amicsDbContext.DbxTransNextNum.FromSqlRaw($"exec amics_sp_api_get_transnum").AsEnumerable().FirstOrDefault();
             return transnumResult;
         }
 
@@ -162,7 +174,7 @@ namespace Aims.PartMaster.Services
         {
                 for (int i = 0; i < InvSerLot.Count; i++)
                 {
-                    var sql = $"exec sp_webapi_insert_inv_serlot @transnum={InvSerLot[i].Transnum}";
+                    var sql = $"exec amics_sp_api_insert_inv_serlot @transnum={InvSerLot[i].Transnum}";
                     sql += $",@serno='{InvSerLot[i].SerNo}'";
                     sql += $",@tagno='{InvSerLot[i].TagNo}'";
                     sql += $",@lotno='{InvSerLot[i].LotNo}'";
@@ -190,7 +202,7 @@ namespace Aims.PartMaster.Services
             var sourcesRefId = InvReceipts.SourcesRefId == null ? Guid.Empty :  InvReceipts.SourcesRefId;
             var recExtedId = InvReceipts.ExtendedId == null ? Guid.Empty :  InvReceipts.ExtendedId;
 
-            var sql = $"exec sp_receipts_R5 @rec_sourcesrefid='{sourcesRefId}'";
+            var sql = $"exec amics_sp_api_receipts @rec_sourcesrefid='{sourcesRefId}'";
             sql += $",@rec_extedid='{recExtedId}'";
             sql += $",@rec_source='{InvReceipts.Source}'";
             sql += $",@rec_warehouse='{InvReceipts.Warehouse}'";
@@ -225,7 +237,7 @@ namespace Aims.PartMaster.Services
         /// <param name="ValidateSerTag">InputValidateSerTag</param> 
         public OutValidateSerTag ValidateSerTag(InputValidateSerTag ValidateSerTag)
         {
-            var sql = $"exec sp_webapi_validate_sertag @itemsid='{ValidateSerTag.itemsid}'";
+            var sql = $"exec amics_sp_api_validate_sertag @itemsid='{ValidateSerTag.itemsid}'";
             sql += ValidateSerTag.option.ToUpper() == "SERIAL" ? $",@serno='{ValidateSerTag.sertag}'" : $",@tagno='{ValidateSerTag.sertag}'";
 
             var validateSerTag = _amicsDbContext.OutValidateSerTag
@@ -235,6 +247,107 @@ namespace Aims.PartMaster.Services
 
             return validateSerTag;
         }
+
+
+
+        /// <summary>
+        /// API Service for Insert into inv_trans table for decreasing inventory.
+        /// </summary>   
+
+        public LstMessage InsertInvTrans(List<InvTrans> InvTransData)
+        {
+            //Insert Into inv_trans(Source, invbasicid, itemsid, transqty, transnum) Values('MISC PICK', 'fd6346b6-50da-458f-b05c-ecfd32238941', '5fc61219-de9d-46bd-b3a0-398dec32153c', '3', '43782')
+
+            for (int i = 0; i < InvTransData.Count; i++)
+            {
+                InvTrans invTrans = InvTransData[i];
+                var sql = $"exec amics_sp_api_insert_inv_trans @TransNum={invTrans.TransNum}";
+
+                if (invTrans.InvBasicId != null)
+                    sql += $",@InvBasicId='{invTrans.InvBasicId}'";
+
+                if (invTrans.InvSerialId != null)
+                    sql += $",@InvSerialId='{invTrans.InvSerialId}'";
+
+                if (invTrans.ItemsId != null)
+                    sql += $",@ItemsId='{invTrans.ItemsId}'";
+
+                if (invTrans.FromLocationId != null)
+                    sql += $",@FromLocationId='{invTrans.FromLocationId}'";
+
+                if (invTrans.ToLocationId != null)
+                    sql += $",@ToLocationId='{invTrans.ToLocationId}'";
+
+                //if (invTrans.TransQty != null)
+                sql += $",@TransQty='{invTrans.TransQty}'";
+
+                if (invTrans.BoxNum != null)
+                    sql += $",@BoxNum='{invTrans.BoxNum}'";
+
+                sql += $",@Createdby='{invTrans.CreatedBy}'";
+
+                var receiptResult = _amicsDbContext.LstMessage.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
+            }
+
+            return new LstMessage() { Message = "Successfully Saved" };
+
+        }
+
+        /// <summary>
+        /// API Service for execute receipt stored procedure and increase the quantity.
+        /// </summary>   
+
+        public LstPacklist ExecuteSpPick(SpPick spPick)
+        {
+
+            var sql = $"exec amics_sp_api_pick ";
+
+            sql += $"@pick_transnum='{spPick.PickTransnum}'";
+            if (spPick.PickTransdate != null)
+                sql += $",@pick_transdate='{spPick.PickTransdate}'";
+
+            if (spPick.PickSourcesrefId != null)
+                sql += $",@pick_sourcesrefid='{spPick.PickSourcesrefId}'";
+
+            sql += $",@pick_misc_reason='{spPick.PickMiscReason}'";
+            sql += $",@pick_misc_ref='{spPick.PickMiscRef}'";
+            sql += $",@pick_misc_source='{spPick.PickMiscSource}'";
+
+            if (spPick.PickShipvia != null)
+                sql += $",@Pick_Shipvia='{spPick.PickShipvia}'";
+            sql += $",@pick_source='{spPick.PickSource}'";
+
+            if (spPick.PickShipCharge != null)
+                sql += $",@Pick_Shipcharge='{spPick.PickShipCharge}'";
+            if (spPick.PickTrackingNum != null)
+                sql += $",@Pick_Trackingnum='{spPick.PickTrackingNum}'";
+
+
+            sql += $",@pick_notes='{spPick.PickNotes}'";
+
+            if (spPick.PickPackNote != null)
+                sql += $",@Pick_PackNote='{spPick.PickPackNote}'";
+
+            if (spPick.PickInvoiceNote != null)
+                sql += $",@Pick_InvoiceNote='{spPick.PickInvoiceNote}'";
+
+            sql += $",@Pick_SalesTax='{spPick.PickSalesTax}'";
+            sql += $",@Pick_Shipdate='{spPick.PickTransdate}'";
+            sql += $",@pick_user='{spPick.PickUser}'";
+
+            sql += $",@pick_setnum='{spPick.PickSetnum}'";
+
+            if (spPick.PickWarehouse != null)
+                sql += $",@pick_warehouse='{spPick.PickWarehouse}'";
+
+            if (spPick.PickOriginalReceiptsid != null)
+                sql += $",@original_receiptsid='{spPick.PickOriginalReceiptsid}'";
+
+            var receiptResult = _amicsDbContext.LstPacklist.FromSqlRaw(sql).AsEnumerable().FirstOrDefault();
+
+            return new LstPacklist() { Packlist = "Successfully Saved" };
+        }
+
 
     }
 }

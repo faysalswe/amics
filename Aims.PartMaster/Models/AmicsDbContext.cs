@@ -29,6 +29,8 @@ namespace Aims.Core.Models
         public DbSet<LstErLookup> ListErLookup { get; set; }        
         public DbSet<LstBomCount> LstBomCount { get; set; }
         public DbSet<LstMessage> LstMessage { get; set; }
+        public DbSet<LstPacklist> LstPacklist { get; set; }
+        
         public DbSet<LstViewLocationWh> LstViewLocationWh { get; set; }
         public DbSet<LstViewLocation> LstViewLocation { get; set; }
         public DbSet<LstBomGridItems> LstBomGridItems { get; set; }
@@ -40,9 +42,8 @@ namespace Aims.Core.Models
         public DbSet<LstNotes> LstNotes { get; set; }
         public DbSet<LstMessagetext> LstMessagetext { get; set; }
         public DbSet<LstChangeLocSearch> LstChangeLocSearch { get; set; }
-        
-
         public DbSet<OutValidateSerTag> OutValidateSerTag { get; set; }
+        public DbSet<LstMdat> LstMdat { get; set; }
 
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)
@@ -58,6 +59,9 @@ namespace Aims.Core.Models
             modelBuilder.Entity<InvReceipts>().HasNoKey();
             modelBuilder.Entity<TransNextNum>().HasNoKey();
             modelBuilder.Entity<InvSerLot>().HasNoKey();
+
+            modelBuilder.Entity<InvTrans>().HasNoKey();
+            modelBuilder.Entity<SpPick>().HasNoKey();
 
 
             modelBuilder.Entity<InvReceipts>().HasNoKey();

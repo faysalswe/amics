@@ -1,6 +1,7 @@
 import { Guid } from "guid-typescript";
 
 export class pmWHLocation {
+    id: string = '';
     warehouse: string = '';
     location: string = '';
     somain: string = '';
