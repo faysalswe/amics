@@ -61,17 +61,18 @@ import { DecreaseRequestModel } from '../../models/rest.api.interface.model';
   //,changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DecreaseInventoryComponent implements AfterViewInit {
-  @ViewChild(DxFormComponent, { static: false }) form!: DxFormComponent;
-  @ViewChild('quantityVar', { static: false }) quantityVar!: DxTextBoxComponent;
   @ViewChild('varReasonCode', { static: false })
   varReasonCode!: DxSelectBoxComponent;
+
+  /* @ViewChild(DxFormComponent, { static: false }) form!: DxFormComponent;
+  @ViewChild('quantityVar', { static: false }) quantityVar!: DxTextBoxComponent;
   @ViewChild('varWarehouse', { static: false })
   varWarehouse!: DxSelectBoxComponent;
   @ViewChild('varLocation', { static: false })
   varLocation!: DxSelectBoxComponent;
   @ViewChild('varPmSearch', { static: false }) varPmSearch!: PMSearchComponent;
   @ViewChild('varInvStatus', { static: false })
-  varInvStatus!: PMSearchComponent;
+  varInvStatus!: PMSearchComponent; */
   labelMap: typeof LabelMap;
   optionIdMap: typeof OptionIdMap;
 
@@ -117,28 +118,16 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   now: Date = new Date();
 
   myForm!: FormGroup;
-  sourcesRefIdCntl!: AbstractControl;
-  sourceCntl!: AbstractControl;
-  extendedIdCntl!: AbstractControl;
-  warehouseCntl!: AbstractControl;
-  locationCntl!: AbstractControl;
-  itemNumberCntl!: AbstractControl;
-  revCntl!: AbstractControl;
-  costCntl!: AbstractControl;
-  quantityCntl!: AbstractControl;
+
   miscReasonCntl!: AbstractControl;
+  transDateCntl!: AbstractControl;
   miscRefCntl!: AbstractControl;
   miscSourceCntl!: AbstractControl;
   notesCntl!: AbstractControl;
-  transDateCntl!: AbstractControl;
   transNumCntl!: AbstractControl;
-  poTypeCntl!: AbstractControl;
-  recAccountCntl!: AbstractControl;
-  recPackListCntl!: AbstractControl;
-  licPlatFlageCntl!: AbstractControl;
-  receiverNumCntl!: AbstractControl;
-  user1Cntl!: AbstractControl;
-  user2Cntl!: AbstractControl;
+
+  tmpSourceVal = '';
+  tmpRefVal = '';
 
   user?: string = '';
 
@@ -217,9 +206,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
         ).length;
 
         const decModel = <DecreaseRequestModel>{};
-        /* decModel.pickTransdate = that.datePipe
-          .transform(that.transDateCntl.value, 'MM/dd/yy')
-          ?.toString(); */
+
         decModel.pickTransdate = that.transDateCntl.value;
         decModel.pickMiscReason = that.miscReasonCntl.value;
         decModel.pickMiscRef = that.miscRefCntl.value;
@@ -251,6 +238,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       onClick(e: any) {
         //that.initializeFormData();
         //that.pmDetails = new pmDetails();
+        that.removeSerialInvDet();
         that.serialPopupVisible = false;
       },
     };
@@ -284,9 +272,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
         );
 
         const decModel = <DecreaseRequestModel>{};
-        /* decModel.pickTransdate = that.datePipe
-          .transform(that.transDateCntl.value, 'MM/dd/yy')
-          ?.toString(); */
+
         decModel.pickTransdate = that.transDateCntl.value;
         decModel.pickMiscReason = that.miscReasonCntl.value;
         decModel.pickMiscRef = that.miscRefCntl.value;
@@ -318,6 +304,8 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       onClick(e: any) {
         //that.initializeFormData();
         //that.pmDetails = new pmDetails();
+        that.removeSerialInvDet();
+        console.log(that.serialInvDetForms.length);
         that.basicPopupVisible = false;
       },
     };
@@ -327,8 +315,10 @@ export class DecreaseInventoryComponent implements AfterViewInit {
     this.myForm = this.fb.group({
       miscReason: [this.defaultReason, [Validators.required]],
       transDate: [this.todayDate, [Validators.required]],
-      miscSource: [this.defaultSource, [Validators.required]],
-      miscRef: [this.defaultRef, [Validators.required]],
+      miscRef: [this.tmpRefVal != '' ? this.tmpRefVal : this.defaultRef],
+      miscSource: [
+        this.tmpSourceVal != '' ? this.tmpSourceVal : this.defaultSource,
+      ],
       notes: [null],
       transNum: [null],
       rev: ['-', [Validators.required]],
@@ -352,29 +342,12 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       user2: [null],
       serialInvDet: this.fb.array([]),
     });
-
-    this.sourcesRefIdCntl = this.myForm.controls['sourcesRefId'];
-    this.sourceCntl = this.myForm.controls['source'];
-    this.extendedIdCntl = this.myForm.controls['extendedId'];
-    this.warehouseCntl = this.myForm.controls['warehouse'];
-    this.locationCntl = this.myForm.controls['location'];
-    this.itemNumberCntl = this.myForm.controls['itemNumber'];
-    this.revCntl = this.myForm.controls['rev'];
-    this.costCntl = this.myForm.controls['cost'];
-    this.quantityCntl = this.myForm.controls['quantity'];
     this.miscReasonCntl = this.myForm.controls['miscReason'];
     this.miscRefCntl = this.myForm.controls['miscRef'];
     this.miscSourceCntl = this.myForm.controls['miscSource'];
     this.notesCntl = this.myForm.controls['notes'];
     this.transDateCntl = this.myForm.controls['transDate'];
     this.transNumCntl = this.myForm.controls['transNum'];
-    this.poTypeCntl = this.myForm.controls['poType'];
-    this.recAccountCntl = this.myForm.controls['recAccount'];
-    this.recPackListCntl = this.myForm.controls['recPackList'];
-    this.licPlatFlageCntl = this.myForm.controls['licPlatFlage'];
-    this.receiverNumCntl = this.myForm.controls['receiverNum'];
-    this.user1Cntl = this.myForm.controls['user1'];
-    this.user2Cntl = this.myForm.controls['user2'];
   }
 
   get serialInvDetForms() {
@@ -382,7 +355,6 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   }
 
   addAllSerialInvDet(obj: pmWHLocation[]) {
-    // console.log(obj);
     obj.forEach((ele, i) => {
       this.addSerialInvDet(ele, i);
     });
@@ -406,7 +378,6 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   }
 
   addAllSerial(obj: pmSerial[]) {
-    // console.log(obj);
     obj.forEach((ele, i) => {
       this.addSerial(ele, i);
     });
@@ -432,7 +403,6 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   }
 
   addAllBasic(obj: pmWHLocation[]) {
-    // console.log(obj);
     obj.forEach((ele, i) => {
       this.addBasic(ele, i);
     });
@@ -441,6 +411,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   addBasic(ele: pmWHLocation, i: number) {
     const serialInvDet = this.fb.group(
       {
+        elementId: ['id_' + i],
         line: [i + 1],
         basicId: [ele.id],
         serialId: [],
@@ -461,19 +432,11 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       { updateOn: 'blur' }
     );
 
-    //serialInvDet.markAsTouched();
-    //serialInvDet.updateValueAndValidity();
-    //serialInvDet.markAsPending();
-    // serialInvDet.markAsPristine();
-
     this.serialInvDetForms.push(serialInvDet);
-    // this.myForm.markAllAsTouched();
   }
 
   removeSerialInvDet() {
-    for (var i = 0; i < this.serialInvDetForms.length; i++) {
-      this.serialInvDetForms.removeAt(i);
-    }
+    this.serialInvDetForms.clear();
   }
 
   getSerElementIdValue(i: number) {
@@ -487,7 +450,6 @@ export class DecreaseInventoryComponent implements AfterViewInit {
     console.log(this.pmDetails);
     this.loadingVisible = true;
     this.initializeFormData();
-    //this.fromDate.setMonth(this.fromDate.getMonth() - 1);
     this.fromDate.setDate(this.fromDate.getDate() - 1);
 
     var initData$ = forkJoin([
@@ -506,8 +468,6 @@ export class DecreaseInventoryComponent implements AfterViewInit {
         this.warehouses = obj[1];
         this.reasons = obj[2];
         this.trasLogArray = obj[3];
-
-        // console.log(JSON.stringify(this.trasLogArray));
 
         this.defaultSource = this.defaultVals.find(
           (x) => x.formName === 'ADJ-OUT' && x.textFields === 'Source'
@@ -530,7 +490,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
 
     this.pmdataTransfer.selectedItemForDecInvDetails$.subscribe((item) => {
       console.log(item);
-      this.focusAdjustQuantity();
+      //this.focusAdjustQuantity();
       this.er = '';
       // this.initializeFormData();
       // console.log(JSON.stringify(item));
@@ -541,8 +501,8 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       console.log(this.itemsId);
 
       // Initialize the form values
-      this.quantityCntl?.setValue(null);
-      this.costCntl?.setValue(item.cost);
+      //this.quantityCntl?.setValue(null);
+      // this.costCntl?.setValue(item.cost);
       this.notesCntl?.setValue('');
 
       this.incInvService.getER(this.itemsId).subscribe((obj: ERInt[]) => {
@@ -560,23 +520,8 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // this.focusAdjustQuantity();
     this.focusOnItemNumber();
   }
-
-  private focusAdjustQuantity() {
-    setTimeout(() => {
-      this.quantityVar?.instance.focus();
-    }, 0);
-  }
-
-  /*  private refreshLogs() {
-    this.inventoryService
-      .getTransLog(this.fromDateStr(), this.toDateStr(), 'MISC PICK')
-      .subscribe((obj: TransLogInt[]) => {
-        this.trasLogArray = obj;
-      });
-  } */
 
   updateSelectedWarehouse(event$: any) {
     if (event$ != null) {
@@ -639,63 +584,40 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   }
 
   update() {
-    alert(this.pmDetails.invType);
-    if (this.pmDetails.invType === 'SERIAL') {
+    if (this.myForm.valid) {
       // alert(this.pmDetails.invType);
-      this.viewSerial$ = this.partmasterService
-        .getViewSerial(this.itemsId, this.secUserId)
-        .subscribe((res: pmSerial[]) => {
-          // console.log(res);
-          if (res.length > 0) {
-            this.removeSerialInvDet();
-            this.addAllSerial(res);
-            this.serialPopupVisible = true;
-            //const body = this.increaseInvObj();
-            // this.currentdecreaseInventoryIntObj = body;
-          } else {
-            alert('There is no quantity to decrease');
-          }
-        });
-    } else {
-      this.viewWarehouseLocation$ = this.partmasterService
-        .getViewWHLocation(this.itemsId, this.secUserId, '')
-        .subscribe((res: pmWHLocation[]) => {
-          console.log(res);
+      if (this.pmDetails.invType === 'SERIAL') {
+        this.viewSerial$ = this.partmasterService
+          .getViewSerial(this.itemsId, this.secUserId)
+          .subscribe((res: pmSerial[]) => {
+            if (res.length > 0) {
+              this.removeSerialInvDet();
+              this.addAllSerial(res);
+              this.serialPopupVisible = true;
+            } else {
+              alert('There is no quantity to decrease');
+            }
+          });
+      } else {
+        this.viewWarehouseLocation$ = this.partmasterService
+          .getViewWHLocation(this.itemsId, this.secUserId, '')
+          .subscribe((res: pmWHLocation[]) => {
+            console.log(res);
 
-          if (res.length > 0) {
-            this.removeSerialInvDet();
-            this.addAllBasic(res);
-            this.basicPopupVisible = true;
-            const body = this.increaseInvObj();
-            this.currentdecreaseInventoryIntObj = body;
-            //this.loadingVisible = false;
-          } else {
-            alert('There is no quantity to decrease');
-          }
-        });
+            if (res.length > 0) {
+              this.removeSerialInvDet();
+              this.addAllBasic(res);
+              this.basicPopupVisible = true;
+              const body = this.increaseInvObj();
+              this.currentdecreaseInventoryIntObj = body;
+            } else {
+              alert('There is no quantity to decrease');
+            }
+          });
+      }
+    } else {
+      this.myForm.markAllAsTouched();
     }
-
-    //this.loadingVisible = true;
-    //const body = this.increaseInvObj();
-    //body.quantity = Number(body.quantity);
-    /* this.removeSerialInvDet();
-    for (var i = 0; i < body.quantity; i++) {
-      this.addSerialInvDet(i);
-    } */
-
-    //this.pmDetails.invType = 'SERIAL';
-
-    /* if (this.pmDetails.invType == 'SERIAL') {
-      this.dupsertagerrormsg.add('');
-      this.serialPopupVisible = true;
-      this.currentdecreaseInventoryIntObj = body;
-      this.loadingVisible = false;
-    } else {
-      this.basicPopupVisible = true;
-      this.currentdecreaseInventoryIntObj = body;
-      this.loadingVisible = false;
-    } */
-    //this.focusOnItemNumber();
   }
 
   increaseInvObj() {
@@ -704,7 +626,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
       .transform(body.transDate, 'MM/dd/yy')
       ?.toString();
     body.user1 = this.user?.toString();
-    body.sourcesRefId = new Guid(this.sourcesRefIdCntl?.value).toString();
+    //body.sourcesRefId = new Guid(this.sourcesRefIdCntl?.value).toString();
     body.cost = Number(body.cost);
     body.itemNumber = this.pmDetails.itemNumber;
     body.licPlatFlage = true;
@@ -714,14 +636,6 @@ export class DecreaseInventoryComponent implements AfterViewInit {
 
   openReasonCodeBox() {
     this.varReasonCode?.instance.open();
-  }
-
-  openWarehouseBox() {
-    this.varWarehouse?.instance.open();
-  }
-
-  openLocationBox() {
-    this.varLocation?.instance.open();
   }
 
   ngOnDestroy() {
@@ -738,5 +652,34 @@ export class DecreaseInventoryComponent implements AfterViewInit {
 
   isValid(c: AbstractControl) {
     return !(c.invalid && (c.dirty || c.touched));
+  }
+
+  initPopUp() {
+    setTimeout(() => {
+      document.getElementById('id_0')?.focus();
+    }, 500);
+  }
+
+  getDynamicElementId(i: number) {
+    return this.serialInvDetForms.value[i].elementId;
+  }
+
+  handleSourceValueChange(e: any) {
+    const newValue = e.value;
+    if (newValue) {
+      this.tmpSourceVal = this.miscSourceCntl.value;
+    } else {
+      this.tmpSourceVal = '';
+    }
+  }
+
+  handleRefValueChange(e: any) {
+    const newValue = e.value;
+    if (newValue) {
+      alert(this.miscRefCntl.value);
+      this.tmpRefVal = this.miscRefCntl.value;
+    } else {
+      this.tmpRefVal = '';
+    }
   }
 }
