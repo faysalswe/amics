@@ -59,8 +59,8 @@
                 [items]="reasonsStr"
                 [value]="defaultReason"
                 [searchEnabled]="true"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 placeholder="Search"
                 [ngAddLabel]="labelMap.reasonCode_num"
                 #varReasonCode
@@ -78,8 +78,8 @@
                 [value]="todayDate"
                 [ngAddLabel]="labelMap.txnDate_num"
                 placeholder="Select..."
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 style="margin-top: 10px"
                 [isValid]="isValid(transDateCntl)"
                 [validationError]="{ message: 'Txn Date is required' }"
@@ -95,8 +95,8 @@
                 width="100%"
                 [ngAddLabel]="labelMap.source_num"
                 placeholder="Type..."
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
               ></dx-text-box>
 
               <dx-check-box
@@ -118,8 +118,8 @@
                 label="Ref"
                 [ngAddLabel]="labelMap.ref_num"
                 placeholder="Type..."
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
               ></dx-text-box>
 
               <dx-check-box
@@ -143,7 +143,7 @@
             <!-- Notes Ends  -->
             <dxi-item>
               <dx-button
-                stylingMode="contained"
+                stylingMode="StylingMode"
                 text="Update"
                 type="default"
                 style="width: 150px; margin-top: 25px"
@@ -166,8 +166,8 @@
                   [value]="fromDate"
                   [ngAddLabel]="labelMap.fromDate_num"
                   placeholder="From Date"
-                  [stylingMode]="'underlined'"
-                  [labelMode]="'floating'"
+                  [stylingMode]="StylingMode"
+                  [labelMode]="LabelMode"
                   style="margin-top: 5px"
                   (onValueChanged)="fromDatehandler($event)"
                 ></dx-date-box>
@@ -178,8 +178,8 @@
                   [value]="toDate"
                   [ngAddLabel]="labelMap.toDate_num"
                   placeholder="To Date"
-                  [stylingMode]="'underlined'"
-                  [labelMode]="'floating'"
+                  [stylingMode]="StylingMode"
+                  [labelMode]=" LabelMode"
                   style="margin-top: 5px"
                   (onValueChanged)="toDatehandler($event)"
                 ></dx-date-box>

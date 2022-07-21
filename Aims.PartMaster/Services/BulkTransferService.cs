@@ -43,7 +43,7 @@ namespace Aims.Core.Services
             {
                 try
                 {
-                    string strQuery = "select dbo.fn_warehouseid('" + warehouse + "','" + location + "')";
+                    string strQuery = "select dbo.amics_fn_api_warehouseid('" + warehouse + "','" + location + "')";
                     sqlCommand.CommandText = strQuery;
                     sqlCommand.CommandType = CommandType.Text;
                     conn.Open();
@@ -83,7 +83,7 @@ namespace Aims.Core.Services
             {
                 try
                 {                    
-                    sqlCommand.CommandText = "sp_bulk_transfer_view5";
+                    sqlCommand.CommandText = "amics_sp_api_bulk_transfer_view";
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     conn.Open();
                     sqlCommand.Parameters.Add(new SqlParameter("@warehouse", string.IsNullOrWhiteSpace(warehouse) ? string.Empty : warehouse));
@@ -125,7 +125,7 @@ namespace Aims.Core.Services
             {
                 try
                 {
-                    sqlCommand.CommandText = "sp_bulk_transfer5";
+                    sqlCommand.CommandText = "amics_sp_api_bulk_transfer";
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     conn.Open();
                     sqlCommand.Parameters.Add(new SqlParameter("@fromwh", string.IsNullOrWhiteSpace(lstBulkTransUpdate.WarehouseFrom) ? string.Empty : lstBulkTransUpdate.WarehouseFrom));

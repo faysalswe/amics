@@ -52,6 +52,7 @@ import { SearchService } from '../../services/search.service';
 import { PMSearchComponent } from '../PartMaster/search/pmsearch.component';
 import { DecreaseInventoryService } from '../../services/decrease.inventory.service';
 import { DecreaseRequestModel } from '../../models/rest.api.interface.model';
+import { TextboxStyle } from '../textbox-style/textbox-style';
 
 @Component({
   selector: 'app-decrease-inventory',
@@ -109,6 +110,8 @@ export class DecreaseInventoryComponent implements AfterViewInit {
 
   itemsId: string = '';
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
+  StylingMode : string = TextboxStyle.StylingMode;
+  LabelMode : string =  TextboxStyle.LabelMode;
 
   trasLogArray: TransLogInt[] = [];
 

@@ -46,7 +46,7 @@ namespace Aims.Core.Services
             {
                 try
                 {
-                    sqlCommand.CommandText = "sp_search_project_er";
+                    sqlCommand.CommandText = "amics_sp_api_search_project_er";
                     conn.Open();
 
                     sqlCommand.CommandType = CommandType.StoredProcedure;
@@ -102,13 +102,13 @@ namespace Aims.Core.Services
 
                     if (projectId != null)
                     {
-                        sqlCommand.CommandText = "sp_view_proj_items";
+                        sqlCommand.CommandText = "amics_sp_api_view_proj_items";
                         sqlCommand.CommandType = CommandType.StoredProcedure;
                         sqlCommand.Parameters.Add(new SqlParameter("@projectid", projectId.Trim()));
                     }
                     else
                     {
-                        sqlCommand.CommandText = "sp_view_er_items";
+                        sqlCommand.CommandText = "amics_sp_api_view_er_items";
                         sqlCommand.CommandType = CommandType.StoredProcedure;
                         sqlCommand.Parameters.Add(new SqlParameter("@somain", somain.Trim()));
                     }
@@ -165,7 +165,7 @@ namespace Aims.Core.Services
                 try
                 {
 
-                    sqlCommand.CommandText = "sp_inv_somain_details_items_transfer_ship";
+                    sqlCommand.CommandText = "amics_sp_api_inv_somain_details_items_transfer_ship";
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.Parameters.Add(new SqlParameter("@so", soMain.Trim()));
                     sqlCommand.Parameters.Add(new SqlParameter("@item", itemnumber.Trim()));
@@ -228,7 +228,7 @@ namespace Aims.Core.Services
                     {
                         using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
                         {
-                            sqlCommand.CommandText = "amics_sp_chgloc_translocupdate";
+                            sqlCommand.CommandText = "amics_sp_api_chgloc_translocupdate";
                             sqlCommand.CommandType = CommandType.StoredProcedure;
                             sqlCommand.Parameters.Add(new SqlParameter("@id", null));
                             sqlCommand.Parameters.Add(new SqlParameter("@action", lstchgloc[i].Action));
@@ -252,7 +252,7 @@ namespace Aims.Core.Services
                         {   
                             using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
                             {                               
-                                sqlCommand.CommandText = "amics_sp_chgloc_translocupdate";
+                                sqlCommand.CommandText = "amics_sp_api_chgloc_translocupdate";
                                 sqlCommand.CommandType = CommandType.StoredProcedure;
                                 sqlCommand.Parameters.Add(new SqlParameter("@id", null));
                                 sqlCommand.Parameters.Add(new SqlParameter("@action", lstchgloc[i].Action));
@@ -288,7 +288,7 @@ namespace Aims.Core.Services
             {
                 try
                 {
-                    sqlCommand.CommandText = "amics_sp_chgloc_pickqty_transloc";
+                    sqlCommand.CommandText = "amics_sp_api_chgloc_pickqty_transloc";
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                          
                     sqlCommand.Parameters.Add(new SqlParameter("@solinesid", soLinesId));
@@ -366,7 +366,7 @@ namespace Aims.Core.Services
 
                             loopend = end;
 
-                            sqlCommand.CommandText = "sp_essex_transfer5";
+                            sqlCommand.CommandText = "amics_sp_api_chgloc_transfer";
                             sqlCommand.CommandType = CommandType.StoredProcedure;
                             sqlCommand.Parameters.Add(new SqlParameter("@xfr_createdby", userName.Trim()));
                             sqlCommand.Parameters.Add(new SqlParameter("@toloc", toLocation.Trim()));
@@ -379,7 +379,7 @@ namespace Aims.Core.Services
 
                         if (loopend < nCount)
                         {
-                            sqlCommand.CommandText = "sp_essex_transfer5";
+                            sqlCommand.CommandText = "amics_sp_api_chgloc_transfer";
                             sqlCommand.CommandType = CommandType.StoredProcedure;
                             sqlCommand.Parameters.Add(new SqlParameter("@xfr_createdby", userName.Trim()));
                             sqlCommand.Parameters.Add(new SqlParameter("@toloc", toLocation.Trim()));
@@ -418,7 +418,7 @@ namespace Aims.Core.Services
                 try
                 {
                     // sqlCommand.CommandText = "select COUNT(*) from inv_transfer_location where createdby='" + userName + "'";
-                    sqlCommand.CommandText = "amics_sp_chgloc_transcntchk";
+                    sqlCommand.CommandText = "amics_sp_api_chgloc_transcntchk";
                     sqlCommand.Parameters.Add(new SqlParameter("@createdby", userName.Trim()));
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     conn.Open();
@@ -455,7 +455,7 @@ namespace Aims.Core.Services
                 try
                 {
                     conn.Open();                    
-                    sqlCommand.CommandText = "amics_sp_chgloc_listnextnumupd";                    
+                    sqlCommand.CommandText = "amics_sp_api_chgloc_listnextnumupd";                    
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     var sqlReader = sqlCommand.ExecuteReader();
                     if (sqlReader.Read())
@@ -485,7 +485,7 @@ namespace Aims.Core.Services
             {
                 try
                 {                    
-                    sqlCommand.CommandText = "amics_sp_chgloc_transnumdate";
+                    sqlCommand.CommandText = "amics_sp_api_chgloc_transnumdate";
                     sqlCommand.Parameters.Add(new SqlParameter("@transnum", transNumber));
                     sqlCommand.CommandType = CommandType.StoredProcedure;                    
                     var dataReader = sqlCommand.ExecuteReader();
@@ -518,7 +518,7 @@ namespace Aims.Core.Services
             {
                 try
                 {                    
-                    sqlCommand.CommandText = "amics_sp_chgloc_invtranlocdelete";
+                    sqlCommand.CommandText = "amics_sp_api_chgloc_invtranlocdelete";
                     sqlCommand.Parameters.Add(new SqlParameter("@createdby", userName));
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     conn.Open();

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Guid } from 'guid-typescript';
+import { LabelMap } from '../../models/Label';
 import { ItemClass, ItemCode, ItemType, PartNumber, ReportLocation, WareHouse } from '../../models/searchModels';
+import { TextboxStyle } from '../textbox-style/textbox-style';
 
 @Component({
   selector: 'app-reports',
@@ -22,6 +24,9 @@ export class ReportsComponent implements OnInit {
   warehouseList:WareHouse[] = [];
   locationList:ReportLocation[] = [];
 
+  StylingMode : string = TextboxStyle.StylingMode;
+  LabelMode : string =  TextboxStyle.LabelMode;
+  labelMap: typeof LabelMap;
 
   itemNumberList = [];
   locationTransferList = [];
@@ -54,7 +59,7 @@ export class ReportsComponent implements OnInit {
   ];
 
 
-  constructor() { }
+  constructor() { this.labelMap = LabelMap }
 
   ngOnInit(): void {
   }
