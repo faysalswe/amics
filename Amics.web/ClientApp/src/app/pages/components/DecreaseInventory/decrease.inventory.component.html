@@ -35,8 +35,9 @@
 
             <h3 style="padding-bottom: 0px; margin-bottom: 0px">
               <span>{{ pmDetails?.itemNumber }}</span>
-              <span style="font-style: italic;color: rgb(93, 124, 224);">
-                ({{ pmDetails?.description }})</span>
+              <span style="font-style: italic; color: rgb(93, 124, 224)">
+                ({{ pmDetails?.description }})</span
+              >
             </h3>
           </div>
         </ng-container>
@@ -99,10 +100,11 @@
               ></dx-text-box>
 
               <dx-check-box
-                [value]="true"
+                [value]="false"
                 text="Remember"
                 class="mt-1"
                 style="font-size: 10px"
+                (onValueChanged)="handleSourceValueChange($event)"
               ></dx-check-box>
             </dxi-item>
             <!-- Source Ends  -->
@@ -121,10 +123,11 @@
               ></dx-text-box>
 
               <dx-check-box
-                [value]="true"
+                [value]="false"
                 text="Remember"
                 class="mt-1"
                 style="font-size: 10px"
+                (onValueChanged)="handleRefValueChange($event)"
               ></dx-check-box>
             </dxi-item>
             <!-- Ref Ends  -->
@@ -145,7 +148,6 @@
                 type="default"
                 style="width: 150px; margin-top: 25px"
                 (click)="update()"
-                [disabled]="!myForm.valid"
               ></dx-button>
             </dxi-item>
           </dx-form>
@@ -224,15 +226,16 @@
       widget="dxButton"
       toolbar="bottom"
       location="after"
-      [options]="saveSerialPopUp"
-    ></dxi-toolbar-item>
+      [options]="closeSerialPopUp"
+    >
+    </dxi-toolbar-item>
     <dxi-toolbar-item
       widget="dxButton"
       toolbar="bottom"
       location="after"
-      [options]="closeSerialPopUp"
-    >
-    </dxi-toolbar-item>
+      [options]="saveSerialPopUp"
+    ></dxi-toolbar-item>
+
     <dxo-position at="center" my="center" of="window"></dxo-position>
 
     <div *dxTemplate="let data of 'content'">
@@ -292,13 +295,8 @@
     [dragEnabled]="false"
     [showCloseButton]="true"
     [(visible)]="basicPopupVisible"
+    (onShowing)="initPopUp()"
   >
-    <dxi-toolbar-item
-      widget="dxButton"
-      toolbar="bottom"
-      location="after"
-      [options]="saveBasicPopUp"
-    ></dxi-toolbar-item>
     <dxi-toolbar-item
       widget="dxButton"
       toolbar="bottom"
@@ -306,6 +304,13 @@
       [options]="closeBasicPopUp"
     >
     </dxi-toolbar-item>
+    <dxi-toolbar-item
+      widget="dxButton"
+      toolbar="bottom"
+      location="after"
+      [options]="saveBasicPopUp"
+    ></dxi-toolbar-item>
+
     <dxo-position at="center" my="center" of="window"></dxo-position>
 
     <form [formGroup]="myForm">
@@ -348,6 +353,7 @@
                       <input
                         formControlName="selectedQuantity"
                         style="text-align: right; width: 100px"
+                        id="{{ getDynamicElementId(i) }}"
                       />
                     </td>
                   </tr>

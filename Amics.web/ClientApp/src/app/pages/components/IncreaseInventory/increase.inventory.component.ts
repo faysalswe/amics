@@ -150,7 +150,11 @@ export class IncreaseInventoryComponent implements AfterViewInit {
 
   loadingVisible = false;
 
-  @ViewChild('formDirective', {static: false}) formDirective!: FormGroupDirective;
+  @ViewChild('formDirective', { static: false })
+  formDirective!: FormGroupDirective;
+
+  tmpSourceVal = '';
+  tmpRefVal = '';
 
   constructor(
     private pmdataTransfer: PartMasterDataTransService,
@@ -198,8 +202,6 @@ export class IncreaseInventoryComponent implements AfterViewInit {
     this.emailButtonOptions = {
       text: 'Cancel and Exit',
       onClick(e: any) {
-        //that.initializeFormData();
-        //that.pmDetails = new pmDetails();
         that.popupVisible = false;
       },
     };
@@ -220,8 +222,10 @@ export class IncreaseInventoryComponent implements AfterViewInit {
       cost: [null, [Validators.required]],
       quantity: [null, [Validators.required]],
       miscReason: [this.defaultReason, [Validators.required]],
-      miscRef: [this.defaultRef, [Validators.required]],
-      miscSource: [this.defaultSource, [Validators.required]],
+      miscRef: [this.tmpRefVal != '' ? this.tmpRefVal : this.defaultRef],
+      miscSource: [
+        this.tmpSourceVal != '' ? this.tmpSourceVal : this.defaultSource,
+      ],
       notes: [null],
       transDate: [this.todayDate, [Validators.required]],
       transNum: [null],
@@ -309,9 +313,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   }
 
   removeSerialInvDet() {
-    for (var i = 0; i < this.serialInvDetForms.length; i++) {
-      this.serialInvDetForms.removeAt(i);
-    }
+    this.serialInvDetForms.clear();
   }
 
   getSerElementIdValue(i: number) {
@@ -471,38 +473,37 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   }
 
   update() {
-    this.loadingVisible = true;
-    const body = this.increaseInvObj();
-    //body.quantity = Number(body.quantity);
-    this.removeSerialInvDet();
-    for (var i = 0; i < body.quantity; i++) {
-      this.addSerialInvDet(i);
-    }
+    if (this.myForm.valid) {
+      this.loadingVisible = true;
+      const body = this.increaseInvObj();
+      this.removeSerialInvDet();
+      for (var i = 0; i < body.quantity; i++) {
+        this.addSerialInvDet(i);
+      }
 
-    //this.pmDetails.invType = 'SERIAL';
-
-    if (this.pmDetails.invType == 'SERIAL') {
-      this.dupsertagerrormsg.add('');
-      this.popupVisible = true;
-      this.currentIncreaseInventoryIntObj = body;
-      this.loadingVisible = false;
+      if (this.pmDetails.invType == 'SERIAL') {
+        this.dupsertagerrormsg.add('');
+        this.popupVisible = true;
+        this.currentIncreaseInventoryIntObj = body;
+        this.loadingVisible = false;
+      } else {
+        this.inventoryService.insertReceipt(body).subscribe((res: any) => {
+          this.refreshLogs();
+          this.isVisible = true;
+          this.formDirective.resetForm();
+          this.myForm.reset();
+          this.initializeFormData();
+          this.pmDetails = new pmDetails();
+          setTimeout(() => {
+            this.loadingVisible = false;
+            notify(res['message'], 'info', 1000);
+          }, 1000);
+          this.focusOnItemNumber();
+        });
+      }
     } else {
-      this.inventoryService.insertReceipt(body).subscribe((res: any) => {
-        this.refreshLogs();
-        this.isVisible = true;
-        this.formDirective.resetForm();
-        this.myForm.reset();
-        this.initializeFormData();
-        // this.itemsId = this.itemsId;
-        this.pmDetails = new pmDetails();
-        setTimeout(() => {
-          this.loadingVisible = false;
-          notify(res['message'], 'info', 1000);
-        }, 1000);
-        this.focusOnItemNumber();
-      });
+      this.myForm.markAllAsTouched();
     }
-
   }
 
   increaseInvObj() {
@@ -543,5 +544,29 @@ export class IncreaseInventoryComponent implements AfterViewInit {
 
   isValid(c: AbstractControl) {
     return !(c.invalid && (c.dirty || c.touched));
+  }
+
+  initPopUp() {
+    setTimeout(() => {
+      document.getElementById('ser0')?.focus();
+    }, 1000);
+  }
+
+  handleSourceValueChange(e: any) {
+    const newValue = e.value;
+    if (newValue) {
+      this.tmpSourceVal = this.miscSourceCntl.value;
+    } else {
+      this.tmpSourceVal = '';
+    }
+  }
+
+  handleRefValueChange(e: any) {
+    const newValue = e.value;
+    if (newValue) {
+      this.tmpRefVal = this.miscRefCntl.value;
+    } else {
+      this.tmpRefVal = '';
+    }
   }
 }
