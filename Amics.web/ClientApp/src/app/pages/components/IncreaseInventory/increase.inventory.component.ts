@@ -41,8 +41,8 @@ import { Employee, HomeService } from '../../services/home.service';
 import { TransNumberRecInt } from '../../../shared/models/rest.api.interface.model';
 import { DuplicateSerTagCheck } from 'src/app/shared/validator/duplicate.sertag.validator';
 import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplicate.sertag.msg.service';
-import { ValidationService } from 'src/app/shared/services/validation.service';
-
+import { ValidationService } from 'src/app/shared/services/validation.service'
+import { TextboxStyle } from "./../textbox-style/textbox-style";
 @Component({
   selector: 'app-increase-inventory',
   templateUrl: 'increase.inventory.component.html',
@@ -98,6 +98,9 @@ export class IncreaseInventoryComponent implements AfterViewInit {
 
   itemsId: string = '';
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
+  StylingMode : string = TextboxStyle.StylingMode;
+  LabelMode : string =  TextboxStyle.LabelMode;
+
 
   trasLogArray: TransLogInt[] = [];
 

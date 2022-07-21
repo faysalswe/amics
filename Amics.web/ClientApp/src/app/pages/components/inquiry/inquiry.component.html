@@ -8,9 +8,17 @@
         <dx-radio-group [items]="inquiryOptions" [value]="inquiryOptions[0]" layout="horizontal"
           (onValueChanged)="onValueChanged($event)"></dx-radio-group>
       </dxi-item>
-      <dxi-item [colSpan]="1">
+      <!-- <dxi-item [colSpan]="1">
         <dx-text-box [label]="searchLabel" [(value)]="searchText"></dx-text-box>
-      </dxi-item>
+      </dxi-item> -->
+      <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+        <dx-text-box [(value)]="searchText" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="textBoxLabel" #partNumberVar>
+        </dx-text-box>
+
+        <dxi-validation-rule type="required" message="Part Number is required">
+        </dxi-validation-rule>
+    </dxi-item>
       <dxi-item [colSpan]="1">
         <dx-button stylingMode="contained" text="search" text-align="center" type="default"
           (onClick)="searchInquiryDetails()">

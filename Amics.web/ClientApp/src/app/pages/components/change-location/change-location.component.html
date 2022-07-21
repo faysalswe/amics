@@ -12,11 +12,37 @@
         <form (submit)="onFormSubmit($event)">
           <dx-form [(formData)]="changeLocRequest" [colCount]="1" labelMode="floating" labelLocation="left">
             <dxi-item itemType="group" verticalAlignment="">
-              <dxi-item dataField="er" [label]="{text:'ER'}"></dxi-item>
-              <dxi-item dataField="projectId" [label]="{text:'Project Id'}"></dxi-item>
-              <dxi-item dataField="projectName" [label]="{text:'Project Name'}"></dxi-item>
-              <dxi-item dataField="budget" [label]="{text:'Budget'}"> </dxi-item>
+              <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [value]="changeLocRequest.er" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                    [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.er_num" #erVar>
+                </dx-text-box>
             </dxi-item>
+              <!-- <dxi-item dataField="er" [label]="{text:'ER'}"></dxi-item> -->
+              <!-- <dxi-item dataField="projectId" [label]="{text:'Project Id'}"></dxi-item> -->
+
+                        <!-- PROJECT ID -->
+              <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [value]="changeLocRequest.projectId" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                    [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_Id_num" #project_IdVar>
+                </dx-text-box>
+            </dxi-item>
+
+                        <!-- PROJECT NAME -->
+              <!-- <dxi-item dataField="projectName" [label]="{text:'Project Name'}"></dxi-item> -->
+              <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                  <dx-text-box [value]="changeLocRequest.projectName" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                     [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_name_num" #project_nameVar>
+                  </dx-text-box>
+             </dxi-item>
+
+                        <!-- BUDGET -->
+              <!-- <dxi-item dataField="budget" [label]="{text:'Budget'}"> </dxi-item> -->
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+              <dx-text-box [value]="changeLocRequest.budget" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                 [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.budget_num" #budgetVar>
+              </dx-text-box>
+           </dxi-item>
 
             <dxi-item itemType="button" type="default" stylingMode="contained" [buttonOptions]="submitButtonOptions">
             </dxi-item>
@@ -47,34 +73,53 @@
     <dxi-location [row]="0" [col]="1"></dxi-location>
     <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
       <dx-form [(formData)]="changeLocProjDetails" id="form" [colCount]="4" labelMode="floating">
-        <dxi-item dataField="projectName" [colSpan]="1" [label]="{text:'Project Name'}">
 
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [value]="changeLocProjDetails.projectName" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_name_num" #partNumberVar>
+          </dx-text-box>
         </dxi-item>
+        <!-- <dxi-item dataField="projectName" [colSpan]="1" [label]="{text:'Project Name'}">
+        </dxi-item> -->
         <dxi-item itemtype="empty" [colSpan]="2"></dxi-item>
         <dxi-item itemtype="empty" [colSpan]="4"></dxi-item>
         <!-- <dxi-item dataField="warehouse"  editorType="dxLookup" [colSpan]="1"
           [editorOptions]="{ label:'Warehouse',items: warehouseNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains',onValueChanged:updateWarehouseSelection  }">
           <dxi-validation-rule type="required" message="Warehouse is required"></dxi-validation-rule>
         </dxi-item> -->
-        <dxi-item>
+        <dxi-item [colSpan]="1" [isRequired]="true">
+          <dx-select-box width="100%" [items]="warehouseNames"
+              [value]="changeLocProjDetails.warehouse" [searchEnabled]="true" [stylingMode]="StylingMode"
+              [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.warehouse_num" #warehouseVar  (onFocusIn)="openWarehouseCodeBox()">
+          </dx-select-box>
+      </dxi-item>
+        <!-- <dxi-item>
           <dx-lookup [items]="warehouseNames" [(value)]="warehouse" (onValueChanged)="updateWarehouseSelection($event)"
             label="Warehouse">
             <dxo-drop-down-options [showTitle]="false"></dxo-drop-down-options>
             <dxi-validation-rule type="required" message="warehouse is required">
             </dxi-validation-rule>
           </dx-lookup>
-        </dxi-item>
+        </dxi-item> -->
         <!-- <dxi-item dataField="location" editorType="dxLookup" [colSpan]="1"
           [editorOptions]="{ label:'Location',items: validLocationNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains' }">
           <dxi-validation-rule type="required" message="Location is required"></dxi-validation-rule>
         </dxi-item> -->
-        <dxi-item>
+                      <!-- Location -->
+        <dxi-item [colSpan]="1" [isRequired]="true">
+          <dx-select-box width="100%" [items]="validLocationNames"
+              [value]="changeLocProjDetails.location" [searchEnabled]="true" [stylingMode]="StylingMode"
+              [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.location_num"
+              #locationVar (onFocusIn)="openLocationCodeBox()"></dx-select-box>
+              
+      </dxi-item>
+        <!-- <dxi-item>
           <dx-lookup [items]="validLocationNames" [(value)]="location" label="Location">
             <dxo-drop-down-options [showTitle]="false"></dxo-drop-down-options>
             <dxi-validation-rule type="required" message="location is required">
             </dxi-validation-rule>
           </dx-lookup>
-        </dxi-item>
+        </dxi-item> -->
         <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
         <dxi-item itemType="empty" [colSpan]="4"></dxi-item>
 

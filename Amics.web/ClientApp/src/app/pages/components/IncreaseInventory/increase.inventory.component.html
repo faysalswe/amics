@@ -52,8 +52,8 @@
             <dxi-item [colSpan]="1" *ngDisplayLabel="100">
               <dx-number-box
                 formControlName="quantity"
-                [stylingMode]="'outlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 [elementAttr]="{ class: 'myclass' }"
                 [inputAttr]="{ id: 'quantityId' }"
                 [ngAddLabel]="labelMap.quan_num"
@@ -74,8 +74,8 @@
             <dxi-item [colSpan]="1">
               <dx-number-box
                 formControlName="cost"
-                [stylingMode]="'outlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 [elementAttr]="{ class: 'myclass' }"
                 [inputAttr]="{ id: 'costId' }"
                 [ngAddLabel]="labelMap.unitCost_num"
@@ -96,8 +96,8 @@
                 [items]="reasonsStr"
                 [value]="defaultReason"
                 [searchEnabled]="true"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 placeholder="Search"
                 [ngAddLabel]="labelMap.reasonCode_num"
                 #varReasonCode
@@ -114,8 +114,8 @@
                 [value]="todayDate"
                 [ngAddLabel]="labelMap.txnDate_num"
                 placeholder="Select..."
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 style="margin-top: 10px"
                 [isValid]="isValid(transDateCntl)"
                 [validationError]="{ message: 'Txn Date is required' }"
@@ -131,8 +131,8 @@
                 value="{{ pmDetails?.warehouse }}"
                 [searchEnabled]="true"
                 (onValueChanged)="updateSelectedWarehouse($event)"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 placeholder="Search"
                 style="width: 100%"
                 #varWarehouse
@@ -151,8 +151,8 @@
                 [items]="locationsStr"
                 value="{{ pmDetails?.location }}"
                 [searchEnabled]="true"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 placeholder="Search"
                 #varLocation
                 (onFocusIn)="openLocationBox()"
@@ -163,13 +163,15 @@
             <!-- Location Search Ends  -->
             <!-- Source Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-text-box formControlName="miscSource"
-                           [value]="defaultSource"
-                           width="100%"
-                           [ngAddLabel]="labelMap.source_num"
-                           placeholder="Type..."
-                           [stylingMode]="'underlined'"
-                           [labelMode]="'floating'"></dx-text-box>
+              <dx-text-box
+                formControlName="miscSource"
+                [value]="defaultSource"
+                width="100%"
+                [ngAddLabel]="labelMap.source_num"
+                placeholder="Type..."
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
+              ></dx-text-box>
 
               <dx-check-box [value]="true"
                             text="Remember"
@@ -179,14 +181,16 @@
             <!-- Source Ends  -->
             <!-- Ref Starts  -->
             <dxi-item [colSpan]="1" style="margin-top: 20px">
-              <dx-text-box formControlName="miscRef"
-                           [value]="defaultRef"
-                           width="100%"
-                           label="Ref"
-                           [ngAddLabel]="labelMap.ref_num"
-                           placeholder="Type..."
-                           [stylingMode]="'underlined'"
-                           [labelMode]="'floating'"></dx-text-box>
+              <dx-text-box
+                formControlName="miscRef"
+                [value]="defaultRef"
+                width="100%"
+                label="Ref"
+                [ngAddLabel]="labelMap.ref_num"
+                placeholder="Type..."
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
+              ></dx-text-box>
 
               <dx-check-box [value]="true"
                             text="Remember"
@@ -204,8 +208,8 @@
                 [items]="ersStr"
                 [value]="er"
                 [searchEnabled]="true"
-                [stylingMode]="'underlined'"
-                [labelMode]="'floating'"
+                [stylingMode]="StylingMode"
+                [labelMode]="LabelMode"
                 placeholder="Search"
               ></dx-select-box>
             </dxi-item>
@@ -218,12 +222,14 @@
             </dxi-item>
             <!-- Notes Ends  -->
             <dxi-item>
-              <dx-button stylingMode="contained"
-                         text="Update"
-                         type="default"
-                         style="width: 150px; margin-top: 25px"
-                         (click)="update()"
-                         [disabled]="!myForm.valid"></dx-button>
+              <dx-button
+                stylingMode="StylingMode"
+                text="Update"
+                type="default"
+                style="width: 150px; margin-top: 25px"
+                (click)="update()"
+                [disabled]="!myForm.valid"
+              ></dx-button>
             </dxi-item>
           </dx-form>
         </div>

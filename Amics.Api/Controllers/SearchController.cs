@@ -118,7 +118,6 @@ namespace Amics.Api.Controllers
         [HttpGet, Route("ItemNumber")]
         public IList<LstItemSearch> GetItemNumberSearch([FromQuery] string itemnumber, [FromQuery] string description, [FromQuery] string itemtype, [FromQuery] string itemcode, [FromQuery] string itemclass)
         {
-
             var itemSearchResult = _partMasterService.ItemNumberSearch(itemnumber, description, itemtype, itemcode, itemclass);
 
             return itemSearchResult;

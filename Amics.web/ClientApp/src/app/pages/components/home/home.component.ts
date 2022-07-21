@@ -50,5 +50,5 @@ export class HomeComponent implements OnInit {
     return this.tabs.length > 1;
   }
 
-
+  
 }

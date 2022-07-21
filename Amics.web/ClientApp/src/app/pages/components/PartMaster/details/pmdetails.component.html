@@ -8,58 +8,146 @@
             (submit)="handleSubmit($event)" [readOnly]="readOnly">
             <dxi-item itemType="group" [colCount]="2">
                 <dxi-item itemType="group" [colCount]="2">
-                    <dxi-item dataField="itemNumber" [colSpan]="1" [label]="{text:'Part Number'}">
+
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="true">
+                        <dx-text-box [value]="pmDetails.itemNumber" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.partNumber_num" #partNumberVar>
+                        </dx-text-box>
+
                         <dxi-validation-rule type="required" message="Part Number is required">
                         </dxi-validation-rule>
                     </dxi-item>
 
-                    <dxi-item dataField="itemType" editorType="dxLookup" [isRequired]="true"
-                        [editorOptions]="{ label:'MFR',items: itemTypeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemtype', displayExpr:'itemtype', valueExpr:'itemtype', searchMode:'contains' }">
-                        <dxi-validation-rule type="required" message="MFR is required"></dxi-validation-rule>
+                    <!-- <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="true">
+                        <dx-text-box [value]="pmDetails.itemType" [stylingMode]="'outlined'" [labelMode]="'floating'"
+                            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.mfr_num" #mfrVar>
+                        </dx-text-box>
+
+                        <dxi-validation-rule type="required" message="MFR is required">
+                        </dxi-validation-rule>
+                    </dxi-item> -->
+
+                    <dxi-item [colSpan]="1" [isRequired]="true">
+                        <dx-select-box formControlName="itemType" width="100%" [items]="itemTypeList"
+                            [value]="pmDetails.itemType" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" placeholder="Search" [label] = "'Manufacture'"
+                            displayExpr="itemtype" valueExpr="itemtype" #mfrVar (onFocusIn)="openMFRCodeBox()"></dx-select-box>
+
+                        <dxi-validation-rule type="required" message="Manufacture is required">
+                        </dxi-validation-rule>
                     </dxi-item>
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="4">
-                    <!-- <dxi-item dataField="uomref" [label]="{ text: 'UOM' }"></dxi-item> -->
-                    <dxi-item dataField="uomref" editorType="dxLookup" [isRequired]="true"
-                        [editorOptions]="{ label:'UOM',items: uomList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'uom', displayExpr:'uom', valueExpr:'uom', searchMode:'contains'  }">
-                        <dxi-validation-rule type="required" message="UOM is required"></dxi-validation-rule>
+                    <dxi-item [colSpan]="1" [isRequired]="true">
+                        <dx-select-box formControlName="uomref" width="100%" [items]="uomList"
+                            [value]="pmDetails.uomref" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.uom_num"
+                            displayExpr="uom" valueExpr="uom" #uomVar (onFocusIn)="openUOMCodeBox()"></dx-select-box>
+
+                        <dxi-validation-rule type="required" message="UOM is required">
+                        </dxi-validation-rule>
                     </dxi-item>
-                    <dxi-item dataField="leadTime" [label]="{ text: 'Maintenance(days)' }"></dxi-item>
-                    <!-- <dxi-item dataField="itemClass" [colSpan]="1"></dxi-item> -->
-                    <dxi-item dataField="itemClass" editorType="dxLookup" [colSpan]="1"
-                        [editorOptions]="{ label:'Item Class',items: itemClassList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemclass', displayExpr:'itemclass', valueExpr:'itemclass', showClearButton:true, searchMode:'contains'  }">
+
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-number-box [value]="pmDetails.leadTime" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                            [ngAddLabel]="labelMap.maintenance_num" #leadVar>
+                        </dx-number-box>
                     </dxi-item>
-                    <!-- <dxi-item dataField="itemCode" [colSpan]="1"></dxi-item> -->
-                    <dxi-item dataField="itemCode" editorType="dxLookup" [colSpan]="1"
-                        [editorOptions]="{ label:'Item Code',items: itemCodeList, showDataBeforeSearch:true,searchEnabled: true, searchExpr:'itemcode', displayExpr:'itemcode', valueExpr:'itemcode', showClearButton:true, searchMode:'contains'  }">
+
+                    <dxi-item [colSpan]="1" [isRequired]="false">
+                        <dx-select-box formControlName="itemClass" width="100%" [items]="itemClassList"
+                        [stylingMode]="StylingMode" [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.itemClass_num"
+                            displayExpr="itemclass" valueExpr="itemclass" #itemClassVar
+                            (onFocusIn)="openItemClassCodeBox()"></dx-select-box>
+
+                    </dxi-item>
+
+                    <dxi-item [colSpan]="1" [isRequired]="false">
+                        <dx-select-box formControlName="itemCode" width="100%" [items]="itemCodeList"
+                            [value]="pmDetails.itemCode" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.itemCode_num"
+                            displayExpr="itemcode" valueExpr="itemcode" #itemCodeVar
+                            (onFocusIn)="openItemCodeCodeBox()"></dx-select-box>
+
                     </dxi-item>
                 </dxi-item>
             </dxi-item>
             <dxi-item itemType="group" [colCount]="2">
-                <dxi-item dataField="description" [colCount]="1" editorType="dxTextArea"
+                <!-- <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                    <dx-text-box [value]="pmDetails.itemType" [stylingMode]="'outlined'" [labelMode]="'floating'"
+                        [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.mfr_num" #mfrVar>
+                    </dx-text-box>
+                </dxi-item> -->
+
+                <!-- <dxi-item dataField="description" [colCount]="1" editorType="dxTextArea"
                     [label]="{text: 'Description (Max 150 characters)'}">
 
+                </dxi-item> -->
+                <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                    <dx-text-box [value]="pmDetails.description" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                      style="height: 60px;" [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.description_num" #markupVar>
+                    </dx-text-box>
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
-                    <dxi-item dataField="cost" format="currency">
-                        <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+                    <dxi-item [colSpan]="1" [isRequired]="false">
+                        <dx-number-box [value]="pmDetails.cost" placeholder="cost" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                            [ngAddLabel]="labelMap.cost_num" #costVar>
+                        </dx-number-box>
                     </dxi-item>
-                    <dxi-item dataField="markup"></dxi-item>
+
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-number-box [value]="pmDetails.markup" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.markup_num" #markupVar>
+                        </dx-number-box>
+                    </dxi-item>
+
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-number-box [value]="pmDetails.price" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.price_num" #price_num>
+                        </dx-number-box>
+                    </dxi-item>
+
+                    <!-- <dxi-item dataField="cost" format="currency">
+                        <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+                    </dxi-item> -->
+                    <!-- <dxi-item dataField="markup"></dxi-item>
                     <dxi-item dataField="price" format="currency">
                         <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
-                    </dxi-item>
+                    </dxi-item> -->
                 </dxi-item>
             </dxi-item>
             <dxi-item itemType="group" [colCount]="2">
                 <dxi-item itemType="group" [colCount]="2">
-                    <dxi-item dataField="warehouse" editorType="dxLookup" [colSpan]="1"
+                    <dxi-item [colSpan]="1" [isRequired]="true">
+                        <dx-select-box formControlName="warehouse*" width="100%" [items]="warehouseNames"
+                            [value]="pmDetails.warehouse" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.warehouse_num"
+                            onValueChanged="updateWarehouseSelection" #warehouseVar
+                            (onFocusIn)="openWarehouseCodeBox()"></dx-select-box>
+                        <dxi-validation-rule type="required" message="Warehouse is required">
+                        </dxi-validation-rule>
+                    </dxi-item>
+
+                    <dxi-item [colSpan]="1" [isRequired]="true">
+                        <dx-select-box formControlName="location" width="100%" [items]="validLocationNames"
+                            [value]="pmDetails.location" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.location_num"
+                            #locationVar (onFocusIn)="openLocationCodeBox()"></dx-select-box>
+                        <dxi-validation-rule type="required" message="Location is required">
+                        </dxi-validation-rule>
+                    </dxi-item>
+
+
+                    <!-- <dxi-item dataField="warehouse" editorType="dxLookup" [colSpan]="1"
                         [editorOptions]="{ label:'Warehouse',items: warehouseNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains',onValueChanged:updateWarehouseSelection  }">
                         <dxi-validation-rule type="required" message="Warehouse is required"></dxi-validation-rule>
-                    </dxi-item>
-                    <dxi-item dataField="location" editorType="dxLookup" [colSpan]="1"
+                    </dxi-item> -->
+                    <!-- <dxi-item dataField="location" editorType="dxLookup" [colSpan]="1"
                         [editorOptions]="{ label:'Location',items: validLocationNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains' }">
                         <dxi-validation-rule type="required" message="Location is required"></dxi-validation-rule>
-                    </dxi-item>
+                    </dxi-item> -->
 
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
@@ -129,7 +217,7 @@
                 <dxi-column dataField="quantity" [allowEditing]="true">
                     <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
-                <dxi-column dataField="uomref" [allowEditing]="false" [width]="80"></dxi-column>
+                <dxi-column dataField="uomref" caption="UOM" [allowEditing]="false" [width]="80"></dxi-column>
                 <dxi-column dataField="ref" [allowEditing]="false" [width]="80"></dxi-column>
                 <dxi-column dataField="cost" dataType="number" format="currency" [allowEditing]="false" [width]="120">
                     <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
@@ -152,23 +240,63 @@
             </dx-data-grid>
         </ng-container>
         <ng-container *ngSwitchCase="childType.PO">
-            <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="52vh"
+            <!-- <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="52vh"
                 [focusedRowEnabled]="true" [allowColumnResizing]="true" [rowAlternationEnabled]="true"
                 [columns]="['linenum','pomain', 'supplier', 'quantity', 'received', 'somain']">
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
+            </dx-data-grid> -->
+            <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="52vh"
+                [focusedRowEnabled]="true" [allowColumnResizing]="true" [allowColumnReordering]="true"
+                [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true"
+                (onKeyDown)="onKeyDown($event)" (onEditingStart)="logEvent('EditingStart')"
+                (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
+                (onRowInserted)="rowInserted($event)" (onRowUpdating)="rowUpdated($event)"
+                (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')"
+                (onRowRemoved)="rowRemoved($event)" (onSaving)="onSaving($event)" (onSaved)="logEvent('Saved')"
+                (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')"
+                (onSelectionChanged)="selectedChanged($event)">
+                <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true">
+                </dxo-row-dragging>
+                <dxo-scrolling mode="infinite"></dxo-scrolling>
+                <dxo-selection mode="single"></dxo-selection>
+                <dxo-editing mode="row" [allowUpdating]="!this.readOnly" [allowDeleting]="!this.readOnly"
+                    [allowAdding]="!this.readOnly" newRowPosition="last">
+                </dxo-editing>
+
+                <dxi-column dataField="linenum" [width]="80"></dxi-column>
+                <dxi-column dataField="pomain" [width]="200"></dxi-column>
+                <dxi-column dataField="supplier"></dxi-column>
+                <dxi-column dataField="quantity" [width]="200"></dxi-column>
+                <dxi-column dataField="received"></dxi-column>
+                <dxi-column dataField="somain" [width]="200"></dxi-column>
+
             </dx-data-grid>
+
         </ng-container>
         <ng-container *ngSwitchCase="childType.Notes">
             <dx-data-grid id="gridContainer" [dataSource]="poNotes" keyExpr="id" height="52vh"
-                [focusedRowEnabled]="true" [allowColumnResizing]="true" [rowAlternationEnabled]="true">
+                [focusedRowEnabled]="true" [allowColumnResizing]="true" [allowColumnReordering]="true"
+                [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true"
+                (onKeyDown)="onKeyDown($event)" (onEditingStart)="logEvent('EditingStart')"
+                (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
+                (onRowInserted)="rowInserted($event)" (onRowUpdating)="rowUpdated($event)"
+                (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')"
+                (onRowRemoved)="rowRemoved($event)" (onSaving)="onSaving($event)" (onSaved)="logEvent('Saved')"
+                (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')"
+                (onSelectionChanged)="selectedChanged($event)">
+                <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true">
+                </dxo-row-dragging>
+                <dxo-scrolling mode="infinite"></dxo-scrolling>
+                <dxo-selection mode="single"></dxo-selection>
+                <dxo-editing mode="row" [allowDeleting]="!this.readOnly"
+                    [allowAdding]="!this.readOnly" newRowPosition="last">
+                </dxo-editing>
+
                 <dxi-column dataField="lineNum" [width]="80"></dxi-column>
                 <dxi-column dataField="notesRef" [width]="200"></dxi-column>
                 <dxi-column dataField="notes"></dxi-column>
-                <dxo-load-panel [enabled]="false"></dxo-load-panel>
-                <dxo-scrolling mode="infinite"></dxo-scrolling>
-                <dxo-selection mode="single"></dxo-selection>
 
             </dx-data-grid>
         </ng-container>
@@ -238,6 +366,7 @@
             <dxo-export [enabled]="true"></dxo-export>
             <dxo-position at="center" my="center"> </dxo-position>
         </dx-popup>
+        
     </div>
     <div>
         <dx-popup [width]="1200" [height]="800" [showTitle]="true" title="View Serial" [dragEnabled]="false"
@@ -247,7 +376,7 @@
             <br />
             <dx-data-grid id="gridContainer" [dataSource]="pmSerials" keyExpr="serlot" height="650"
                 [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
-                [rowAlternationEnabled]="true">
+                [rowAlternationEnabled]="true" (onRowClick)="onRowSelection($event)">
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-sorting mode="multiple"></dxo-sorting>
@@ -270,6 +399,45 @@
             </dx-data-grid>
             <dxo-export [enabled]="true" [allowExportSelectedData]="true"></dxo-export>
             <dxo-position at="center" my="center"> </dxo-position>
+            <br>
+            <br>
+            <div class="row" style="justify-content: center;">
+                <dx-button stylingMode="contained" text="edit" width="150" type="default" (onClick)="edit()">
+                </dx-button>
+              </div>
+        </dx-popup>
+        <dx-popup [width]="500" [height]="500" [showTitle]="true" title="Update Serial" [dragEnabled]="false"
+            [showCloseButton]="true" container=".dx-viewport" [(visible)]="updateSerialPopupVisible">
+            <form >
+                <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="2" labelMode="floating">
+                    <dxi-item [colSpan]="1" dataField="fromSerial" [label]="{text:'From Ser No'}"
+                        [editorOptions]="{readOnly: true}">
+                    </dxi-item>
+                    <dxi-item [colSpan]="1" dataField="toSerial" [label]="{text:'To Ser No'}"></dxi-item>
+                    <dxi-item [colSpan]="1" dataField="fromTagNo" [label]="{text:'From Tag No'}"
+                        [editorOptions]="{readOnly: true}">
+                    </dxi-item>
+                    <dxi-item [colSpan]="1" dataField="toTagNo" [label]="{text:'To Tag No'}"></dxi-item>
+
+                    <dxi-item [colSpan]="1" dataField="fromModel" [label]="{text:'From Model'}"
+                        [editorOptions]="{readOnly: true}">
+                    </dxi-item>
+                    <dxi-item [colSpan]="1" dataField="toModel" [label]="{text:'To Model'}"></dxi-item>
+                    <dxi-item [colSpan]="1" dataField="fromCost" [label]="{text:'From Cost'}"
+                        [editorOptions]="{readOnly: true}">
+                    </dxi-item>
+                    <dxi-item [colSpan]="1" dataField="toCost" [label]="{text:'To Cost'}"></dxi-item>
+
+                    <dxi-item [colSpan]="2" dataField="notes" editorType="dxTextArea" [label]="{text: 'Notes'}">
+                    </dxi-item>
+                </dx-form>
+                <dx-form [colCount]="3" labelMode="floating">
+                    <dxi-item></dxi-item>
+                    <dxi-item [colSpan]="1" itemType="button" width="150" type="default" stylingMode="contained"
+                        [buttonOptions]="submitSerialPopupButtonOptions" style="text-align: center;">
+                    </dxi-item>
+                </dx-form>
+            </form>
         </dx-popup>
     </div>
     <div>

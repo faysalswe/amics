@@ -5,7 +5,15 @@
   <div class="row" style="align-items: center">
     <form (submit)="handleSubmit($event)">
       <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="7" labelMode="floating">
-        <dxi-item [colSpan]="1" dataField="itemNumber" [label]="{text:'item#'}"></dxi-item>
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [(value)]="changeSerialSearchInfo.itemNumber" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+            [elementAttr]="{ class: 'myclass' }" [label]="'item#'" #partNumberVar>
+          </dx-text-box>
+
+          <dxi-validation-rule type="required" message="Part Number is required">
+          </dxi-validation-rule>
+        </dxi-item>
+        <!-- <dxi-item [colSpan]="1" dataField="itemNumber" [label]="{text:'item#'}"></dxi-item> -->
         <dxi-item [colSpan]="1" itemType="button" width="200" type="default" stylingMode="contained"
           [buttonOptions]="submitButtonOptions" style="text-align: center;">
           (onSelectionChanged)="onSelectionChanged($event)"

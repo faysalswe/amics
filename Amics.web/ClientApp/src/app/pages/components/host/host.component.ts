@@ -26,5 +26,5 @@ export class HostComponent implements OnInit {
         console.log(`loading.. ${this.type} `);
     }
 
-
+    
 }
