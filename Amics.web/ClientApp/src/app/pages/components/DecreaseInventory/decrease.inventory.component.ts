@@ -679,7 +679,6 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   handleRefValueChange(e: any) {
     const newValue = e.value;
     if (newValue) {
-      alert(this.miscRefCntl.value);
       this.tmpRefVal = this.miscRefCntl.value;
     } else {
       this.tmpRefVal = '';
