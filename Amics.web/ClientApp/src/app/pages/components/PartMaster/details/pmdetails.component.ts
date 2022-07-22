@@ -71,12 +71,14 @@ export class PMDetailsComponent {
     selectedRowIndex = -1;
     editRowKey!: number;
     componentTypeF2: ComponentType = ComponentType.PartMasterF2;
+    warehouse: string = '';
+    location: string = '';
     constructor(private searchService: SearchService, private pmdataTransfer: PartMasterDataTransService, private pmService: PartMasterService, private authService: AuthService) {
         this.childType = PmChildType;
         this.searchService.getWarehouseInfo('').subscribe(w => {
             this.warehouses = w;
             this.warehouseNames = w.map(w => w.warehouse);
-            this.groupedWarehouses = this.groupByKey(w, 'warehouse');
+            this.groupedWarehouses = this.groupByKey(w, 'warehouse');           
         })
 
         this.searchService.getLocationInfo('', '').subscribe(l => {
@@ -268,14 +270,15 @@ export class PMDetailsComponent {
     }
 
     updateWarehouseSelection(location: string = '', onload: boolean = false) {
-        if (!this.pmDetails.warehouse || !location) {
+        if (!this.warehouse || !location) {
             this.validLocationNames = [];
-            this.pmDetails.location = '';
-            return;
+            //this.pmDetails.location = '';
+            this.location = '';
+            return;        
         }
-
-        let wid = this.groupedWarehouses[this.pmDetails.warehouse];
-        if (!!wid) {
+       
+        let wid = this.groupedWarehouses[this.warehouse];
+        if (!!wid) {           
             let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
             this.validLocationNames = locations.map(l => l.location);
         } else { this.validLocationNames = []; }
@@ -290,7 +293,6 @@ export class PMDetailsComponent {
             this.getLocations(e.value);
         }
     }
-
 
     ItemNumberSelection(e: any) {
         console.log(e);
