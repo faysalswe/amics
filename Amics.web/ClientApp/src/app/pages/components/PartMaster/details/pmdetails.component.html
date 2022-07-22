@@ -196,12 +196,13 @@
                 (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')"
                 (onRowRemoved)="rowRemoved($event)" (onSaving)="onSaving($event)" (onSaved)="logEvent('Saved')"
                 (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')"
-                (onSelectionChanged)="selectedChanged($event)">
+                (onSelectionChanged)="selectedChanged($event)"
+                (onEditorPreparing)="onEditorPreparing($event)">
                 <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true">
                 </dxo-row-dragging>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
-                <dxo-editing mode="row" [allowUpdating]="!this.readOnly" [allowDeleting]="!this.readOnly"
+                <dxo-editing mode="batch" [allowUpdating]="!this.readOnly" [allowDeleting]="!this.readOnly"
                     [allowAdding]="!this.readOnly" newRowPosition="last">
                 </dxo-editing>
 
@@ -209,8 +210,7 @@
                 <dxi-column dataField="itemtype" caption="MFR." [allowEditing]="false"></dxi-column>
                 <dxi-column dataField="itemNumber" caption="Part Number" [allowEditing]="true">
                     <dxi-validation-rule type="required"></dxi-validation-rule>
-                    <dxi-validation-rule type="custom" [validationCallback]="validateItem" message="Invalid Part">
-                    </dxi-validation-rule>
+
                 </dxi-column>
 
                 <dxi-column dataField="description" [allowEditing]="false"></dxi-column>
@@ -366,7 +366,7 @@
             <dxo-export [enabled]="true"></dxo-export>
             <dxo-position at="center" my="center"> </dxo-position>
         </dx-popup>
-        
+
     </div>
     <div>
         <dx-popup [width]="1200" [height]="800" [showTitle]="true" title="View Serial" [dragEnabled]="false"
