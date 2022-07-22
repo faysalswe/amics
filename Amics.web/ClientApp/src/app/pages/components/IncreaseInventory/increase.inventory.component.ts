@@ -41,8 +41,8 @@ import { Employee, HomeService } from '../../services/home.service';
 import { TransNumberRecInt } from '../../../shared/models/rest.api.interface.model';
 import { DuplicateSerTagCheck } from 'src/app/shared/validator/duplicate.sertag.validator';
 import { DuplicateSerTagErrorMsgService } from 'src/app/shared/validator/duplicate.sertag.msg.service';
-import { ValidationService } from 'src/app/shared/services/validation.service';
-
+import { ValidationService } from 'src/app/shared/services/validation.service'
+import { TextboxStyle } from "./../textbox-style/textbox-style";
 @Component({
   selector: 'app-increase-inventory',
   templateUrl: 'increase.inventory.component.html',
@@ -98,6 +98,9 @@ export class IncreaseInventoryComponent implements AfterViewInit {
 
   itemsId: string = '';
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
+  StylingMode : string = TextboxStyle.StylingMode;
+  LabelMode : string =  TextboxStyle.LabelMode;
+
 
   trasLogArray: TransLogInt[] = [];
 
@@ -147,7 +150,11 @@ export class IncreaseInventoryComponent implements AfterViewInit {
 
   loadingVisible = false;
 
-  @ViewChild('formDirective', {static: false}) formDirective!: FormGroupDirective;
+  @ViewChild('formDirective', { static: false })
+  formDirective!: FormGroupDirective;
+
+  tmpSourceVal = '';
+  tmpRefVal = '';
 
   constructor(
     private pmdataTransfer: PartMasterDataTransService,
@@ -185,8 +192,9 @@ export class IncreaseInventoryComponent implements AfterViewInit {
             that.initializeFormData();
             that.pmDetails = new pmDetails();
             that.loadingVisible = false;
-            notify('Successfully Saved', 'info', 500);
-          }, 500);
+            that.focusOnItemNumber();
+            notify('Successfully Saved', 'info', 1000);
+          }, 1000);
         });
       },
     };
@@ -194,8 +202,6 @@ export class IncreaseInventoryComponent implements AfterViewInit {
     this.emailButtonOptions = {
       text: 'Cancel and Exit',
       onClick(e: any) {
-        //that.initializeFormData();
-        //that.pmDetails = new pmDetails();
         that.popupVisible = false;
       },
     };
@@ -216,8 +222,10 @@ export class IncreaseInventoryComponent implements AfterViewInit {
       cost: [null, [Validators.required]],
       quantity: [null, [Validators.required]],
       miscReason: [this.defaultReason, [Validators.required]],
-      miscRef: [this.defaultRef, [Validators.required]],
-      miscSource: [this.defaultSource, [Validators.required]],
+      miscRef: [this.tmpRefVal != '' ? this.tmpRefVal : this.defaultRef],
+      miscSource: [
+        this.tmpSourceVal != '' ? this.tmpSourceVal : this.defaultSource,
+      ],
       notes: [null],
       transDate: [this.todayDate, [Validators.required]],
       transNum: [null],
@@ -305,9 +313,7 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   }
 
   removeSerialInvDet() {
-    for (var i = 0; i < this.serialInvDetForms.length; i++) {
-      this.serialInvDetForms.removeAt(i);
-    }
+    this.serialInvDetForms.clear();
   }
 
   getSerElementIdValue(i: number) {
@@ -320,12 +326,13 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   ngOnInit(): void {
     this.loadingVisible = true;
     this.initializeFormData();
-    this.fromDate.setMonth(this.fromDate.getMonth() - 1);
+    this.fromDate.setDate(this.fromDate.getDate() - 1);
+    // this.fromDate.setMonth(this.fromDate.getMonth() - 1);
 
     var initData$ = forkJoin([
       this.incInvService.getDefaultValues(),
       this.searchService.getWarehouseInfo(''),
-      this.searchService.getReasonCode(),
+      this.searchService.getReasonCode('increase'),
       this.inventoryService.getTransLog(this.fromDateStr(), this.toDateStr()),
     ]).pipe(
       tap((obj) => {
@@ -466,37 +473,37 @@ export class IncreaseInventoryComponent implements AfterViewInit {
   }
 
   update() {
-    this.loadingVisible = true;
-    const body = this.increaseInvObj();
-    //body.quantity = Number(body.quantity);
-    this.removeSerialInvDet();
-    for (var i = 0; i < body.quantity; i++) {
-      this.addSerialInvDet(i);
-    }
+    if (this.myForm.valid) {
+      this.loadingVisible = true;
+      const body = this.increaseInvObj();
+      this.removeSerialInvDet();
+      for (var i = 0; i < body.quantity; i++) {
+        this.addSerialInvDet(i);
+      }
 
-    //this.pmDetails.invType = 'SERIAL';
-
-    if (this.pmDetails.invType == 'SERIAL') {
-      this.dupsertagerrormsg.add('');
-      this.popupVisible = true;
-      this.currentIncreaseInventoryIntObj = body;
-      this.loadingVisible = false;
+      if (this.pmDetails.invType == 'SERIAL') {
+        this.dupsertagerrormsg.add('');
+        this.popupVisible = true;
+        this.currentIncreaseInventoryIntObj = body;
+        this.loadingVisible = false;
+      } else {
+        this.inventoryService.insertReceipt(body).subscribe((res: any) => {
+          this.refreshLogs();
+          this.isVisible = true;
+          this.formDirective.resetForm();
+          this.myForm.reset();
+          this.initializeFormData();
+          this.pmDetails = new pmDetails();
+          setTimeout(() => {
+            this.loadingVisible = false;
+            notify(res['message'], 'info', 1000);
+          }, 1000);
+          this.focusOnItemNumber();
+        });
+      }
     } else {
-      this.inventoryService.insertReceipt(body).subscribe((res: any) => {
-        this.refreshLogs();
-        this.isVisible = true;
-        this.formDirective.resetForm();
-        this.myForm.reset();
-        this.initializeFormData();
-        // this.itemsId = this.itemsId;
-        this.pmDetails = new pmDetails();
-        setTimeout(() => {
-          this.loadingVisible = false;
-          notify(res['message'], 'info', 500);
-        }, 500);
-      });
+      this.myForm.markAllAsTouched();
     }
-    this.focusOnItemNumber();
   }
 
   increaseInvObj() {
@@ -537,5 +544,29 @@ export class IncreaseInventoryComponent implements AfterViewInit {
 
   isValid(c: AbstractControl) {
     return !(c.invalid && (c.dirty || c.touched));
+  }
+
+  initPopUp() {
+    setTimeout(() => {
+      document.getElementById('ser0')?.focus();
+    }, 1000);
+  }
+
+  handleSourceValueChange(e: any) {
+    const newValue = e.value;
+    if (newValue) {
+      this.tmpSourceVal = this.miscSourceCntl.value;
+    } else {
+      this.tmpSourceVal = '';
+    }
+  }
+
+  handleRefValueChange(e: any) {
+    const newValue = e.value;
+    if (newValue) {
+      this.tmpRefVal = this.miscRefCntl.value;
+    } else {
+      this.tmpRefVal = '';
+    }
   }
 }

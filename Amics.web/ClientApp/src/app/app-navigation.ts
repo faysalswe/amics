@@ -28,12 +28,12 @@ export const navigation = [
         title: 'Decrease Inventory',
         type: ComponentType.DecreaseInventory
       },
-      {
-        text: 'Adjust Inventory',
-        path: '/adjustInventory',
-        title: 'Adjust Inventory',
-        type: ComponentType.Profile
-      },
+      // {
+      //   text: 'Adjust Inventory',
+      //   path: '/adjustInventory',
+      //   title: 'Adjust Inventory',
+      //   type: ComponentType.Profile
+      // },
       {
         text: 'Change Location',
         path: '/changeLocation',

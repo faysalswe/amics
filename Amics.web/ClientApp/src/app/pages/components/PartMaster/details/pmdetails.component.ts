@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ViewChild } from "@angular/core";
 import notify from "devextreme/ui/notify";
 import { Guid } from "guid-typescript";
 import { pmBomDetails } from "src/app/pages/models/pmBomDetails";
@@ -15,7 +15,7 @@ import { SearchService } from "src/app/pages/services/search.service";
 import { AuthService } from "src/app/shared/services";
 import { PartMasterService } from "../../../services/partmaster.service";
 import { PartMasterDataTransService } from "../../../services/pmdatatransfer.service";
-import { DxDataGridComponent } from "devextreme-angular";
+import { DxDataGridComponent, DxSelectBoxComponent, DxTextBoxComponent } from "devextreme-angular";
 import { pmSerial } from "src/app/pages/models/pmSerial";
 import { Workbook } from "exceljs";
 import { saveAs } from "file-saver";
@@ -23,14 +23,31 @@ import { exportDataGrid } from "devextreme/excel_exporter";
 import { pmNotes } from "src/app/pages/models/pmNotes";
 import { ComponentType } from "src/app/pages/models/componentType";
 import { ThisReceiver } from "@angular/compiler";
+import { LabelMap } from "src/app/pages/models/Label";
+import { changeSerialInfo } from "../../change-serial/change-serial.component";
+import { TextboxStyle } from "../../textbox-style/textbox-style";
 @Component({
     selector: "app-pmdetails",
     templateUrl: "./pmdetails.component.html",
     styleUrls: ['./pmdetails.component.scss']
 })
-export class PMDetailsComponent {
+export class PMDetailsComponent implements AfterViewInit {
     @ViewChild(DxDataGridComponent, { static: false }) dataGrid!: DxDataGridComponent
+    @ViewChild('partNumberVar', { static: false }) partNumberVar!: DxTextBoxComponent;
+    @ViewChild('uomVar', { static: false }) uomVar!: DxSelectBoxComponent;
+    @ViewChild('mfrVar', { static: false }) mfrVar!: DxSelectBoxComponent;
+    @ViewChild('itemClassVar', { static: false }) itemClassVar!: DxSelectBoxComponent;
+    @ViewChild('itemCodeVar', { static: false }) itemCodeVar!: DxSelectBoxComponent;
+    @ViewChild('warehouseVar', { static: false }) warehouseVar!: DxSelectBoxComponent;
+    @ViewChild('locationVar', { static: false }) locationVar!: DxSelectBoxComponent;
+    @ViewChild('costVar', { static: false }) costVar!: DxTextBoxComponent;
+    @ViewChild('markupVar', { static: false }) markupVar!: DxTextBoxComponent;
+    @ViewChild('price_num', { static: false }) price_num!: DxTextBoxComponent;
+
     secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
+      StylingMode : string = TextboxStyle.StylingMode;
+      LabelMode : string =  TextboxStyle.LabelMode;
+
     warehouses: Warehouse[] = [];
     warehouseNames: string[] = [];
     pmWHLocations: pmWHLocation[] = [];
@@ -71,9 +88,14 @@ export class PMDetailsComponent {
     selectedRowIndex = -1;
     editRowKey!: number;
     componentTypeF2: ComponentType = ComponentType.PartMasterF2;
-    warehouse: string = '';
-    location: string = '';
-    constructor(private searchService: SearchService, private pmdataTransfer: PartMasterDataTransService, private pmService: PartMasterService, private authService: AuthService) {
+    labelMap: typeof LabelMap;
+    constructor(
+        private searchService: SearchService,
+        private pmdataTransfer: PartMasterDataTransService,
+        private pmService: PartMasterService,
+        private authService: AuthService
+    ) {
+        this.labelMap = LabelMap;
         this.childType = PmChildType;
         this.searchService.getWarehouseInfo('').subscribe(w => {
             this.warehouses = w;
@@ -138,6 +160,18 @@ export class PMDetailsComponent {
         this.selectedChanged = this.selectedChanged.bind(this);
         this.setCellValue = this.setCellValue.bind(this);
     }
+
+    ngAfterViewInit() {
+        this.focusAdjustQuantity();
+    }
+
+    private focusAdjustQuantity() {
+        setTimeout(() => {
+            this.partNumberVar?.instance.focus();
+        }, 0);
+    }
+
+
     logEvent(eventName: any) {
         console.log(eventName);
     }
@@ -310,6 +344,9 @@ export class PMDetailsComponent {
     invTypes: string[] = ["BASIC", "SERIAL"];
     warehouseLbl: string = "Warehouse";
     locationLbl: string = "Location";
+    
+
+
     handleSubmit = function (e: any) {
         setTimeout(() => {
             alert("Submitted");
@@ -628,6 +665,55 @@ export class PMDetailsComponent {
         let selectedRowIndex = this.bomDetails.findIndex(b => b.itemNumber === currentRowData.itemNumber);
         this.dataGrid.instance.cellValue(selectedRowIndex, 5, currentRowData.quantity);
         this.dataGrid.instance.cellValue(selectedRowIndex, 6, newData.extCost);
+    }
+
+    submitSerialPopupButtonOptions = {
+        text: "Save",
+        useSubmitBehavior: true,
+        type: "default"
+
+    };
+    updateSerialPopupVisible: boolean = false;
+    changeSerialSearchInfo: changeSerialInfo = new changeSerialInfo();
+    onRowSelection(e: any) {
+        let selectedRow = e.data;
+        this.changeSerialSearchInfo.fromSerial = selectedRow?.serlot;
+        this.changeSerialSearchInfo.toSerial = selectedRow?.serlot;
+        this.changeSerialSearchInfo.fromTagNo = selectedRow?.tagcol;
+        this.changeSerialSearchInfo.toTagNo = selectedRow?.tagcol;
+        this.changeSerialSearchInfo.fromModel = selectedRow?.color_model;
+        this.changeSerialSearchInfo.toModel = selectedRow?.color_model;
+        this.changeSerialSearchInfo.fromCost = selectedRow?.cost;
+        this.changeSerialSearchInfo.toCost = selectedRow?.cost;
+        this.updateSerialPopupVisible = true;
+    }
+
+    edit(){
+        this.updateSerialPopupVisible = true;
+    }
+
+    openMFRCodeBox() {
+        this.mfrVar?.instance.open();
+    }
+
+    openUOMCodeBox() {
+        this.uomVar?.instance.open();
+    }
+
+    openItemClassCodeBox() {
+        this.itemClassVar?.instance.open();
+    }
+
+    openItemCodeCodeBox() {
+        this.itemCodeVar?.instance.open();
+    }
+
+    openWarehouseCodeBox() {
+        this.warehouseVar?.instance.open();
+    }
+
+    openLocationCodeBox() {
+        this.locationVar?.instance.open();
     }
 }
 

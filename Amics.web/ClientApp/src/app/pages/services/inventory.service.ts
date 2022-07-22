@@ -36,10 +36,11 @@ export class InventoryService {
     var param = {
       FromDate: fromDate,
       ToDate: toDate,
+      Reason: reason
     };
     return this.httpClient.get<TransLogInt[]>(`${this.api}/getTransLog`, {
       params: param,
-    }); 
+    });
 
     /*  return this.httpClient.get<TransLogInt[]>("http://localhost:3000/getTransLog", {
       params: param,

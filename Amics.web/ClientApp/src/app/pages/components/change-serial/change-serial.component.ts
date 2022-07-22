@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { ComponentType } from '../../models/componentType';
+import { LabelMap } from '../../models/Label';
 import { pmItemSearchResult, pmSearch } from '../../models/pmsearch';
 import { pmSerial } from '../../models/pmSerial';
 import { PartMasterService } from '../../services/partmaster.service';
 import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
 import { SearchService } from '../../services/search.service';
+import { TextboxStyle } from '../textbox-style/textbox-style';
 
 @Component({
   selector: 'app-change-serial',
@@ -17,6 +19,9 @@ export class ChangeSerialComponent implements OnInit {
   changeSerialSearchInfo: changeSerialInfo = new changeSerialInfo();
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
   popupVisible = false;
+  StylingMode: string = TextboxStyle.StylingMode;
+  LabelMode: string = TextboxStyle.LabelMode;
+  labelMap: typeof LabelMap;
   submitButtonOptions = {
     text: "Search",
     useSubmitBehavior: true,
@@ -46,7 +51,11 @@ export class ChangeSerialComponent implements OnInit {
 
   constructor(
     private pmService: PartMasterService,
-    private searchService: SearchService) { }
+    private searchService: SearchService
+    ) 
+    {
+      this.labelMap = LabelMap;
+    }
 
   ngOnInit(): void {
   }

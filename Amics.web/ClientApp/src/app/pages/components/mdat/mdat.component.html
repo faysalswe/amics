@@ -6,56 +6,47 @@
 
   <dxi-item>
     <dxi-location [row]="0" [col]="0" [rowspan]="2"></dxi-location>
-    <div
-      *dxTemplate class="details-container content-block dx-card responsive-paddings"
-    >
+    <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
       <dx-form id="form" [colCount]="1">
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+            [label]="'MDAT Number'">
+          </dx-text-box>
+        </dxi-item>
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+            [ngAddLabel]="labelMap.er_num">
+          </dx-text-box>
+        </dxi-item>
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+            [label]="'Packlist Number'">
+          </dx-text-box>
+        </dxi-item>
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+            [ngAddLabel]="labelMap.status_num">
+          </dx-text-box>
+        </dxi-item>
+
+
+
+
         <dxi-item [colSpan]="1">
-          <dx-text-box
-            dataField="MDAT Number"
-            label="MDAT Number"
-          ></dx-text-box>
+
           <br />
-          <dx-text-box dataField=" ER" label="ER"></dx-text-box>
-          <br />
-          <dx-text-box
-            dataField="Packlist Number" label="Packlist Number"
-          ></dx-text-box>
-          <br />
-          <dx-text-box dataField="Status" label="Status"></dx-text-box>
-          <br />
-          <dx-button
-            stylingMode="contained"
-            text="search"
-            type="default"
-            width="400"
-          >
+          <dx-button stylingMode="contained" text="search" type="default" width="400">
           </dx-button>
           <br />
           <br />
-          <dx-data-grid
-            #grid
-            id="gridContainer"
-            [dataSource]="pmSearchResults"
-            keyExpr="itemNumber"
-            [columns]="['MDAT Number', 'description']"
-            [hoverStateEnabled]="true"
-            [showBorders]="true"
-            [selectedRowKeys]="[]"
-            height="50vh"
-            (onSelectionChanged)="onSelectionChanged($event)"
-          >
+          <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="itemNumber"
+            [columns]="['MDAT Number', 'description']" [hoverStateEnabled]="true" [showBorders]="true"
+            [selectedRowKeys]="[]" height="50vh" (onSelectionChanged)="onSelectionChanged($event)">
             <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
             <dxo-selection mode="single"></dxo-selection>
             <dxo-paging [pageSize]="10"> </dxo-paging>
-            <dxo-pager
-              [visible]="true"
-              [allowedPageSizes]="[10, 20, 30]"
-              displayMode="compact"
-              [showPageSizeSelector]="false"
-              [showInfo]="true"
-              [showNavigationButtons]="true"
-            >
+            <dxo-pager [visible]="true" [allowedPageSizes]="[10, 20, 30]" displayMode="compact"
+              [showPageSizeSelector]="false" [showInfo]="true" [showNavigationButtons]="true">
             </dxo-pager>
           </dx-data-grid>
         </dxi-item>
@@ -65,106 +56,74 @@
 
   <dxi-item>
     <dxi-location [row]="0" [col]="1"></dxi-location>
-    <div
-      *dxTemplate
-      class="details-container content-block dx-card responsive-paddings"
-    >
+    <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
       <dx-form id="form" [colCount]="4" labelMode="floating">
-        <dxi-item [colSpan]="1">
-          <dx-text-box
-            dataField="MDAT Number"
-            label="MDAT Number"
-          ></dx-text-box>
-          <br />
-          <br />
-          <dx-text-box
-            dataField="Packlist Number"
-            label="Packlist Number"
-          ></dx-text-box>
-          <br/>
-          <br/>
-          <dx-date-box
-            placeholder="Cancelled Date"
-            displayFormat="dd-MMM-yy"
-          >
-          </dx-date-box>
-        </dxi-item>
-        <dxi-item [colSpan]="1">
-          <dx-text-box dataField="ER" label="ER"></dx-text-box>
-          <br />
-          <br />
-          <dx-date-box
-            placeholder="Submitted Date"
-            displayFormat="dd-MMM-yy"
-          >
-          </dx-date-box>
-        </dxi-item>
-        <br />
-        <dxi-item [colSpan]="1">
-          <dx-text-box dataField="ER desc" label="ER desc"></dx-text-box>
-          <br />
-          <br />
-          <dx-date-box
-            placeholder="Approved Date"
-            displayFormat="dd-MMM-yy"
-          >
-          </dx-date-box>
 
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+            [label]="'MDAT Number'">
+          </dx-text-box>
         </dxi-item>
-        <br />
-        <br/>
-        <dxi-item itemType="group" [colSpan]="1">
-        <dxi-item [colSpan]="1" dataField="Status" editorType="dxLookup" [editorOptions]="{
-                  label: 'Status',
-                  items: warehouseList,
-                  showDataBeforeSearch: true,
-                  searchEnabled: true,
-                  searchExpr: 'status',
-                  displayExpr: 'status',
-                  valueExpr: 'status',
-                  showClearButton: true,
-                  searchMode: 'contains'
-                }"></dxi-item>
-                <dxi-item>
-                  <dx-date-box style="margin-top: 20px;"
-                  placeholder="Shipped Date"
-                  displayFormat="dd-MMM-yy"
-                >
-                </dx-date-box>
-                </dxi-item>
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+            [ngAddLabel]="labelMap.er_num">
+          </dx-text-box>
+        </dxi-item>
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+            [label]="'ER desc'">
+          </dx-text-box>
+        </dxi-item>
+        <dxi-item [colSpan]="1" [isRequired]="false">
+          <dx-select-box width="100%" [searchEnabled]="true" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+            placeholder="Search" [ngAddLabel]="labelMap.status_num" displayExpr="itemtype" valueExpr="itemtype">
+          </dx-select-box>
+        </dxi-item>
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+            [label]="'Packlist Number'">
+          </dx-text-box>
+        </dxi-item>
+        <dxi-item [colSpan]="1">
+          <dx-date-box [label]="'Submitted Date'"
+            placeholder="Select..." [stylingMode]="StylingMode" [labelMode]="LabelMode" 
+            style="margin-top: 10px"></dx-date-box>
+        </dxi-item>
+        <dxi-item [colSpan]="1">
+          <dx-date-box [label]="'Approve Date'"
+            placeholder="Select..." [stylingMode]="StylingMode" [labelMode]="LabelMode" 
+            style="margin-top: 10px"></dx-date-box>
+        </dxi-item>
+        <dxi-item [colSpan]="1">
+          <dx-date-box [label]="'Shipped Date'"
+            placeholder="Select..." [stylingMode]="StylingMode" [labelMode]="LabelMode" 
+            style="margin-top: 10px"></dx-date-box>
+        </dxi-item>
+        <dxi-item [colSpan]="1">
+          <dx-date-box [label]="'Cancelled Date'"
+            placeholder="Select..." [stylingMode]="StylingMode" [labelMode]="LabelMode" 
+            style="margin-top: 10px"></dx-date-box>
         </dxi-item>
       </dx-form>
     </div>
   </dxi-item>
   <dxi-item>
     <dxi-location [row]="1" [col]="1"></dxi-location>
-    <div
-      *dxTemplate
-      class="details-container content-block dx-card responsive-paddings"
-    >
-      <dx-data-grid
-        id="gridContainer"
-        [dataSource]="customers"
-        keyExpr="ID"
-        height="40vh"
-        [columns]="[
+    <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
+      <dx-data-grid id="gridContainer" [dataSource]="customers" keyExpr="ID" height="40vh" [columns]="[
           'Line',
           'MDAT Number',
           'Status',
           'Submitted Date',
           'Approved Date',
           'Shipped Date'
-        ]"
-        [showBorders]="true"
-      >
+        ]" [showBorders]="true">
       </dx-data-grid>
     </div>
   </dxi-item>
 </dx-responsive-box>
 <div class="col" style="text-align: center">
-<div class="details-container content-block dx-card responsive-paddings">
-  <dx-button stylingMode="contained" text="Submit" type="default"
-  >
-</dx-button>
-</div> -->
-
+  <div class="details-container content-block dx-card responsive-paddings">
+    <dx-button stylingMode="contained" text="Submit" type="default">
+    </dx-button>
+  </div>

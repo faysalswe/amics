@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { LabelMap } from '../../models/Label';
+import { TextboxStyle } from '../textbox-style/textbox-style';
 
 @Component({
   selector: 'app-equipment',
@@ -30,7 +32,12 @@ export class EquipmentComponent implements OnInit {
   ];
 
   notesHeader: string = "Task Notes";
-  constructor() { }
+  StylingMode: string = TextboxStyle.StylingMode;
+  LabelMode: string = TextboxStyle.LabelMode;
+  labelMap: typeof LabelMap;
+  constructor() { 
+    this.labelMap = LabelMap;
+  }
 
   ngOnInit(): void {
   }
