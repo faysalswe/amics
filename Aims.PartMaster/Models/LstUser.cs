@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace Aims.Core.Models
 {
     public class LstUser
     {
+        [Key]
         public string userId { get; set; }
         public string userName { get; set; }
         public string firstName { get; set; }

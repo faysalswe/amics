@@ -21,6 +21,11 @@ namespace Aims.Core.Services
         List<LstCompanyOptions> CompanyOptions(decimal OptionId, string ScreenName);
         List<LstFieldProperties> LoadFieldProperties(string labelNum);
         List<LstMessagetext> ListMessages(string messagetext);
+        List<LstUser> GetUsersList(string userId);
+        List<LstUserAccess> GetUserAccess(string userId);
+        List<LstAccessWarehouse> GetWarehouseAccess(string userId);
+        LstMessage ValidateWarehouse(string warehouse);
+        LstMessage ValidateUserId(string username);
     }
 
     public class ConfigService: IConfigService
@@ -73,5 +78,217 @@ namespace Aims.Core.Services
             return optMessageResult;
         }
 
+        /// <summary>
+        /// API Service to get users list from sec_users table. Get all the users list if parameter is null
+        /// </summary>
+        /// <param name="userId">userId</param>        
+        public List<LstUser> GetUsersList(string userId)
+        {
+            List<LstUser> lstUser = new List<LstUser>();
+           
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_get_userlist";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    sqlCommand.Parameters.Add(new SqlParameter("@userId", string.IsNullOrWhiteSpace(userId) ? string.Empty : userId));
+                    var dataReader = sqlCommand.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        LstUser UsersList = new LstUser();
+                        UsersList.userId = dataReader["id"].ToString();
+                        UsersList.userName = dataReader["userid"].ToString();
+                        UsersList.firstName = dataReader["firstname"].ToString();
+                        lstUser.Add(UsersList);
+                    }
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return lstUser.ToList();
+        }
+
+        /// <summary>
+        /// API Service to get user's access from sec_access and sec_users_access table. Get all the user's access list if parameter is null
+        /// </summary>
+        /// <param name="userId">userId</param>        
+        public List<LstUserAccess> GetUserAccess(string userId)
+        {           
+            List<LstUserAccess> lstUserAccess = new List<LstUserAccess>();
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_get_secuseraccess";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    sqlCommand.Parameters.Add(new SqlParameter("@userId", string.IsNullOrWhiteSpace(userId) ? string.Empty : userId));
+                    var dataReader = sqlCommand.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        LstUserAccess userAccess = new LstUserAccess();
+                        userAccess.accessId = dataReader["accessid"].ToString();
+                        userAccess.access = dataReader["access"].ToString();
+                        
+                        if (dataReader["readonly"].ToString() == "True")
+                        {
+                            userAccess.readOnly = 1;
+                        }
+                        else
+                        {
+                            userAccess.readOnly = 0;
+                        }
+                        
+                        if (dataReader["OnTheFly"] != DBNull.Value)
+                            userAccess.OnTheFly = Convert.ToInt16(dataReader["OnTheFly"]);
+                        else
+                            userAccess.OnTheFly = 0;
+                        
+                        lstUserAccess.Add(userAccess);
+                    }
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return lstUserAccess.ToList();
+        }
+
+        /// <summary>
+        /// API Service to get user's warehouse access from list_warehouse and sec_users_warehouses table. 
+        /// Get all the warehouses if parameter is null 
+        /// </summary>
+        /// <param name="userId">userId</param>  
+        public List<LstAccessWarehouse> GetWarehouseAccess(string userId)
+        {
+            
+            List<LstAccessWarehouse> lstWarehouseAccess = new List<LstAccessWarehouse>();
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_get_secwhaccess";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    sqlCommand.Parameters.Add(new SqlParameter("@userId", string.IsNullOrWhiteSpace(userId) ? string.Empty : userId));
+                    var dataReader = sqlCommand.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        LstAccessWarehouse whAccess = new LstAccessWarehouse();
+                        whAccess.WarehouseId = dataReader["warehouses_id"].ToString();
+                        whAccess.Warehouse = dataReader["warehouse"].ToString();
+                        if (dataReader["transok"].ToString() == "True")
+                        {
+                            whAccess.readOnly = 1;
+                        }
+                        else
+                        {
+                            whAccess.readOnly = 0;
+                        }
+                        lstWarehouseAccess.Add(whAccess);
+                    }
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return lstWarehouseAccess.ToList();
+        }
+
+        /// <summary>
+        /// API Service to validate entered warehouse by user. Returns warehouseid if exists        
+        /// </summary>
+        /// <param name="warehouse">warehouse</param>  
+        public LstMessage ValidateWarehouse(string warehouse)
+        {
+           
+            string warehouseId = "";
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_validate_warehouse";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    sqlCommand.Parameters.Add(new SqlParameter("@warehouse", string.IsNullOrWhiteSpace(warehouse) ? string.Empty : warehouse));
+                    var dataReader = sqlCommand.ExecuteReader();
+                    if (dataReader.Read())
+                    {
+                        warehouseId = dataReader["id"].ToString();
+                    }
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return new LstMessage { Message = warehouseId };
+        }
+
+
+        /// <summary>
+        /// API Service to validate entered username, returns 1 if exists otherwise 0 if not exists    
+        /// </summary>
+        /// <param name="userId">userId</param>  
+        public LstMessage ValidateUserId(string username)
+        {           
+            string isValidUser = "0";
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_validate_userId";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    sqlCommand.Parameters.Add(new SqlParameter("@userId", string.IsNullOrWhiteSpace(username) ? string.Empty : username));
+                    var dataReader = sqlCommand.ExecuteReader();
+                    if (dataReader.Read())
+                    {
+                        isValidUser = "1";
+                    }
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return new LstMessage { Message = isValidUser };
+        }
     }
 }

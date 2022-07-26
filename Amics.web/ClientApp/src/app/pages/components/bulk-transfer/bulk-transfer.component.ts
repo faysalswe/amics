@@ -55,7 +55,8 @@ export class BulkTransferComponent {
   toDate: Date = new Date();
   trasLogArray: TransLogInt[] = [];
   labelMap: typeof LabelMap;
-  
+  gridrowlen= 0;
+
   ngOnInit(): void {
     this.loadingVisible = true;    
     this.fromDate.setMonth(this.fromDate.getMonth() - 1);
@@ -137,6 +138,7 @@ onSelectValidateLoc(e: any) {
   if (this.validLocId[0] !== ""){
       this.bulktransService.getBulkTransferItemDetails(this.fromWarehouse, this.fromLocation).subscribe(r => {  
       console.log(r);
+      this.gridrowlen = r.length;
       //this.bulkTransferItemResultset = r;
       this.bulkGridList=r;
     });
@@ -175,7 +177,8 @@ goClick()
  
   if (this.validLocId[0] !== ""){
       this.bulktransService.getBulkTransferItemDetails(this.fromWarehouse, this.fromLocation).subscribe(r => {  
-      console.log(r);
+      console.log(r);      
+      this.gridrowlen = r.length;
       //this.bulkTransferItemResultset = r;
       this.bulkGridList=r;
     });
@@ -199,7 +202,8 @@ transferBtnClick()
   if (!!this.fromWarehouse && !!this.fromLocation && !!this.toWarehouse && !!this.toLocation){
     if ((this.fromWarehouse === this.toWarehouse) && (this.fromLocation === this.toLocation))
     {
-      alert("'From Warehouse & Location' should not equal to 'To Warehouse & Location'");   
+      alert("'From Warehouse & Location' & 'To Warehouse & Location' must not be same");  
+      return; 
     }
     else{
       this.bulktransService.executeBulkTransferItemDetails(updTransItem).subscribe(r => {
@@ -209,6 +213,7 @@ transferBtnClick()
   }
   else{
     alert("Please select Warehouse and Location");    
+    return;
   }
 }
 
