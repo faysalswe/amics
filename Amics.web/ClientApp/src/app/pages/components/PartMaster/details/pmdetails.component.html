@@ -187,7 +187,7 @@
 <div class="details-container content-block dx-card responsive-paddings"  style="height: calc(100vh - 435px);">
     <ng-container [ngSwitch]="selectedChild">
         <ng-container *ngSwitchCase="childType.BOM">
-            <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="itemNumber" height="98%"
+            <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="itemNumber" height="95%"
                 [focusedRowEnabled]="true" [allowColumnResizing]="true" [allowColumnReordering]="true"
                 [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true"
                 (onKeyDown)="onKeyDown($event)" (onEditingStart)="logEvent('EditingStart')"
