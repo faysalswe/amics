@@ -8109,6 +8109,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  border-bottom: 1px solid #ccc !important; /*siva*/
 }
 .dx-list-item-content {
   overflow: hidden;
@@ -23355,7 +23356,7 @@ input.dx-hidden {
   padding-right: 5px;
 }
 .dx-layout-manager .dx-field-item {
-  padding-bottom: 10px;
+  /* padding-bottom: 0px; siva */
   font-size: 12px;
 }
 .dx-layout-manager .dx-field-item:not(.dx-last-col) {
@@ -23368,7 +23369,7 @@ input.dx-hidden {
   padding-bottom: 0;
 }
 .dx-field-item:not(.dx-field-item-has-group):not(.dx-field-item-has-tabs):not(.dx-first-row):not(.dx-label-v-align) {
-  padding-top: 20px;
+   padding-top: 10px; /*siva */
 }
 .dx-field-item .dx-switch {
   vertical-align: middle;

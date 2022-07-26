@@ -42,6 +42,8 @@ import { ThisReceiver } from '@angular/compiler';
 import { LabelMap } from 'src/app/pages/models/Label';
 import { changeSerialInfo } from '../../change-serial/change-serial.component';
 import { TextboxStyle } from '../../textbox-style/textbox-style';
+import dxNumberBox from 'devextreme/ui/number_box';
+import { Toolbar } from 'devextreme/ui/tree_list';
 @Component({
   selector: 'app-pmdetails',
   templateUrl: './pmdetails.component.html',
@@ -69,6 +71,7 @@ export class PMDetailsComponent implements AfterViewInit {
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
   StylingMode: string = TextboxStyle.StylingMode;
   LabelMode: string = TextboxStyle.LabelMode;
+  bomDefaultRow : number = 10;
 
   warehouses: Warehouse[] = [];
   warehouseNames: string[] = [];
@@ -111,6 +114,8 @@ export class PMDetailsComponent implements AfterViewInit {
   editRowKey!: number;
   componentTypeF2: ComponentType = ComponentType.PartMasterF2;
   labelMap: typeof LabelMap;
+  focusOnQty: any;
+  rowIndex = 0;
   constructor(
     private searchService: SearchService,
     private pmdataTransfer: PartMasterDataTransService,
@@ -811,82 +816,108 @@ export class PMDetailsComponent implements AfterViewInit {
     this.locationVar?.instance.open();
   }
 
+  test(e: any) {
+    console.log(e);
+    console.log(e.row.data);
+  }
+
+  onInitialized(e:any){
+    this.AddBomLines();
+  }
+
+  onToolbarPreparing(e:any) {
+    e.toolbarOptions.visible = false;
+  }
+
+  AddBomLines() {
+    
+   //const dataSource = this.dataGrid.instance.getDataSource();  
+   // console.log( dataSource.items().length);
+ 
+    for(let i=0;i< this.bomDefaultRow;i++){
+      this.dataGrid.instance.addRow();
+    }
+
+    let rows = this.dataGrid.instance.getVisibleRows();   
+    let rowCount = rows.length;
+     
+    let  rowIndex = rows.find(obj=>obj.data.itemNumber === undefined)?.rowIndex;       
+   
+    console.log(rows);    
+    console.log(rowIndex); 
+
+    for(let i=0;i<rowCount;i++){
+      this.dataGrid.instance.cellValue(i, 1, i+1);
+    }   
+
+    setTimeout(() => {    
+       this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(Number(rowIndex),"itemNumber") as HTMLElement);     
+    }, 300);
+    
+  }
+
   onEditorPreparing(e: any) {
 
-
-    //console.log(e);
-
-
     if (e.dataField === 'itemNumber' && e.parentType === 'dataRow') {
+      const defaultValueChangeHandler = e.editorOptions.onValueChanged;
+      e.editorOptions.onValueChanged = function (this: any, args: any) {
+        let cellInfo = new pmSearch();
 
+        cellInfo.itemnumber = args.value;
 
-   let cellInfo = new pmSearch();
-    let ItemsId: string;
-    let desc: string;
+        this.searchService
+          .getItemNumberSearchResults(cellInfo)
+          .subscribe((response: pmItemSearchResult[]) => {
+             
 
-    cellInfo.itemnumber =  e.row.data.itemNumber;
+            let obj = response?.find(
+              (x: pmItemSearchResult) =>
+                x.itemNumber.toLowerCase() == cellInfo.itemnumber.toLowerCase()
+            );
 
-    this.searchService.getItemNumberSearchResults(cellInfo).subscribe((response) => {
-      let result = response;
+            if (!!obj) {
+              this.dataGrid.instance.cellValue(e.row.rowIndex, 2, obj.itemType);
+              this.dataGrid.instance.cellValue(
+                e.row.rowIndex,
+                3,
+                obj.itemNumber
+              );
+              this.dataGrid.instance.cellValue(
+                e.row.rowIndex,
+                4,
+                obj.description
+              );
 
-      console.log('result---------------------------------');
+              this.dataGrid.instance.cellValue(e.row.rowIndex, 6, obj.uomref);
+              this.dataGrid.instance.cellValue(e.row.rowIndex, 8, obj.cost);
+            } else {
 
-      console.log(result);
-      console.log('result---------------------------------');
+              alert('Invalid Itemnumber');
+             
+              setTimeout(() => {             
+                this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(e.row.rowIndex, "itemNumber"));
+              }, 100);
 
-      ItemsId = String(result?.find(x => x.itemNumber == e.row.data.itemNumber)?.id);
-      desc = String(result?.find(x => x.itemNumber == e.row.data.itemNumber)?.description);
-
-        if(!!ItemsId){
-          e.row.data.description = desc;
-          e.row.data.uomref = 'testing' + e.row.rowIndex;
-          e.row.data.cost = e.row.rowIndex;
-          e.row.data.dwgNo = 'testing' + e.row.rowIndex;
-          e.row.data.itemtype = 'testing' + e.row.rowIndex;          
-        }
-        else{
-          alert('Invalid Itemnumber');
-          e.row.data.itemNumber = '';
-          e.row.data.itemNumber.focus();
-        }
-      
-    });
-
-     
-      /* var rowIndex = e.row.rowIndex;
-      var item = this.lookupItemNumbers.find(
-        (u) => u.itemNumber.toLocaleLowerCase() === e.value.toLocaleLowerCase()
-      );
-      if (!!item) {
-        e.row.data.description = item.description;
-        e.row.data.itemType = item.itemType;
-        e.row.data.uomref = item.uomref;
-        e.row.data.cost = item.cost;
-        e.row.data.dwgNo = item.dwgNo;
-      } */
-      // e.row.data.description = "Nanda";
-      // e.component.cellValue(e.row.rowIndex, "FirstName", "AnotherID");
-      //e.row.edit
-      // e.row[rowIndex].column
-      //this.dataGrid.instance.cellValue(rowIndex, "description", "Nanda");
-      //e.event.preventDefault();
-      /* var item = this.lookupItemNumbers.find(u => u.itemNumber.toLocaleLowerCase() === e.value.toLocaleLowerCase());
-        if (!!item) {
-        } */
-
-      /*  var item = this.lookupItemNumbers.find(u => u.itemNumber.toLocaleLowerCase() === e.value.toLocaleLowerCase());
-        if (!!item) {
-            e.data.description = item.description;
-            e.data.itemType = item.itemType;
-            e.data.uomref = item.uomref;
-            e.data.cost = item.cost;
-            e.data.dwgNo = item.dwgNo;
-            var key = e.validator.option("validationGroup").key;
-
-            this.dataGrid.instance.cellValue(0, "description", item.description);
-            //this.dataGrid.instance.saveEditData();
-            //return true;
-        } */
+            }
+          });
+      }.bind(this);
     }
+
+    if (e.dataField === 'quantity' && e.parentType === 'dataRow') {
+      const defaultValueChangeHandler = e.editorOptions.onValueChanged;
+   
+      e.editorOptions.onValueChanged = function (this: any, args: any) {
+
+        let costElement = this.dataGrid.instance.getCellElement(e.row.rowIndex, "cost");
+        this.dataGrid.instance.cellValue(
+          e.row.rowIndex,
+          5,
+          Number(args.value)
+        );
+        this.dataGrid.instance.cellValue(e.row.rowIndex, 9, e.row.data.cost * Number(args.value));     
+
+      }.bind(this);
+     
   }
+}
 }

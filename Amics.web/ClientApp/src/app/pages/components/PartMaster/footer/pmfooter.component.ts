@@ -28,8 +28,10 @@ export class PMFooterComponent {
     this.pmDataTranserService.copyToNewSelected$.next(e);
   }
   pmCRUDActionsSelectionChanged(e: any) {
-    this.pmDataTranserService.selectedCRUD$.next(e);
+    this.pmDataTranserService.selectedCRUD$.next(e);   
   }
+
+
   showSaveExit(e: any) {
     if (e === pmCRUDActionType.Add || e === pmCRUDActionType.Edit) {
       this.saveExitVisible = true;
