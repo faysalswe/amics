@@ -56,5 +56,95 @@ namespace Amics.Api.Controllers
             var messages = _configService.ListMessages(messagetext);
             return messages;
         }
+
+        /// <summary>
+        /// API Controller to get users list from sec_users table. Get all the users list if parameter is null
+        /// </summary>
+        /// <param name="userId">userId</param>    
+        [HttpGet, Route("GetUserLst")]
+        public IList<LstUser> GetUsersList([FromQuery] string userId)
+        {
+            var usersLstRes = _configService.GetUsersList(userId);
+            return usersLstRes;
+        }
+
+        /// <summary>
+        /// API Controller to get user's access from sec_access and sec_users_access table. Get all the user's access list if parameter is null
+        /// </summary>
+        /// <param name="userId">userId</param>    
+        [HttpGet, Route("GetUserAccess")]
+        public IList<LstUserAccess> GetSecUserAccess([FromQuery] string userId)
+        {
+            var userAccess = _configService.GetUserAccess(userId);
+            return userAccess;
+        }
+
+        /// <summary>
+        /// API Controller to get user's warehouse access from list_warehouse and sec_users_warehouses table. 
+        /// Get all the warehouses if parameter is null 
+        /// </summary>
+        /// <param name="userId">userId</param>  
+        [HttpGet, Route("GetUserWarehouseAccess")]
+        public IList<LstAccessWarehouse> GetWarehouseAccess([FromQuery] string userId)
+        {
+            var whAccess = _configService.GetWarehouseAccess(userId);
+            return whAccess;
+        }
+
+        /// <summary>
+        /// API Controller to validate entered warehouse by user. Returns warehouseid if exists        
+        /// </summary>
+        /// <param name="warehouse">warehouse</param>  
+        [HttpGet, Route("ValidateWarehouse")]
+        public LstMessage GetValidWarehouse([FromQuery] string warehouse)
+        {
+            var validWhRes = _configService.ValidateWarehouse(warehouse);
+            return validWhRes;
+        }
+
+        /// <summary>
+        /// API Controller to validate entered username while adding new user, returns 1 if exists otherwise 0 if not exists    
+        /// </summary>
+        /// <param name="username">username</param>  
+        [HttpGet, Route("ValidateUserId")]
+        public LstMessage GetValidateUserId([FromQuery] string username)
+        {
+            var userIdRes = _configService.ValidateUserId(username);
+            return userIdRes;
+        }
+
+        /// <summary>
+        /// API Controller to add/update/delete user in sec_users/login_cred table
+        /// </summary>
+        /// <param name="LstUser">User Info</param>  
+        [HttpPost, Route("AddUpdateUser")]
+        public LstMessage AddUpdateUser([FromBody] LstUser lstUser)
+        {
+            var secUserId = _configService.AddSecUserDetails(lstUser);
+            return secUserId;
+        }
+
+        /// <summary>
+        /// API Controller to deletes userid's existing user access then add module access in the sec_users_access table
+        /// </summary>
+        /// <param name="lstUseraccess">User Access</param>  
+        [HttpPost, Route("AddUserAccess")]
+        public LstMessage AddUserAccess([FromBody] List<LstUserAccess> lstUseraccess)
+        {
+            var SecUserAccess = _configService.AddSecUserAccessDetails(lstUseraccess);
+            return SecUserAccess;
+        }
+
+        /// <summary>
+        /// API Controller to deletes userid's existing warehouse access then add access in the 
+        /// sec_users_warehouses table
+        /// </summary>
+        /// <param name="LstAccessWarehouse">User Warehouse Access</param> 
+        [HttpPost, Route("AddUserWhAccess")]
+        public LstMessage AddUserWaAccess([FromBody] List<LstAccessWarehouse> lstWhaccess)
+        {
+            var SecWhAccess = _configService.AddSecWhAccessDetails(lstWhaccess);
+            return SecWhAccess;
+        }
     }
 }

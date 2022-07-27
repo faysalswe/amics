@@ -22,7 +22,7 @@ import { saveAs } from "file-saver";
 import { exportDataGrid } from "devextreme/excel_exporter";
 import { pmNotes } from "src/app/pages/models/pmNotes";
 import { ComponentType } from "src/app/pages/models/componentType";
-import { ThisReceiver } from "@angular/compiler";
+import { ConstantPool, ThisReceiver } from "@angular/compiler";
 import { LabelMap } from "src/app/pages/models/Label";
 import { changeSerialInfo } from "../../change-serial/change-serial.component";
 import { TextboxStyle } from "../../textbox-style/textbox-style";
@@ -47,7 +47,7 @@ export class PMDetailsComponent implements AfterViewInit {
     secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
       StylingMode : string = TextboxStyle.StylingMode;
       LabelMode : string =  TextboxStyle.LabelMode;
-
+    
     warehouses: Warehouse[] = [];
     warehouseNames: string[] = [];
     pmWHLocations: pmWHLocation[] = [];
@@ -100,7 +100,7 @@ export class PMDetailsComponent implements AfterViewInit {
         this.searchService.getWarehouseInfo('').subscribe(w => {
             this.warehouses = w;
             this.warehouseNames = w.map(w => w.warehouse);
-            this.groupedWarehouses = this.groupByKey(w, 'warehouse');
+            this.groupedWarehouses = this.groupByKey(w, 'warehouse');           
         })
 
         this.searchService.getLocationInfo('', '').subscribe(l => {
@@ -303,17 +303,24 @@ export class PMDetailsComponent implements AfterViewInit {
             }, {})
     }
 
-    updateWarehouseSelection(location: string = '', onload: boolean = false) {
+    updateWarehouseSelection(location: string = '', onload: boolean = false) {       
         if (!this.pmDetails.warehouse || !location) {
             this.validLocationNames = [];
-            this.pmDetails.location = '';
-            return;
+            this.pmDetails.location = '';            
+            return;        
         }
-
+            
         let wid = this.groupedWarehouses[this.pmDetails.warehouse];
-        if (!!wid) {
-            let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
-            this.validLocationNames = locations.map(l => l.location);
+        if (!!wid) {              
+            let locWid=this.groupedLocations[wid[0].id];
+            if (!!locWid) { 
+                let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];           
+                this.validLocationNames = locations.map(l => l.location);   
+            }   
+            else{
+                this.pmDetails.location ='';
+                alert("There is no location for " + this.pmDetails.warehouse);
+            }      
         } else { this.validLocationNames = []; }
     }
 
@@ -326,7 +333,6 @@ export class PMDetailsComponent implements AfterViewInit {
             this.getLocations(e.value);
         }
     }
-
 
     ItemNumberSelection(e: any) {
         console.log(e);

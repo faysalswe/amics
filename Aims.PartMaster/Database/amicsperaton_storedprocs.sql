@@ -110,6 +110,7 @@ select list_items.id, LTRIM(RTRIM(itemnumber)) as itemnumber,LTRIM(RTRIM(descrip
 		order by list_items.createddate desc
  
 END
+GO
 ------------------------------------------------------------------------------------------------------------------------
 
 
@@ -150,7 +151,7 @@ where list_projects.project like '%' + @projectid + '%' and list_projects.name l
 order by somain desc
 end 
 end   
-
+Go
 -----------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_delete_list_items]    Script Date: 12-07-2022 07:56:22 PM ******/
@@ -226,6 +227,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_delete_list_items] @item varchar(50),@rev v
  		update list_items set flag_delete=1 where id=@itemid 
  	select * from @tbl_exists	 
  END 
+ GO
  --select  top 1 * from rma_lines
 
 ----------------------------------------------------------------------------------------------------------------------------------------
@@ -332,8 +334,8 @@ BEGIN
                      end
  
               end
-end
-
+End
+Go
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_receipts]    Script Date: 12-07-2022 08:01:12 PM ******/
@@ -646,7 +648,7 @@ drop table #mytable
 select 'Successfully Saved' as [message]
  
 END      
-
+GO
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -1003,7 +1005,7 @@ SELECT  dbo.list_items.itemnumber,
 order by itemnumber  
 end
 END
-
+GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_inv_somain_details_items_transfer_ship]    Script Date: 12-07-2022 08:14:41 PM ******/
@@ -1058,7 +1060,7 @@ begin
  end    
 end  
 END -- END OF PROCEDURE    
-    
+GO
 -- exec [dbo].[sp_inv_somain_details_items_transfer_ship] @so='tm-16-0205c',@item='LXB102DX',@user='vasu',@solinesid='4023AE3C-CD01-43EF-BBB0-E9C5E81B0618',@screen='LocTrans'
 -- exec [dbo].[sp_inv_somain_details_items_transfer_ship] 'tx-16-78945','Testbas2',@user='admin'    
 -- select * from so_main where somain='TM-16-0205C'
@@ -1084,7 +1086,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_warehouse_lookup]
   else Select id,warehouse from list_warehouses where warehouse like '%'+@warehouse+'%' or id=@whid order by warehouse
 
  END
-
+ GO
  
  -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1126,7 +1128,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_location_lookup]
 			route from list_locations where warehousesid=@whid and (location like '%'+@location+'%' or list_locations.id=@locid) and isnull(flag_delete,0)=0 order by location
 		end	
  END
- 
+ GO
  -----------------------------------------------------------------------------------------------------------------------------------
 
  
@@ -1149,7 +1151,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_itemclass_lookup]
 	else Select id,itemclass from list_itemclass where itemclass like '%'+@itemclass+'%' or id=@id order by itemclass
 
  END
-
+ GO
  ------------------------------------------------------------------------------------------------------------------------------------
 
  
@@ -1171,7 +1173,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_itemcode_lookup]
 	else Select id,itemcode from list_itemcodes where itemcode like '%'+@itemcode+'%' or id=@id order by itemcode
 
  END
-
+ GO
  --------------------------------------------------------------------------------------------------------------------------------------------
   
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_itemtype_lookup]    Script Date: 12-07-2022 08:26:23 PM ******/
@@ -1192,7 +1194,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_itemtype_lookup]
 	else Select id,itemtype from list_itemtypes where itemtype like '%'+ @itemtype +'%' or id=@id order by itemtype
 
  END
-
+ GO
  ---------------------------------------------------------------------------------------------------------------------------------------
 
  
@@ -1215,7 +1217,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_uom_lookup]
 	else Select id, uomref as uom,uom1 as purchasinguom,conversion as factor from list_uoms where uomref like '%'+ @uomref +'%' or id=@id order by uomref
 
  END
-
+ GO
  -------------------------------------------------------------------------------------------------------------------------------------------
  
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_get_iteminfo]    Script Date: 12-07-2022 08:35:10 PM ******/
@@ -1238,7 +1240,7 @@ if @itemsid!= 0x0
 else
 	select  items.id,items.itemnumber,items.rev,items.description,warehs.warehouse,loc.location,items.cost/(select conversion from list_uoms where id=uomid) as cost from list_items items inner join list_locations loc on items.locationsid=loc.id inner join list_warehouses warehs on loc.warehousesid=warehs.id where items.itemnumber=@item and items.Rev=@rev and items.flag_delete=0 and loc.flag_delete=0
 END
-
+GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_get_reasoncode]    Script Date: 12-07-2022 08:42:02 PM ******/
@@ -1263,7 +1265,7 @@ select id,reason from list_reasons where increase=@increase
 else
 select id,reason from list_reasons where reason=@reasoncode and increase=@increase
 END
-
+GO
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1289,7 +1291,7 @@ if @optionid = 0
 else
 	select id,optionid,description,yesorno,optionvalue from list_company_options where optionid=@optionid  
 END
-
+GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_itembom_exist]    Script Date: 12-07-2022 08:43:51 PM ******/
@@ -1305,7 +1307,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_itembom_exist]
 	select count(*) as value from items_bom where itemsid_parent=@parentid
 
  END
-
+ GO
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1321,7 +1323,7 @@ AS
 BEGIN  		 
 	Delete from inv_transfer_location where createdby = @createdby
 END
-
+GO
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_get_list_defaults]    Script Date: 12-07-2022 08:47:06 PM ******/
@@ -1335,7 +1337,7 @@ As
 BEGIN
   select id,formname,textfields,[value] from LIST_DEFAULTS
 END
-
+GO
 --------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -1352,7 +1354,7 @@ As
 BEGIN
   select distinct(somain),id from so_main where somain like @somain + '%' and id in (select somainid from so_lines where itemsid = @itemsid)
 END
-
+GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_view_er_items]    Script Date: 12-07-2022 09:12:46 PM ******/
@@ -1397,8 +1399,8 @@ ORDER BY dbo.so_main.somain, dbo.so_lines.linenum
     
 --where dbo.so_main.somain = @somain 
 --order by dbo.so_main.somain,dbo.so_lines.linenum    
-end 
-
+End 
+GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_view_notes]    Script Date: 12-07-2022 09:14:15 PM ******/
@@ -1415,7 +1417,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_view_notes]
 	Select id,isnull(linenum,1) as linenum,notesref,notes,parentid from list_notes_general where parentid=@itemsid order by linenum
 
  END
-
+ GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_insert_inv_serlot]    Script Date: 12-07-2022 09:15:30 PM ******/
@@ -1445,7 +1447,7 @@ insert into inv_serlot(transnum,qty,SerNo,TagNo,model,createdby,createddate)valu
 select 'success' as [message]
 
 END
-
+GO
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1480,8 +1482,8 @@ List_items_a.description, round(Items_bom.quantity,@invdec) as quantity, ISNULL(
  
  WHERE  Items_bom.itemsid_parent = @parentid  
  order by items_bom.linenum 
-end
-
+End
+GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_validate_sertag]    Script Date: 12-07-2022 09:17:55 PM ******/
@@ -1504,7 +1506,7 @@ BEGIN
 		 from dbo.list_items inner join dbo.inv_serial on list_items.id=inv_serial.itemsid where serno=@serno and quantity > 0	  
 
 END
-
+GO
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1535,8 +1537,8 @@ FROM         dbo.po_lines LEFT OUTER JOIN
 GROUP BY dbo.po_lines.linenum,dbo.list_items.itemnumber, dbo.po_main.pomain, dbo.po_main.id,dbo.po_lines.quantity, ISNULL(dbo.po_lines.job, ''),
                       dbo.list_items.id, dbo.po_main.podate,dbo.list_suppliers.supplier
 having dbo.list_items.id=@parentid
-end
-
+End
+GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_chgloc_pickqty_transloc]    Script Date: 12-07-2022 09:20:41 PM ******/
@@ -1567,7 +1569,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_chgloc_pickqty_transloc]
 			select isnull(quantity,0) as quantity,createdby from inv_basic where id =@invbasicid
 		end
  END
-
+ GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_chgloc_transcntchk]    Script Date: 12-07-2022 09:26:28 PM ******/
@@ -1581,7 +1583,7 @@ AS
 BEGIN  		 
 	Select COUNT(*) from inv_transfer_location where createdby=@createdby
 END
-
+GO
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1596,7 +1598,7 @@ AS
 BEGIN  		 
 	Select CONVERT(varchar, transdate,101) from translog where transnum = @transnum
 END
-
+GO
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1613,7 +1615,7 @@ BEGIN
 	Update list_next_number set list_next_number.translognum = list_next_number.translognum + 1
 	select isnull(list_next_number.translognum,1) as translognum from list_next_number
 END
-
+GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_chgloc_translocupdate]    Script Date: 12-07-2022 09:30:59 PM ******/
@@ -1650,7 +1652,7 @@ BEGIN
 	end 
 	
 END
-
+GO
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_item_bom]    Script Date: 12-07-2022 09:33:18 PM ******/
@@ -1707,6 +1709,7 @@ if @actionflag=3
 		select * from @tbl_exists  
 	end 
 END
+GO
 
 -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1732,8 +1735,8 @@ left outer join dbo.list_invtypes on dbo.list_invtypes.id = dbo.list_items.invty
     
 where dbo.list_projects.project = @projectid 
 order by dbo.so_main.somain,dbo.so_lines.linenum    
-end    
-
+End    
+GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_notes_general]    Script Date: 12-07-2022 09:37:24 PM ******/
@@ -1798,7 +1801,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_maintain_notes_general]
  		Set @retmsg = (select text from sys.messages where message_id = 50001) 
  end Catch 
  END
-
+ GO
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_partmaster]    Script Date: 12-07-2022 09:38:52 PM ******/
@@ -1996,7 +1999,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_maintain_partmaster]
 		if @curcost<>@cost  exec dbo.amics_sp_api_costing_single @childid=@id
 	end
  END 
-
+ GO
  ----------------------------------------------------------------------------------------------------------------------------------------
 
  
@@ -2038,8 +2041,8 @@ FROM         dbo.list_warehouses RIGHT OUTER JOIN
                       dbo.list_locations ON dbo.list_items.locationsid = dbo.list_locations.id ON dbo.list_warehouses.id = dbo.list_locations.warehousesid          
 WHERE     (dbo.list_items.itemnumber = @item) AND (dbo.list_items.rev = @rev)          
       
-end  
-
+End  
+GO
 --------------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_update_invbasic]    Script Date: 13-07-2022 02:28:23 PM ******/
@@ -2085,7 +2088,7 @@ BEGIN
 			update inv_basic set quantity=@quantity_new,expdate=@exp,er=@er where id=@invbasicid_current
 		end
 END
-
+GO
 --------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -2130,7 +2133,7 @@ BEGIN
 			update inv_basic set quantity=@quantity_new,expdate=@exp where id=@invbasicid_current
 		end
 END
- 
+GO
 --------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_update_transloglot]    Script Date: 13-07-2022 02:33:36 PM ******/
@@ -2156,10 +2159,9 @@ BEGIN
 insert into transloglot (translogid,Lotno,color,quantity,Createdby,cost,location,warehouse,lic_plate,lic_plate_flag) values 
 	(@translogid,@lotno,@color,@quantity,@user,@cost,@loc,@whs,@lic_plate,@lic_plate_flag)
 END
-
+GO
 
 ----------------------------------------------------------------------------------------------------------------------------------
-
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_update_invserial]    Script Date: 13-07-2022 02:34:55 PM ******/
 SET ANSI_NULLS ON
@@ -2214,6 +2216,7 @@ BEGIN
 	close cuMyCursor
 	deallocate cuMyCursor
 END
+GO
 -------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_update_translog]    Script Date: 13-07-2022 02:34:22 PM ******/
@@ -2263,7 +2266,7 @@ insert into translog(id,Trans,itemsid,itemnumber,description,
 	@ref,@rev,@notes,@quantity,@cost,@transdate,getdate(),getdate(),@user,@lic_plate,@lic_plate_flag,@recid,@curqty,@userfield2)
 
 END
-
+GO
 --------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_inv_somain_details_items]    Script Date: 13-07-2022 02:36:18 PM ******/
@@ -2353,7 +2356,7 @@ set @itemnumber=(select itemnumber from so_lines where id=@solinesid2 )
 			
 	END  -- ELSE SERIAL CALCULATIONS END ---
 END -- END OF PROCEDURE
-
+GO
 
 -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -2405,7 +2408,7 @@ BEGIN
 		deallocate cutocost	
  	end	
 END
-
+GO
 
 -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -2435,7 +2438,7 @@ BEGIN
 		(@invreceiptsid,@sourcesid,@sourcesrefid,@locationid,@invbasicid,@quantity,@transdate,@user,@recnum,@recnotes  )
 
 END
-
+GO
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -2539,7 +2542,7 @@ BEGIN
  end          
          
 END     
-
+GO
 --------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_update_translogsn]    Script Date: 13-07-2022 08:51:57 PM ******/
@@ -2565,7 +2568,7 @@ BEGIN
 insert into translogsn (translogid,serno,tagno,model,createdby,cost,location,warehouse,lic_plate,lic_plate_flag) values 
 	(@translogid,@serno,@tagno,@model,@user,@cost,@loc,@whs,@lic_plate,@lic_plate_flag)
 END
-
+GO
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -2597,7 +2600,7 @@ BEGIN
 		group by itemnumber,description,itemsid,rev
 	order by itemnumber
 END
-
+GO
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -2648,7 +2651,7 @@ close cuSerial
 deallocate cuSerial
 --exec sp_essex_transfer5 @xfr_createdby=@bulk_xfr_user, @toloc=@xfr_toloc, @towh=@xfr_towh, @xfr_transnum=@transnum
 END
-
+GO
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -2670,7 +2673,7 @@ BEGIN
 		select messagenum,messagetext from list_messages where (messagenum like '%'+ @messagetext +'%') or (messagetext like '%' + @messagetext + '%') order by messagenum				
 
 END
-
+GO
 --------------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_list_fieldproperties]    Script Date: 14-07-2022 10:24:03 AM ******/
@@ -2688,7 +2691,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_list_fieldproperties]
     else Select id,labelnumber,mylabel from list_field_properties where labelnumber in (select val from dbo.split(@labelnumber,',')) order by labelnumber
 
  END
-
+ GO
  --------------------------------------------------------------------------------------------------------------------------------------
  
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_search_mdat_out]    Script Date: 14-07-2022 10:34:09 AM ******/
@@ -2723,7 +2726,8 @@ else
 		and list_status.status Like case when @status='' then '%%' else '%'+@status+'%' end
 		order by createddate desc
 	end
-end
+End
+GO
 --------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_view_mdat_out]    Script Date: 14-07-2022 10:37:46 AM ******/
@@ -2751,8 +2755,8 @@ else
 		inner join list_status on inv_mdat_out.statusid=list_status.id
 		where mdat_num=@mdatNum order by createddate desc
 	end
-end  
- 
+End  
+GO
 --------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_mdatout]    Script Date: 14-07-2022 10:31:56 AM ******/
@@ -2811,7 +2815,7 @@ CREATE PROCEDURE [dbo].[amics_sp_api_maintain_mdatout]
 			delete from dbo.inv_mdat_out where id=@id							
 		end
  END
-
+ GO
  -------------------------------------------------------------------------------------------------------------------------------------
     
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_get_transnum]    Script Date: 14-07-2022 11:01:45 AM ******/
@@ -2824,7 +2828,8 @@ as
 begin
 	Update list_next_number set sp_rec=sp_rec+1
 	SELECT list_next_number.sp_rec FROM list_next_number
-end
+End
+GO
 -------------------------------------------------------------------------------------------------------------------------------------
 
 /****** Object:  StoredProcedure [dbo].[amics_sp_api_insert_inv_trans]    Script Date: 14-07-2022 11:07:40 AM ******/
@@ -2863,7 +2868,7 @@ insert into inv_trans(transnum,source,itemsid,invbasicid,invserialid,transqty,bo
 select 'success' as [message]
 
 END
-
+GO
 
 -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -3149,6 +3154,7 @@ BEGIN
 
 	select 'Successfull Saved'
 END
+GO
 
 -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -3233,7 +3239,7 @@ BEGIN	-- Begin of Procedure
 	close cuFIFO
 	deallocate cuFIFO
 END	-- End of Procedure
-
+GO
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
@@ -3256,8 +3262,8 @@ begin
 	 else
 		update inv_allocate set quantity=(@curqty-@qty) where sources_refid=@refid
 	end
- end
- 
+ End
+ GO
  
 --------------------------------------------------------------------------------------------------------------------------------------
  
@@ -3309,5 +3315,244 @@ CREATE PROCEDURE [dbo].[amics_sp_api_pick_update_wip]
  	deallocate cuMyItemCursor 
  	end 
  END 
-  
+ GO
 -------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_get_userlist]    Script Date: 25-07-2022 11:58:57 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_get_userlist] 
+@userid varchar(50)
+AS
+BEGIN
+declare @pwdValue varchar(10)
+set @pwdValue = (select yesorno from dbo.list_company_options where optionid='60')
+
+	if (@userid is null or @userid ='')
+		select * from sec_users
+	else
+		begin
+			if (@pwdValue = 1)
+				select sec_users.id,sec_users.userid,sec_users.signature, sec_users.[user],sec_users.firstname,sec_users.lastname, dbo.amics_fn_api_decrypt(sec_users.password)  as password, 
+				sec_users.email, sec_users.buyer, sec_users.salesperson, sec_users.webaccess,sec_users.employee,sec_users.forgotpwdans,list_warehouses.warehouse 
+				from sec_users left outer join list_warehouses on sec_users.defaultwh =  list_warehouses.id where  sec_users.id = @userid
+			else
+				select sec_users.id,sec_users.userid,sec_users.signature, sec_users.[user],sec_users.firstname,sec_users.lastname, sec_users.password,sec_users.email,
+				sec_users.buyer, sec_users.salesperson, sec_users.webaccess,sec_users.employee,sec_users.forgotpwdans,list_warehouses.warehouse
+				from sec_users inner join list_warehouses on sec_users.defaultwh =  list_warehouses.id where  sec_users.id =  @userid
+		end
+
+END
+GO
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_get_secuseraccess]    Script Date: 25-07-2022 11:58:57 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_api_get_secuseraccess] 
+@userid varchar(50)
+
+AS
+BEGIN		
+	if (@userid is null or @userid ='')
+		select id as accessid,access,module,0 as readonly,0 as onthefly from sec_access where accessnumber > 999
+	else
+		select * from sec_users_access join sec_access on sec_users_access.accessid=sec_access.id where sec_users_access.users_id=@userid and sec_access.accessnumber > 999
+END
+GO
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_get_secwhaccess]    Script Date: 25-07-2022 11:58:57 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_get_secwhaccess] 
+@userid varchar(50)
+
+AS
+BEGIN		
+	if (@userid is null or @userid ='')
+		select id as warehouses_id,Warehouse,0 as transok from list_warehouses order by warehouse
+	else
+		select * from sec_users_warehouses join list_warehouses on sec_users_warehouses.warehouses_id=list_warehouses.id where sec_users_warehouses.users_id=@userid order by warehouse
+
+END
+GO
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:StoredProcedure [dbo].[amics_sp_api_validate_warehouse]    Script Date: 25-07-2022 11:58:57 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_validate_warehouse] 
+@warehouse varchar(50)
+
+AS
+BEGIN		
+	select id from list_warehouses where warehouse=@warehouse	
+END
+Go
+-------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:StoredProcedure [dbo].[amics_sp_api_validate_userId]    Script Date: 25-07-2022 11:58:57 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_validate_userId] 
+@userid varchar(50)
+
+AS
+BEGIN		
+	select id from sec_users where userid=@userid
+END
+GO
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_secuser]    Script Date: 27-07-2022 09:36:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_maintain_secuser] 
+@actionflag smallint,
+@id uniqueidentifier = null,
+@userid varchar(50),
+@firstname varchar(50),
+@lastname varchar(50),
+@password varchar(50),
+@warehouse varchar(50),
+@email varchar(50),
+@buyer bit,
+@salesperson bit,
+@webaccess bit,
+@signature varchar(50),
+@employee bit,
+@user bit,
+@forgotpwdans varchar(50),
+@dbName varchar(50)
+
+AS
+BEGIN
+declare @pwdValue varchar(10)
+declare @encryptpwd varchar(30)
+declare @warehouseId uniqueidentifier
+set @pwdValue = (select yesorno from dbo.list_company_options where optionid='60')
+set @warehouseId=(select top 1 dbo.list_warehouses.id from dbo.list_warehouses where warehouse=@warehouse)
+
+if (@password != '******')
+	set @encryptpwd = (select dbo.amics_fn_api_encrypt(@password))
+
+	-----------sec_users -------------
+if (@actionflag = 1)
+	begin
+		if (@pwdValue = 1)
+			Insert into sec_users (id, userid, firstname, lastname, password, defaultwh, email, buyer, salesperson, createdby, createddate, webaccess, signature, employee, [user],forgotpwdans) values 
+			(NEWID(), @userid, @firstname , @lastname, @encryptpwd, @warehouseId, @email, @buyer, @salesperson, @userid, getdate(), @webaccess, @signature, @employee, @user, @forgotpwdans)			
+		else
+			Insert into sec_users (id, userid, firstname, lastname, password, defaultwh, email, buyer, salesperson, createdby, createddate, webaccess, signature, employee, [user],forgotpwdans) values 
+			(NEWID(), @userid, @firstname , @lastname, @password, @warehouseId, @email, @buyer, @salesperson, @userid, getdate(), @webaccess, @signature, @employee, @user, @forgotpwdans)
+	end	
+
+else if (@actionflag = 2)
+	begin
+		if (@pwdValue = 1 and @encryptpwd = '')
+			update sec_users set userid = @userid, firstname = @firstname, lastname = @lastname, defaultwh=@warehouseId, email=@email, buyer=@buyer, salesperson=@salesperson, webaccess =@webaccess, signature = @signature, employee = @employee, [user] =@user,forgotpwdans =@forgotpwdans where id =@id
+		else if (@pwdValue = 1 and @encryptpwd != '')
+			update sec_users set userid = @userid, firstname = @firstname, lastname = @lastname, password=@encryptpwd, defaultwh=@warehouseId, email=@email, buyer=@buyer, salesperson=@salesperson, webaccess =@webaccess, signature = @signature, employee = @employee, [user] =@user,forgotpwdans =@forgotpwdans where id =@id
+		else if (@pwdValue = 0 and @password != '******')
+			update sec_users set userid = @userid, firstname = @firstname, lastname = @lastname, password=@password, defaultwh=@warehouseId, email=@email, buyer=@buyer, salesperson=@salesperson, webaccess =@webaccess, signature = @signature, employee = @employee, [user] =@user,forgotpwdans =@forgotpwdans where id =@id
+		else
+			update sec_users set userid = @userid, firstname = @firstname, lastname = @lastname, defaultwh=@warehouseId, email=@email, buyer=@buyer, salesperson=@salesperson, webaccess =@webaccess, signature = @signature, employee = @employee, [user] =@user,forgotpwdans =@forgotpwdans where id =@id
+			
+	end
+
+else if (@actionflag = 3)
+	delete sec_users where id = @id
+
+	-----------login_cred -------------
+if (@actionflag = 1)
+	begin
+		 if (@pwdValue = 1)
+			insert into login_cred (id, username, password, dbname, createddate) values (NEWID(), @userid, @encryptpwd, @dbname, GETDATE())
+		 else
+			insert into login_cred (id, username, password, dbname, createddate) values (NEWID(), @userid, @password, @dbName, GETDATE())			
+	end	
+else if (@actionflag = 2)
+	begin
+		if (@pwdValue = 1 and @encryptpwd = '')
+			update login_cred set username = @userid where userName =@userid
+		else if (@pwdValue = 1 and @encryptpwd != '')
+			update login_cred set username = @userid, password=@encryptpwd where userName = @userid
+		else if (@pwdValue = 0 and @password != '******')
+			update login_cred set username = @userid, password=@password where userName = @userid
+		else
+			update login_cred set username = @userid where userName = @userid
+	end			
+else if (@actionflag = 3)
+	delete login_cred where username =@userid
+
+END
+GO
+
+-----------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_secuseraccess]    Script Date: 27-07-2022 09:36:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_maintain_secuseraccess] 
+@actionflag smallint,
+@id uniqueidentifier = null,
+@userid uniqueidentifier = null,
+@accessid uniqueidentifier = null,
+@readonly bit,
+@onthefly bit,
+@createdby varchar(50)
+
+AS
+BEGIN	
+
+	if (@actionflag = 1 or @actionflag = 2)		
+		insert into sec_users_access (id,users_id,accessid,readonly,onthefly,createdby,createddate) values(NEWID(), @userid, @accessid, @readonly, @onthefly, @createdby, GETDATE())
+		
+END
+GO
+--------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_secwarehouseaccess]    Script Date: 27-07-2022 09:36:08 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_maintain_secwarehouseaccess] 
+@actionflag smallint,
+@id uniqueidentifier = null,
+@userid uniqueidentifier = null,
+@warehouseid uniqueidentifier = null,
+@readonly bit,
+@createdby varchar(50)
+
+AS
+BEGIN
+	
+	if (@actionflag = 1 or @actionflag = 2)		
+		insert into sec_users_warehouses (id,users_id,warehouses_id,transok,createdby,createddate)  values(NEWID(), @userid, @warehouseid, @readonly, @createdby, GETDATE())		
+
+END
+GO
+
+---------------------------------------------------------------------------------------------------------------------------
