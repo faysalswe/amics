@@ -28,12 +28,19 @@ export class ChangeSerialComponent implements OnInit {
     type: "default"
 
   };
-  submitPopupButtonOptions = {
-    text: "Save",
+  submitSerialPopupButtonOptions = {
+    text: "Save and exit",
+    useSubmitBehavior: true,
+    type: "default"
+};
+
+cancelSerialPopupButtonOptions = {
+    text: "Cancel and exit",
     useSubmitBehavior: true,
     type: "default"
 
-  };
+};
+
   changesserialArray: pmSerial[] = [];
   changeserialOptions = [
     'Ware house',

@@ -4547,7 +4547,7 @@
 .dx-tab.dx-tab-selected .dx-icon {
   color: #03a9f4;
 }
-.dx-tab.dx-tab-selected::before {
+.dx-tabs-wrapper::before {
   content: "";
   position: absolute;
   bottom: 0;
@@ -4556,6 +4556,17 @@
   right: 0;
   background-color: #03a9f4;
 }
+.dx-tab.dx-tab-selected::before{
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  left: 0;
+  right: 0;
+  background-color: #03a9f4;
+  margin-bottom: 33px;
+}
+
 .dx-tab-content,
 .dx-tab-text {
   vertical-align: middle;
@@ -14721,6 +14732,7 @@
 }
 .dx-header-row > td > .dx-datagrid-text-content:not(.dx-sort-indicator):not(.dx-header-filter-indicator) {
   max-width: 100%;
+  font-weight: 700;
 }
 .dx-datagrid-filter-range-overlay .dx-editor-container .dx-texteditor {
   border-width: 0;
@@ -15976,6 +15988,7 @@
   -ms-touch-action: pinch-zoom;
   touch-action: pinch-zoom;
   border-bottom: 1px solid #e0e0e0;
+  background-color: #edf2f7;
 }
 .dx-datagrid-headers .dx-datagrid-content {
   margin-bottom: -1px;
@@ -20219,7 +20232,7 @@ input.dx-hidden {
 .dx-tabpanel .dx-tabs {
   display: block;
   border-bottom: none;
-  background-color: #f7f7f7;
+  background-color: #cfd3d9;
 }
 .dx-empty-collection.dx-tabpanel .dx-tabs {
   border-top: none;

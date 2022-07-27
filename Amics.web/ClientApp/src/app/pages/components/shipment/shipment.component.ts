@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { LabelMap } from '../../models/Label';
+import { TextboxStyle } from '../textbox-style/textbox-style';
 
 @Component({
   selector: 'app-shipment',
@@ -26,7 +28,12 @@ export class ShipmentComponent {
     { wareHouse: "wareHouse 5", location: "california", serialNo: "11", tagNo: "tag-1", qty: "111" },
   ];
 
+  StylingMode: string = TextboxStyle.StylingMode;
+  LabelMode: string = TextboxStyle.LabelMode;
+  labelMap: typeof LabelMap
+
   constructor() {
+    this.labelMap = LabelMap;
     this.onAdd = this.onAdd.bind(this);
   }
 
@@ -44,19 +51,19 @@ export class ShipmentComponent {
     let element = event.element.parentElement.className;
 
     if (element == 'column1') {
-      if(this.tableLeft[event.toIndex] !== undefined){
+      if (this.tableLeft[event.toIndex] !== undefined) {
         this.tableLeft.splice(event.toIndex, 0, rowData);
       }
-      else{
+      else {
         this.tableLeft.push(rowData);
       }
       this.tableRight.splice(event.fromIndex, 1);
     }
     else if (element == 'column2') {
-      if(this.tableRight[event.toIndex] !== undefined){
+      if (this.tableRight[event.toIndex] !== undefined) {
         this.tableRight.splice(event.toIndex, 0, rowData);
       }
-      else{
+      else {
         this.tableRight.push(rowData);
       }
       this.tableLeft.splice(event.fromIndex, 1);

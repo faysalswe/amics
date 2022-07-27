@@ -30,8 +30,8 @@
                     <dxi-item [colSpan]="1" [isRequired]="true">
                         <dx-select-box formControlName="itemType" width="100%" [items]="itemTypeList"
                             [value]="pmDetails.itemType" [searchEnabled]="true" [stylingMode]="StylingMode"
-                            [labelMode]="LabelMode" placeholder="Search" [label] = "'Manufacture'"
-                            displayExpr="itemtype" valueExpr="itemtype" #mfrVar (onFocusIn)="openMFRCodeBox()"></dx-select-box>
+                            [labelMode]="LabelMode" placeholder="Search" [label]="'Manufacture'" displayExpr="itemtype"
+                            valueExpr="itemtype" #mfrVar (onFocusIn)="openMFRCodeBox()"></dx-select-box>
 
                         <dxi-validation-rule type="required" message="Manufacture is required">
                         </dxi-validation-rule>
@@ -49,17 +49,16 @@
                     </dxi-item>
 
                     <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                        <dx-number-box [value]="pmDetails.leadTime" [stylingMode]="StylingMode"
-                            [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
-                            [ngAddLabel]="labelMap.maintenance_num" #leadVar>
+                        <dx-number-box [value]="pmDetails.leadTime" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.maintenance_num" #leadVar>
                         </dx-number-box>
                     </dxi-item>
 
                     <dxi-item [colSpan]="1" [isRequired]="false">
                         <dx-select-box formControlName="itemClass" width="100%" [items]="itemClassList"
-                        [stylingMode]="StylingMode" [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.itemClass_num"
-                            displayExpr="itemclass" valueExpr="itemclass" #itemClassVar
-                            (onFocusIn)="openItemClassCodeBox()"></dx-select-box>
+                            [stylingMode]="StylingMode" [labelMode]="LabelMode" placeholder="Search"
+                            [ngAddLabel]="labelMap.itemClass_num" displayExpr="itemclass" valueExpr="itemclass"
+                            #itemClassVar (onFocusIn)="openItemClassCodeBox()"></dx-select-box>
 
                     </dxi-item>
 
@@ -86,7 +85,8 @@
                 </dxi-item> -->
                 <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
                     <dx-text-box [value]="pmDetails.description" [stylingMode]="StylingMode" [labelMode]="LabelMode"
-                      style="height: 60px;" [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.description_num" #markupVar>
+                        style="height: 60px;" [elementAttr]="{ class: 'myclass' }"
+                        [ngAddLabel]="labelMap.description_num" #markupVar>
                     </dx-text-box>
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
@@ -149,12 +149,37 @@
                     </dxi-item> -->
 
                 </dxi-item>
+
+
                 <dxi-item itemType="group" [colCount]="3">
-                    <dxi-item [colCount]="1" editorType="dxRadioGroup" [label]="{text: ' '}" dataField="invType"
-                        [isRequired]="true" [editorOptions]=" {items: invTypes,   layout: 'horizontal' }"
-                        style="align-items:center;background-color: #F4F5F6;">
+
+
+                    <!-- <fieldset class="reset" style="z-index:-1;">
+                        <legend class="reset">Inventory Type</legend> -->
+
+                    <!-- <dxi-item [colCount]="1"  style="align-items:center;background-color: #ccc;" editorType="dxRadioGroup" [label]="{text: ' '}" dataField="invType"
+                            [isRequired]="true" [editorOptions]=" {items: invTypes,   layout: 'horizontal' }"
+                            style="align-items:center;background-color: #F4F5F6;">
+                            <dxi-validation-rule type="required" message="Inv Type is required"></dxi-validation-rule>
+                        </dxi-item> -->
+
+                    <dxi-item [colSpan]="1" [isRequired]="true">
+                        <div class="custom-field">
+                            <h1>
+                                <span>
+                                    Inventory type
+                                </span>
+                            </h1>
+                            <dx-radio-group [(value)]="pmDetails.invType" [items]="invTypes" layout="horizontal"></dx-radio-group>
+                        </div>
+                        <!-- <fieldset>
+                            <legend>Inventory type</legend>
+                            <dx-radio-group [items]="invTypes" layout="horizontal"></dx-radio-group>
+                        </fieldset> -->
                         <dxi-validation-rule type="required" message="Inv Type is required"></dxi-validation-rule>
                     </dxi-item>
+
+                    <!-- </fieldset> -->
                     <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass"
                         style="align-items:center;background-color: #F4F5F6;">
                         <dxi-item editorType="dxCheckBox" dataField="obsolete" [label]="{text: ' '}"
@@ -168,6 +193,7 @@
                         </dxi-item>
                     </dxi-item>
                 </dxi-item>
+
             </dxi-item>
             <dxi-item itemType="group" [colCount]="2" [visible]="false">
                 <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonOptions"
@@ -300,8 +326,8 @@
                 </dxo-row-dragging>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
-                <dxo-editing mode="row" [allowDeleting]="!this.readOnly"
-                    [allowAdding]="!this.readOnly" newRowPosition="last">
+                <dxo-editing mode="row" [allowDeleting]="!this.readOnly" [allowAdding]="!this.readOnly"
+                    newRowPosition="last">
                 </dxo-editing>
 
                 <dxi-column dataField="lineNum" [width]="80"></dxi-column>
@@ -386,7 +412,7 @@
             <br />
             <dx-data-grid id="gridContainer" [dataSource]="pmSerials" keyExpr="serlot" height="650"
                 [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
-                [rowAlternationEnabled]="true" (onRowClick)="onRowSelection($event)">
+                [rowAlternationEnabled]="true" (onRowClick)="onRowSelection($event)" (dblclick)="edit()">
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-sorting mode="multiple"></dxo-sorting>
@@ -410,41 +436,74 @@
             <dxo-export [enabled]="true" [allowExportSelectedData]="true"></dxo-export>
             <dxo-position at="center" my="center"> </dxo-position>
             <br>
-            <br>
             <div class="row" style="justify-content: center;">
                 <dx-button stylingMode="contained" text="edit" width="150" type="default" (onClick)="edit()">
                 </dx-button>
-              </div>
+            </div>
         </dx-popup>
         <dx-popup [width]="500" [height]="500" [showTitle]="true" title="Update Serial" [dragEnabled]="false"
             [showCloseButton]="true" container=".dx-viewport" [(visible)]="updateSerialPopupVisible">
-            <form >
+            <form>
                 <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="2" labelMode="floating">
-                    <dxi-item [colSpan]="1" dataField="fromSerial" [label]="{text:'From Ser No'}"
-                        [editorOptions]="{readOnly: true}">
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [(value)]="changeSerialSearchInfo.fromSerial" [stylingMode]="StylingMode"
+                            [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                            [label]="'From Ser No'">
+                        </dx-text-box>
                     </dxi-item>
-                    <dxi-item [colSpan]="1" dataField="toSerial" [label]="{text:'To Ser No'}"></dxi-item>
-                    <dxi-item [colSpan]="1" dataField="fromTagNo" [label]="{text:'From Tag No'}"
-                        [editorOptions]="{readOnly: true}">
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [(value)]="changeSerialSearchInfo.toSerial" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Ser No'">
+                        </dx-text-box>
                     </dxi-item>
-                    <dxi-item [colSpan]="1" dataField="toTagNo" [label]="{text:'To Tag No'}"></dxi-item>
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [(value)]="changeSerialSearchInfo.fromTagNo" [stylingMode]="StylingMode"
+                            [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                            [label]="'From Tag No'">
+                        </dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [(value)]="changeSerialSearchInfo.toTagNo" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Tag No'">
+                        </dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [(value)]="changeSerialSearchInfo.fromModel" [stylingMode]="StylingMode"
+                            [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                            [label]="'From Model'">
+                        </dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [(value)]="changeSerialSearchInfo.toModel" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Model'">
+                        </dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [(value)]="changeSerialSearchInfo.fromCost" [stylingMode]="StylingMode"
+                            [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                            [label]="'From Cost'">
+                        </dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [(value)]="changeSerialSearchInfo.toCost" [stylingMode]="StylingMode"
+                            [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Cost'">
+                        </dx-text-box>
+                    </dxi-item>
+                    <dxi-item [colSpan]="2" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" style="height: 60px;"
+                            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.notes_num">
+                        </dx-text-box>
+                    </dxi-item>
 
-                    <dxi-item [colSpan]="1" dataField="fromModel" [label]="{text:'From Model'}"
-                        [editorOptions]="{readOnly: true}">
-                    </dxi-item>
-                    <dxi-item [colSpan]="1" dataField="toModel" [label]="{text:'To Model'}"></dxi-item>
-                    <dxi-item [colSpan]="1" dataField="fromCost" [label]="{text:'From Cost'}"
-                        [editorOptions]="{readOnly: true}">
-                    </dxi-item>
-                    <dxi-item [colSpan]="1" dataField="toCost" [label]="{text:'To Cost'}"></dxi-item>
-
-                    <dxi-item [colSpan]="2" dataField="notes" editorType="dxTextArea" [label]="{text: 'Notes'}">
-                    </dxi-item>
                 </dx-form>
-                <dx-form [colCount]="3" labelMode="floating">
+                <br>
+                <dx-form [colCount]="12" labelMode="floating">
                     <dxi-item></dxi-item>
-                    <dxi-item [colSpan]="1" itemType="button" width="150" type="default" stylingMode="contained"
-                        [buttonOptions]="submitSerialPopupButtonOptions" style="text-align: center;">
+                    <dxi-item [colSpan]="5" itemType="button" width="250" type="default" stylingMode="contained"
+                        [buttonOptions]="submitSerialPopupButtonOptions">
+                    </dxi-item>
+                    <dxi-item [colSpan]="5" itemType="button" width="260" type="default" stylingMode="contained"
+                        [buttonOptions]="cancelSerialPopupButtonOptions">
                     </dxi-item>
                 </dx-form>
             </form>

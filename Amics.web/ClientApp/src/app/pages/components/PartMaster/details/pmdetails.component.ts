@@ -852,25 +852,32 @@ export class PMDetailsComponent implements AfterViewInit {
     this.dataGrid.instance.cellValue(selectedRowIndex, 6, newData.extCost);
   }
 
-  submitSerialPopupButtonOptions = {
-    text: 'Save',
-    useSubmitBehavior: true,
-    type: 'default',
-  };
-  updateSerialPopupVisible: boolean = false;
-  changeSerialSearchInfo: changeSerialInfo = new changeSerialInfo();
-  onRowSelection(e: any) {
-    let selectedRow = e.data;
-    this.changeSerialSearchInfo.fromSerial = selectedRow?.serlot;
-    this.changeSerialSearchInfo.toSerial = selectedRow?.serlot;
-    this.changeSerialSearchInfo.fromTagNo = selectedRow?.tagcol;
-    this.changeSerialSearchInfo.toTagNo = selectedRow?.tagcol;
-    this.changeSerialSearchInfo.fromModel = selectedRow?.color_model;
-    this.changeSerialSearchInfo.toModel = selectedRow?.color_model;
-    this.changeSerialSearchInfo.fromCost = selectedRow?.cost;
-    this.changeSerialSearchInfo.toCost = selectedRow?.cost;
-    this.updateSerialPopupVisible = true;
-  }
+    submitSerialPopupButtonOptions = {
+        text: "Save and exit",
+        useSubmitBehavior: true,
+        type: "default"
+    };
+
+    cancelSerialPopupButtonOptions = {
+        text: "Cancel and exit",
+        useSubmitBehavior: true,
+        type: "default"
+
+    };
+
+    updateSerialPopupVisible: boolean = false;
+    changeSerialSearchInfo: changeSerialInfo = new changeSerialInfo();
+    onRowSelection(e: any) {
+        let selectedRow = e.data;
+        this.changeSerialSearchInfo.fromSerial = selectedRow?.serlot;
+        this.changeSerialSearchInfo.toSerial = selectedRow?.serlot;
+        this.changeSerialSearchInfo.fromTagNo = selectedRow?.tagcol;
+        this.changeSerialSearchInfo.toTagNo = selectedRow?.tagcol;
+        this.changeSerialSearchInfo.fromModel = selectedRow?.color_model;
+        this.changeSerialSearchInfo.toModel = selectedRow?.color_model;
+        this.changeSerialSearchInfo.fromCost = selectedRow?.cost;
+        this.changeSerialSearchInfo.toCost = selectedRow?.cost;
+    }
 
   edit() {
     this.updateSerialPopupVisible = true;
