@@ -8,8 +8,37 @@
         <dxi-location [row]="0" [col]="0" [rowspan]="2"></dxi-location>
         <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
             <dx-form id="form" [colCount]="1">
+                <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                        [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.er_num">
+                    </dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                        [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_Id_num">
+                    </dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                        [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_name_num">
+                    </dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                        [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.budgetAuth_num">
+                    </dx-text-box>
+                </dxi-item>
+                <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                        [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.taskDescription_num">
+                    </dx-text-box>
+                </dxi-item>
+
+
+
+
                 <dxi-item [colSpan]="1">
-                    <dx-text-box dataField=" ER" label="ER"></dx-text-box>
+                    <!-- <dx-text-box dataField=" ER" label="ER"></dx-text-box>
                     <br />
                     <dx-text-box dataField=" Projectid" label="Projectid"></dx-text-box>
                     <br />
@@ -18,7 +47,7 @@
                     <dx-text-box dataField="Budget Authority" label="Budget Authority"></dx-text-box>
                     <br />
                     <dx-text-box dataField="Task Description" label="Task Description"></dx-text-box>
-                    <br />
+                    <br /> -->
                     <dx-button stylingMode="contained" text="search" type="default" width="400">
                     </dx-button>
                     <br />
@@ -42,12 +71,23 @@
         <dxi-location [row]="0" [col]="1"></dxi-location>
         <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
             <dx-form id="form" [colCount]="14" labelMode="floating">
-                <dxi-item [colSpan]="6">
-                    <dx-text-box dataField="Project Name" label="Project Name"></dx-text-box>
+                <dxi-item [colSpan]="6" *ngDisplayLabel="100" [isRequired]="false">
+                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                        [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_name_num">
+                    </dx-text-box>
                 </dxi-item>
+                <!-- <dxi-item [colSpan]="6">
+                    <dx-text-box dataField="Project Name" label="Project Name"></dx-text-box>
+                </dxi-item> -->
                 <dxi-item itemType="group" [colSpan]="8" [colCount]="12">
-                    <dxi-item dataField="Line Notes" [colSpan]="9" editorType="dxTextArea">
+                    <dxi-item [colSpan]="9" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                            style="height: 60px;" [elementAttr]="{ class: 'myclass' }"
+                            [ngAddLabel]="labelMap.lineNotes_num" #markupVar>
+                        </dx-text-box>
                     </dxi-item>
+                    <!-- <dxi-item dataField="Line Notes" [colSpan]="9" editorType="dxTextArea">
+                    </dxi-item> -->
                     <dxi-item [colSpan]="3">
                         <dx-button stylingMode="contained" text="Enlarged View" type="default" width="350">
                         </dx-button>
@@ -63,9 +103,15 @@
                         [editorOptions]="{text: 'DD1149'}">
                     </dxi-item>
 
-                    <dxi-item [colSpan]="2">
-                        <dx-text-box dataField="MDAT OUT" label="MDAT OUT"></dx-text-box>
+                    <dxi-item [colSpan]="2" *ngDisplayLabel="100" [isRequired]="false">
+                        <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                            [elementAttr]="{ class: 'myclass' }" [label]="'MDAT OUT'">
+                        </dx-text-box>
                     </dxi-item>
+
+                    <!-- <dxi-item [colSpan]="2">
+                        <dx-text-box dataField="MDAT OUT" label="MDAT OUT"></dx-text-box>
+                    </dxi-item> -->
                 </dxi-item>
 
 

@@ -7,6 +7,24 @@ export const navigation = [
     icon: 'home',
   },
   {
+    text: 'Dashboard',
+    icon: 'folder',
+    items: [
+      {
+        text: 'Designer',
+        //path: '/profile',
+        title: ' Designer',
+        type: ComponentType.Designer
+      },
+      {
+        text: 'Viewer',
+        //path: '/profile',
+        title: ' Viewer',
+        type: ComponentType.Viewer
+      },
+    ]
+  },
+  {
     text: 'Inventory',
     icon: 'folder',
     items: [

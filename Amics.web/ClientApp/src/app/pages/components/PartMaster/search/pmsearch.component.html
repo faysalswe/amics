@@ -65,8 +65,8 @@
   <div>
 
     <div style="height: calc(100vh - 480px); float: left; margin: 0px; padding: 0px; ">
-      <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true" selectionMode="single"
-        [selectedItemKeys]="[selectedItemNumber]" height="100vh" [focusStateEnabled]="true"
+      <dx-list #list id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true" selectionMode="single"
+        [selectedItemKeys]="[selectedItemNumber]" height="100vh" [focusStateEnabled]="true" 
         (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom" [(disabled)]="disabled"
         (keyDown)="onSelectionChanged($event)">
         <div *dxTemplate="let item of 'item'">

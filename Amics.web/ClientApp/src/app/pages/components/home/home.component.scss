@@ -71,4 +71,9 @@
 ::ng-deep .dx-theme-material .employeeNotes {
   margin: 0;
 }
+
+::ng-deep .dx-tab-selected{
+  border-right: solid 2px #03a9f4;
+  border-left: solid 2px #03a9f4;
+}
   
