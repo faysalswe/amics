@@ -220,6 +220,8 @@ export class PMDetailsComponent implements AfterViewInit {
     e.cancel = true;
   }
   ngOnInit(): void {
+
+    
     this.searchService.getItemClass('', '').subscribe((l) => {
       this.itemClassList = l;
     });
@@ -238,7 +240,9 @@ export class PMDetailsComponent implements AfterViewInit {
       if (this.readOnly) {
         return;
       }
+
       console.log(e);
+
       this.popupF2Visible = false;
       this.dataGrid.instance.saveEditData();
       this.addRow();
@@ -246,7 +250,10 @@ export class PMDetailsComponent implements AfterViewInit {
       this.dataGrid.instance.cellValue(this.bomDetails.length, 5, 1);
       this.dataGrid.instance.saveEditData();
       this.editRow(e.itemNumber);
+
     });
+
+
     this.pmdataTransfer.selectedItemForPMDetails$.subscribe((item) => {
       console.log(item);
       this.pmDetails = item;
@@ -270,12 +277,21 @@ export class PMDetailsComponent implements AfterViewInit {
     this.pmdataTransfer.itemSelectedChild$.subscribe((child) => {
       this.selectedChild = child;
     });
+
     this.pmdataTransfer.selectedCRUD$.subscribe((crud) => {
+     
+     
       if (crud === CRUD.Add) {
+
         this.pmDetails = new pmDetails();
         this.bomDetails = [];
         this.poDetails = [];
-        this.readOnly = false;
+        this.readOnly = false;        
+
+        setTimeout(() => {    
+          this.AddBomLines();              
+        }, 300);
+                
       } else if (crud === CRUD.Edit) {
         this.readOnly = false;
       } else if (crud === CRUD.Save) {
@@ -304,7 +320,11 @@ export class PMDetailsComponent implements AfterViewInit {
     this.pmdataTransfer.copyToNewSelected$.subscribe(
       (e) => (this.popupCopyBomVisible = true)
     );
+
     this.getListItemNumbers();
+
+    //this.AddBomLines();
+
   }
 
   getLocations(wh: string = '') {
@@ -822,7 +842,11 @@ export class PMDetailsComponent implements AfterViewInit {
   }
 
   onInitialized(e:any){
-    this.AddBomLines();
+
+    console.log('onInitialized');
+    //this.AddBomLines();
+
+
   }
 
   onToolbarPreparing(e:any) {
@@ -835,7 +859,9 @@ export class PMDetailsComponent implements AfterViewInit {
    // console.log( dataSource.items().length);
  
     for(let i=0;i< this.bomDefaultRow;i++){
+      console.log('for--------');
       this.dataGrid.instance.addRow();
+
     }
 
     let rows = this.dataGrid.instance.getVisibleRows();   
@@ -859,10 +885,32 @@ export class PMDetailsComponent implements AfterViewInit {
   onEditorPreparing(e: any) {
 
     if (e.dataField === 'itemNumber' && e.parentType === 'dataRow') {
-      const defaultValueChangeHandler = e.editorOptions.onValueChanged;
-      e.editorOptions.onValueChanged = function (this: any, args: any) {
-        let cellInfo = new pmSearch();
 
+
+      const defaultValueChangeHandler = e.editorOptions.onValueChanged;
+
+      e.editorOptions.onValueChanged = function (this: any, args: any) {
+        
+
+        let rows = this.dataGrid.instance.getVisibleRows();   
+              
+        let  itemLen = rows.filter((obj:any)=>obj.data.itemNumber?.toLowerCase() === args.value.toLowerCase())?.length;  
+        
+        if(itemLen>0){
+            alert('Item Number '+ args.value+' already added');           
+            this.dataGrid.instance.cellValue(
+              e.row.rowIndex,
+              3,
+              ''
+            );
+            setTimeout(() => {             
+              this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(e.row.rowIndex, "itemNumber"));
+            }, 300);
+
+        }
+        else{
+ 
+        let cellInfo = new pmSearch();
         cellInfo.itemnumber = args.value;
 
         this.searchService
@@ -900,7 +948,11 @@ export class PMDetailsComponent implements AfterViewInit {
 
             }
           });
+
+        }
+
       }.bind(this);
+
     }
 
     if (e.dataField === 'quantity' && e.parentType === 'dataRow') {
@@ -918,6 +970,15 @@ export class PMDetailsComponent implements AfterViewInit {
 
       }.bind(this);
      
+  
+  
+  
+    }
+
+
+
+
   }
-}
+
+
 }
