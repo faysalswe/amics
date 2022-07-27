@@ -26,6 +26,10 @@ namespace Aims.Core.Services
         List<LstAccessWarehouse> GetWarehouseAccess(string userId);
         LstMessage ValidateWarehouse(string warehouse);
         LstMessage ValidateUserId(string username);
+        LstMessage AddSecUserDetails(LstUser userinfo);
+        LstMessage AddSecUserAccessDetails(List<LstUserAccess> userAccess);
+        LstMessage AddSecWhAccessDetails(List<LstAccessWarehouse> whAccess);
+
     }
 
     public class ConfigService: IConfigService
@@ -99,9 +103,9 @@ namespace Aims.Core.Services
                     while (dataReader.Read())
                     {
                         LstUser UsersList = new LstUser();
-                        UsersList.userId = dataReader["id"].ToString();
-                        UsersList.userName = dataReader["userid"].ToString();
-                        UsersList.firstName = dataReader["firstname"].ToString();
+                        UsersList.Id = dataReader["id"].ToString();
+                        UsersList.UserId = dataReader["userid"].ToString();
+                        UsersList.FirstName = dataReader["firstname"].ToString();
                         lstUser.Add(UsersList);
                     }
                     dataReader.Close();
@@ -138,16 +142,16 @@ namespace Aims.Core.Services
                     while (dataReader.Read())
                     {
                         LstUserAccess userAccess = new LstUserAccess();
-                        userAccess.accessId = dataReader["accessid"].ToString();
-                        userAccess.access = dataReader["access"].ToString();
+                        userAccess.AccessId = dataReader["accessid"].ToString();
+                        userAccess.Access = dataReader["access"].ToString();
                         
                         if (dataReader["readonly"].ToString() == "True")
                         {
-                            userAccess.readOnly = 1;
+                            userAccess.ReadOnly = 1;
                         }
                         else
                         {
-                            userAccess.readOnly = 0;
+                            userAccess.ReadOnly = 0;
                         }
                         
                         if (dataReader["OnTheFly"] != DBNull.Value)
@@ -197,11 +201,11 @@ namespace Aims.Core.Services
                         whAccess.Warehouse = dataReader["warehouse"].ToString();
                         if (dataReader["transok"].ToString() == "True")
                         {
-                            whAccess.readOnly = 1;
+                            whAccess.ReadOnly = 1;
                         }
                         else
                         {
-                            whAccess.readOnly = 0;
+                            whAccess.ReadOnly = 0;
                         }
                         lstWarehouseAccess.Add(whAccess);
                     }
@@ -257,9 +261,9 @@ namespace Aims.Core.Services
 
 
         /// <summary>
-        /// API Service to validate entered username, returns 1 if exists otherwise 0 if not exists    
+        /// API Service to validate entered username while adding new user, returns 1 if exists otherwise 0 if not exists    
         /// </summary>
-        /// <param name="userId">userId</param>  
+        /// <param name="username">username</param>  
         public LstMessage ValidateUserId(string username)
         {           
             string isValidUser = "0";
@@ -289,6 +293,185 @@ namespace Aims.Core.Services
                 }
             }
             return new LstMessage { Message = isValidUser };
+        }
+
+        /// <summary>
+        /// API Service to add/update/delete user in sec_users/login_cred table
+        /// </summary>
+        /// <param name="LstUser">User Info</param>        
+        public LstMessage AddSecUserDetails(LstUser userinfo)
+        {
+            string strResult = ""; string dbName = ""; var id = "";
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    var userSql = "Select dbname from login_cred where username = '" + userinfo.Createdby + "'";
+                    sqlCommand.CommandText = userSql;
+                    sqlCommand.CommandType = CommandType.Text;
+                    conn.Open();
+                    var dataReader = sqlCommand.ExecuteReader();
+                    if (dataReader.Read())
+                    {
+                        dbName = dataReader[0].ToString();
+                    }
+                    dataReader.Close();
+                    conn.Close();
+
+                    sqlCommand.CommandText = "amics_sp_api_maintain_secuser";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();                   
+
+                    sqlCommand.Parameters.Add(new SqlParameter("@actionflag", userinfo.ActionFlag));
+                    sqlCommand.Parameters.Add(new SqlParameter("@id", userinfo.Id));
+                    sqlCommand.Parameters.Add(new SqlParameter("@userid", string.IsNullOrWhiteSpace(userinfo.UserId) ? string.Empty : userinfo.UserId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@firstname", string.IsNullOrWhiteSpace(userinfo.FirstName) ? string.Empty : userinfo.FirstName));
+                    sqlCommand.Parameters.Add(new SqlParameter("@lastname", string.IsNullOrWhiteSpace(userinfo.LastName) ? string.Empty : userinfo.LastName));                    
+                    sqlCommand.Parameters.Add(new SqlParameter("@password", string.IsNullOrWhiteSpace(userinfo.Password) ? string.Empty : userinfo.Password));
+                    sqlCommand.Parameters.Add(new SqlParameter("@warehouse", string.IsNullOrWhiteSpace(userinfo.Warehouse) ? string.Empty : userinfo.Warehouse));
+                    sqlCommand.Parameters.Add(new SqlParameter("@email", string.IsNullOrWhiteSpace(userinfo.Email) ? string.Empty : userinfo.Email));
+                    sqlCommand.Parameters.Add(new SqlParameter("@buyer", userinfo.Buyer));
+                    sqlCommand.Parameters.Add(new SqlParameter("@salesperson", userinfo.SalesPerson));
+                    sqlCommand.Parameters.Add(new SqlParameter("@webaccess", userinfo.WebAccess));
+                    sqlCommand.Parameters.Add(new SqlParameter("@signature", string.IsNullOrWhiteSpace(userinfo.Signature) ? string.Empty : userinfo.Signature));
+                    sqlCommand.Parameters.Add(new SqlParameter("@employee", userinfo.EmpList));
+                    sqlCommand.Parameters.Add(new SqlParameter("@user",userinfo.AmicsUser));
+                    sqlCommand.Parameters.Add(new SqlParameter("@forgotpwdans", string.IsNullOrWhiteSpace(userinfo.Forgotpwdans) ? string.Empty : userinfo.Forgotpwdans));
+                    sqlCommand.Parameters.Add(new SqlParameter("@dbName", string.IsNullOrWhiteSpace(dbName) ? string.Empty : dbName));
+                    sqlCommand.ExecuteNonQuery();
+
+                    if (userinfo.ActionFlag == 1 || userinfo.ActionFlag == 2)
+                        strResult = "Successfully Saved";
+                    else
+                        strResult = "Successfully deleted";
+                    
+                    sqlCommand.Dispose();
+
+                    var command = _amicsDbContext.Database.GetDbConnection().CreateCommand();
+                    command.CommandText = "select id from sec_users where userid='" + userinfo.UserId.Trim() + "'";
+                    var dreader = command.ExecuteReader();
+                   
+                    if (dreader.Read())
+                    {
+                        id = dataReader["id"].ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    strResult = ex.Message;
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return new LstMessage { Message = id };
+        }
+
+        /// <summary>
+        /// API Service to deletes userid's existing user access then add module access in the sec_users_access table
+        /// </summary>
+        /// <param name="lstUseraccess">User Access</param>           
+        public LstMessage AddSecUserAccessDetails(List<LstUserAccess> userAccess)
+        {
+            string strResult = ""; 
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var command = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    var userSql = "delete from sec_users_access where users_id='" + userAccess[0].UserId + "'";
+                    command.CommandText = userSql;
+                    command.CommandType = CommandType.Text;
+                    conn.Open();
+                    command.ExecuteNonQuery();
+                    command.Dispose();
+
+
+                    for (int i = 0; i < userAccess.Count; i++)
+                    {
+                        using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+                        {
+                            sqlCommand.CommandText = "amics_sp_api_maintain_secuseraccess";
+                            sqlCommand.CommandType = CommandType.StoredProcedure;
+
+                            sqlCommand.Parameters.Add(new SqlParameter("@actionflag", userAccess[i].ActionFlag));
+                            sqlCommand.Parameters.Add(new SqlParameter("@id", userAccess[i].Id));
+                            sqlCommand.Parameters.Add(new SqlParameter("@userid", userAccess[i].UserId));
+                            sqlCommand.Parameters.Add(new SqlParameter("@accessid", userAccess[i].AccessId));
+                            sqlCommand.Parameters.Add(new SqlParameter("@readonly", userAccess[i].ReadOnly));
+                            sqlCommand.Parameters.Add(new SqlParameter("@onthefly", userAccess[i].OnTheFly));
+                            sqlCommand.Parameters.Add(new SqlParameter("@createdby", userAccess[i].Createdby));
+                            sqlCommand.ExecuteNonQuery();
+                            sqlCommand.Dispose();
+                        }
+                    }          
+                    strResult = "Sucessfully Saved";
+                    
+                }
+                catch (Exception ex)
+                {
+                    strResult = ex.Message;
+                }
+                finally
+                {                  
+                    conn.Close();
+                }
+            }
+            return new LstMessage { Message = strResult };
+        }
+
+        /// <summary>
+        /// API Service to deletes userid's existing warehouse access then add access in the 
+        /// sec_users_warehouses table
+        /// </summary>
+        /// <param name="LstAccessWarehouse">User Warehouse Access</param>          
+        public LstMessage AddSecWhAccessDetails(List<LstAccessWarehouse> whAccess)
+        {
+            string strResult = ""; var id = "";
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var command = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    var userSql = "delete from sec_users_warehouses where users_id='" + whAccess[0].UserId + "'";
+                    command.CommandText = userSql;
+                    command.CommandType = CommandType.Text;
+                    conn.Open();
+                    command.ExecuteNonQuery();
+                    command.Dispose();
+
+                    for (int i = 0; i < whAccess.Count; i++)
+                    {
+                        using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+                        {
+                            sqlCommand.CommandText = "amics_sp_api_maintain_secwarehouseaccess";
+                            sqlCommand.CommandType = CommandType.StoredProcedure;
+
+                            sqlCommand.Parameters.Add(new SqlParameter("@actionflag", whAccess[i].ActionFlag));
+                            sqlCommand.Parameters.Add(new SqlParameter("@id", whAccess[i].Id));
+                            sqlCommand.Parameters.Add(new SqlParameter("@userid", whAccess[i].UserId));
+                            sqlCommand.Parameters.Add(new SqlParameter("@warehouseid", whAccess[i].WarehouseId));
+                            sqlCommand.Parameters.Add(new SqlParameter("@readonly", whAccess[i].ReadOnly));
+                            sqlCommand.Parameters.Add(new SqlParameter("@createdby", whAccess[i].Createdby));
+                            sqlCommand.ExecuteNonQuery();
+                            sqlCommand.Dispose();
+                        }
+                    }
+                    strResult = "Sucessfully Saved";
+                }
+                catch (Exception ex)
+                {
+                    strResult = ex.Message;
+                }
+                finally
+                {                    
+                    conn.Close();
+                }
+            }
+            return new LstMessage { Message = strResult };
         }
     }
 }

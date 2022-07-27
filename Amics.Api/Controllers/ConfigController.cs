@@ -103,14 +103,48 @@ namespace Amics.Api.Controllers
         }
 
         /// <summary>
-        /// API Controller to validate entered username, returns 1 if exists otherwise 0 if not exists    
+        /// API Controller to validate entered username while adding new user, returns 1 if exists otherwise 0 if not exists    
         /// </summary>
-        /// <param name="userId">userId</param>  
+        /// <param name="username">username</param>  
         [HttpGet, Route("ValidateUserId")]
-        public LstMessage GetValidateUserId([FromQuery] string userId)
+        public LstMessage GetValidateUserId([FromQuery] string username)
         {
-            var userIdRes = _configService.ValidateUserId(userId);
+            var userIdRes = _configService.ValidateUserId(username);
             return userIdRes;
+        }
+
+        /// <summary>
+        /// API Controller to add/update/delete user in sec_users/login_cred table
+        /// </summary>
+        /// <param name="LstUser">User Info</param>  
+        [HttpPost, Route("AddUpdateUser")]
+        public LstMessage AddUpdateUser([FromBody] LstUser lstUser)
+        {
+            var secUserId = _configService.AddSecUserDetails(lstUser);
+            return secUserId;
+        }
+
+        /// <summary>
+        /// API Controller to deletes userid's existing user access then add module access in the sec_users_access table
+        /// </summary>
+        /// <param name="lstUseraccess">User Access</param>  
+        [HttpPost, Route("AddUserAccess")]
+        public LstMessage AddUserAccess([FromBody] List<LstUserAccess> lstUseraccess)
+        {
+            var SecUserAccess = _configService.AddSecUserAccessDetails(lstUseraccess);
+            return SecUserAccess;
+        }
+
+        /// <summary>
+        /// API Controller to deletes userid's existing warehouse access then add access in the 
+        /// sec_users_warehouses table
+        /// </summary>
+        /// <param name="LstAccessWarehouse">User Warehouse Access</param> 
+        [HttpPost, Route("AddUserWhAccess")]
+        public LstMessage AddUserWaAccess([FromBody] List<LstAccessWarehouse> lstWhaccess)
+        {
+            var SecWhAccess = _configService.AddSecWhAccessDetails(lstWhaccess);
+            return SecWhAccess;
         }
     }
 }

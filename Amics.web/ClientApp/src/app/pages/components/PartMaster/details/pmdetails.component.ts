@@ -311,9 +311,16 @@ export class PMDetailsComponent implements AfterViewInit {
         }
             
         let wid = this.groupedWarehouses[this.pmDetails.warehouse];
-        if (!!wid) {           
-            let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];           
-            this.validLocationNames = locations.map(l => l.location);            
+        if (!!wid) {              
+            let locWid=this.groupedLocations[wid[0].id];
+            if (!!locWid) { 
+                let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];           
+                this.validLocationNames = locations.map(l => l.location);   
+            }   
+            else{
+                this.pmDetails.location ='';
+                alert("There is no location for " + this.pmDetails.warehouse);
+            }      
         } else { this.validLocationNames = []; }
     }
 

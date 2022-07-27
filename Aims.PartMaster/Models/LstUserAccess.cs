@@ -7,14 +7,14 @@ namespace Aims.Core.Models
 {
     public class LstUserAccess
     {
-        [Key]
+        public int ActionFlag { get; set; }
         public string Id { get; set; }
-        public string accessId { get; set; }
-        public string userId { get; set; }
-        public string access { get; set; }
-        public int readOnly { get; set; }
-        public int actionFlag { get; set; }
+        public string AccessId { get; set; }
+        public string UserId { get; set; }
+        public string Access { get; set; }
+        public int ReadOnly { get; set; }        
         public int OnTheFly { get; set; }
-        public string module { get; set; }
+        public string Module { get; set; }
+        public string Createdby { get; set; }
     }
 }

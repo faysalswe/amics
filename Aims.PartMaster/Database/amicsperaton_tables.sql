@@ -2232,6 +2232,82 @@ GO
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+/****** Object:  Table [dbo].[sec_access]    Script Date: 25-07-2022 01:29:05 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[sec_access](
+	[id] [uniqueidentifier] NOT NULL,
+	[accessnumber] [nvarchar](10) NOT NULL,
+	[access] [varchar](50) NOT NULL,
+	[createdby] [varchar](50) NOT NULL,
+	[createddate] [datetime] NOT NULL,
+	[module] [varchar](50) NOT NULL,
+	[orderno] [smallint] NOT NULL,
+	[notes] [nvarchar](100) NULL,
+	[isenabled] [smallint] NOT NULL,
+	[moduleorderno] [smallint] NOT NULL,
+	[Path] [nvarchar](50) NULL,
+	[popup] [nvarchar](50) NULL,
+	[readonly] [smallint] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[sec_access] ADD  CONSTRAINT [DF__sec_access__id__61BD1287]  DEFAULT (newid()) FOR [id]
+GO
+
+ALTER TABLE [dbo].[sec_access] ADD  CONSTRAINT [DF__sec_acces__acces__62B136C0]  DEFAULT ((0)) FOR [accessnumber]
+GO
+
+ALTER TABLE [dbo].[sec_access] ADD  CONSTRAINT [DF__sec_acces__acces__63A55AF9]  DEFAULT (space((1))) FOR [access]
+GO
+
+ALTER TABLE [dbo].[sec_access] ADD  CONSTRAINT [DF__sec_acces__creat__64997F32]  DEFAULT (space((1))) FOR [createdby]
+GO
+
+ALTER TABLE [dbo].[sec_access] ADD  CONSTRAINT [DF__sec_acces__creat__658DA36B]  DEFAULT (getdate()) FOR [createddate]
+GO
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  Table [dbo].[sec_users_access]    Script Date: 25-07-2022 01:30:37 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[sec_users_access](
+	[id] [uniqueidentifier] NULL,
+	[users_id] [uniqueidentifier] NULL,
+	[accessid] [uniqueidentifier] NULL,
+	[readonly] [bit] NULL,
+	[createdby] [varchar](50) NULL,
+	[createddate] [datetime] NULL,
+	[button_add] [bit] NULL,
+	[button_edit] [bit] NULL,
+	[button_delete] [bit] NULL,
+	[onthefly] [bit] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[sec_users_access] ADD  CONSTRAINT [DF__sec_users_ac__id__6B467CC1]  DEFAULT (newid()) FOR [id]
+GO
+
+ALTER TABLE [dbo].[sec_users_access] ADD  CONSTRAINT [DF__sec_users__creat__6C3AA0FA]  DEFAULT (space((1))) FOR [createdby]
+GO
+
+ALTER TABLE [dbo].[sec_users_access] ADD  CONSTRAINT [DF__sec_users__creat__6D2EC533]  DEFAULT (getdate()) FOR [createddate]
+GO
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
 
 
 
