@@ -122,9 +122,9 @@
                 <dxi-item itemType="group" [colCount]="2">
                     <dxi-item [colSpan]="1" [isRequired]="true">
                         <dx-select-box formControlName="warehouse*" width="100%" [items]="warehouseNames"
-                            [value]="pmDetails.warehouse" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [(value)]="pmDetails.warehouse" [searchEnabled]="true" [stylingMode]="StylingMode"
                             [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.warehouse_num"
-                            onValueChanged="updateWarehouseSelection" #warehouseVar
+                            (onValueChanged)="updateWarehouseSelection($event)" #warehouseVar
                             (onFocusIn)="openWarehouseCodeBox()"></dx-select-box>
                         <dxi-validation-rule type="required" message="Warehouse is required">
                         </dxi-validation-rule>
@@ -132,13 +132,12 @@
 
                     <dxi-item [colSpan]="1" [isRequired]="true">
                         <dx-select-box formControlName="location" width="100%" [items]="validLocationNames"
-                            [value]="pmDetails.location" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [(value)]="pmDetails.location" [searchEnabled]="true" [stylingMode]="StylingMode"
                             [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.location_num"
                             #locationVar (onFocusIn)="openLocationCodeBox()"></dx-select-box>
                         <dxi-validation-rule type="required" message="Location is required">
                         </dxi-validation-rule>
                     </dxi-item>
-
 
                     <!-- <dxi-item dataField="warehouse" editorType="dxLookup" [colSpan]="1"
                         [editorOptions]="{ label:'Warehouse',items: warehouseNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains',onValueChanged:updateWarehouseSelection  }">

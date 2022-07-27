@@ -29,8 +29,7 @@ namespace Aims.Core.Models
         public DbSet<LstErLookup> ListErLookup { get; set; }        
         public DbSet<LstBomCount> LstBomCount { get; set; }
         public DbSet<LstMessage> LstMessage { get; set; }
-        public DbSet<LstPacklist> LstPacklist { get; set; }
-        
+        public DbSet<LstPacklist> LstPacklist { get; set; }        
         public DbSet<LstViewLocationWh> LstViewLocationWh { get; set; }
         public DbSet<LstViewLocation> LstViewLocation { get; set; }
         public DbSet<LstBomGridItems> LstBomGridItems { get; set; }
@@ -44,6 +43,9 @@ namespace Aims.Core.Models
         public DbSet<LstChangeLocSearch> LstChangeLocSearch { get; set; }
         public DbSet<OutValidateSerTag> OutValidateSerTag { get; set; }
         public DbSet<LstMdat> LstMdat { get; set; }
+        public DbSet<LstUser> LstUser { get; set; }
+        public DbSet<LstUserAccess> LstUserAccess { get; set; }
+        public DbSet<LstAccessWarehouse> LstAccessWarehouse { get; set; }
 
         public AmicsDbContext(DbContextOptions<AmicsDbContext> options)
         : base(options)

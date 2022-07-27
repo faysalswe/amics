@@ -236,3 +236,8 @@ PrintOrder.Web/PrePress/Print/
 PrintOrder.Web/PrePress/Mail/
 /Aims.PartMaster/Models/LstItemDetailsUpdate.cs
 /.cr/personal/FavoritesList
+<<<<<<< Updated upstream
+/Aims.PartMaster/Services/ShipmentService.cs
+=======
+/Aims.PartMaster/Services
+>>>>>>> Stashed changes

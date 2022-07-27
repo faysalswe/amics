@@ -28,7 +28,7 @@ namespace Amics.Api.Controllers
         /// <param name="warehouse">Warehouse</param>  
         /// <param name="location">Location</param> 
         [HttpGet, Route("ValidateLocation")]
-        public string ValidateLocation([FromQuery] string warehouse, [FromQuery] string location)
+        public LstMessage ValidateLocation([FromQuery] string warehouse, [FromQuery] string location)
         {
             var validLocationId = _bulkTransferService.ValidateLocation(warehouse, location);
 
@@ -54,7 +54,7 @@ namespace Amics.Api.Controllers
         /// <param name="warehouse">Warehouse</param>  
         /// <param name="location">Location</param> 
         [HttpPost, Route("ExecuteBulkTransfer")]
-        public string BulkTransferView([FromBody] LstBulkTransferUpdate bulkTransferUpdate)
+        public LstMessage BulkTransferView([FromBody] LstBulkTransferUpdate bulkTransferUpdate)
         {
             var updateBulkTrans = _bulkTransferService.ExecuteBulkTransfer(bulkTransferUpdate);
 
