@@ -668,11 +668,18 @@ export class PMDetailsComponent implements AfterViewInit {
     }
 
     submitSerialPopupButtonOptions = {
-        text: "Save",
+        text: "Save and exit",
+        useSubmitBehavior: true,
+        type: "default"
+    };
+
+    cancelSerialPopupButtonOptions = {
+        text: "Cancel and exit",
         useSubmitBehavior: true,
         type: "default"
 
     };
+
     updateSerialPopupVisible: boolean = false;
     changeSerialSearchInfo: changeSerialInfo = new changeSerialInfo();
     onRowSelection(e: any) {
@@ -685,7 +692,6 @@ export class PMDetailsComponent implements AfterViewInit {
         this.changeSerialSearchInfo.toModel = selectedRow?.color_model;
         this.changeSerialSearchInfo.fromCost = selectedRow?.cost;
         this.changeSerialSearchInfo.toCost = selectedRow?.cost;
-        this.updateSerialPopupVisible = true;
     }
 
     edit(){

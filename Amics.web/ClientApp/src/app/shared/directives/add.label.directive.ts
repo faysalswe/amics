@@ -4,6 +4,8 @@ import SelectBox from "devextreme/ui/select_box";
 import TextBox from "devextreme/ui/text_box";
 import NumberBox from "devextreme/ui/number_box";
 import DateBox from "devextreme/ui/date_box";
+import dxDataGrid from "devextreme/ui/data_grid";
+import { DxiDataGridColumn } from "devextreme-angular/ui/nested/base/data-grid-column-dxi";
 
 @Directive({
   selector: "[ngAddLabel]",
@@ -44,6 +46,12 @@ export class AddLabelDirective implements AfterViewInit, OnChanges {
         let dateBox = DateBox.getInstance(this.elementRef.nativeElement) as DateBox;
         dateBox.option("label", myLabel);
       }
+
+      // if (this.elementRef.nativeElement.tagName === "DXI-COLUMN") {
+      //   debugger
+      //   //let column = dxDataGrid.getInstance(this.elementRef.nativeElement) as dxDataGrid;
+      //   //column.option("caption", myLabel);
+      // }
 
     }
     }
