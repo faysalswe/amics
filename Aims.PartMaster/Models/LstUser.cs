@@ -5,22 +5,24 @@ using System.Text;
 namespace Aims.Core.Models
 {
     public class LstUser
-    {
-        public string userId { get; set; }
-        public string userName { get; set; }
-        public string firstName { get; set; }
-        public string password { get; set; }
-        public string signature { get; set; }
-        public string warehouse { get; set; }
-        public string lastName { get; set; }
-        public string email { get; set; }
-        public string userDataBase { get; set; }
-        public int buyer { get; set; }
-        public int salesPerson { get; set; }
-        public int webAccess { get; set; }
-        public int amicsUser { get; set; }
-        public int EmpList { get; set; }
-        public int InvTrans { get; set; }
-        public string forgotpwdans { get; set; }
+    {  
+        public int ActionFlag { get; set; }
+        public string Id { get; set; }
+        public string UserId { get; set; }
+        public string FirstName { get; set; }
+        public string Password { get; set; }
+        public string Signature { get; set; }
+        public string Warehouse { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string UserDataBase { get; set; }
+        public int Buyer { get; set; }
+        public int SalesPerson { get; set; } 
+        public int WebAccess { get; set; }
+        public int AmicsUser { get; set; } = 0;
+        public int EmpList { get; set; } = 0;
+        public int InvTrans { get; set; } = 0;
+        public string Forgotpwdans { get; set; }
+        public string Createdby { get; set; }
     }
 }

@@ -68,6 +68,64 @@ export class PMDetailsComponent implements AfterViewInit {
   @ViewChild('markupVar', { static: false }) markupVar!: DxTextBoxComponent;
   @ViewChild('price_num', { static: false }) price_num!: DxTextBoxComponent;
 
+    secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
+      StylingMode : string = TextboxStyle.StylingMode;
+      LabelMode : string =  TextboxStyle.LabelMode;
+    
+    warehouses: Warehouse[] = [];
+    warehouseNames: string[] = [];
+    pmWHLocations: pmWHLocation[] = [];
+    pmSerials: pmSerial[] = [];
+    pmNotes: pmNotes[] = [];
+    groupedLocations: any;
+    groupedWarehouses: any;
+    locations: WarehouseLocation[] = [];
+    validLocationNames: string[] = [];
+    bomDetails: pmBomDetails[] = [];
+    originalBomDetails: pmBomDetails[] = [];
+    poDetails: pmPoDetails[] = [];
+    poNotes: pmNotes[] = [];
+    reasonsDelete: string[] = [];
+    selectedChild: PmChildType = PmChildType.BOM;
+    childType: typeof PmChildType;
+    readOnly: boolean = true;
+    itemClassList: ItemClass[] = [];
+    itemCodeList: ItemCode[] = [];
+    itemTypeList: ItemType[] = [];
+    uomList: Uom[] = [];
+    yesButtonOptions: any;
+    noButtonOptions: any;
+    yesDeleteButtonOptions: any;
+    noDeleteButtonOptions: any;
+    viewLocationPrintButtonOptions: any;
+    popupCopyBomVisible = false;
+    popupDeleteVisible = false;
+    popupDeleteMessages = false;
+    copyToNewClicked: boolean = false;
+    toastVisible = false;
+    toastType = 'info';
+    toastMessage = '';
+    popupVLVisible = false;
+    popupF2Visible = false;
+    popupVSVisible = false;
+    lookupItemNumbers: pmItemSearchResult[] = [];
+    selectedRowIndex = -1;
+    editRowKey!: number;
+    componentTypeF2: ComponentType = ComponentType.PartMasterF2;
+    labelMap: typeof LabelMap;
+    constructor(
+        private searchService: SearchService,
+        private pmdataTransfer: PartMasterDataTransService,
+        private pmService: PartMasterService,
+        private authService: AuthService
+    ) {
+        this.labelMap = LabelMap;
+        this.childType = PmChildType;
+        this.searchService.getWarehouseInfo('').subscribe(w => {
+            this.warehouses = w;
+            this.warehouseNames = w.map(w => w.warehouse);
+            this.groupedWarehouses = this.groupByKey(w, 'warehouse');           
+        })
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
   StylingMode: string = TextboxStyle.StylingMode;
   LabelMode: string = TextboxStyle.LabelMode;
@@ -352,19 +410,25 @@ export class PMDetailsComponent implements AfterViewInit {
     }, {});
   }
 
-  updateWarehouseSelection(location: string = '', onload: boolean = false) {
-    if (!this.pmDetails.warehouse || !location) {
-      this.validLocationNames = [];
-      this.pmDetails.location = '';
-      return;
-    }
-
-    let wid = this.groupedWarehouses[this.pmDetails.warehouse];
-    if (!!wid) {
-      let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
-      this.validLocationNames = locations.map((l) => l.location);
-    } else {
-      this.validLocationNames = [];
+    updateWarehouseSelection(location: string = '', onload: boolean = false) {       
+        if (!this.pmDetails.warehouse || !location) {
+            this.validLocationNames = [];
+            this.pmDetails.location = '';            
+            return;        
+        }
+            
+        let wid = this.groupedWarehouses[this.pmDetails.warehouse];
+        if (!!wid) {              
+            let locWid=this.groupedLocations[wid[0].id];
+            if (!!locWid) { 
+                let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];           
+                this.validLocationNames = locations.map(l => l.location);   
+            }   
+            else{
+                this.pmDetails.location ='';
+                alert("There is no location for " + this.pmDetails.warehouse);
+            }      
+        } else { this.validLocationNames = []; }
     }
   }
 

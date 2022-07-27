@@ -14,9 +14,9 @@ using Aims.Core.Services;
 namespace Aims.Core.Services
 {  
     public interface IBulkTransferService {
-        string ValidateLocation(string warehouse, string location);
+        LstMessage ValidateLocation(string warehouse, string location);
         List<LstBulkTransfer> BulkTransferItemDetails(string warehouse, string location);
-        string ExecuteBulkTransfer(LstBulkTransferUpdate lstBulkTransUpdate);
+        LstMessage ExecuteBulkTransfer(LstBulkTransferUpdate lstBulkTransUpdate);
     }
     public class BulkTransferService: IBulkTransferService
     {
@@ -33,7 +33,7 @@ namespace Aims.Core.Services
         /// </summary>
         /// <param name="warehouse">warehouse</param>          
         /// <param name="location">location</param>          
-        public string ValidateLocation(string warehouse, string location)
+        public LstMessage ValidateLocation(string warehouse, string location)
         {
             string strLocationId = "";
            
@@ -63,7 +63,7 @@ namespace Aims.Core.Services
                     conn.Close();
                 }
             }
-            return strLocationId;
+            return new LstMessage { Message = strLocationId };
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Aims.Core.Services
         /// API Service to transfer item details from warehouse, location to warehouse location
         /// </summary>
         /// <param name="LstBulkTransferUpdate">LstBulkTransferUpdate</param>          
-        public string ExecuteBulkTransfer(LstBulkTransferUpdate lstBulkTransUpdate)
+        public LstMessage ExecuteBulkTransfer(LstBulkTransferUpdate lstBulkTransUpdate)
         {
             string strResult = "";
             using (var conn = _amicsDbContext.Database.GetDbConnection())
@@ -147,7 +147,7 @@ namespace Aims.Core.Services
                     conn.Close();
                 }
             }
-            return strResult;
+            return new LstMessage { Message = strResult };
         }
     }
 }
