@@ -295,7 +295,7 @@ namespace Aims.Core.Services
         public async Task<LstMessage> ItemNumDetailsAddUpdateAsync(LstItemDetails item)
         {
             int actionFlag = 0;
-            if (string.IsNullOrEmpty(item.Id))
+            if (string.IsNullOrEmpty(item.Id) || item.Id== "00000000-0000-0000-0000-000000000000")
                 actionFlag = 1;
             else
                 actionFlag = 2;
