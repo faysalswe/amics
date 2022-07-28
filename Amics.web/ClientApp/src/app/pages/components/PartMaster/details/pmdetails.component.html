@@ -198,7 +198,7 @@
 <div class="details-container content-block dx-card responsive-paddings"  style="height: calc(100vh - 449px);">
     <ng-container [ngSwitch]="selectedChild">
         <ng-container *ngSwitchCase="childType.BOM">
-            <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="itemNumber" height="95%"
+            <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="itemNumber" height="92%"
                 [focusedRowEnabled]="true" [allowColumnResizing]="true" [allowColumnReordering]="true"
                 [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true"
                 (onKeyDown)="onKeyDown($event)" (onEditingStart)="logEvent('EditingStart')"
@@ -214,8 +214,12 @@
                 (OnToolbarPreparing)="onToolbarPreparing($event)"
                 >
 
-                <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true"  >
+                <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder"   [showDragIcons]="!this.readOnly" >
                 </dxo-row-dragging>
+
+                <dxo-toolbar >
+                    <dxi-item height="0" [visible]="false"></dxi-item>
+                </dxo-toolbar>
 
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
