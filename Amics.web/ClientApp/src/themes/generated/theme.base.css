@@ -14829,6 +14829,7 @@
 }
 .dx-datagrid-header-panel {
   text-align: left;
+  display: none;
 }
 .dx-datagrid-header-panel .dx-toolbar-menu-container .dx-button {
   margin-left: 10px;
