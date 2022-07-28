@@ -48,9 +48,12 @@ export class AddLabelDirective implements AfterViewInit, OnChanges {
       }
 
       // if (this.elementRef.nativeElement.tagName === "DXI-COLUMN") {
-      //   debugger
-      //   //let column = dxDataGrid.getInstance(this.elementRef.nativeElement) as dxDataGrid;
-      //   //column.option("caption", myLabel);
+      //   // debugger
+      //   // let column = dxDataGrid.getInstance(this.elementRef.nativeElement.getRootNode().outerHTML) as dxDataGrid;
+      //   // let abc = column.getScrollable();
+      //   // abc.option("caption", myLabel);
+
+      //   //let column = this.elementRef.nativeElement.getRootNode();
       // }
 
     }

@@ -151,9 +151,20 @@
 
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
-                    <dxi-item [colCount]="1" editorType="dxRadioGroup" [label]="{text: ' '}" dataField="invType"
+                    <!-- <dxi-item [colCount]="1" editorType="dxRadioGroup" [label]="{text: ' '}" dataField="invType"
                         [isRequired]="true" [editorOptions]=" {items: invTypes,   layout: 'horizontal' }"
-                        style="align-items:center;background-color: #F4F5F6;">
+                        style="align-items:center;background-color: #F4F5F6;"> -->
+
+                        <dxi-item [colSpan]="1" [isRequired]="true">
+                            <div class="custom-field">
+                                <h1>
+                                    <span>
+                                        Inventory type
+                                    </span>
+                                </h1>
+                                <dx-radio-group [(value)]="pmDetails.invType" [items]="invTypes" layout="horizontal"></dx-radio-group>
+                            </div>
+    
                         <dxi-validation-rule type="required" message="Inv Type is required"></dxi-validation-rule>
                     </dxi-item>
                     <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass"
@@ -184,7 +195,7 @@
     </div>
 </div>
 
-<div class="details-container content-block dx-card responsive-paddings"  style="height: calc(100vh - 435px);">
+<div class="details-container content-block dx-card responsive-paddings"  style="height: calc(100vh - 449px);">
     <ng-container [ngSwitch]="selectedChild">
         <ng-container *ngSwitchCase="childType.BOM">
             <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="itemNumber" height="95%"
