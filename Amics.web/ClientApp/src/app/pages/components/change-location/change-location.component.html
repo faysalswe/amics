@@ -125,8 +125,8 @@
 
         <dxi-item [colSpan]="4">
           <dx-data-grid #grid id="gridContainer" [dataSource]="locViewGridList" keyExpr="soLinesId"
-            [hoverStateEnabled]="true" [showBorders]="true" [selectedRowKeys]="[]" height="30vh"
-            (onSelectionChanged)="onSelectionChangedView($event)" (keyDown)="onSelectionChangedView($event)">
+            [hoverStateEnabled]="true" [showBorders]="true" [selectedRowKeys]="[]" height="30vh" [focusedRowEnabled]="true" 
+            (onSelectionChanged)="onSelectionChangedView($event)" (keyDown)="onSelectionChangedView($event)" [showColumnLines]="true" [showRowLines]="true">
             <dxo-scrolling mode="infinite"></dxo-scrolling>
             <dxo-sorting mode="multiple"></dxo-sorting>
             <dxo-selection mode="single"></dxo-selection>
@@ -150,7 +150,8 @@
         <div class="tables">
           <div class="column1">
             <dx-data-grid [dataSource]="changeLocDetailsResult" [height]="200" [showBorders]="true"
-              [keyExpr]="['invSerialId', 'invBasicId']" (onSelectionChanged)="leftSelectionChanged($event)">
+              [keyExpr]="['invSerialId', 'invBasicId']" (onSelectionChanged)="leftSelectionChanged($event)"
+              [showColumnLines]="true" [showRowLines]="true">
               <dxo-row-dragging [data]="1" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
               <dxo-editing mode="row" [allowUpdating]="true" newRowPosition="last">
               </dxo-editing>
@@ -165,7 +166,10 @@
               <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="tagNo" dataType="string"
                 [allowEditing]="false"></dxi-column>
               <dxi-column dataField="quantity" [allowEditing]="false"></dxi-column>
+              <!-- <dxi-column *ngIf="selectedInvType === 'SERIAL'" dataField="pickQty"  [visible]="false"   [width]="50"  [formItem]="{visible: false}"  [allowEditing]="false" ></dxi-column> -->
+              <div>
               <dxi-column *ngIf="selectedInvType != 'SERIAL'" dataField="pickQty" [allowEditing]="true"></dxi-column>
+            </div>
             </dx-data-grid>
           </div>
           <div class="separator" style="text-align: center; vertical-align:middle;">
