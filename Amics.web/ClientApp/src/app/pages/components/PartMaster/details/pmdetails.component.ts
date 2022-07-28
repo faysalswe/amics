@@ -71,7 +71,7 @@ export class PMDetailsComponent implements AfterViewInit {
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
   StylingMode: string = TextboxStyle.StylingMode;
   LabelMode: string = TextboxStyle.LabelMode;
-  bomDefaultRow : number = 10;
+  bomDefaultRow : number = 2;
 
   warehouses: Warehouse[] = [];
   warehouseNames: string[] = [];
@@ -295,10 +295,15 @@ export class PMDetailsComponent implements AfterViewInit {
 
         setTimeout(() => {    
           this.AddBomLines();              
-        }, 300);
+        }, 500);
                 
       } else if (crud === CRUD.Edit) {
         this.readOnly = false;
+
+        setTimeout(() => {    
+          this.AddBomLines();              
+        }, 500);
+
       } else if (crud === CRUD.Save) {
         this.onSave();
         this.readOnly = true;
@@ -976,7 +981,7 @@ export class PMDetailsComponent implements AfterViewInit {
              
               setTimeout(() => {             
                 this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(e.row.rowIndex, "itemNumber"));
-              }, 100);
+              }, 300);
 
             }
           });
@@ -1000,13 +1005,20 @@ export class PMDetailsComponent implements AfterViewInit {
         );
         this.dataGrid.instance.cellValue(e.row.rowIndex, 9, e.row.data.cost * Number(args.value));     
 
-      }.bind(this);
-     
-  
-  
-  
+      }.bind(this); 
     }
+    // if (e.dataField === 'ref' && e.parentType === 'dataRow') {
 
+    //   const defaultValueChangeHandler = e.editorOptions.onValueChanged;
+
+    //   e.editorOptions.onValueChanged = function (this: any, args: any) {
+ 
+    //     if(e.row.rowIndex === this.dataGrid.instance.getVisibleRows().length-1){
+    //         this.AddBomLines();
+    //     }
+
+    //   }
+    // }
 
 
 
