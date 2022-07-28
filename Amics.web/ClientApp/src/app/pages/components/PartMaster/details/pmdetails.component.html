@@ -10,7 +10,7 @@
                 <dxi-item itemType="group" [colCount]="2">
 
                     <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="true">
-                        <dx-text-box [value]="pmDetails.itemNumber" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                        <dx-text-box [(value)]="pmDetails.itemNumber" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                             [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.partNumber_num" #partNumberVar>
                         </dx-text-box>
 
@@ -29,7 +29,7 @@
 
                     <dxi-item [colSpan]="1" [isRequired]="true">
                         <dx-select-box formControlName="itemType" width="100%" [items]="itemTypeList"
-                            [value]="pmDetails.itemType" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [(value)]="pmDetails.itemType" [searchEnabled]="true" [stylingMode]="StylingMode"
                             [labelMode]="LabelMode" placeholder="Search" [label] = "'Manufacture'"
                             displayExpr="itemtype" valueExpr="itemtype" #mfrVar (onFocusIn)="openMFRCodeBox()"></dx-select-box>
 
@@ -40,7 +40,7 @@
                 <dxi-item itemType="group" [colCount]="4">
                     <dxi-item [colSpan]="1" [isRequired]="true">
                         <dx-select-box formControlName="uomref" width="100%" [items]="uomList"
-                            [value]="pmDetails.uomref" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [(value)]="pmDetails.uomref" [searchEnabled]="true" [stylingMode]="StylingMode"
                             [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.uom_num"
                             displayExpr="uom" valueExpr="uom" #uomVar (onFocusIn)="openUOMCodeBox()"></dx-select-box>
 
@@ -49,7 +49,7 @@
                     </dxi-item>
 
                     <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                        <dx-number-box [value]="pmDetails.leadTime" [stylingMode]="StylingMode"
+                        <dx-number-box [(value)]="pmDetails.leadTime" [stylingMode]="StylingMode"
                             [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
                             [ngAddLabel]="labelMap.maintenance_num" #leadVar>
                         </dx-number-box>
@@ -57,7 +57,7 @@
 
                     <dxi-item [colSpan]="1" [isRequired]="false">
                         <dx-select-box formControlName="itemClass" width="100%" [items]="itemClassList"
-                        [stylingMode]="StylingMode" [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.itemClass_num"
+                        [stylingMode]="StylingMode" [(value)]="pmDetails.itemClass" [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.itemClass_num"
                             displayExpr="itemclass" valueExpr="itemclass" #itemClassVar
                             (onFocusIn)="openItemClassCodeBox()"></dx-select-box>
 
@@ -65,7 +65,7 @@
 
                     <dxi-item [colSpan]="1" [isRequired]="false">
                         <dx-select-box formControlName="itemCode" width="100%" [items]="itemCodeList"
-                            [value]="pmDetails.itemCode" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [(value)]="pmDetails.itemCode" [searchEnabled]="true" [stylingMode]="StylingMode"
                             [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.itemCode_num"
                             displayExpr="itemcode" valueExpr="itemcode" #itemCodeVar
                             (onFocusIn)="openItemCodeCodeBox()"></dx-select-box>
@@ -85,26 +85,26 @@
 
                 </dxi-item> -->
                 <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                    <dx-text-box [value]="pmDetails.description" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                    <dx-text-box [(value)]="pmDetails.description" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                       style="height: 60px;" [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.description_num" #markupVar>
                     </dx-text-box>
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
                     <dxi-item [colSpan]="1" [isRequired]="false">
-                        <dx-number-box [value]="pmDetails.cost" placeholder="cost" [stylingMode]="StylingMode"
+                        <dx-number-box [(value)]="pmDetails.cost" placeholder="cost" [stylingMode]="StylingMode"
                             [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
                             [ngAddLabel]="labelMap.cost_num" #costVar>
                         </dx-number-box>
                     </dxi-item>
 
                     <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                        <dx-number-box [value]="pmDetails.markup" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                        <dx-number-box [(value)]="pmDetails.markup" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                             [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.markup_num" #markupVar>
                         </dx-number-box>
                     </dxi-item>
 
                     <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                        <dx-number-box [value]="pmDetails.price" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                        <dx-number-box [(value)]="pmDetails.price" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                             [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.price_num" #price_num>
                         </dx-number-box>
                     </dxi-item>
@@ -122,17 +122,17 @@
                 <dxi-item itemType="group" [colCount]="2">
                     <dxi-item [colSpan]="1" [isRequired]="true">
                         <dx-select-box formControlName="warehouse*" width="100%" [items]="warehouseNames"
-                            [value]="pmDetails.warehouse" [searchEnabled]="true" [stylingMode]="StylingMode"
-                            [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.warehouse_num"
-                            onValueChanged="updateWarehouseSelection" #warehouseVar
-                            (onFocusIn)="openWarehouseCodeBox()"></dx-select-box>
+                        [(value)]="pmDetails.warehouse" [searchEnabled]="true" [stylingMode]="StylingMode"
+                        [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.warehouse_num"
+                        (onValueChanged)="updateWarehouseSelection($event)" #warehouseVar
+                        (onFocusIn)="openWarehouseCodeBox()"></dx-select-box>
                         <dxi-validation-rule type="required" message="Warehouse is required">
                         </dxi-validation-rule>
                     </dxi-item>
 
                     <dxi-item [colSpan]="1" [isRequired]="true">
                         <dx-select-box formControlName="location" width="100%" [items]="validLocationNames"
-                            [value]="pmDetails.location" [searchEnabled]="true" [stylingMode]="StylingMode"
+                            [(value)]="pmDetails.location" [searchEnabled]="true" [stylingMode]="StylingMode"
                             [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.location_num"
                             #locationVar (onFocusIn)="openLocationCodeBox()"></dx-select-box>
                         <dxi-validation-rule type="required" message="Location is required">
@@ -151,9 +151,20 @@
 
                 </dxi-item>
                 <dxi-item itemType="group" [colCount]="3">
-                    <dxi-item [colCount]="1" editorType="dxRadioGroup" [label]="{text: ' '}" dataField="invType"
+                    <!-- <dxi-item [colCount]="1" editorType="dxRadioGroup" [label]="{text: ' '}" dataField="invType"
                         [isRequired]="true" [editorOptions]=" {items: invTypes,   layout: 'horizontal' }"
-                        style="align-items:center;background-color: #F4F5F6;">
+                        style="align-items:center;background-color: #F4F5F6;"> -->
+
+                        <dxi-item [colSpan]="1" [isRequired]="true">
+                            <div class="custom-field">
+                                <h1>
+                                    <span>
+                                        Inventory type
+                                    </span>
+                                </h1>
+                                <dx-radio-group [(value)]="pmDetails.invType" [items]="invTypes" layout="horizontal"></dx-radio-group>
+                            </div>
+    
                         <dxi-validation-rule type="required" message="Inv Type is required"></dxi-validation-rule>
                     </dxi-item>
                     <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass"
@@ -184,7 +195,7 @@
     </div>
 </div>
 
-<div class="details-container content-block dx-card responsive-paddings"  style="height: calc(100vh - 435px);">
+<div class="details-container content-block dx-card responsive-paddings"  style="height: calc(100vh - 449px);">
     <ng-container [ngSwitch]="selectedChild">
         <ng-container *ngSwitchCase="childType.BOM">
             <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="itemNumber" height="95%"
