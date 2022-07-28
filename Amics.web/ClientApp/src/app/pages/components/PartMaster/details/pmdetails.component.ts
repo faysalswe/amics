@@ -262,8 +262,13 @@ export class PMDetailsComponent implements AfterViewInit {
       this.pmdataTransfer.isSerialSelected$.next(item.invType == 'SERIAL');
     });
     this.pmdataTransfer.selectedItemBomForPMDetails$.subscribe((boms) => {
+      console.log(boms.length);
       this.bomDetails = boms;
       this.originalBomDetails = [...boms];
+      console.log("bom details " + this.bomDetails.length);
+      console.log(this.bomDetails);
+      console.log("originalBomDetails " + this.originalBomDetails.length);
+      console.log(this.originalBomDetails);
     });
 
     this.pmdataTransfer.selectedItemPoForPMDetails$.subscribe((poLines) => {
@@ -352,20 +357,25 @@ export class PMDetailsComponent implements AfterViewInit {
     }, {});
   }
 
-  updateWarehouseSelection(location: string = '', onload: boolean = false) {
+  updateWarehouseSelection(location: string = '', onload: boolean = false) {       
     if (!this.pmDetails.warehouse || !location) {
-      this.validLocationNames = [];
-      this.pmDetails.location = '';
-      return;
+        this.validLocationNames = [];
+        this.pmDetails.location = '';            
+        return;        
     }
-
+        
     let wid = this.groupedWarehouses[this.pmDetails.warehouse];
-    if (!!wid) {
-      let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
-      this.validLocationNames = locations.map((l) => l.location);
-    } else {
-      this.validLocationNames = [];
-    }
+    if (!!wid) {              
+        let locWid=this.groupedLocations[wid[0].id];
+        if (!!locWid) { 
+            let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];           
+            this.validLocationNames = locations.map(l => l.location);   
+        }   
+        else{
+            this.pmDetails.location ='';
+            alert("There is no location for " + this.pmDetails.warehouse);
+        }      
+    } else { this.validLocationNames = []; }
   }
 
   WarehouseLocationSelection(e: any) {
@@ -405,12 +415,17 @@ export class PMDetailsComponent implements AfterViewInit {
     let anyErrors = false;
     let msg = '';
 
+    console.log("itemnumber " + this.pmDetails.itemNumber);
+    console.log("itemtype " + this.pmDetails.itemType);
+
     if (this.pmDetails.itemNumber === '') {
-      console.log('Invalid PartNumber');
+      console.log(this.pmDetails.itemNumber);
+      console.log('Invalid PartNumber');      
       anyErrors = true;
       msg = msg + 'Invalid PartNumber |';
     }
     if (this.pmDetails.itemType === '') {
+      console.log(this.pmDetails.itemType);
       console.log('Invalid MFR');
       anyErrors = true;
       msg = msg + 'Invalid MFR |';
@@ -424,6 +439,10 @@ export class PMDetailsComponent implements AfterViewInit {
       anyErrors = true;
       msg = msg + 'Invalid UOM |';
     }
+
+    console.log("class " + this.pmDetails.itemClass);
+    console.log("code " + this.pmDetails.itemCode);
+
     if (this.pmDetails.warehouse === '') {
       console.log('Invalid Warehouse');
       anyErrors = true;
@@ -434,6 +453,7 @@ export class PMDetailsComponent implements AfterViewInit {
       anyErrors = true;
       msg = msg + 'Invalid Location ';
     }
+    console.log("invType " + this.pmDetails.invType);
 
     if (anyErrors) {
       notify({ message: msg, shading: true, position: top }, 'error', 1000);
@@ -489,6 +509,8 @@ export class PMDetailsComponent implements AfterViewInit {
           );
         } else {
           var boms = this.convertToBomGridDetails(x.message);
+          console.log("boms "+boms.length);
+
           this.pmService.AddUpdateDeleteBomDetails(boms).subscribe(
             (b) => {
               notify(
@@ -518,16 +540,21 @@ export class PMDetailsComponent implements AfterViewInit {
   }
 
   convertToBomGridDetails(parentId: string) {
+    console.log(" parentId " + parentId);
     let bomGridDetails: pmBomGridDetails[] = [];
 
+    console.log(" bomGridDetails " + bomGridDetails.length + " len " + this.bomDetails.length);
+        
     if (this.bomDetails.length == 0 && this.originalBomDetails.length == 0) {
       return bomGridDetails;
     }
-
+    
     // find inserted
-    let newBoms = this.bomDetails.filter(
-      (b) => b.id === '00000000-0000-0000-0000-000000000000'
+    let newBoms = this.bomDetails.filter(      
+      (b) => b.id === '00000000-0000-0000-0000-000000000000'      
     );
+    console.log("newBoms " + newBoms.length);
+
     if (!!newBoms && newBoms.length > 0) {
       for (let _i = 0; _i < newBoms.length; _i++) {
         let newBom = new pmBomGridDetails();
@@ -540,8 +567,13 @@ export class PMDetailsComponent implements AfterViewInit {
         newBom.findNo = newBoms[_i].findNo;
         newBom.comments = newBoms[_i].comments;
         newBom.createdby = this.authService.currentUser.toString();
+
+        console.log("new bom loop " + parentId + " itm " +newBoms[_i].itemsid_Child.toString());
+
         bomGridDetails.push(newBom);
       }
+      console.log("len " + bomGridDetails.length);
+      console.log(bomGridDetails);
     }
 
     //find Updated and deleted
@@ -566,7 +598,7 @@ export class PMDetailsComponent implements AfterViewInit {
       bom.createdby = this.authService.currentUser.toString();
       bomGridDetails.push(bom);
     }
-
+    console.log("update/delete  " + bomGridDetails.length);
     return bomGridDetails;
   }
 
@@ -712,9 +744,9 @@ export class PMDetailsComponent implements AfterViewInit {
       (i) =>
         i.itemNumber.toLocaleLowerCase() ==
         newData.itemNumber.toLocaleLowerCase()
-    );
+    );   
     if (!!item) {
-      let bitem = this.bomDetails.find((b) => b.itemNumber === key);
+      let bitem = this.bomDetails.find((b) => b.itemNumber === key);   
       if (!!bitem) {
         bitem.id = '00000000-0000-0000-0000-000000000000';
         bitem.itemNumber = item.itemNumber;

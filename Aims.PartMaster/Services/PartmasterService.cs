@@ -361,7 +361,7 @@ namespace Aims.Core.Services
                 await command.DisposeAsync();
 
                 var command2 = _amicsDbContext.Database.GetDbConnection().CreateCommand();
-                command2.CommandText = "select id from list_items where itemnumber='" + item.ItemNumber + "' and rev='" + item.Rev + "'";
+                command2.CommandText = "select id from list_items where itemnumber='" + item.ItemNumber + "' and rev='" + revDef + "'";
                 var dataReader = command2.ExecuteReader();
                 var itemId = "";
                 if (dataReader.Read())
