@@ -40,7 +40,7 @@ import { pmNotes } from 'src/app/pages/models/pmNotes';
 import { ComponentType } from 'src/app/pages/models/componentType';
 import { ThisReceiver } from '@angular/compiler';
 import { LabelMap } from 'src/app/pages/models/Label';
-import { changeSerialInfo } from '../../change-serial/change-serial.component';
+import { changeSerial } from 'src/app/pages/models/pmSerial';
 import { TextboxStyle } from '../../textbox-style/textbox-style';
 import dxNumberBox from 'devextreme/ui/number_box';
 import { Toolbar } from 'devextreme/ui/tree_list';
@@ -826,23 +826,30 @@ export class PMDetailsComponent implements AfterViewInit {
   }
 
   submitSerialPopupButtonOptions = {
-    text: 'Save',
+    text: 'Save and exit',
+    useSubmitBehavior: true,
+    type: 'default',
+  };
+
+  cancelSerialPopupButtonOptions =  {
+    text: 'cancel and exit',
     useSubmitBehavior: true,
     type: 'default',
   };
   updateSerialPopupVisible: boolean = false;
-  changeSerialSearchInfo: changeSerialInfo = new changeSerialInfo();
+  changeSerialSearchInfo: changeSerial = new changeSerial();
   onRowSelection(e: any) {
     let selectedRow = e.data;
-    this.changeSerialSearchInfo.fromSerial = selectedRow?.serlot;
-    this.changeSerialSearchInfo.toSerial = selectedRow?.serlot;
-    this.changeSerialSearchInfo.fromTagNo = selectedRow?.tagcol;
-    this.changeSerialSearchInfo.toTagNo = selectedRow?.tagcol;
-    this.changeSerialSearchInfo.fromModel = selectedRow?.color_model;
-    this.changeSerialSearchInfo.toModel = selectedRow?.color_model;
-    this.changeSerialSearchInfo.fromCost = selectedRow?.cost;
-    this.changeSerialSearchInfo.toCost = selectedRow?.cost;
-    this.updateSerialPopupVisible = true;
+    this.changeSerialSearchInfo.serNoFm = selectedRow?.serlot;
+    this.changeSerialSearchInfo.serNoTo = selectedRow?.serlot;
+    this.changeSerialSearchInfo.tagNoFm = selectedRow?.tagcol;
+    this.changeSerialSearchInfo.tagNoTo = selectedRow?.tagcol;
+    this.changeSerialSearchInfo.modelFm = selectedRow?.color_model;
+    this.changeSerialSearchInfo.modelTo = selectedRow?.color_model;
+    this.changeSerialSearchInfo.costFm = selectedRow?.cost;
+    this.changeSerialSearchInfo.costTo = selectedRow?.cost;
+
+    this.changeSerialSearchInfo.serialId = selectedRow?.id;
   }
 
   edit() {
@@ -1024,5 +1031,27 @@ export class PMDetailsComponent implements AfterViewInit {
 
   }
 
+  saveSerial(e: any){
+    debugger
+    this.changeSerialSearchInfo.costFm = this.changeSerialSearchInfo.costFm.toString();
+    this.changeSerialSearchInfo.costTo = this.changeSerialSearchInfo.costTo.toString();
+
+    this.pmService.updateChangeSerialTag(this.changeSerialSearchInfo)
+        .subscribe((res: any) => {
+          this.updateSerialPopupVisible = false;
+          this.getSerial();
+        }, 
+        err => {
+          notify({ message: "Error occured during update serial", shading: true, position: top }, "error", 1500) 
+        
+        });
+
+    e.preventDefault();
+    //alert("save clicked")
+  }
+
+  cancelSerial(){
+    this.updateSerialPopupVisible = false;
+  }
 
 }
