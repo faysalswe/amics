@@ -10,6 +10,7 @@ import { pmDetails } from '../models/pmdetails';
 import { pmPoDetails } from '../models/pmPoDetails';
 import { pmSerial } from '../models/pmSerial'; 
 import { pmNotes } from '../models/pmNotes'; 
+import { changeSerial } from '../models/pmSerial';
 
 import { pmWHLocation } from '../models/pmWHLocation';
 import { SearchService } from './search.service';
@@ -109,5 +110,9 @@ export class PartMasterService {
   getViewNotes(itemId: string): Observable<pmNotes[]> {
 
     return this.httpClient.get<pmNotes[]>(`${this.api}/ViewNotes?itemsId=${itemId}`);
+  }
+
+  updateChangeSerialTag(changeSerial: changeSerial) {
+    return this.httpClient.post<string>(`${this.api}/ChangeSerialUpdate`, changeSerial);
   }
 }

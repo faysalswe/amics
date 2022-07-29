@@ -59,42 +59,42 @@
   <form (submit)="saveSerial($event)">
     <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="2" labelMode="floating">
       <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-        <dx-text-box [(value)]="changeSerialSearchInfo.fromSerial" [stylingMode]="StylingMode" [readOnly]="true"
+        <dx-text-box [(value)]="changeSerialSearchInfo.serNoFm" [stylingMode]="StylingMode" [readOnly]="true"
           [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'From Ser No'">
         </dx-text-box>
       </dxi-item>
       <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-        <dx-text-box [(value)]="changeSerialSearchInfo.toSerial" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+        <dx-text-box [(value)]="changeSerialSearchInfo.serNoTo" [stylingMode]="StylingMode" [labelMode]="LabelMode"
           [elementAttr]="{ class: 'myclass' }" [label]="'To Ser No'">
         </dx-text-box>
       </dxi-item>
       <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-        <dx-text-box [(value)]="changeSerialSearchInfo.fromTagNo" [stylingMode]="StylingMode" [readOnly]="true"
+        <dx-text-box [(value)]="changeSerialSearchInfo.tagNoFm" [stylingMode]="StylingMode" [readOnly]="true"
           [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'From Tag No'">
         </dx-text-box>
       </dxi-item>
       <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-        <dx-text-box [(value)]="changeSerialSearchInfo.toTagNo" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+        <dx-text-box [(value)]="changeSerialSearchInfo.tagNoTo" [stylingMode]="StylingMode" [labelMode]="LabelMode"
           [elementAttr]="{ class: 'myclass' }" [label]="'To Tag No'">
         </dx-text-box>
       </dxi-item>
       <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-        <dx-text-box [(value)]="changeSerialSearchInfo.fromModel" [stylingMode]="StylingMode" [readOnly]="true"
+        <dx-text-box [(value)]="changeSerialSearchInfo.modelFm" [stylingMode]="StylingMode" [readOnly]="true"
           [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'From Model'">
         </dx-text-box>
       </dxi-item>
       <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-        <dx-text-box [(value)]="changeSerialSearchInfo.toModel" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+        <dx-text-box [(value)]="changeSerialSearchInfo.modelTo" [stylingMode]="StylingMode" [labelMode]="LabelMode"
           [elementAttr]="{ class: 'myclass' }" [label]="'To Model'">
         </dx-text-box>
       </dxi-item>
       <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-        <dx-text-box [(value)]="changeSerialSearchInfo.fromCost" [stylingMode]="StylingMode" [readOnly]="true"
+        <dx-text-box [(value)]="changeSerialSearchInfo.costFm" [stylingMode]="StylingMode" [readOnly]="true"
           [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'From Cost'">
         </dx-text-box>
       </dxi-item>
       <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-        <dx-text-box [(value)]="changeSerialSearchInfo.toCost" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+        <dx-text-box [(value)]="changeSerialSearchInfo.costTo" [stylingMode]="StylingMode" [labelMode]="LabelMode"
           [elementAttr]="{ class: 'myclass' }" [label]="'To Cost'">
         </dx-text-box>
       </dxi-item>

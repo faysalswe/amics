@@ -8,6 +8,8 @@ import { PartMasterService } from '../../services/partmaster.service';
 import { PartMasterDataTransService } from '../../services/pmdatatransfer.service';
 import { SearchService } from '../../services/search.service';
 import { TextboxStyle } from '../textbox-style/textbox-style';
+import { changeSerial } from 'src/app/pages/models/pmSerial';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-change-serial',
@@ -16,12 +18,13 @@ import { TextboxStyle } from '../textbox-style/textbox-style';
 })
 export class ChangeSerialComponent implements OnInit {
   @ViewChild(DxDataGridComponent, { static: false }) dataGrid!: DxDataGridComponent
-  changeSerialSearchInfo: changeSerialInfo = new changeSerialInfo();
+  changeSerialSearchInfo: changeSerial = new changeSerial();
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
   popupVisible = false;
   StylingMode: string = TextboxStyle.StylingMode;
   LabelMode: string = TextboxStyle.LabelMode;
   labelMap: typeof LabelMap;
+  SerialId: Guid = Guid.createEmpty();
   submitButtonOptions = {
     text: "Search",
     useSubmitBehavior: true,
@@ -78,14 +81,15 @@ cancelSerialPopupButtonOptions = {
       let result = response;
       ItemsId = String(result?.find(x => x.itemNumber == this.changeSerialSearchInfo.itemNumber)?.id);
       this.pmService.getViewSerial(ItemsId, this.secUserId).subscribe((res) => {
+        debugger
         this.changesserialArray = res;
 
         if (this.changesserialArray.length > 0) {
           
-          this.changeSerialSearchInfo.fromSerial = this.changesserialArray[0].serlot;
-          this.changeSerialSearchInfo.toSerial = this.changesserialArray[0].serlot;
-          this.changeSerialSearchInfo.fromTagNo = this.changesserialArray[0].tagcol;
-          this.changeSerialSearchInfo.toTagNo = this.changesserialArray[0].tagcol;
+          this.changeSerialSearchInfo.serNoFm = this.changesserialArray[0].serlot;
+          this.changeSerialSearchInfo.serNoTo = this.changesserialArray[0].serlot;
+          this.changeSerialSearchInfo.tagNoFm = this.changesserialArray[0].tagcol;
+          this.changeSerialSearchInfo.tagNoTo = this.changesserialArray[0].tagcol;
         }
 
       });
@@ -93,7 +97,17 @@ cancelSerialPopupButtonOptions = {
   }
 
   saveSerial(e: any){
+    debugger
+    this.changeSerialSearchInfo.costFm = this.changeSerialSearchInfo.costFm.toString();
+    this.changeSerialSearchInfo.costTo = this.changeSerialSearchInfo.costTo.toString();
+    this.pmService.updateChangeSerialTag(this.changeSerialSearchInfo)
+        .subscribe(response => {
+          this.popupVisible = false;
+          alert(response);
+        });
 
+    e.preventDefault();
+    //alert("save clicked")
   }
 
   edit() {
@@ -103,27 +117,29 @@ cancelSerialPopupButtonOptions = {
   onRowSelection(e: any) {
     let selectedRow = e.data;
     this.rowSelection = true;
-    this.changeSerialSearchInfo.fromSerial = selectedRow?.serlot;
-    this.changeSerialSearchInfo.toSerial = selectedRow?.serlot;
-    this.changeSerialSearchInfo.fromTagNo = selectedRow?.tagcol;
-    this.changeSerialSearchInfo.toTagNo = selectedRow?.tagcol;
-    this.changeSerialSearchInfo.fromModel = selectedRow?.color_model;
-    this.changeSerialSearchInfo.toModel = selectedRow?.color_model;
-    this.changeSerialSearchInfo.fromCost = selectedRow?.cost;
-    this.changeSerialSearchInfo.toCost = selectedRow?.cost;
+    this.changeSerialSearchInfo.serNoFm = selectedRow?.serlot;
+    this.changeSerialSearchInfo.serNoTo = selectedRow?.serlot;
+    this.changeSerialSearchInfo.tagNoFm = selectedRow?.tagcol;
+    this.changeSerialSearchInfo.tagNoTo = selectedRow?.tagcol;
+    this.changeSerialSearchInfo.modelFm = selectedRow?.color_model;
+    this.changeSerialSearchInfo.modelTo = selectedRow?.color_model;
+    this.changeSerialSearchInfo.costFm = selectedRow?.cost;
+    this.changeSerialSearchInfo.costTo = selectedRow?.cost;
+
+    this.changeSerialSearchInfo.serialId = selectedRow?.id;
     this.popupVisible = true;
   }
 
 }
 
-export class changeSerialInfo {
-  itemNumber: string = "";
-  fromSerial: string = "";
-  toSerial: string = "";
-  fromTagNo: string = "";
-  toTagNo: string = "";
-  fromModel: string = "";
-  toModel: string = "";
-  fromCost: string = "";
-  toCost: string = "";
-}
+// export class changeSerialInfo {
+//   itemNumber: string = "";
+//   fromSerial: string = "";
+//   toSerial: string = "";
+//   fromTagNo: string = "";
+//   toTagNo: string = "";
+//   fromModel: string = "";
+//   toModel: string = "";
+//   fromCost: string = "";
+//   toCost: string = "";
+// }
