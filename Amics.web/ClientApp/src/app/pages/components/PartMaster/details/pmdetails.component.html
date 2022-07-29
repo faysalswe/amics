@@ -398,7 +398,7 @@
             <br />
             <dx-data-grid id="gridContainer" [dataSource]="pmSerials" keyExpr="serlot" height="650"
                 [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
-                [rowAlternationEnabled]="true" (onRowClick)="onRowSelection($event)"(onRowDblClick)="edit">
+                [rowAlternationEnabled]="true" (onRowClick)="onRowSelection($event)" (dblclick)="edit()">
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-sorting mode="multiple"></dxo-sorting>
@@ -430,7 +430,7 @@
         </dx-popup>
         <dx-popup [width]="500" [height]="500" [showTitle]="true" title="Update Serial" [dragEnabled]="false"
             [showCloseButton]="true" container=".dx-viewport" [(visible)]="updateSerialPopupVisible">
-            <form >
+            <form (submit)="saveSerial($event)">
                 <!-- <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="2" labelMode="floating">
                     <dxi-item [colSpan]="1" dataField="serNoFm" [label]="{text:'From Ser No'}"
                         [editorOptions]="{readOnly: true}">
@@ -515,9 +515,10 @@
                             <dxi-item [colSpan]="5" itemType="button" width="250" type="default" stylingMode="contained"
                                 [buttonOptions]="submitSerialPopupButtonOptions">
                             </dxi-item>
-                            <dxi-item [colSpan]="5" itemType="button" width="260" type="default" stylingMode="contained"
-                                [buttonOptions]="cancelSerialPopupButtonOptions">
-                            </dxi-item>
+                            <dxi-item [colSpan]="5">
+                                <dx-button stylingMode="contained" text="Cancel and exit" width="260" type="default" (onClick)="cancelSerial()">
+                                </dx-button>
+                              </dxi-item>
                        </dx-form>
             </form>
         </dx-popup>

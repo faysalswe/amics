@@ -213,11 +213,11 @@ namespace Amics.Api.Controllers
         /// </summary> 
         /// <param name="LstChangeSerial">LstChangeSerial</param>            
         [HttpPost, Route("ChangeSerialUpdate")]
-        public string ChangeSerialTagUpdate([FromBody] LstChangeSerial lstChgSerial)
+        public LstMessage ChangeSerialTagUpdate([FromBody] LstChangeSerial lstChgSerial)
         {
             var ChgSerialTagUpdate = _partMastService.ChangeSerialTag(lstChgSerial);
 
-            return ChgSerialTagUpdate;
+            return new LstMessage() { Message = ChgSerialTagUpdate };
         }
 
     }

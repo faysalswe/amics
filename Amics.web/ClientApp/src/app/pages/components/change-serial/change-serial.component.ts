@@ -10,6 +10,7 @@ import { SearchService } from '../../services/search.service';
 import { TextboxStyle } from '../textbox-style/textbox-style';
 import { changeSerial } from 'src/app/pages/models/pmSerial';
 import { Guid } from 'guid-typescript';
+import notify from 'devextreme/ui/notify';
 
 @Component({
   selector: 'app-change-serial',
@@ -17,7 +18,7 @@ import { Guid } from 'guid-typescript';
   styleUrls: ['./change-serial.component.scss']
 })
 export class ChangeSerialComponent implements OnInit {
-  @ViewChild(DxDataGridComponent, { static: false }) dataGrid!: DxDataGridComponent
+  @ViewChild('gridContainer') gridContainer!: DxDataGridComponent
   changeSerialSearchInfo: changeSerial = new changeSerial();
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
   popupVisible = false;
@@ -70,9 +71,8 @@ cancelSerialPopupButtonOptions = {
   ngOnInit(): void {
   }
 
-  handleSubmit(e: any) {
+  handleSubmit(e?: any) {
 
-    e.preventDefault();
     this.rowSelection = false;
     let searchDto = new pmSearch();
     let ItemsId: string;
@@ -81,7 +81,7 @@ cancelSerialPopupButtonOptions = {
       let result = response;
       ItemsId = String(result?.find(x => x.itemNumber == this.changeSerialSearchInfo.itemNumber)?.id);
       this.pmService.getViewSerial(ItemsId, this.secUserId).subscribe((res) => {
-        debugger
+        
         this.changesserialArray = res;
 
         if (this.changesserialArray.length > 0) {
@@ -94,16 +94,25 @@ cancelSerialPopupButtonOptions = {
 
       });
     });
+    e?.preventDefault();
+  }
+
+  cancelSerial(){
+    this.popupVisible = false;
   }
 
   saveSerial(e: any){
-    debugger
     this.changeSerialSearchInfo.costFm = this.changeSerialSearchInfo.costFm.toString();
     this.changeSerialSearchInfo.costTo = this.changeSerialSearchInfo.costTo.toString();
+
     this.pmService.updateChangeSerialTag(this.changeSerialSearchInfo)
-        .subscribe(response => {
+        .subscribe((res: any) => {
           this.popupVisible = false;
-          alert(response);
+          this.handleSubmit();
+        }, 
+        err => {
+          notify({ message: "Error occured during update serial", shading: true, position: top }, "error", 1500) 
+        
         });
 
     e.preventDefault();
@@ -127,7 +136,6 @@ cancelSerialPopupButtonOptions = {
     this.changeSerialSearchInfo.costTo = selectedRow?.cost;
 
     this.changeSerialSearchInfo.serialId = selectedRow?.id;
-    this.popupVisible = true;
   }
 
 }

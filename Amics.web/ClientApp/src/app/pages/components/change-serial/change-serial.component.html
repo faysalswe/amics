@@ -31,8 +31,9 @@
 
   </div>
   <div class="row">
-    <dx-data-grid id="gridContainer" [dataSource]="changesserialArray" keyExpr="id" height="70vh"
-      [focusedRowEnabled]="true" [showBorders]="true" [hoverStateEnabled]="true" (onRowClick)="onRowSelection($event)">
+    <dx-data-grid #gridContainer id="gridContainer" [dataSource]="changesserialArray" keyExpr="id" height="70vh"
+      [focusedRowEnabled]="true" [showBorders]="true" [hoverStateEnabled]="true" (onRowClick)="onRowSelection($event)"
+      (dblclick)="edit()">
       <dxo-selection mode="single"></dxo-selection>
       <dxi-column dataField="warehouse"></dxi-column>
       <dxi-column dataField="location"></dxi-column>
@@ -109,11 +110,16 @@
     <dx-form [colCount]="12" labelMode="floating">
       <dxi-item></dxi-item>
       <dxi-item [colSpan]="5" itemType="button" width="250" type="default" stylingMode="contained"
-          [buttonOptions]="submitSerialPopupButtonOptions">
+        [buttonOptions]="submitSerialPopupButtonOptions">
       </dxi-item>
-      <dxi-item [colSpan]="5" itemType="button" width="260" type="default" stylingMode="contained"
+      <!-- <dxi-item [colSpan]="5" id="btnCancel" itemType="button" width="260" type="default" stylingMode="contained"
           [buttonOptions]="cancelSerialPopupButtonOptions">
+      </dxi-item> -->
+      <dxi-item [colSpan]="5">
+        <dx-button stylingMode="contained" text="Cancel and exit" width="260" type="default" (onClick)="cancelSerial()">
+        </dx-button>
       </dxi-item>
-  </dx-form>
+      
+    </dx-form>
   </form>
 </dx-popup>
