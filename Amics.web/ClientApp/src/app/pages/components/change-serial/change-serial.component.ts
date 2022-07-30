@@ -140,14 +140,14 @@ cancelSerialPopupButtonOptions = {
 
 }
 
-// export class changeSerialInfo {
-//   itemNumber: string = "";
-//   fromSerial: string = "";
-//   toSerial: string = "";
-//   fromTagNo: string = "";
-//   toTagNo: string = "";
-//   fromModel: string = "";
-//   toModel: string = "";
-//   fromCost: string = "";
-//   toCost: string = "";
-// }
+export class changeSerialInfo {
+  itemNumber: string = "";
+  fromSerial: string = "";
+  toSerial: string = "";
+  fromTagNo: string = "";
+  toTagNo: string = "";
+  fromModel: string = "";
+  toModel: string = "";
+  fromCost: string = "";
+  toCost: string = "";
+}
