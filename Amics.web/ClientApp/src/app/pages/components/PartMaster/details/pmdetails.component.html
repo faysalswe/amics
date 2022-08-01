@@ -735,6 +735,7 @@
         [allowColumnResizing]="true"
         [rowAlternationEnabled]="true"
         (onRowClick)="onRowSelection($event)"
+        (dblclick)="edit()"
       >
         <dxo-load-panel [enabled]="false"></dxo-load-panel>
         <dxo-scrolling mode="infinite"></dxo-scrolling>
@@ -788,85 +789,75 @@
       container=".dx-viewport"
       [(visible)]="updateSerialPopupVisible"
     >
-      <form>
-        <dx-form
-          [(formData)]="changeSerialSearchInfo"
-          id="form"
-          [colCount]="2"
-          labelMode="floating"
-        >
-          <dxi-item
-            [colSpan]="1"
-            dataField="fromSerial"
-            [label]="{ text: 'From Ser No' }"
-            [editorOptions]="{ readOnly: true }"
-          >
-          </dxi-item>
-          <dxi-item
-            [colSpan]="1"
-            dataField="toSerial"
-            [label]="{ text: 'To Ser No' }"
-          ></dxi-item>
-          <dxi-item
-            [colSpan]="1"
-            dataField="fromTagNo"
-            [label]="{ text: 'From Tag No' }"
-            [editorOptions]="{ readOnly: true }"
-          >
-          </dxi-item>
-          <dxi-item
-            [colSpan]="1"
-            dataField="toTagNo"
-            [label]="{ text: 'To Tag No' }"
-          ></dxi-item>
+      <form (submit)="saveSerial($event)">
+        <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="2" labelMode="floating">
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.serNoFm" [stylingMode]="StylingMode"
+                    [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                    [label]="'From Ser No'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.serNoTo" [stylingMode]="StylingMode"
+                    [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Ser No'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.tagNoFm" [stylingMode]="StylingMode"
+                    [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                    [label]="'From Tag No'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.tagNoTo" [stylingMode]="StylingMode"
+                    [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Tag No'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.modelFm" [stylingMode]="StylingMode"
+                    [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                    [label]="'From Model'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.modelTo" [stylingMode]="StylingMode"
+                    [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Model'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.costFm" [stylingMode]="StylingMode"
+                    [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                    [label]="'From Cost'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.costTo" [stylingMode]="StylingMode"
+                    [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Cost'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="2" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" style="height: 60px;"
+                    [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.notes_num">
+                </dx-text-box>
+            </dxi-item>
 
-          <dxi-item
-            [colSpan]="1"
-            dataField="fromModel"
-            [label]="{ text: 'From Model' }"
-            [editorOptions]="{ readOnly: true }"
-          >
-          </dxi-item>
-          <dxi-item
-            [colSpan]="1"
-            dataField="toModel"
-            [label]="{ text: 'To Model' }"
-          ></dxi-item>
-          <dxi-item
-            [colSpan]="1"
-            dataField="fromCost"
-            [label]="{ text: 'From Cost' }"
-            [editorOptions]="{ readOnly: true }"
-          >
-          </dxi-item>
-          <dxi-item
-            [colSpan]="1"
-            dataField="toCost"
-            [label]="{ text: 'To Cost' }"
-          ></dxi-item>
-
-          <dxi-item
-            [colSpan]="2"
-            dataField="notes"
-            editorType="dxTextArea"
-            [label]="{ text: 'Notes' }"
-          >
-          </dxi-item>
         </dx-form>
-        <dx-form [colCount]="3" labelMode="floating">
-          <dxi-item></dxi-item>
-          <dxi-item
-            [colSpan]="1"
-            itemType="button"
-            width="150"
-            type="default"
-            stylingMode="contained"
-            [buttonOptions]="submitSerialPopupButtonOptions"
-            style="text-align: center"
-          >
-          </dxi-item>
-        </dx-form>
-      </form>
+        <br>
+        <dx-form [colCount]="12" labelMode="floating">
+            <dxi-item></dxi-item>
+            <dxi-item [colSpan]="5" itemType="button" width="250" type="default" stylingMode="contained"
+              [buttonOptions]="submitSerialPopupButtonOptions">
+            </dxi-item>
+            <!-- <dxi-item [colSpan]="5" id="btnCancel" itemType="button" width="260" type="default" stylingMode="contained"
+                [buttonOptions]="cancelSerialPopupButtonOptions">
+            </dxi-item> -->
+            <dxi-item [colSpan]="5">
+              <dx-button stylingMode="contained" text="Cancel and exit" width="260" type="default" (onClick)="cancelSerial()">
+              </dx-button>
+            </dxi-item>
+            
+          </dx-form>
+    </form>
     </dx-popup>
   </div>
   <div>
