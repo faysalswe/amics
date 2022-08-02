@@ -29,27 +29,34 @@
       <!-- <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp;  -->
     </dx-form>
   </div>
+  <br>
+  <br>
   <div class="row">
-    <dx-data-grid id="gridContainer" [dataSource]="inquiryResponseDetails" height="50vh" [showBorders]="true">
+    <dx-data-grid id="gridContainer" [dataSource]="inquiryResponseDetails" height="65vh" 
+    [showBorders]="true"
+    [showColumnLines]="true" [allowColumnResizing]="true"
+    [allowColumnReordering]="true"
+    [columnAutoWidth]="true"
+    [showRowLines]="true">
       <dxo-load-panel [enabled]="false"></dxo-load-panel>
       <dxo-scrolling mode="infinite"></dxo-scrolling>
-      <dxi-column dataField="itemtype"></dxi-column>
-      <dxi-column dataField="itemnumber"></dxi-column>
-      <dxi-column dataField="description"></dxi-column>
-      <dxi-column dataField="location"></dxi-column>
-      <dxi-column dataField="quantity"></dxi-column>
-      <dxi-column dataField="serial"></dxi-column>
-      <dxi-column dataField="lotno" caption="Tag #"></dxi-column>
-      <dxi-column dataField="er" caption="ER"></dxi-column>
-      <dxi-column dataField="mdatin"></dxi-column>
-      <dxi-column dataField="cost" [visible]="isCost"></dxi-column>
+      <dxi-column dataField="itemtype" caption="Manufacture" width="9%"></dxi-column>
+      <dxi-column dataField="itemnumber" width="9%"></dxi-column>
+      <dxi-column dataField="description"width="23%"></dxi-column>
+      <dxi-column dataField="location" width="9%"></dxi-column>
+      <dxi-column dataField="quantity" width="9%"></dxi-column>
+      <dxi-column dataField="serial" width="9%"></dxi-column>
+      <dxi-column dataField="lotno" caption="Tag #" width="8%"></dxi-column>
+      <dxi-column dataField="er" caption="ER" width="8%"></dxi-column>
+      <dxi-column dataField="mdatin" width="9%"></dxi-column>
+      <dxi-column dataField="cost" [visible]="isCost"width="0"></dxi-column>
     </dx-data-grid>
   </div>
-  <div class="row"><br /></div>
+    <div class="row"><br /></div>
   <div class="row">
-    <div class="col" style="text-align: center">
-      <dx-button stylingMode="contained" text="print" type="default"> </dx-button>&nbsp;
-      <dx-button stylingMode="contained" text="exit" type="default"> </dx-button>
+     <div class="col" style="text-align: center">
+       <dx-button stylingMode="contained" text="print" type="default"> </dx-button>&nbsp;
+       <dx-button stylingMode="contained" text="exit" type="default"> </dx-button>
     </div>
   </div>
 </div>

@@ -392,54 +392,59 @@
         <dxi-column dataField="lineNum"
                     dataType="number"
                     [allowEditing]="false"
-                    width="8%"
+                    width="5%"
                     alignment="center"></dxi-column>
         <dxi-column dataField="itemtype"
                     caption="MFR."
                     [allowEditing]="false"
-                    width="10%"></dxi-column>
+                    width="10.433%"></dxi-column>
         <dxi-column dataField="itemNumber"
                     caption="Part Number"
                     [allowEditing]="true"
-                    [width]="200">
+                    [width]="135">
           <dxi-validation-rule type="required"></dxi-validation-rule>
         </dxi-column>
 
         <dxi-column dataField="description"
                     [allowEditing]="false"
-                    width="10%"></dxi-column>
-        <dxi-column dataField="quantity" [allowEditing]="true" width="10%">
-          <dxi-validation-rule type="required"></dxi-validation-rule>
+                    width="21.48%"></dxi-column>
+        <dxi-column dataField="quantity"
+                    [allowEditing]="true"
+                     width="7.496%" 
+                 alignment="left" >
+           <dxi-validation-rule type="required"></dxi-validation-rule>
         </dxi-column>
         <dxi-column dataField="uomref"
                     caption="UOM"
                     [allowEditing]="false"
-                    width="10%"></dxi-column>
+                    width="6.878%"></dxi-column>
         <dxi-column dataField="ref"
                     [allowEditing]="true"
-                    width="10%"></dxi-column>
+                    width="8.964%"></dxi-column>
         <dxi-column dataField="cost"
                     dataType="number"
                     format="currency"
                     [allowEditing]="false"
-                    width="10%">
+                    width="7.883%"
+                    alignment="left">
           <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
         </dxi-column>
         <dxi-column dataField="extCost"
                     dataType="number"
                     format="currency"
                     [allowEditing]="false"
-                    width="10%">
+                    width="11.36%"
+                    alignment="left">
           <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
         </dxi-column>
 
 
         <dxi-column dataField="id"
                     [allowEditing]="true"
-                    width="0" ></dxi-column>
+                    width="130" ></dxi-column>
 
         <dxi-column dataField="itemsid_Child"
-                    [allowEditing]="true"
+                    [allowEditing]="true" [visible]="false"
                      width="0" ></dxi-column>
 
 
@@ -730,10 +735,13 @@
         [dataSource]="pmSerials"
         keyExpr="serlot"
         height="650"
-        [allowColumnReordering]="true"
-        [focusedRowEnabled]="true"
+        [showBorders]="true"
+        [showColumnLines]="true"
         [allowColumnResizing]="true"
-        [rowAlternationEnabled]="true"
+        [allowColumnReordering]="true"
+        [columnAutoWidth]="true"
+        [showRowLines]="true"
+        [focusedRowEnabled]="true"
         (onRowClick)="onRowSelection($event)"
         (dblclick)="edit()"
       >
@@ -750,7 +758,7 @@
         ></dxo-search-panel>
         <dxi-column dataField="warehouse"></dxi-column>
         <dxi-column dataField="location"></dxi-column>
-        <dxi-column dataField="cost"></dxi-column>
+        <dxi-column dataField="cost" alignment="left"></dxi-column>
         <dxi-column dataField="serlot"></dxi-column>
         <dxi-column dataField="tagcol" caption="Tag No."></dxi-column>
         <dxi-column dataField="color_model" caption="Model"></dxi-column>

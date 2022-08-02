@@ -30,14 +30,21 @@
     </form>
 
   </div>
+  <br>
   <div class="row">
     <dx-data-grid #gridContainer id="gridContainer" [dataSource]="changesserialArray" keyExpr="id" height="70vh"
-      [focusedRowEnabled]="true" [showBorders]="true" [hoverStateEnabled]="true" (onRowClick)="onRowSelection($event)"
+      [focusedRowEnabled]="true" 
+       [showBorders]="true"
+      [showColumnLines]="true"
+      [allowColumnResizing]="true"
+      [allowColumnReordering]="true"
+      [columnAutoWidth]="true"
+      [showRowLines]="true" [hoverStateEnabled]="true" (onRowClick)="onRowSelection($event)"
       (dblclick)="edit()">
       <dxo-selection mode="single"></dxo-selection>
       <dxi-column dataField="warehouse"></dxi-column>
       <dxi-column dataField="location"></dxi-column>
-      <dxi-column dataField="cost"></dxi-column>
+      <dxi-column dataField="cost" alignment="left"></dxi-column>
       <dxi-column dataField="serlot" caption="Serial"></dxi-column>
       <dxi-column dataField="tagcol" caption="Tag No."></dxi-column>
       <dxi-column dataField="color_model" caption="Model"></dxi-column>
