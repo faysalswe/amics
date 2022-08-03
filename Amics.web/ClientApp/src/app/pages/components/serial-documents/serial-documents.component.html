@@ -29,13 +29,19 @@
       <!-- <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp; -->
     </dx-form>
   </div>
+  <br>
   <div class="row">
     <dx-data-grid
       id="gridContainer"
       [dataSource]="serialDocArray"
       keyExpr="ID"
       height="40vh"
-      [showBorders]="true"
+     [showBorders]="true"
+     [showColumnLines]="true"
+     [allowColumnResizing]="true"
+     [allowColumnReordering]="true"
+     [columnAutoWidth]="true"
+     [showRowLines]="true">
     >
       <dxi-column dataField="Part Number"></dxi-column>
       <dxi-column dataField="Description"></dxi-column>

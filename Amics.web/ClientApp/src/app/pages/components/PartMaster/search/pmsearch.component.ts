@@ -1,6 +1,6 @@
 import { ThisReceiver } from "@angular/compiler";
 import { Component, Input, OnInit, AfterViewInit, ViewChild } from "@angular/core";
-import { DxSelectBoxComponent } from "devextreme-angular";
+import { DxSelectBoxComponent, DxTextBoxComponent } from "devextreme-angular";
 import { ComponentType } from "src/app/pages/models/componentType";
 import { LabelMap } from "src/app/pages/models/Label";
 import { CRUD } from "src/app/pages/models/pmChildType";
@@ -19,6 +19,7 @@ import { TextboxStyle } from "../../textbox-style/textbox-style";
 })
 export class PMSearchComponent implements OnInit, AfterViewInit {
     @Input() componentType: ComponentType = ComponentType.PartMaster;
+    @ViewChild('partNumberVar', { static: false }) partNumberVar!: DxTextBoxComponent;
     @ViewChild('mfrVar', { static: false }) mfrVar!: DxSelectBoxComponent;
     @ViewChild('itemClassVar', { static: false }) itemClassVar!: DxSelectBoxComponent;
     @ViewChild('itemCodeVar', { static: false }) itemCodeVar!: DxSelectBoxComponent;
@@ -48,6 +49,7 @@ export class PMSearchComponent implements OnInit, AfterViewInit {
     }
     ngAfterViewInit(): void {
         this.focusOnItemNumber();
+        this.focusPartNumber();
     }
 
 
@@ -86,6 +88,12 @@ export class PMSearchComponent implements OnInit, AfterViewInit {
 
     }
 
+    private focusPartNumber() {
+        setTimeout(() => {
+          this.partNumberVar?.instance.focus();
+        }, 0);
+      }
+
     openMFRCodeBox() {
         this.mfrVar?.instance.open();
     }
@@ -107,11 +115,11 @@ export class PMSearchComponent implements OnInit, AfterViewInit {
     search() {
         this.searchService.getItemNumberSearchResults(this.pmsearchInfo).subscribe(r => {
             this.pmSearchResults = r;
-            /* if (this.pmSearchResults.length !== 0) {
+            if (this.pmSearchResults.length !== 0) {
                 this.pmDataTransService.selectedItemChanged(this.pmSearchResults[0], this.componentType);
                 this.selectedItem = this.pmSearchResults[0];
                 this.selectedItemNumber = this.selectedItem.itemNumber;
-            } */
+            } 
         });
     }
     onSelectionChanged(e: any) {

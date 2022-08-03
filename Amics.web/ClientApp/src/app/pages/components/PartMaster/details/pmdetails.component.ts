@@ -222,7 +222,7 @@ export class PMDetailsComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.focusAdjustQuantity();
+    //this.focusAdjustQuantity();
   }
 
   private focusAdjustQuantity() {
