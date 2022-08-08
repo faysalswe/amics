@@ -3556,3 +3556,48 @@ END
 GO
 
 ---------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_chgLoc_basic_selecteditems]    Script Date: 03-08-2022 02:48:40 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_chgLoc_basic_selecteditems]     
+@itemsId uniqueidentifier,   
+@userId varchar(50),  
+@soLinesId uniqueidentifier
+AS    
+BEGIN    
+    select itl.id,itl.invbasicid,itl.quantity,list_locations.location,list_warehouses.warehouse,itl.createdby  from dbo.inv_transfer_location as itl 
+    left outer join dbo.inv_basic on inv_basic.id = itl.invbasicid 
+    left outer join dbo.list_items on list_items.id = inv_basic.itemsid 
+    left outer join dbo.list_locations on list_locations.id = inv_basic.locationsid 
+    left outer join dbo.list_warehouses on list_warehouses.id = list_locations.warehousesid 
+    where list_items.id = @itemsId and itl.createdby = @userId and itl.solinesid=@soLinesId
+END
+GO
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_chgLoc_serial_selecteditems]    Script Date: 03-08-2022 02:48:40 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_api_chgLoc_serial_selecteditems]     
+@itemsId uniqueidentifier,   
+@userId varchar(50),  
+@soLinesId uniqueidentifier
+AS    
+BEGIN    
+		select itl.id,itl.invserialid,itl.quantity, inv_serial.serno,inv_serial.tagno,inv_serial.model,list_locations.location,list_warehouses.warehouse,itl.createdby  from dbo.inv_transfer_location as itl 
+        inner join dbo.inv_serial on inv_serial.id = itl.invserialid 
+        inner join dbo.list_items on list_items.id = inv_serial.itemsid 
+        left outer join dbo.list_locations on list_locations.id = inv_serial.locationsid 
+        left outer join dbo.list_warehouses on list_warehouses.id = list_locations.warehousesid 
+        where list_items.id= @itemsId and itl.createdby = @userId and itl.solinesid=@soLinesId
+END
+GO
+----------------------------------------------------------------------------------------------------------------------------------------------

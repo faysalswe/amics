@@ -23,7 +23,7 @@ namespace Aims.Core.Models
         public string SerNo { get; set; }
         public string TagNo { get; set; }
         public string InvSerialId { get; set; }
-        public string InvBasicId { get; set; }
+        public string InvBasicId { get; set; }        
 
     }
 }
