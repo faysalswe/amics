@@ -13,3 +13,30 @@ export class pmSerial {
     actualSo !: string;
     currentSo !: string;
 }
+
+
+export class changeSerial {
+    // itemNumber: string = "";
+    // fromSerial: string = "";
+    // toSerial: string = "";
+    // fromTagNo: string = "";
+    // toTagNo: string = "";
+    // fromModel: string = "";
+    // toModel: string = "";
+    // fromCost: string = "";
+    // toCost: string = "";
+
+    itemNumber: string = "";
+    serNoFm: string = "";
+    tagNoFm: string = ""; 
+    serNoTo: string = ""; 
+    tagNoTo: string = ""; 
+    notes: string = "";
+    serialId: string = "";
+    user: string = "";
+    modelFm: string = "";
+    modelTo: string = "";
+    costFm: string = "";
+    costTo: string = "";
+
+}

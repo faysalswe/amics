@@ -2871,8 +2871,9 @@ END
 GO
 
 -------------------------------------------------------------------------------------------------------------------------------------
-
-/****** Object:  StoredProcedure [dbo].[amics_sp_api_pick]    Script Date: 15-07-2022 07:44:51 PM ******/
+ 
+GO
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_pick]    Script Date: 8/1/2022 11:25:53 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2993,8 +2994,8 @@ BEGIN
 		set @trans_item=(select itemnumber from list_items where id=@trans_itemid)
 		set @trans_rev=(select rev from list_items where id=@trans_itemid)
 		set @trans_desc=(select description from list_items where id=@trans_itemid)
-		set	@trans_itemtype=dbo.fn_itemtype(@trans_item,@trans_rev)
-		set @trans_type=dbo.fn_invtype(@trans_item,@trans_rev)
+		set	@trans_itemtype=dbo.amics_fn_api_itemtype(@trans_item,@trans_rev)
+		set @trans_type=dbo.amics_fn_api_invtype(@trans_item,@trans_rev)
 
 		if @trans_invbasicid is not null 
 			set @trans_locid=(select locationsid from inv_basic where id=@trans_invbasicid)
@@ -3128,7 +3129,7 @@ BEGIN
 			set @Pick_Shiptoaddress4=(select shiptoaddress4 from so_main where id=@somainid)
 			set @Pick_Shiptoaddress5=(select shiptoaddress5 from so_main where id=@somainid)
 			set @Pick_Shiptoaddress6=(select shiptoaddress6 from so_main where id=@somainid)
-			set @pick_salestax=(select dbo.fn_tax_decimal_soship (@invsoshipid))
+			set @pick_salestax=(select dbo.amics_fn_api_tax_decimal_soship (@invsoshipid))
 			insert into inv_soship (id,packlist,shiptoname,shiptoaddress1,shiptoaddress2,
 				shiptoaddress3,shiptoaddress4,shiptoaddress5,shiptoaddress6,
 				shipvia,Trackingnum,PackNote,Invoicenote,ShipCharge,SalesTax,shipdate,createdby,invoiced) values

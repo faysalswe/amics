@@ -1,24 +1,41 @@
 <div class="details-container content-block dx-card responsive-paddings">
-    <div style="border-bottom: 2px solid #eee;padding-bottom: 10px;">
-        <app-inventory-status [itemsId]="pmDetails.id" [secUserId]="secUserId"></app-inventory-status>
-    </div>
-    <br />
-    <div class="pmdetails-container ">
-        <dx-form id="pmDetails" [(formData)]="pmDetails" labelMode="floating" labelLocation="left"
-            (submit)="handleSubmit($event)" [readOnly]="readOnly">
-            <dxi-item itemType="group" [colCount]="2">
-                <dxi-item itemType="group" [colCount]="2">
+  <div style="border-bottom: 2px solid #eee; padding-bottom: 10px">
+    <app-inventory-status
+      [itemsId]="pmDetails.id"
+      [secUserId]="secUserId"
+    ></app-inventory-status>
+  </div>
+  <br />
+  <div class="pmdetails-container">
+    <dx-form
+      id="pmDetails"
+      [(formData)]="pmDetails"
+      labelMode="floating"
+      labelLocation="left"
+      (submit)="handleSubmit($event)"
+      [readOnly]="readOnly"
+    >
+      <dxi-item itemType="group" [colCount]="2">
+        <dxi-item itemType="group" [colCount]="2">
+          <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="true">
+            <dx-text-box
+              [(value)]="pmDetails.itemNumber"
+              [stylingMode]="StylingMode"
+              [labelMode]="LabelMode"
+              [elementAttr]="{ class: 'myclass' }"
+              [ngAddLabel]="labelMap.partNumber_num"
+              #partNumberVar
+            >
+            </dx-text-box>
 
-                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="true">
-                        <dx-text-box [(value)]="pmDetails.itemNumber" [stylingMode]="StylingMode" [labelMode]="LabelMode"
-                            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.partNumber_num" #partNumberVar>
-                        </dx-text-box>
+            <dxi-validation-rule
+              type="required"
+              message="Part Number is required"
+            >
+            </dxi-validation-rule>
+          </dxi-item>
 
-                        <dxi-validation-rule type="required" message="Part Number is required">
-                        </dxi-validation-rule>
-                    </dxi-item>
-
-                    <!-- <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="true">
+          <!-- <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="true">
                         <dx-text-box [value]="pmDetails.itemType" [stylingMode]="'outlined'" [labelMode]="'floating'"
                             [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.mfr_num" #mfrVar>
                         </dx-text-box>
@@ -27,457 +44,941 @@
                         </dxi-validation-rule>
                     </dxi-item> -->
 
-                    <dxi-item [colSpan]="1" [isRequired]="true">
-                        <dx-select-box formControlName="itemType" width="100%" [items]="itemTypeList"
-                            [(value)]="pmDetails.itemType" [searchEnabled]="true" [stylingMode]="StylingMode"
-                            [labelMode]="LabelMode" placeholder="Search" [label] = "'Manufacture'"
-                            displayExpr="itemtype" valueExpr="itemtype" #mfrVar (onFocusIn)="openMFRCodeBox()"></dx-select-box>
+          <dxi-item [colSpan]="1" [isRequired]="true">
+            <dx-select-box
+              formControlName="itemType"
+              width="100%"
+              [items]="itemTypeList"
+              [(value)]="pmDetails.itemType"
+              [searchEnabled]="true"
+              [stylingMode]="StylingMode"
+              [labelMode]="LabelMode"
+              placeholder="Search"
+              [label]="'Manufacture'"
+              displayExpr="itemtype"
+              valueExpr="itemtype"
+              #mfrVar
+              (onFocusIn)="openMFRCodeBox()"
+            ></dx-select-box>
 
-                        <dxi-validation-rule type="required" message="Manufacture is required">
-                        </dxi-validation-rule>
-                    </dxi-item>
-                </dxi-item>
-                <dxi-item itemType="group" [colCount]="4">
-                    <dxi-item [colSpan]="1" [isRequired]="true">
-                        <dx-select-box formControlName="uomref" width="100%" [items]="uomList"
-                            [(value)]="pmDetails.uomref" [searchEnabled]="true" [stylingMode]="StylingMode"
-                            [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.uom_num"
-                            displayExpr="uom" valueExpr="uom" #uomVar (onFocusIn)="openUOMCodeBox()"></dx-select-box>
+            <dxi-validation-rule
+              type="required"
+              message="Manufacture is required"
+            >
+            </dxi-validation-rule>
+          </dxi-item>
+        </dxi-item>
+        <dxi-item itemType="group" [colCount]="4">
+          <dxi-item [colSpan]="1" [isRequired]="true">
+            <dx-select-box
+              formControlName="uomref"
+              width="100%"
+              [items]="uomList"
+              [(value)]="pmDetails.uomref"
+              [searchEnabled]="true"
+              [stylingMode]="StylingMode"
+              [labelMode]="LabelMode"
+              placeholder="Search"
+              [ngAddLabel]="labelMap.uom_num"
+              displayExpr="uom"
+              valueExpr="uom"
+              #uomVar
+              (onFocusIn)="openUOMCodeBox()"
+            ></dx-select-box>
 
-                        <dxi-validation-rule type="required" message="UOM is required">
-                        </dxi-validation-rule>
-                    </dxi-item>
+            <dxi-validation-rule type="required" message="UOM is required">
+            </dxi-validation-rule>
+          </dxi-item>
 
-                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                        <dx-number-box [(value)]="pmDetails.leadTime" [stylingMode]="StylingMode"
-                            [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
-                            [ngAddLabel]="labelMap.maintenance_num" #leadVar>
-                        </dx-number-box>
-                    </dxi-item>
+          <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+            <dx-number-box
+              [(value)]="pmDetails.leadTime"
+              [stylingMode]="StylingMode"
+              [labelMode]="LabelMode"
+              [elementAttr]="{ class: 'myclass' }"
+              [ngAddLabel]="labelMap.maintenance_num"
+              #leadVar
+            >
+            </dx-number-box>
+          </dxi-item>
 
-                    <dxi-item [colSpan]="1" [isRequired]="false">
-                        <dx-select-box formControlName="itemClass" width="100%" [items]="itemClassList"
-                        [stylingMode]="StylingMode" [(value)]="pmDetails.itemClass" [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.itemClass_num"
-                            displayExpr="itemclass" valueExpr="itemclass" #itemClassVar
-                            (onFocusIn)="openItemClassCodeBox()"></dx-select-box>
+          <dxi-item [colSpan]="1" [isRequired]="false">
+            <dx-select-box
+              formControlName="itemClass"
+              width="100%"
+              [items]="itemClassList"
+              [stylingMode]="StylingMode"
+              [(value)]="pmDetails.itemClass"
+              [labelMode]="LabelMode"
+              placeholder="Search"
+              [ngAddLabel]="labelMap.itemClass_num"
+              displayExpr="itemclass"
+              valueExpr="itemclass"
+              #itemClassVar
+              (onFocusIn)="openItemClassCodeBox()"
+            ></dx-select-box>
+          </dxi-item>
 
-                    </dxi-item>
-
-                    <dxi-item [colSpan]="1" [isRequired]="false">
-                        <dx-select-box formControlName="itemCode" width="100%" [items]="itemCodeList"
-                            [(value)]="pmDetails.itemCode" [searchEnabled]="true" [stylingMode]="StylingMode"
-                            [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.itemCode_num"
-                            displayExpr="itemcode" valueExpr="itemcode" #itemCodeVar
-                            (onFocusIn)="openItemCodeCodeBox()"></dx-select-box>
-
-                    </dxi-item>
-                </dxi-item>
-            </dxi-item>
-            <dxi-item itemType="group" [colCount]="2">
-                <!-- <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dxi-item [colSpan]="1" [isRequired]="false">
+            <dx-select-box
+              formControlName="itemCode"
+              width="100%"
+              [items]="itemCodeList"
+              [(value)]="pmDetails.itemCode"
+              [searchEnabled]="true"
+              [stylingMode]="StylingMode"
+              [labelMode]="LabelMode"
+              placeholder="Search"
+              [ngAddLabel]="labelMap.itemCode_num"
+              displayExpr="itemcode"
+              valueExpr="itemcode"
+              #itemCodeVar
+              (onFocusIn)="openItemCodeCodeBox()"
+            ></dx-select-box>
+          </dxi-item>
+        </dxi-item>
+      </dxi-item>
+      <dxi-item itemType="group" [colCount]="2">
+        <!-- <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
                     <dx-text-box [value]="pmDetails.itemType" [stylingMode]="'outlined'" [labelMode]="'floating'"
                         [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.mfr_num" #mfrVar>
                     </dx-text-box>
                 </dxi-item> -->
 
-                <!-- <dxi-item dataField="description" [colCount]="1" editorType="dxTextArea"
+        <!-- <dxi-item dataField="description" [colCount]="1" editorType="dxTextArea"
                     [label]="{text: 'Description (Max 150 characters)'}">
 
                 </dxi-item> -->
-                <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                    <dx-text-box [(value)]="pmDetails.description" [stylingMode]="StylingMode" [labelMode]="LabelMode"
-                      style="height: 60px;" [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.description_num" #markupVar>
-                    </dx-text-box>
-                </dxi-item>
-                <dxi-item itemType="group" [colCount]="3">
-                    <dxi-item [colSpan]="1" [isRequired]="false">
-                        <dx-number-box [(value)]="pmDetails.cost" placeholder="cost" [stylingMode]="StylingMode"
-                            [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
-                            [ngAddLabel]="labelMap.cost_num" #costVar>
-                        </dx-number-box>
-                    </dxi-item>
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box
+            [(value)]="pmDetails.description"
+            [stylingMode]="StylingMode"
+            [labelMode]="LabelMode"
+            style="height: 60px"
+            [elementAttr]="{ class: 'myclass' }"
+            [ngAddLabel]="labelMap.description_num"
+            #markupVar
+          >
+          </dx-text-box>
+        </dxi-item>
+        <dxi-item itemType="group" [colCount]="3">
+          <dxi-item [colSpan]="1" [isRequired]="false">
+            <dx-number-box
+              [(value)]="pmDetails.cost"
+              placeholder="cost"
+              [stylingMode]="StylingMode"
+              [labelMode]="LabelMode"
+              [elementAttr]="{ class: 'myclass' }"
+              [ngAddLabel]="labelMap.cost_num"
+              #costVar
+            >
+            </dx-number-box>
+          </dxi-item>
 
-                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                        <dx-number-box [(value)]="pmDetails.markup" [stylingMode]="StylingMode" [labelMode]="LabelMode"
-                            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.markup_num" #markupVar>
-                        </dx-number-box>
-                    </dxi-item>
+          <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+            <dx-number-box
+              [(value)]="pmDetails.markup"
+              [stylingMode]="StylingMode"
+              [labelMode]="LabelMode"
+              [elementAttr]="{ class: 'myclass' }"
+              [ngAddLabel]="labelMap.markup_num"
+              #markupVar
+            >
+            </dx-number-box>
+          </dxi-item>
 
-                    <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                        <dx-number-box [(value)]="pmDetails.price" [stylingMode]="StylingMode" [labelMode]="LabelMode"
-                            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.price_num" #price_num>
-                        </dx-number-box>
-                    </dxi-item>
+          <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+            <dx-number-box
+              [(value)]="pmDetails.price"
+              [stylingMode]="StylingMode"
+              [labelMode]="LabelMode"
+              [elementAttr]="{ class: 'myclass' }"
+              [ngAddLabel]="labelMap.price_num"
+              #price_num
+            >
+            </dx-number-box>
+          </dxi-item>
 
-                    <!-- <dxi-item dataField="cost" format="currency">
+          <!-- <dxi-item dataField="cost" format="currency">
                         <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
                     </dxi-item> -->
-                    <!-- <dxi-item dataField="markup"></dxi-item>
+          <!-- <dxi-item dataField="markup"></dxi-item>
                     <dxi-item dataField="price" format="currency">
                         <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
                     </dxi-item> -->
-                </dxi-item>
-            </dxi-item>
-            <dxi-item itemType="group" [colCount]="2">
-                <dxi-item itemType="group" [colCount]="2">
-                    <dxi-item [colSpan]="1" [isRequired]="true">
-                        <dx-select-box formControlName="warehouse*" width="100%" [items]="warehouseNames"
-                        [(value)]="pmDetails.warehouse" [searchEnabled]="true" [stylingMode]="StylingMode"
-                        [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.warehouse_num"
-                        (onValueChanged)="updateWarehouseSelection($event)" #warehouseVar
-                        (onFocusIn)="openWarehouseCodeBox()"></dx-select-box>
-                        <dxi-validation-rule type="required" message="Warehouse is required">
-                        </dxi-validation-rule>
-                    </dxi-item>
+        </dxi-item>
+      </dxi-item>
+      <dxi-item itemType="group" [colCount]="2">
+        <dxi-item itemType="group" [colCount]="2">
+          <dxi-item [colSpan]="1" [isRequired]="true">
+            <dx-select-box
+              formControlName="warehouse*"
+              width="100%"
+              [items]="warehouseNames"
+              [(value)]="pmDetails.warehouse"
+              [searchEnabled]="true"
+              [stylingMode]="StylingMode"
+              [labelMode]="LabelMode"
+              placeholder="Search"
+              [ngAddLabel]="labelMap.warehouse_num"
+              (onValueChanged)="updateWarehouseSelection($event)"
+              #warehouseVar
+              (onFocusIn)="openWarehouseCodeBox()"
+            ></dx-select-box>
+            <dxi-validation-rule
+              type="required"
+              message="Warehouse is required"
+            >
+            </dxi-validation-rule>
+          </dxi-item>
 
-                    <dxi-item [colSpan]="1" [isRequired]="true">
-                        <dx-select-box formControlName="location" width="100%" [items]="validLocationNames"
-                            [(value)]="pmDetails.location" [searchEnabled]="true" [stylingMode]="StylingMode"
-                            [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.location_num"
-                            #locationVar (onFocusIn)="openLocationCodeBox()"></dx-select-box>
-                        <dxi-validation-rule type="required" message="Location is required">
-                        </dxi-validation-rule>
-                    </dxi-item>
+          <dxi-item [colSpan]="1" [isRequired]="true">
+            <dx-select-box
+              formControlName="location"
+              width="100%"
+              [items]="validLocationNames"
+              [(value)]="pmDetails.location"
+              [searchEnabled]="true"
+              [stylingMode]="StylingMode"
+              [labelMode]="LabelMode"
+              placeholder="Search"
+              [ngAddLabel]="labelMap.location_num"
+              #locationVar
+              (onFocusIn)="openLocationCodeBox()"
+            ></dx-select-box>
+            <dxi-validation-rule type="required" message="Location is required">
+            </dxi-validation-rule>
+          </dxi-item>
 
-
-                    <!-- <dxi-item dataField="warehouse" editorType="dxLookup" [colSpan]="1"
+          <!-- <dxi-item dataField="warehouse" editorType="dxLookup" [colSpan]="1"
                         [editorOptions]="{ label:'Warehouse',items: warehouseNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains',onValueChanged:updateWarehouseSelection  }">
                         <dxi-validation-rule type="required" message="Warehouse is required"></dxi-validation-rule>
                     </dxi-item> -->
-                    <!-- <dxi-item dataField="location" editorType="dxLookup" [colSpan]="1"
+          <!-- <dxi-item dataField="location" editorType="dxLookup" [colSpan]="1"
                         [editorOptions]="{ label:'Location',items: validLocationNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains' }">
                         <dxi-validation-rule type="required" message="Location is required"></dxi-validation-rule>
                     </dxi-item> -->
-
-                </dxi-item>
-                <dxi-item itemType="group" [colCount]="3">
-                    <!-- <dxi-item [colCount]="1" editorType="dxRadioGroup" [label]="{text: ' '}" dataField="invType"
+        </dxi-item>
+        <dxi-item itemType="group" [colCount]="3">
+          <!-- <dxi-item [colCount]="1" editorType="dxRadioGroup" [label]="{text: ' '}" dataField="invType"
                         [isRequired]="true" [editorOptions]=" {items: invTypes,   layout: 'horizontal' }"
                         style="align-items:center;background-color: #F4F5F6;"> -->
 
-                        <dxi-item [colSpan]="1" [isRequired]="true">
-                            <div class="custom-field">
-                                <h1>
-                                    <span>
-                                        Inventory type
-                                    </span>
-                                </h1>
-                                <dx-radio-group [(value)]="pmDetails.invType" [items]="invTypes" layout="horizontal"></dx-radio-group>
-                            </div>
-    
-                        <dxi-validation-rule type="required" message="Inv Type is required"></dxi-validation-rule>
-                    </dxi-item>
-                    <dxi-item itemType="group" [colCount]="3" [colSpan]="2" class="checkClass"
-                        style="align-items:center;background-color: #F4F5F6;">
-                        <dxi-item editorType="dxCheckBox" dataField="obsolete" [label]="{text: ' '}"
-                            [editorOptions]="{text: 'Obsolete'}">
-                        </dxi-item>
-                        <dxi-item editorType="dxCheckBox" dataField="userBit" [label]="{text: ' '}"
-                            [editorOptions]="{ text: 'TAA'}">
-                        </dxi-item>
-                        <dxi-item itemType="simple" editorType="dxCheckBox" dataField="userBit2" [label]="{text: ' '}"
-                            [editorOptions]="{ text: 'Create PO'}">
-                        </dxi-item>
-                    </dxi-item>
-                </dxi-item>
+          <dxi-item [colSpan]="1" [isRequired]="true">
+            <div class="custom-field">
+              <h1>
+                <span> Inventory type </span>
+              </h1>
+              <dx-radio-group
+                [(value)]="pmDetails.invType"
+                [items]="invTypes"
+                layout="horizontal"
+              ></dx-radio-group>
+            </div>
+
+            <dxi-validation-rule
+              type="required"
+              message="Inv Type is required"
+            ></dxi-validation-rule>
+          </dxi-item>
+          <dxi-item
+            itemType="group"
+            [colCount]="3"
+            [colSpan]="2"
+            class="checkClass"
+            style="align-items: center; background-color: #f4f5f6"
+          >
+            <dxi-item
+              editorType="dxCheckBox"
+              dataField="obsolete"
+              [label]="{ text: ' ' }"
+              [editorOptions]="{ text: 'Obsolete' }"
+            >
             </dxi-item>
-            <dxi-item itemType="group" [colCount]="2" [visible]="false">
-                <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonOptions"
-                    id="pmDetailsSubmit">
-                </dxi-item>
+            <dxi-item
+              editorType="dxCheckBox"
+              dataField="userBit"
+              [label]="{ text: ' ' }"
+              [editorOptions]="{ text: 'TAA' }"
+            >
             </dxi-item>
-            <dxi-item itemType="group" [colCount]="2" [visible]="false">
-                <dxi-item itemType="button" horizontalAlignment="left" [buttonOptions]="buttonOptions"
-                    id="pmDetailsSubmit">
-                </dxi-item>
+            <dxi-item
+              itemType="simple"
+              editorType="dxCheckBox"
+              dataField="userBit2"
+              [label]="{ text: ' ' }"
+              [editorOptions]="{ text: 'Create PO' }"
+            >
             </dxi-item>
-        </dx-form>
-    </div>
+          </dxi-item>
+        </dxi-item>
+      </dxi-item>
+      <dxi-item itemType="group" [colCount]="2" [visible]="false">
+        <dxi-item
+          itemType="button"
+          horizontalAlignment="left"
+          [buttonOptions]="buttonOptions"
+          id="pmDetailsSubmit"
+        >
+        </dxi-item>
+      </dxi-item>
+      <dxi-item itemType="group" [colCount]="2" [visible]="false">
+        <dxi-item
+          itemType="button"
+          horizontalAlignment="left"
+          [buttonOptions]="buttonOptions"
+          id="pmDetailsSubmit"
+        >
+        </dxi-item>
+      </dxi-item>
+    </dx-form>
+  </div>
 </div>
 
-<div class="details-container content-block dx-card responsive-paddings"  style="height: calc(100vh - 449px);">
-    <ng-container [ngSwitch]="selectedChild">
-        <ng-container *ngSwitchCase="childType.BOM">
-            <dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="itemNumber" height="92%"
-                [focusedRowEnabled]="true" [allowColumnResizing]="true" [allowColumnReordering]="true"
-                [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true"
-                (onKeyDown)="onKeyDown($event)" (onEditingStart)="logEvent('EditingStart')"
-                (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
-                (onRowInserted)="rowInserted($event)" (onRowUpdating)="rowUpdated($event)"
-                (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')"
-                (onRowRemoved)="rowRemoved($event)" (onSaving)="onSaving($event)" (onSaved)="logEvent('Saved')"
-                (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')"
-                (onSelectionChanged)="selectedChanged($event)"
-                (onEditorPreparing)="onEditorPreparing($event)"
-                (onFocusedRowChanged)="test($event)"
-                (onInitialized)="onInitialized($event)"
-                (OnToolbarPreparing)="onToolbarPreparing($event)"
-                >
+<div
+  class="details-container content-block dx-card responsive-paddings"
+  style="height: calc(100vh - 449px)"
+>
+  <ng-container [ngSwitch]="selectedChild">
+    <ng-container *ngSwitchCase="childType.BOM">
+      <dx-data-grid id="gridContainer"
+                    [dataSource]="bomDetails"
+                    keyExpr="itemNumber"
+                    height="92%"
+                    [focusedRowEnabled]="true"
+                    [allowColumnResizing]="true"
+                    [allowColumnReordering]="true"
+                    [columnAutoWidth]="true"
+                    [rowAlternationEnabled]="true"
+                    [showBorders]="true"
+                    [showColumnLines]="true"
+                    [showRowLines]="true"
+                    (onKeyDown)="onKeyDown($event)"
+                    (onEditingStart)="logEvent('EditingStart')"
+                    (onInitNewRow)="logEvent('InitNewRow')"
+                    (onRowInserting)="logEvent('RowInserting')"
+                    (onRowInserted)="rowInserted($event)"
+                    (onRowUpdating)="rowUpdated($event)"
+                    (onRowUpdated)="logEvent('RowUpdated')"
+                    (onRowRemoving)="logEvent('RowRemoving')"
+                    (onRowRemoved)="rowRemoved($event)"
+                    (onSaving)="onSaving($event)"
+                    (onSaved)="logEvent('Saved')"
+                    (onEditCanceling)="logEvent('EditCanceling')"
+                    (onEditCanceled)="logEvent('EditCanceled')"
+                    (onSelectionChanged)="selectedChanged($event)"
+                    (onEditorPreparing)="onEditorPreparing($event)"
+                    (onFocusedRowChanged)="test($event)"
+                    (onInitialized)="onInitialized($event)"
+                    (OnToolbarPreparing)="onToolbarPreparing($event)">
+        <dxo-row-dragging [allowReordering]="true"
+                          [onReorder]="onReorder"
+                          [showDragIcons]="!this.readOnly">
+        </dxo-row-dragging>
 
-                <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder"   [showDragIcons]="!this.readOnly" >
-                </dxo-row-dragging>
+        <dxo-toolbar>
+          <dxi-item height="0" [visible]="false"></dxi-item>
+        </dxo-toolbar>
 
-                <dxo-toolbar >
-                    <dxi-item height="0" [visible]="false"></dxi-item>
-                </dxo-toolbar>
+        <dxo-scrolling mode="infinite"></dxo-scrolling>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-editing mode="batch"
+                     [allowUpdating]="!this.readOnly"
+                     [allowDeleting]="!this.readOnly"
+                     [allowAdding]="!this.readOnly"
+                     newRowPosition="last">
+        </dxo-editing>
 
-                <dxo-scrolling mode="infinite"></dxo-scrolling>
-                <dxo-selection mode="single"></dxo-selection>
-                <dxo-editing mode="batch" [allowUpdating]="!this.readOnly" [allowDeleting]="!this.readOnly"
-                    [allowAdding]="!this.readOnly" newRowPosition="last">
-                </dxo-editing>
+        <dxi-column dataField="lineNum"
+                    dataType="number"
+                    [allowEditing]="false"
+                    width="5%"
+                    alignment="center"></dxi-column>
+        <dxi-column dataField="itemtype"
+                    caption="MFR."
+                    [allowEditing]="false"
+                    width="10.433%"></dxi-column>
+        <dxi-column dataField="itemNumber"
+                    caption="Part Number"
+                    [allowEditing]="true"
+                    [width]="135">
+          <dxi-validation-rule type="required"></dxi-validation-rule>
+        </dxi-column>
 
-                <dxi-column dataField="lineNum" dataType="number" [allowEditing]="false" width="8%" alignment="center" ></dxi-column>
-                <dxi-column dataField="itemtype" caption="MFR." [allowEditing]="false" width="10%"></dxi-column>
-                <dxi-column dataField="itemNumber" caption="Part Number" [allowEditing]="true" [width]="200">
-                <dxi-validation-rule type="required"></dxi-validation-rule>
-                </dxi-column>
+        <dxi-column dataField="description"
+                    [allowEditing]="false"
+                    width="21.48%"></dxi-column>
+        <dxi-column dataField="quantity"
+                    [allowEditing]="true"
+                     width="7.496%" 
+                 alignment="left" >
+           <dxi-validation-rule type="required"></dxi-validation-rule>
+        </dxi-column>
+        <dxi-column dataField="uomref"
+                    caption="UOM"
+                    [allowEditing]="false"
+                    width="6.878%"></dxi-column>
+        <dxi-column dataField="ref"
+                    [allowEditing]="true"
+                    width="8.964%"></dxi-column>
+        <dxi-column dataField="cost"
+                    dataType="number"
+                    format="currency"
+                    [allowEditing]="false"
+                    width="7.883%"
+                    alignment="left">
+          <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
+        <dxi-column dataField="extCost"
+                    dataType="number"
+                    format="currency"
+                    [allowEditing]="false"
+                    width="11.36%"
+                    alignment="left">
+          <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
 
-                <dxi-column dataField="description" [allowEditing]="false" width="10%"></dxi-column>
-                <dxi-column dataField="quantity" [allowEditing]="true" width="10%">
-                    <dxi-validation-rule type="required"></dxi-validation-rule>
-                </dxi-column>
-                <dxi-column dataField="uomref" caption="UOM" [allowEditing]="false" width="10%"></dxi-column>
-                <dxi-column dataField="ref" [allowEditing]="true" width="10%"></dxi-column>
-                <dxi-column dataField="cost" dataType="number" format="currency" [allowEditing]="false" width="10%">
-                    <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
-                </dxi-column>
-                <dxi-column dataField="extCost" dataType="number" format="currency" [allowEditing]="false"
-                width="10%">
-                    <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
-                </dxi-column>
 
-                <dxo-summary [recalculateWhileEditing]="true">
-                    <!-- <dxi-total-item column="lineNum" summaryType="count"> </dxi-total-item>
-                    <dxi-total-item column="cost" summaryType="sum" valueFormat="currency">
-                        <dxo-format type="fixedPoint" [precision]="2">
-                        </dxo-format>
-                    </dxi-total-item> -->
-                    <dxi-total-item column="extCost" summaryType="sum" valueFormat="currency">
-                        <dxo-format type="fixedPoint" [precision]="2">
-                        </dxo-format>
-                    </dxi-total-item>                    
-                </dxo-summary>
-            </dx-data-grid>
+        <dxi-column dataField="id"
+                    [allowEditing]="true"
+                    width="130" ></dxi-column>
 
-          
-            <dx-button stylingMode="contained" text="Add Line" style="margin: 5px;" type="default" (onClick)="AddBomLines()"
-                [visible]="!this.readOnly">
-             </dx-button> 
-        </ng-container>
-        <ng-container *ngSwitchCase="childType.PO">
-            <!-- <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="52vh"
+        <dxi-column dataField="itemsid_Child"
+                    [allowEditing]="true" [visible]="false"
+                     width="0" ></dxi-column>
+
+
+        <dxo-summary [recalculateWhileEditing]="true">
+          <!-- <dxi-total-item column="lineNum" summaryType="count"> </dxi-total-item>
+        <dxi-total-item column="cost" summaryType="sum" valueFormat="currency">
+            <dxo-format type="fixedPoint" [precision]="2">
+            </dxo-format>
+        </dxi-total-item> -->
+          <dxi-total-item column="extCost"
+                          summaryType="sum"
+                          valueFormat="currency">
+            <dxo-format type="fixedPoint" [precision]="2"> </dxo-format>
+          </dxi-total-item>
+        </dxo-summary>
+      </dx-data-grid>
+
+      <dx-button
+        stylingMode="contained"
+        text="Add Line"
+        style="margin: 5px"
+        type="default"
+        (onClick)="AddBomLines()"
+        [visible]="!this.readOnly"
+      >
+      </dx-button>
+    </ng-container>
+    <ng-container *ngSwitchCase="childType.PO">
+      <!-- <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="52vh"
                 [focusedRowEnabled]="true" [allowColumnResizing]="true" [rowAlternationEnabled]="true"
                 [columns]="['linenum','pomain', 'supplier', 'quantity', 'received', 'somain']">
                 <dxo-load-panel [enabled]="false"></dxo-load-panel>
                 <dxo-scrolling mode="infinite"></dxo-scrolling>
                 <dxo-selection mode="single"></dxo-selection>
             </dx-data-grid> -->
-            <dx-data-grid id="gridContainer" [dataSource]="poDetails" keyExpr="id" height="52vh"
-                [focusedRowEnabled]="true" [allowColumnResizing]="true" [allowColumnReordering]="true"
-                [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true"
-                (onKeyDown)="onKeyDown($event)" (onEditingStart)="logEvent('EditingStart')"
-                (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
-                (onRowInserted)="rowInserted($event)" (onRowUpdating)="rowUpdated($event)"
-                (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')"
-                (onRowRemoved)="rowRemoved($event)" (onSaving)="onSaving($event)" (onSaved)="logEvent('Saved')"
-                (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')"
-                (onSelectionChanged)="selectedChanged($event)">
-                <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true">
-                </dxo-row-dragging>
-                <dxo-scrolling mode="infinite"></dxo-scrolling>
-                <dxo-selection mode="single"></dxo-selection>
-                <dxo-editing mode="row" [allowUpdating]="!this.readOnly" [allowDeleting]="!this.readOnly"
-                    [allowAdding]="!this.readOnly" newRowPosition="last">
-                </dxo-editing>
+      <dx-data-grid
+        id="gridContainer"
+        [dataSource]="poDetails"
+        keyExpr="id"
+        height="52vh"
+        [focusedRowEnabled]="true"
+        [allowColumnResizing]="true"
+        [allowColumnReordering]="true"
+        [columnAutoWidth]="true"
+        [rowAlternationEnabled]="true"
+        [showBorders]="true"
+        (onKeyDown)="onKeyDown($event)"
+        (onEditingStart)="logEvent('EditingStart')"
+        (onInitNewRow)="logEvent('InitNewRow')"
+        (onRowInserting)="logEvent('RowInserting')"
+        (onRowInserted)="rowInserted($event)"
+        (onRowUpdating)="rowUpdated($event)"
+        (onRowUpdated)="logEvent('RowUpdated')"
+        (onRowRemoving)="logEvent('RowRemoving')"
+        (onRowRemoved)="rowRemoved($event)"
+        (onSaving)="onSaving($event)"
+        (onSaved)="logEvent('Saved')"
+        (onEditCanceling)="logEvent('EditCanceling')"
+        (onEditCanceled)="logEvent('EditCanceled')"
+        (onSelectionChanged)="selectedChanged($event)"
+      >
+        <dxo-row-dragging
+          [allowReordering]="true"
+          [onReorder]="onReorder"
+          [showDragIcons]="true"
+        >
+        </dxo-row-dragging>
+        <dxo-scrolling mode="infinite"></dxo-scrolling>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-editing
+          mode="row"
+          [allowUpdating]="!this.readOnly"
+          [allowDeleting]="!this.readOnly"
+          [allowAdding]="!this.readOnly"
+          newRowPosition="last"
+        >
+        </dxo-editing>
 
-                <dxi-column dataField="linenum" [width]="80"></dxi-column>
-                <dxi-column dataField="pomain" [width]="200"></dxi-column>
-                <dxi-column dataField="supplier"></dxi-column>
-                <dxi-column dataField="quantity" [width]="200"></dxi-column>
-                <dxi-column dataField="received"></dxi-column>
-                <dxi-column dataField="somain" [width]="200"></dxi-column>
-
-            </dx-data-grid>
-
-        </ng-container>
-        <ng-container *ngSwitchCase="childType.Notes">
-            <dx-data-grid id="gridContainer" [dataSource]="poNotes" keyExpr="id" height="52vh"
-                [focusedRowEnabled]="true" [allowColumnResizing]="true" [allowColumnReordering]="true"
-                [columnAutoWidth]="true" [rowAlternationEnabled]="true" [showBorders]="true"
-                (onKeyDown)="onKeyDown($event)" (onEditingStart)="logEvent('EditingStart')"
-                (onInitNewRow)="logEvent('InitNewRow')" (onRowInserting)="logEvent('RowInserting')"
-                (onRowInserted)="rowInserted($event)" (onRowUpdating)="rowUpdated($event)"
-                (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')"
-                (onRowRemoved)="rowRemoved($event)" (onSaving)="onSaving($event)" (onSaved)="logEvent('Saved')"
-                (onEditCanceling)="logEvent('EditCanceling')" (onEditCanceled)="logEvent('EditCanceled')"
-                (onSelectionChanged)="selectedChanged($event)">
-                <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="true">
-                </dxo-row-dragging>
-                <dxo-scrolling mode="infinite"></dxo-scrolling>
-                <dxo-selection mode="single"></dxo-selection>
-                <dxo-editing mode="row" [allowDeleting]="!this.readOnly"
-                    [allowAdding]="!this.readOnly" newRowPosition="last">
-                </dxo-editing>
-
-                <dxi-column dataField="lineNum" [width]="80"></dxi-column>
-                <dxi-column dataField="notesRef" [width]="200"></dxi-column>
-                <dxi-column dataField="notes"></dxi-column>
-
-            </dx-data-grid>
-        </ng-container>
+        <dxi-column dataField="linenum" [width]="80"></dxi-column>
+        <dxi-column dataField="pomain" [width]="200"></dxi-column>
+        <dxi-column dataField="supplier"></dxi-column>
+        <dxi-column dataField="quantity" [width]="200"></dxi-column>
+        <dxi-column dataField="received"></dxi-column>
+        <dxi-column dataField="somain" [width]="200"></dxi-column>
+      </dx-data-grid>
     </ng-container>
-    <div>
-        <dx-popup [width]="800" [height]="800" [showTitle]="true" title="search partnumber" [dragEnabled]="false"
-            [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
-            [(visible)]="popupF2Visible">
-            <br />
+    <ng-container *ngSwitchCase="childType.Notes">
+      <dx-data-grid
+        id="gridContainer"
+        [dataSource]="poNotes"
+        keyExpr="id"
+        height="52vh"
+        [focusedRowEnabled]="true"
+        [allowColumnResizing]="true"
+        [allowColumnReordering]="true"
+        [columnAutoWidth]="true"
+        [rowAlternationEnabled]="true"
+        [showBorders]="true"
+        (onKeyDown)="onKeyDown($event)"
+        (onEditingStart)="logEvent('EditingStart')"
+        (onInitNewRow)="logEvent('InitNewRow')"
+        (onRowInserting)="logEvent('RowInserting')"
+        (onRowInserted)="rowInserted($event)"
+        (onRowUpdating)="rowUpdated($event)"
+        (onRowUpdated)="logEvent('RowUpdated')"
+        (onRowRemoving)="logEvent('RowRemoving')"
+        (onRowRemoved)="rowRemoved($event)"
+        (onSaving)="onSaving($event)"
+        (onSaved)="logEvent('Saved')"
+        (onEditCanceling)="logEvent('EditCanceling')"
+        (onEditCanceled)="logEvent('EditCanceled')"
+        (onSelectionChanged)="selectedChanged($event)"
+      >
+        <dxo-row-dragging
+          [allowReordering]="true"
+          [onReorder]="onReorder"
+          [showDragIcons]="true"
+        >
+        </dxo-row-dragging>
+        <dxo-scrolling mode="infinite"></dxo-scrolling>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-editing
+          mode="row"
+          [allowDeleting]="!this.readOnly"
+          [allowAdding]="!this.readOnly"
+          newRowPosition="last"
+        >
+        </dxo-editing>
 
-            <app-pmsearch [componentType]="componentTypeF2"></app-pmsearch>
-            <dxo-position at="center" my="center"> </dxo-position>
-        </dx-popup>
-    </div>
-    <div>
-        <dx-popup [width]="400" [height]="150" [showTitle]="true" title="Do you like to copy BOM as well?"
-            [dragEnabled]="false" [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
-            [(visible)]="popupCopyBomVisible">
-            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" [options]="yesButtonOptions">
-            </dxi-toolbar-item>
-            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" [options]="noButtonOptions">
-            </dxi-toolbar-item>
-            <dxo-position at="center" my="center"> </dxo-position>
+        <dxi-column dataField="lineNum" [width]="80"></dxi-column>
+        <dxi-column dataField="notesRef" [width]="200"></dxi-column>
+        <dxi-column dataField="notes"></dxi-column>
+      </dx-data-grid>
+    </ng-container>
+  </ng-container>
+  <div>
+    <dx-popup
+      [width]="800"
+      [height]="800"
+      [showTitle]="true"
+      title="search partnumber"
+      [dragEnabled]="false"
+      [closeOnOutsideClick]="false"
+      [showCloseButton]="true"
+      container=".dx-viewport"
+      [(visible)]="popupF2Visible"
+    >
+      <br />
 
-        </dx-popup>
-        <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
-    </div>
-    <div>
-        <dx-popup [width]="400" [height]="150" [showTitle]="true" title="Are you sure want to delete?"
-            [dragEnabled]="false" [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
-            [(visible)]="popupDeleteVisible">
-            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" [options]="yesDeleteButtonOptions">
-            </dxi-toolbar-item>
-            <dxi-toolbar-item widget="dxButton" toolbar="bottom" location="center" [options]="noDeleteButtonOptions">
-            </dxi-toolbar-item>
-            <dxo-position at="center" my="center"> </dxo-position>
+      <app-pmsearch [componentType]="componentTypeF2"></app-pmsearch>
+      <dxo-position at="center" my="center"> </dxo-position>
+    </dx-popup>
+  </div>
+  <div>
+    <dx-popup
+      [width]="400"
+      [height]="150"
+      [showTitle]="true"
+      title="Do you like to copy BOM as well?"
+      [dragEnabled]="false"
+      [closeOnOutsideClick]="false"
+      [showCloseButton]="true"
+      container=".dx-viewport"
+      [(visible)]="popupCopyBomVisible"
+    >
+      <dxi-toolbar-item
+        widget="dxButton"
+        toolbar="bottom"
+        location="center"
+        [options]="yesButtonOptions"
+      >
+      </dxi-toolbar-item>
+      <dxi-toolbar-item
+        widget="dxButton"
+        toolbar="bottom"
+        location="center"
+        [options]="noButtonOptions"
+      >
+      </dxi-toolbar-item>
+      <dxo-position at="center" my="center"> </dxo-position>
+    </dx-popup>
+    <dx-toast
+      [(visible)]="toastVisible"
+      [(type)]="toastType"
+      [(message)]="toastMessage"
+    ></dx-toast>
+  </div>
+  <div>
+    <dx-popup
+      [width]="400"
+      [height]="150"
+      [showTitle]="true"
+      title="Are you sure want to delete?"
+      [dragEnabled]="false"
+      [closeOnOutsideClick]="false"
+      [showCloseButton]="true"
+      container=".dx-viewport"
+      [(visible)]="popupDeleteVisible"
+    >
+      <dxi-toolbar-item
+        widget="dxButton"
+        toolbar="bottom"
+        location="center"
+        [options]="yesDeleteButtonOptions"
+      >
+      </dxi-toolbar-item>
+      <dxi-toolbar-item
+        widget="dxButton"
+        toolbar="bottom"
+        location="center"
+        [options]="noDeleteButtonOptions"
+      >
+      </dxi-toolbar-item>
+      <dxo-position at="center" my="center"> </dxo-position>
+    </dx-popup>
+    <dx-toast
+      [(visible)]="toastVisible"
+      [(type)]="toastType"
+      [(message)]="toastMessage"
+    ></dx-toast>
+  </div>
+  <div>
+    <dx-popup
+      [width]="1200"
+      [height]="800"
+      [showTitle]="true"
+      title="View Location"
+      [dragEnabled]="false"
+      [closeOnOutsideClick]="false"
+      [showCloseButton]="true"
+      container=".dx-viewport"
+      [(visible)]="popupVLVisible"
+    >
+      <br />
 
-        </dx-popup>
-        <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
-    </div>
-    <div>
-        <dx-popup [width]="1200" [height]="800" [showTitle]="true" title="View Location" [dragEnabled]="false"
-            [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
-            [(visible)]="popupVLVisible">
+      <dx-data-grid
+        id="gridContainer"
+        [dataSource]="pmWHLocations"
+        keyExpr="location"
+        height="650"
+        [allowColumnReordering]="true"
+        [focusedRowEnabled]="true"
+        [allowColumnResizing]="true"
+        [rowAlternationEnabled]="true"
+        (onExporting)="onExporting($event)"
+        [showBorders]="true"
+      >
+        <dxo-load-panel [enabled]="false"></dxo-load-panel>
+        <dxo-scrolling mode="infinite"></dxo-scrolling>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-filter-row [visible]="true" [applyFilter]="true"></dxo-filter-row>
+        <dxo-header-filter [visible]="true"></dxo-header-filter>
+        <dxo-search-panel
+          [visible]="true"
+          [width]="240"
+          placeholder="Search..."
+        ></dxo-search-panel>
+        <dxi-column dataField="warehouse"></dxi-column>
+        <dxi-column dataField="location"></dxi-column>
+        <dxi-column dataField="somain" caption="Equip Request"></dxi-column>
+        <dxi-column dataField="name" caption="Project Name"></dxi-column>
+        <dxi-column dataField="quantity"></dxi-column>
+        <dxo-summary>
+          <dxi-total-item column="location" summaryType="count">
+          </dxi-total-item>
+        </dxo-summary>
+      </dx-data-grid>
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-position at="center" my="center"> </dxo-position>
+    </dx-popup>
+  </div>
+  <div>
+    <dx-popup
+      [width]="1200"
+      [height]="800"
+      [showTitle]="true"
+      title="View Serial"
+      [dragEnabled]="false"
+      [closeOnOutsideClick]="false"
+      [showCloseButton]="true"
+      container=".dx-viewport"
+      [(visible)]="popupVSVisible"
+    >
+      <br />
+      <dx-data-grid
+        id="gridContainer"
+        [dataSource]="pmSerials"
+        keyExpr="serlot"
+        height="650"
+        [showBorders]="true"
+        [showColumnLines]="true"
+        [allowColumnResizing]="true"
+        [allowColumnReordering]="true"
+        [columnAutoWidth]="true"
+        [showRowLines]="true"
+        [focusedRowEnabled]="true"
+        (onRowClick)="onRowSelection($event)"
+        (dblclick)="edit()"
+      >
+        <dxo-load-panel [enabled]="false"></dxo-load-panel>
+        <dxo-scrolling mode="infinite"></dxo-scrolling>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-filter-row [visible]="true" [applyFilter]="true"></dxo-filter-row>
+        <dxo-header-filter [visible]="true"></dxo-header-filter>
+        <dxo-search-panel
+          [visible]="true"
+          [width]="240"
+          placeholder="Search..."
+        ></dxo-search-panel>
+        <dxi-column dataField="warehouse"></dxi-column>
+        <dxi-column dataField="location"></dxi-column>
+        <dxi-column dataField="cost" alignment="left"></dxi-column>
+        <dxi-column dataField="serlot"></dxi-column>
+        <dxi-column dataField="tagcol" caption="Tag No."></dxi-column>
+        <dxi-column dataField="color_model" caption="Model"></dxi-column>
+        <dxi-column dataField="expdate" caption="Exp Date"></dxi-column>
+        <dxi-column dataField="actualSo" caption="Original ER"></dxi-column>
+        <dxi-column dataField="currentSo" caption="Current ER"></dxi-column>
+        <dxo-summary>
+          <dxi-total-item column="serlot" summaryType="count"> </dxi-total-item>
+        </dxo-summary>
+      </dx-data-grid>
+      <dxo-export
+        [enabled]="true"
+        [allowExportSelectedData]="true"
+      ></dxo-export>
+      <dxo-position at="center" my="center"> </dxo-position>
+      <br />
+      <br />
+      <div class="row" style="justify-content: center">
+        <dx-button
+          stylingMode="contained"
+          text="edit"
+          width="150"
+          type="default"
+          (onClick)="edit()"
+        >
+        </dx-button>
+      </div>
+    </dx-popup>
+    <dx-popup
+      [width]="500"
+      [height]="500"
+      [showTitle]="true"
+      title="Update Serial"
+      [dragEnabled]="false"
+      [showCloseButton]="true"
+      container=".dx-viewport"
+      [(visible)]="updateSerialPopupVisible"
+    >
+      <form (submit)="saveSerial($event)">
+        <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="2" labelMode="floating">
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.serNoFm" [stylingMode]="StylingMode"
+                    [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                    [label]="'From Ser No'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.serNoTo" [stylingMode]="StylingMode"
+                    [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Ser No'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.tagNoFm" [stylingMode]="StylingMode"
+                    [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                    [label]="'From Tag No'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.tagNoTo" [stylingMode]="StylingMode"
+                    [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Tag No'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.modelFm" [stylingMode]="StylingMode"
+                    [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                    [label]="'From Model'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.modelTo" [stylingMode]="StylingMode"
+                    [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Model'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.costFm" [stylingMode]="StylingMode"
+                    [readOnly]="true" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+                    [label]="'From Cost'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [(value)]="changeSerialSearchInfo.costTo" [stylingMode]="StylingMode"
+                    [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }" [label]="'To Cost'">
+                </dx-text-box>
+            </dxi-item>
+            <dxi-item [colSpan]="2" *ngDisplayLabel="100" [isRequired]="false">
+                <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" style="height: 60px;"
+                    [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.notes_num">
+                </dx-text-box>
+            </dxi-item>
 
-            <br />
-
-            <dx-data-grid id="gridContainer" [dataSource]="pmWHLocations" keyExpr="location" height="650"
-                [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
-                [rowAlternationEnabled]="true" (onExporting)="onExporting($event)" [showBorders]="true">
-                <dxo-load-panel [enabled]="false"></dxo-load-panel>
-                <dxo-scrolling mode="infinite"></dxo-scrolling>
-                <dxo-sorting mode="multiple"></dxo-sorting>
-                <dxo-selection mode="single"></dxo-selection>
-                <dxo-filter-row [visible]="true" [applyFilter]="true"></dxo-filter-row>
-                <dxo-header-filter [visible]="true"></dxo-header-filter>
-                <dxo-search-panel [visible]="true" [width]="240" placeholder="Search..."></dxo-search-panel>
-                <dxi-column dataField="warehouse"></dxi-column>
-                <dxi-column dataField="location"></dxi-column>
-                <dxi-column dataField="somain" caption="Equip Request"></dxi-column>
-                <dxi-column dataField="name" caption="Project Name"></dxi-column>
-                <dxi-column dataField="quantity"></dxi-column>
-                <dxo-summary>
-                    <dxi-total-item column="location" summaryType="count"> </dxi-total-item>
-                </dxo-summary>
-            </dx-data-grid>
-            <dxo-export [enabled]="true"></dxo-export>
-            <dxo-position at="center" my="center"> </dxo-position>
-        </dx-popup>
-
-    </div>
-    <div>
-        <dx-popup [width]="1200" [height]="800" [showTitle]="true" title="View Serial" [dragEnabled]="false"
-            [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
-            [(visible)]="popupVSVisible">
-
-            <br />
-            <dx-data-grid id="gridContainer" [dataSource]="pmSerials" keyExpr="serlot" height="650"
-                [allowColumnReordering]="true" [focusedRowEnabled]="true" [allowColumnResizing]="true"
-                [rowAlternationEnabled]="true" (onRowClick)="onRowSelection($event)">
-                <dxo-load-panel [enabled]="false"></dxo-load-panel>
-                <dxo-scrolling mode="infinite"></dxo-scrolling>
-                <dxo-sorting mode="multiple"></dxo-sorting>
-                <dxo-selection mode="single"></dxo-selection>
-                <dxo-filter-row [visible]="true" [applyFilter]="true"></dxo-filter-row>
-                <dxo-header-filter [visible]="true"></dxo-header-filter>
-                <dxo-search-panel [visible]="true" [width]="240" placeholder="Search..."></dxo-search-panel>
-                <dxi-column dataField="warehouse"></dxi-column>
-                <dxi-column dataField="location"></dxi-column>
-                <dxi-column dataField="cost"></dxi-column>
-                <dxi-column dataField="serlot"></dxi-column>
-                <dxi-column dataField="tagcol" caption="Tag No."></dxi-column>
-                <dxi-column dataField="color_model" caption="Model"></dxi-column>
-                <dxi-column dataField="expdate" caption="Exp Date"></dxi-column>
-                <dxi-column dataField="actualSo" caption="Original ER"></dxi-column>
-                <dxi-column dataField="currentSo" caption="Current ER"></dxi-column>
-                <dxo-summary>
-                    <dxi-total-item column="serlot" summaryType="count"> </dxi-total-item>
-                </dxo-summary>
-            </dx-data-grid>
-            <dxo-export [enabled]="true" [allowExportSelectedData]="true"></dxo-export>
-            <dxo-position at="center" my="center"> </dxo-position>
-            <br>
-            <br>
-            <div class="row" style="justify-content: center;">
-                <dx-button stylingMode="contained" text="edit" width="150" type="default" (onClick)="edit()">
-                </dx-button>
-              </div>
-        </dx-popup>
-        <dx-popup [width]="500" [height]="500" [showTitle]="true" title="Update Serial" [dragEnabled]="false"
-            [showCloseButton]="true" container=".dx-viewport" [(visible)]="updateSerialPopupVisible">
-            <form >
-                <dx-form [(formData)]="changeSerialSearchInfo" id="form" [colCount]="2" labelMode="floating">
-                    <dxi-item [colSpan]="1" dataField="fromSerial" [label]="{text:'From Ser No'}"
-                        [editorOptions]="{readOnly: true}">
-                    </dxi-item>
-                    <dxi-item [colSpan]="1" dataField="toSerial" [label]="{text:'To Ser No'}"></dxi-item>
-                    <dxi-item [colSpan]="1" dataField="fromTagNo" [label]="{text:'From Tag No'}"
-                        [editorOptions]="{readOnly: true}">
-                    </dxi-item>
-                    <dxi-item [colSpan]="1" dataField="toTagNo" [label]="{text:'To Tag No'}"></dxi-item>
-
-                    <dxi-item [colSpan]="1" dataField="fromModel" [label]="{text:'From Model'}"
-                        [editorOptions]="{readOnly: true}">
-                    </dxi-item>
-                    <dxi-item [colSpan]="1" dataField="toModel" [label]="{text:'To Model'}"></dxi-item>
-                    <dxi-item [colSpan]="1" dataField="fromCost" [label]="{text:'From Cost'}"
-                        [editorOptions]="{readOnly: true}">
-                    </dxi-item>
-                    <dxi-item [colSpan]="1" dataField="toCost" [label]="{text:'To Cost'}"></dxi-item>
-
-                    <dxi-item [colSpan]="2" dataField="notes" editorType="dxTextArea" [label]="{text: 'Notes'}">
-                    </dxi-item>
-                </dx-form>
-                <dx-form [colCount]="3" labelMode="floating">
-                    <dxi-item></dxi-item>
-                    <dxi-item [colSpan]="1" itemType="button" width="150" type="default" stylingMode="contained"
-                        [buttonOptions]="submitSerialPopupButtonOptions" style="text-align: center;">
-                    </dxi-item>
-                </dx-form>
-            </form>
-        </dx-popup>
-    </div>
-    <div>
-        <dx-popup [width]="400" [height]="500" [showTitle]="true" title="Reason could not delete" [dragEnabled]="false"
-            [closeOnOutsideClick]="false" [showCloseButton]="true" container=".dx-viewport"
-            [(visible)]="popupDeleteMessages">
-            <dxo-position at="center" my="center"> </dxo-position>
-            <dx-list #grid id="gridContainer" [dataSource]="reasonsDelete" [hoverStateEnabled]="true"
-                selectionMode="none" pageLoadMode="scrollBottom">
-                <div *dxTemplate="let item of 'item'">
-                    {{ item}}
-                </div>
-            </dx-list>
-        </dx-popup>
-        <dx-toast [(visible)]="toastVisible" [(type)]="toastType" [(message)]="toastMessage"></dx-toast>
-    </div>
+        </dx-form>
+        <br>
+        <dx-form [colCount]="12" labelMode="floating">
+            <dxi-item></dxi-item>
+            <dxi-item [colSpan]="5" itemType="button" width="250" type="default" stylingMode="contained"
+              [buttonOptions]="submitSerialPopupButtonOptions">
+            </dxi-item>
+            <!-- <dxi-item [colSpan]="5" id="btnCancel" itemType="button" width="260" type="default" stylingMode="contained"
+                [buttonOptions]="cancelSerialPopupButtonOptions">
+            </dxi-item> -->
+            <dxi-item [colSpan]="5">
+              <dx-button stylingMode="contained" text="Cancel and exit" width="260" type="default" (onClick)="cancelSerial()">
+              </dx-button>
+            </dxi-item>
+            
+          </dx-form>
+    </form>
+    </dx-popup>
+  </div>
+  <div>
+    <dx-popup
+      [width]="400"
+      [height]="500"
+      [showTitle]="true"
+      title="Reason could not delete"
+      [dragEnabled]="false"
+      [closeOnOutsideClick]="false"
+      [showCloseButton]="true"
+      container=".dx-viewport"
+      [(visible)]="popupDeleteMessages"
+    >
+      <dxo-position at="center" my="center"> </dxo-position>
+      <dx-list
+        #grid
+        id="gridContainer"
+        [dataSource]="reasonsDelete"
+        [hoverStateEnabled]="true"
+        selectionMode="none"
+        pageLoadMode="scrollBottom"
+      >
+        <div *dxTemplate="let item of 'item'">
+          {{ item }}
+        </div>
+      </dx-list>
+    </dx-popup>
+    <dx-toast
+      [(visible)]="toastVisible"
+      [(type)]="toastType"
+      [(message)]="toastMessage"
+    ></dx-toast>
+  </div>
 </div>
+
+<dx-popup
+  [width]="650"
+  [height]="550"
+  [showTitle]="true"
+  title="Search"
+  [dragEnabled]="false"
+  [showCloseButton]="true"
+  [(visible)]="basicPopupVisible"
+  (onShown)="onShown($event)"
+>
+  <!-- <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="after"
+    [options]="closeBasicPopUp"
+  >
+  </dxi-toolbar-item>
+  <dxi-toolbar-item
+    widget="dxButton"
+    toolbar="bottom"
+    location="after"
+    [options]="saveBasicPopUp"
+  ></dxi-toolbar-item> -->
+
+  <dxo-position at="center" my="center" of="window"></dxo-position>
+  <div *dxTemplate="let data of 'content'">
+    <dx-scroll-view width="100%" height="100%">
+      <div id="textBlock" style="margin-top: 3px; margin-bottom: 10px">
+           
+        <div style="width:50%;float:left;padding-left: 20px;">
+          <dx-text-box     
+            [stylingMode]="StylingMode"
+            [labelMode]="LabelMode"
+            [elementAttr]="{ class: 'myclass' }"
+            [ngAddLabel]="labelMap.partNumber_num"
+            #f2partNumberVar>
+         </dx-text-box>
+        </div>
+        <div style="width:50%;float:left;padding-left: 20px;">
+        <dx-text-box     
+          [stylingMode]="StylingMode"
+          [labelMode]="LabelMode"
+          [elementAttr]="{ class: 'myclass' }"
+          [ngAddLabel]="labelMap.description_num"
+          #f2partNumberDesc>
+        </dx-text-box>
+    </div>
+ 
+ 
+      <div class="row" style="justify-content: center;padding-top: 20px;">
+        <dx-button
+          stylingMode="contained"
+          text="Search"
+          width="150"
+          type="default"
+          (onClick)="findPartNumbers(f2partNumberVar.value, f2partNumberDesc.value)"
+        >
+        </dx-button>
+      </div>
+
+      </div>
+      <dx-list #grid id="gridContainer" 
+        [dataSource]="pmSearchResults" 
+        [hoverStateEnabled]="true" 
+        selectionMode="single"
+        [selectedItemKeys]="[selectedItemNumber]"   
+        [height]="370" [focusStateEnabled]="true"
+        (onSelectionChanged)="onSelectionChanged($event)" 
+        (dblclick)="dblclick($event)"
+        (keyDown)="onSelectionChanged($event)" sc>
+        <div *dxTemplate="let item of 'item'">
+          <div>
+            <div class="name" style="font-weight:bold;">{{ item.itemNumber}}</div>
+            <div class="description" style="font-style: italic;font-size: small;">{{ item.description }}</div>
+          </div>
+        </div>
+      </dx-list>
+    </dx-scroll-view>
+  </div>
+</dx-popup>
