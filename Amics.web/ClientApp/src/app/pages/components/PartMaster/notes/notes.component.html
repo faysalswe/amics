@@ -1,0 +1,47 @@
+<dx-data-grid
+        id="gridContainer"
+        [dataSource]="poNotes"
+        keyExpr="id"
+        height="52vh"
+        [focusedRowEnabled]="true"
+        [allowColumnResizing]="true"
+        [allowColumnReordering]="true"
+        [columnAutoWidth]="true"
+        [rowAlternationEnabled]="true"
+        [showBorders]="true"
+        (onKeyDown)="onKeyDown($event)"
+        (onEditingStart)="logEvent('EditingStart')"
+        (onInitNewRow)="logEvent('InitNewRow')"
+        (onRowInserting)="logEvent('RowInserting')"
+        (onRowInserted)="rowInserted($event)"
+        (onRowUpdating)="rowUpdated($event)"
+        (onRowUpdated)="logEvent('RowUpdated')"
+        (onRowRemoving)="logEvent('RowRemoving')"
+        (onRowRemoved)="rowRemoved($event)"
+        (onSaving)="onSaving($event)"
+        (onSaved)="logEvent('Saved')"
+        (onEditCanceling)="logEvent('EditCanceling')"
+        (onEditCanceled)="logEvent('EditCanceled')"
+        (onSelectionChanged)="selectedChanged($event)"
+      >
+        <dxo-row-dragging
+          [allowReordering]="true"
+          [onReorder]="onReorder"
+          [showDragIcons]="true"
+        >
+        </dxo-row-dragging>
+        <dxo-scrolling mode="infinite"></dxo-scrolling>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-editing
+          mode="row"
+          [allowDeleting]="!this.readOnly"
+          [allowUpdating]="!this.readOnly"
+          [allowAdding]="!this.readOnly"
+          newRowPosition="last"
+        >
+        </dxo-editing>
+
+        <dxi-column dataField="lineNum" [width]="80"></dxi-column>
+        <dxi-column dataField="notesRef" [width]="200"></dxi-column>
+        <dxi-column dataField="notes"></dxi-column>
+      </dx-data-grid>

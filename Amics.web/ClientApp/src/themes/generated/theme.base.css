@@ -15985,11 +15985,12 @@
   color: rgba(0,0,0,.87);
 }
 .dx-datagrid-headers {
-  color: rgba(0,0,0,.54);
+  /* color: rgba(0,0,0,.54); */
+  color: rgb(45,41,41,.90);
   -ms-touch-action: pinch-zoom;
   touch-action: pinch-zoom;
   border-bottom: 1px solid #e0e0e0;
-  background-color: #edf2f7;
+  background-color: #c9dcf0db;
 }
 .dx-datagrid-headers .dx-datagrid-content {
   margin-bottom: -1px;
@@ -16001,7 +16002,7 @@
   border-bottom: 1px solid #e0e0e0;
   line-height: 16px;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 14px;
 }
 .dx-datagrid-headers .dx-datagrid-table .dx-row>td .dx-sort,
 .dx-datagrid-headers .dx-datagrid-table .dx-row>td .dx-sort-indicator,

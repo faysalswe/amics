@@ -642,7 +642,7 @@ export class DecreaseInventoryComponent implements AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.viewWarehouseLocation$.unsubscribe();
+    this.viewWarehouseLocation$?.unsubscribe();
   }
 
   private focusOnItemNumber() {
