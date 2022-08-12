@@ -1,4 +1,4 @@
-<dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="itemNumber" height="92%" [focusedRowEnabled]="true"
+<dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="lineNum" height="92%" [focusedRowEnabled]="true"
   [allowColumnResizing]="true" [allowColumnReordering]="true" [columnAutoWidth]="true" [rowAlternationEnabled]="true"
   [showBorders]="true" [showColumnLines]="true" [showRowLines]="true" (onKeyDown)="onKeyDown($event)"
   (onEditingStart)="logEvent('EditingStart')" (onInitNewRow)="logEvent('InitNewRow')"

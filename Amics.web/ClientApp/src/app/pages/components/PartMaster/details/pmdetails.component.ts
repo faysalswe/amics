@@ -635,28 +635,35 @@ export class PMDetailsComponent implements AfterViewInit {
       }
     }
 
+    let updatedBoms = this.bomDetails.filter(
+      (b) => b.id != '00000000-0000-0000-0000-000000000000' && b.id != undefined
+    );
+
     //find Updated and deleted
-    for (var _i = 0, boms = this.originalBomDetails; _i < boms.length; _i++) {
-      var bom = new pmBomGridDetails();
-      var originalBom = this.bomDetails.find(
-        (b) => b.id == this.originalBomDetails[_i].id
-      );
-      if (!originalBom) {
-        bom.actionFlag = BomAction.Delete;
-      } else {
-        bom.actionFlag = BomAction.Update;
+    if(updatedBoms && updatedBoms.length > 0){
+      for (var _i = 0, boms = updatedBoms; _i < boms.length; _i++) {
+        var bom = new pmBomGridDetails();
+        var originalBom = updatedBoms.find(
+          (b) => b.id == this.originalBomDetails[_i].id
+        );
+        if (!originalBom) {
+          bom.actionFlag = BomAction.Delete;
+        } else {
+          bom.actionFlag = BomAction.Update;
+        }
+        bom.id = boms[_i].id.toString();
+        bom.parent_ItemsId = parentId;
+        //bom.child_ItemsId = boms[_i].itemsid_Child.toString();
+        bom.lineNum = _i + 1;
+        bom.quantity = boms[_i].quantity.toFixed(2);
+        bom.ref = boms[_i].ref;
+        bom.findNo = boms[_i].findNo;
+        bom.comments = boms[_i].comments;
+        bom.createdby = this.authService.currentUser.toString();
+        bomGridDetails.push(bom);
       }
-      bom.id = boms[_i].id.toString();
-      bom.parent_ItemsId = parentId;
-      //bom.child_ItemsId = boms[_i].itemsid_Child.toString();
-      bom.lineNum = _i + 1;
-      bom.quantity = boms[_i].quantity.toFixed(2);
-      bom.ref = boms[_i].ref;
-      bom.findNo = boms[_i].findNo;
-      bom.comments = boms[_i].comments;
-      bom.createdby = this.authService.currentUser.toString();
-      bomGridDetails.push(bom);
     }
+    
     console.log("update/delete  " + bomGridDetails.length);
     return bomGridDetails;
   }
