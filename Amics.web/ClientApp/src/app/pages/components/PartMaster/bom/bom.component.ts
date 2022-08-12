@@ -5,6 +5,7 @@ import { Guid } from 'guid-typescript';
 import { pmBomDetails } from 'src/app/pages/models/pmBomDetails';
 import { pmDetails } from 'src/app/pages/models/pmdetails';
 import { pmItemSearchResult, pmSearch } from 'src/app/pages/models/pmsearch';
+import { SearchService } from 'src/app/pages/services/search.service';
 
 @Component({
   selector: 'app-bom',
@@ -23,7 +24,7 @@ export class BomComponent implements OnInit {
 
   bomDefaultRow : number = 2;
 
-  constructor() 
+  constructor(private searchService: SearchService,) 
   {
     this.onReorder = this.onReorder.bind(this);
     this.onSaving = this.onSaving.bind(this);
@@ -122,6 +123,7 @@ export class BomComponent implements OnInit {
   }
 
   onEditorPreparing(e: any) {
+  
     
     if (e.dataField === 'itemNumber' && e.parentType === 'dataRow') {
 

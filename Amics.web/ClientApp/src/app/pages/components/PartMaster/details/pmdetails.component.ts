@@ -615,7 +615,7 @@ export class PMDetailsComponent implements AfterViewInit {
 
     // find inserted
     let newBoms = this.bomDetails.filter(
-      (b) => b.id == undefined
+      (b) => b.id == '00000000-0000-0000-0000-000000000000'
     );
 
     if (!!newBoms && newBoms.length > 0) {
