@@ -285,6 +285,7 @@ export class PMDetailsComponent implements AfterViewInit {
     });
     this.pmdataTransfer.selectedItemBomForPMDetails$.subscribe((boms) => {
       console.log(boms.length);
+      debugger
       this.bomDetails = boms;
       this.originalBomDetails = [...boms];
       console.log("bom details " + this.bomDetails.length);
@@ -623,7 +624,7 @@ export class PMDetailsComponent implements AfterViewInit {
         let newBom = new pmBomGridDetails();
         newBom.actionFlag = BomAction.Add;
         newBom.parent_ItemsId = parentId;
-        //newBom.child_ItemsId = newBoms[_i].itemsid_Child.toString();
+        newBom.child_ItemsId = newBoms[_i]?.itemsid_Child?.toString();
         newBom.lineNum = newBoms[_i].lineNum;
         newBom.quantity = newBoms[_i].quantity.toFixed(2);
         newBom.ref = newBoms[_i].ref;
@@ -653,7 +654,7 @@ export class PMDetailsComponent implements AfterViewInit {
         }
         bom.id = boms[_i].id.toString();
         bom.parent_ItemsId = parentId;
-        //bom.child_ItemsId = boms[_i].itemsid_Child.toString();
+        bom.child_ItemsId = boms[_i]?.itemsid_Child?.toString();
         bom.lineNum = _i + 1;
         bom.quantity = boms[_i].quantity.toFixed(2);
         bom.ref = boms[_i].ref;
@@ -676,7 +677,7 @@ export class PMDetailsComponent implements AfterViewInit {
       var bom = new pmBomGridDetails();
       bom.actionFlag = BomAction.Add;
       bom.parent_ItemsId = parentId;
-      //bom.child_ItemsId = boms[_i]?.itemsid_Child.toString();
+      bom.child_ItemsId = boms[_i]?.itemsid_Child?.toString();
       bom.lineNum = _i + 1;
       bom.quantity = boms[_i].quantity.toFixed(2);
       bom.ref = boms[_i].ref;
