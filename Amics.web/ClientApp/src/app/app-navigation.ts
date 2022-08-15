@@ -22,6 +22,13 @@ export const navigation = [
         title: ' Viewer',
         type: ComponentType.Viewer
       },
+      {
+        text: 'ReportItems',
+        path: '/reportitemslist',
+        title: ' ReportItems',
+        type: ComponentType.ReportItemslist  
+
+      },
     ]
   },
   {

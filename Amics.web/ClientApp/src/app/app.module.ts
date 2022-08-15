@@ -2,6 +2,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
+
 import { SideNavOuterToolbarModule, SideNavInnerToolbarModule, SingleCardModule } from './layouts';
 import { FooterModule, ResetPasswordFormModule, CreateAccountFormModule, ChangePasswordFormModule, LoginFormModule } from './shared/components';
 import { AuthService } from './shared/services';
@@ -36,6 +37,9 @@ import { TransLogSubDetailsComponent } from './pages/components/IncreaseInventor
 import { StatusComponent } from './shared/components/status/status.component';
 import { DecreaseInventoryComponent } from './pages/components/DecreaseInventory/decrease.inventory.component';
 import { ChangeLocationComponent } from './pages/components/change-location/change-location.component';
+import { ReportItemslistComponent } from './pages/components/report-itemslist/report-itemslist.component';
+import { DxReportViewerModule } from 'devexpress-reporting-angular';
+/*import { ReportViewerComponent } from './pages/components/report-viewer/report-viewer.component';*/
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -70,11 +74,13 @@ export function appEnvironmentFactory(
     Report2Component,
     BulkTransferComponent,
     StatusComponent,
-    DecreaseInventoryComponent
+    DecreaseInventoryComponent,
+    ReportItemslistComponent,
+    /*ReportViewerComponent*/
   ],
   imports: [
     CommonModule,
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }), 
     SideNavOuterToolbarModule,
     SideNavInnerToolbarModule,
     SingleCardModule,
@@ -89,7 +95,8 @@ export function appEnvironmentFactory(
     HttpClientModule,
     PartMasterModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DxReportViewerModule
   ],
   providers: [
     {

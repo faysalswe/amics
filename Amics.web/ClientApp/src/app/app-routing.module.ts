@@ -12,11 +12,17 @@ import { Report2Component } from './pages/components/report2/report2.component';
 import { BulkTransferComponent } from './pages/components/bulk-transfer/bulk-transfer.component';
 import { ChangeLocationComponent } from './pages/components/change-location/change-location.component';
 import { DecreaseInventoryComponent } from './pages/components/DecreaseInventory/decrease.inventory.component';
+import { ReportItemslistComponent } from './pages/components/report-itemslist/report-itemslist.component';
 
 const routes: Routes = [
   {
     path: 'tasks',
     component: ChangeLocationComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'reportitemslist',
+    component: ReportItemslistComponent,
     canActivate: [AuthGuardService]
   },
   {
