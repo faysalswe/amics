@@ -1,0 +1,54 @@
+<dx-popup
+      [width]="1200"
+      [height]="800"
+      [showTitle]="true"
+      title="View Location"
+      [dragEnabled]="false"
+      [closeOnOutsideClick]="false"
+      [showCloseButton]="true"
+      container=".dx-viewport"
+      [(visible)]="Visibility"
+      (onHiding)="HidingVL()"
+    >
+      <br />
+
+      <dx-data-grid
+        id="gridContainer"
+        [dataSource]="pmWHLocations"
+        keyExpr="location"
+        height="650"
+        [focusedRowEnabled]="true"
+        [allowColumnResizing]="true"
+        [allowColumnReordering]="true"
+        [columnAutoWidth]="true"
+        [rowAlternationEnabled]="true"
+        [showBorders]="true"
+        [showColumnLines]="true"
+        [showRowLines]="true"
+        (onExporting)="onExporting($event)"
+        [showBorders]="true"
+      >
+        <dxo-load-panel [enabled]="false"></dxo-load-panel>
+        <dxo-scrolling mode="infinite"></dxo-scrolling>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-filter-row [visible]="true" [applyFilter]="true"></dxo-filter-row>
+        <dxo-header-filter [visible]="true"></dxo-header-filter>
+        <dxo-search-panel
+          [visible]="true"
+          [width]="240"
+          placeholder="Search..."
+        ></dxo-search-panel>
+        <dxi-column dataField="warehouse" width="11.75%"></dxi-column>
+        <dxi-column dataField="location" width="11.75%"></dxi-column>
+        <dxi-column dataField="somain" caption="Equip Request" width="313"></dxi-column>
+        <dxi-column dataField="name" caption="Project Name" width="468"></dxi-column>
+        <dxi-column dataField="quantity" width="7%"></dxi-column>
+        <dxo-summary>
+          <dxi-total-item column="location" summaryType="count">
+          </dxi-total-item>
+        </dxo-summary>
+      </dx-data-grid>
+      <dxo-export [enabled]="true"></dxo-export>
+      <dxo-position at="center" my="center"> </dxo-position>
+    </dx-popup>

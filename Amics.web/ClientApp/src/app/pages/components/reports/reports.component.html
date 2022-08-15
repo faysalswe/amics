@@ -15,7 +15,9 @@
         <br /> <br />
         <dx-data-grid id="gridContainer" [dataSource]="report.items" keyExpr="reportId" height="50vh"
           [showBorders]="true" [focusedRowEnabled]="true" [hoverStateEnabled]="true" [rowAlternationEnabled]="true"
-          [allowColumnResizing]="true" [selectedRowKeys]="[]" height="50vh"
+          [allowColumnResizing]="true" [showColumnLines]="true" [allowColumnResizing]="true" [allowColumnReordering]="true" [columnAutoWidth]="true"
+          [showRowLines]="true"
+           [selectedRowKeys]="[]" height="50vh"
           (onSelectionChanged)="onSelectionChanged($event)" [columns]="['reportId','reportName', 'description']">
           <dxo-load-panel [enabled]="false"></dxo-load-panel>
           <dxo-selection mode="single"></dxo-selection>

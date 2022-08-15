@@ -48,7 +48,7 @@ export class PMSearchComponent implements OnInit, AfterViewInit {
         this.search();
     }
     ngAfterViewInit(): void {
-        this.focusOnItemNumber();
+        //this.focusOnItemNumber();
         this.focusPartNumber();
     }
 

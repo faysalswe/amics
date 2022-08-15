@@ -1,0 +1,64 @@
+<dx-data-grid id="gridContainer" [dataSource]="bomDetails" keyExpr="lineNum" height="92%" [focusedRowEnabled]="true"
+  [allowColumnResizing]="true" [allowColumnReordering]="true" [columnAutoWidth]="true" [rowAlternationEnabled]="true"
+  [showBorders]="true" [showColumnLines]="true" [showRowLines]="true" (onKeyDown)="onKeyDown($event)"
+  (onEditingStart)="logEvent('EditingStart')" (onInitNewRow)="logEvent('InitNewRow')"
+  (onRowInserting)="logEvent('RowInserting')" (onRowInserted)="rowInserted($event)" (onRowUpdating)="rowUpdated($event)"
+  (onRowUpdated)="logEvent('RowUpdated')" (onRowRemoving)="logEvent('RowRemoving')" (onRowRemoved)="rowRemoved($event)"
+  (onSaving)="onSaving($event)" (onSaved)="logEvent('Saved')" (onEditCanceling)="logEvent('EditCanceling')"
+  (onEditCanceled)="logEvent('EditCanceled')" (onSelectionChanged)="selectedChanged($event)"
+  (onEditorPreparing)="onEditorPreparing($event)" (onFocusedRowChanged)="test($event)"
+  (onInitialized)="onInitialized($event)" (OnToolbarPreparing)="onToolbarPreparing($event)">
+  <dxo-row-dragging [allowReordering]="true" [onReorder]="onReorder" [showDragIcons]="!this.readOnly">
+  </dxo-row-dragging>
+
+  <dxo-toolbar>
+    <dxi-item height="0" [visible]="false"></dxi-item>
+  </dxo-toolbar>
+
+  <dxo-scrolling mode="infinite"></dxo-scrolling>
+  <dxo-selection mode="single"></dxo-selection>
+  <dxo-editing mode="batch" [allowUpdating]="!this.readOnly" [allowDeleting]="!this.readOnly"
+    [allowAdding]="!this.readOnly" newRowPosition="last">
+  </dxo-editing>
+
+  <dxi-column dataField="lineNum" dataType="number" [allowEditing]="false" width="5%" alignment="center"></dxi-column>
+  <dxi-column dataField="itemtype" caption="MFR." [allowEditing]="false" width="10%"></dxi-column>
+  <dxi-column dataField="itemNumber" caption="Part Number" [allowEditing]="true" width="12%">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+  </dxi-column>
+
+  <dxi-column dataField="description" [allowEditing]="false" width="29%"></dxi-column>
+  <dxi-column dataField="quantity" [allowEditing]="true" width="8%">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+  </dxi-column>
+  <dxi-column dataField="uomref" caption="UOM" [allowEditing]="false" width="7%"></dxi-column>
+  <dxi-column dataField="ref" [allowEditing]="true" width="9%"></dxi-column>
+  <dxi-column dataField="cost" dataType="number" format="currency" [allowEditing]="false" width="10%">
+    <dxo-format type="currency" [precision]="2"></dxo-format>
+  </dxi-column>
+  <dxi-column dataField="extCost" dataType="number" format="currency" [allowEditing]="false" width="10%"
+    alignment="left">
+    <dxo-format type="currency" [precision]="2"></dxo-format>
+  </dxi-column>
+
+
+  <dxi-column dataField="id" [allowEditing]="true"  width="0"></dxi-column>
+
+  <dxi-column dataField="itemsid_Child" [allowEditing]="true" width="0"></dxi-column>
+
+
+  <dxo-summary [recalculateWhileEditing]="true">
+    <!-- <dxi-total-item column="lineNum" summaryType="count"> </dxi-total-item>
+        <dxi-total-item column="cost" summaryType="sum" valueFormat="currency">
+            <dxo-format type="fixedPoint" [precision]="2">
+            </dxo-format>
+        </dxi-total-item> -->
+    <dxi-total-item column="extCost" summaryType="sum" displayFormat="Total: {0}" valueFormat="currency">
+      <dxo-format type="fixedPoint" [precision]="2"> </dxo-format>
+    </dxi-total-item>
+  </dxo-summary>
+</dx-data-grid>
+
+<dx-button stylingMode="contained" text="Add Line" style="margin: 5px" type="default" (onClick)="AddBomLines()"
+  [visible]="!this.readOnly">
+</dx-button>

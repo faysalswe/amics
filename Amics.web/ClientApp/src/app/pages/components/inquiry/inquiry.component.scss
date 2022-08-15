@@ -1,12 +1,13 @@
-
 .row {
     --bs-gutter-x: -2.5rem;
 }
+
 .dx-theme-material-typography h6 {
     font-weight: 500;
     font-size: 20px;
     letter-spacing: 0.15px;
-} 
+}
+
 .screen-large .responsive-paddings {
     padding: 10px;
     margin: 8px;
@@ -14,6 +15,67 @@
     background-color: antiquewhite;
 }
 
-dx-radio-group{
-    background-color: #f2f2f2;
+// dx-radio-group {
+//     background-color: #f2f2f2;
+// }
+
+
+/* Defining a custom border on all
+			sides except the top side */
+.custom-field {
+    border: 1px solid;
+    border-top: none;
+    padding: 8px;
+}
+
+/* Defining the style of the
+                        heading/legend for custom fieldset */
+.custom-field h1 {
+    font: 18px normal;
+    font-weight: 400;
+    font-family: Roboto, RobotoFallback, "Noto Kufi Arabic", Helvetica, Arial, sans-serif;
+    margin: -16px -8px 0;
+    color: rgba(0, 0, 0, .68);
+}
+
+/* Using float:left allows us to mimic
+                        the legend like fieldset. The
+                        float:right property can also be
+                        used to show the legend on right side */
+
+.custom-field h1 span {
+    float: left;
+    margin-top: -3px;
+    color: rgba(0, 0, 0, .68);
+    font-weight: 420;
+}
+
+/* Creating the custom top border to make
+                            it look like fieldset defining small
+                            border before the legend. The width
+                            can be modified to change position
+                            of the legend */
+.custom-field h1:before {
+    border-top: 1px solid;
+    content: ' ';
+    float: left;
+    margin: 8px 2px 0 -1px;
+    width: 12px;
+}
+
+/* Defining a long border after the
+                        legend, using overflow hidden to
+                        actually hide the line behind the
+                        legend text. It can be removed
+                        for a different effect */
+.custom-field h1:after {
+    border-top: 1px solid;
+    content: ' ';
+    display: block;
+    height: 24px;
+    left: 2px;
+    margin: 0 1px 0 0;
+    overflow: hidden;
+    position: relative;
+    top: 8px;
 }
