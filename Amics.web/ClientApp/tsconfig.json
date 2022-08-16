@@ -1,4 +1,4 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
+/* To learn more about this file see: https://angular.io/config/tsconfig.
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -18,6 +18,50 @@
     "importHelpers": true,
     "target": "es2017",
     "module": "es2020",
+    "lib": [
+      "es2020",
+      "dom"
+    ]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true,
+    "strictPropertyInitialization": false
+  }
+} */
+
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "module": "esnext",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "baseUrl": "./",
+    "experimentalDecorators": true,
+    "paths": {
+      "globalize": [
+        "../node_modules/globalize/dist/globalize"
+      ],
+      "globalize/*": [
+        "../node_modules/globalize/dist/globalize/*"
+      ],
+      "cldr": [
+        "../node_modules/cldrjs/dist/cldr"
+      ],
+      "cldr/*": [
+        "../node_modules/cldrjs/dist/cldr/*"
+      ]
+    },
+    "target": "es2017",
+    "module": "es2020",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "lib": [
       "es2020",
       "dom"

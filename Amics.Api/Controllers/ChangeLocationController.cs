@@ -107,6 +107,18 @@ namespace Amics.Api.Controllers
 
             return delTransLocResult;
         }
+
+        /// <summary>
+        /// API Controller to select picked Basic/Serial data(from left table) and populate in the right table
+        /// </summary>
+        /// <param name="userName">UserName</param>                   
+        [HttpGet, Route("ChangeLocSelectedItems")] 
+        public List<LstChangeLocSearch> ChangeLocSelectedItems([FromQuery] string itemsId, [FromQuery] string username, [FromQuery] string solinesId, [FromQuery] string invType)
+        {
+            var chgLocTransItemsResult = _changeLocService.ChangeLocViewSelectedDetails(itemsId, username, solinesId, invType);
+
+            return chgLocTransItemsResult;
+        }
     }
 
     public class UserInfo

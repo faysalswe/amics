@@ -20,6 +20,7 @@ namespace Aims.Core.Services
         LstMessage UpdateChangeLocation(string userName, string toWarehouse, string toLocation);      
         string UpdateInvTransLocation(List<LstChgLocTransItems> lstchgloc);
         LstMessage DeleteInvTransferLoc(string userName);
+        List<LstChangeLocSearch> ChangeLocViewSelectedDetails(string itemsId, string username, string solinesid, string invType);
     }
     public class ChangeLocationService : IChangeLocService
     {
@@ -148,6 +149,7 @@ namespace Aims.Core.Services
 
         /// <summary>
         /// API Service to change location pick quantity details for Basic/Serial
+        /// To populate the below details for left table
         /// </summary>
         /// <param name="soMain">SO Main</param>        
         /// <param name="itemnumber">Item Number</param>        
@@ -191,7 +193,7 @@ namespace Aims.Core.Services
                             changeLoc.Warehouse = dataReader["wh"].ToString();
                             changeLoc.Location = dataReader["loc"].ToString();
                             changeLoc.InvBasicId = dataReader["basid"].ToString();
-                            changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);                           
                             lstChangeLocSerial.Add(changeLoc);
                         }
                         
@@ -209,8 +211,7 @@ namespace Aims.Core.Services
             }
             return lstChangeLocSerial.ToList();
         }
-
-
+                
         /// <summary>
         /// API Service to get change location details for Basic
         /// </summary>
@@ -535,5 +536,75 @@ namespace Aims.Core.Services
             }
             return new LstMessage() { Message = "Successfully deleted" };
         }
+
+        /// <summary>
+        /// API Service to select picked Basic/Serial data(from left table) and populate in the right table        
+        /// </summary>
+        /// <param name="itemsId">SO Main</param>        
+        /// <param name="invType">InvType</param>        
+        /// <param name="username">User Name</param>        
+        /// <param name="soLineId">SO LineId</param> 
+        public List<LstChangeLocSearch> ChangeLocViewSelectedDetails(string itemsId, string username, string solinesid, string invType)
+        {
+            List<LstChangeLocSearch> lstChangeLocSelItems = new List<LstChangeLocSearch>();
+            string strCurr = util.ReturnZeros(2);
+            string strQty = util.ReturnZeros(2);
+
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    // sqlCommand.CommandText = "select * from inv_transfer_location where createdby='" + username + "'";
+                    if (invType == "SERIAL")                    
+                        sqlCommand.CommandText = "amics_sp_api_chgLoc_serial_selecteditems";                    
+                    else
+                        sqlCommand.CommandText = "amics_sp_api_chgLoc_basic_selecteditems";
+
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.Parameters.Add(new SqlParameter("@itemsId", itemsId.Trim()));
+                    sqlCommand.Parameters.Add(new SqlParameter("@userId", username.Trim()));
+                    sqlCommand.Parameters.Add(new SqlParameter("@soLinesId", solinesid.Trim()));
+                    conn.Open();
+                    var dataReader = sqlCommand.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        LstChangeLocSearch changeLoc = new LstChangeLocSearch();
+                        if (invType == "SERIAL")
+                        {
+                            changeLoc.Warehouse = dataReader["warehouse"].ToString();
+                            changeLoc.Location = dataReader["location"].ToString();
+                            changeLoc.SerNo = dataReader["serno"].ToString();
+                            changeLoc.TagNo = dataReader["tagno"].ToString();
+                            changeLoc.InvSerialId = dataReader["invserialid"].ToString();
+                            changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            lstChangeLocSelItems.Add(changeLoc);
+                        }
+                        else
+                        {
+                            changeLoc.Warehouse = dataReader["warehouse"].ToString();
+                            changeLoc.Location = dataReader["location"].ToString();
+                            changeLoc.InvBasicId = dataReader["invbasicid"].ToString();
+                            changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            lstChangeLocSelItems.Add(changeLoc);
+                        }
+                    }
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return lstChangeLocSelItems.ToList();
+        }
+
+
     }
 }

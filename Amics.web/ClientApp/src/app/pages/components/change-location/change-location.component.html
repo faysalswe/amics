@@ -13,7 +13,7 @@
           <dx-form [(formData)]="changeLocRequest" [colCount]="1" labelMode="floating" labelLocation="left">
             <dxi-item itemType="group" verticalAlignment="">
               <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                <dx-text-box [value]="changeLocRequest.er" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                <dx-text-box [(value)]="changeLocRequest.er" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                     [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.er_num" #erVar>
                 </dx-text-box>
             </dxi-item>
@@ -22,7 +22,7 @@
 
                         <!-- PROJECT ID -->
               <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                <dx-text-box [value]="changeLocRequest.projectId" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                <dx-text-box [(value)]="changeLocRequest.projectId" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                     [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_Id_num" #project_IdVar>
                 </dx-text-box>
             </dxi-item>
@@ -30,7 +30,7 @@
                         <!-- PROJECT NAME -->
               <!-- <dxi-item dataField="projectName" [label]="{text:'Project Name'}"></dxi-item> -->
               <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                  <dx-text-box [value]="changeLocRequest.projectName" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                  <dx-text-box [(value)]="changeLocRequest.projectName" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                      [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_name_num" #project_nameVar>
                   </dx-text-box>
              </dxi-item>
@@ -39,7 +39,7 @@
               <!-- <dxi-item dataField="budget" [label]="{text:'Budget'}"> </dxi-item> -->
             </dxi-item>
             <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-              <dx-text-box [value]="changeLocRequest.budget" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+              <dx-text-box [(value)]="changeLocRequest.budget" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                  [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.budget_num" #budgetVar>
               </dx-text-box>
            </dxi-item>
@@ -59,8 +59,8 @@
             (keyDown)="onSelectionChanged($event)">
             <div *dxTemplate="let item of 'item'">
               <div>
+                <!-- <div class="name">{{ item.soMain}}</div> -->
                 <div class="name">{{ item.project}}</div>
-
               </div>
             </div>
           </dx-list>
@@ -75,22 +75,23 @@
       <dx-form [(formData)]="changeLocProjDetails" id="form" [colCount]="4" labelMode="floating">
 
         <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-          <dx-text-box [value]="changeLocProjDetails.projectName" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+          <dx-text-box [(value)]="changeLocProjDetails.projectName" [stylingMode]="StylingMode" [labelMode]="LabelMode"
             [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_name_num" #partNumberVar>
           </dx-text-box>
         </dxi-item>
         <!-- <dxi-item dataField="projectName" [colSpan]="1" [label]="{text:'Project Name'}">
         </dxi-item> -->
-        <dxi-item itemtype="empty" [colSpan]="2"></dxi-item>
-        <dxi-item itemtype="empty" [colSpan]="4"></dxi-item>
+        <!-- <dxi-item itemtype="empty" [colSpan]="2"></dxi-item>
+        <dxi-item itemtype="empty" [colSpan]="4"></dxi-item> -->
         <!-- <dxi-item dataField="warehouse"  editorType="dxLookup" [colSpan]="1"
           [editorOptions]="{ label:'Warehouse',items: warehouseNames, showDataBeforeSearch:true,searchEnabled: true,  showClearButton:true, searchMode:'contains',onValueChanged:updateWarehouseSelection  }">
           <dxi-validation-rule type="required" message="Warehouse is required"></dxi-validation-rule>
         </dxi-item> -->
         <dxi-item [colSpan]="1" [isRequired]="true">
           <dx-select-box width="100%" [items]="warehouseNames"
-              [value]="changeLocProjDetails.warehouse" [searchEnabled]="true" [stylingMode]="StylingMode"
-              [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.warehouse_num" #warehouseVar  (onFocusIn)="openWarehouseCodeBox()">
+              [(value)]="changeLocProjDetails.warehouse" [searchEnabled]="true" [stylingMode]="StylingMode"
+              [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.warehouse_num" #warehouseVar  
+              (onFocusIn)="openWarehouseCodeBox()"  (onValueChanged)="updateWarehouseSelection($event)">
           </dx-select-box>
       </dxi-item>
         <!-- <dxi-item>
@@ -108,7 +109,7 @@
                       <!-- Location -->
         <dxi-item [colSpan]="1" [isRequired]="true">
           <dx-select-box width="100%" [items]="validLocationNames"
-              [value]="changeLocProjDetails.location" [searchEnabled]="true" [stylingMode]="StylingMode"
+              [(value)]="changeLocProjDetails.location" [searchEnabled]="true" [stylingMode]="StylingMode"
               [labelMode]="LabelMode" placeholder="Search" [ngAddLabel]="labelMap.location_num"
               #locationVar (onFocusIn)="openLocationCodeBox()"></dx-select-box>
               
@@ -124,18 +125,19 @@
         <dxi-item itemType="empty" [colSpan]="4"></dxi-item>
 
         <dxi-item [colSpan]="4">
-          <dx-data-grid #grid id="gridContainer" [dataSource]="locViewGridList" keyExpr="soLinesId"
-            [hoverStateEnabled]="true" [showBorders]="true" [selectedRowKeys]="[]" height="30vh" [focusedRowEnabled]="true" 
-            (onSelectionChanged)="onSelectionChangedView($event)" (keyDown)="onSelectionChangedView($event)" [showColumnLines]="true" [showRowLines]="true">
+          <dx-data-grid #locViewGrid id="gridContainer" [dataSource]="locViewGridList" keyExpr="soLinesId"
+            [hoverStateEnabled]="true" [showBorders]="true" [selectedRowKeys]="[]" height="35vh" [focusedRowEnabled]="true" 
+            (onSelectionChanged)="onSelectionChangedView($event)" (keyDown)="onSelectionChangedView($event)"
+            [showColumnLines]="true" [showRowLines]="true">
             <dxo-scrolling mode="infinite"></dxo-scrolling>
             <dxo-sorting mode="multiple"></dxo-sorting>
             <dxo-selection mode="single"></dxo-selection>
-            <dxi-column dataField="soMain" caption="Equip Request"></dxi-column>
-            <dxi-column dataField="lineNum" caption="Line No"></dxi-column>
-            <dxi-column dataField="itemnumber" caption="Part Number"></dxi-column>
-            <dxi-column dataField="description" caption="Description"></dxi-column>
-            <dxi-column dataField="itemType" caption="Mfgr"></dxi-column>
-            <dxi-column dataField="quantity" caption="Qty"></dxi-column>
+            <dxi-column dataField="soMain"  width="13%" caption="Equip Request"></dxi-column>
+            <dxi-column dataField="lineNum"  width="6%" caption="Line No"></dxi-column>
+            <dxi-column dataField="itemnumber"  width="18%" caption="Part Number"></dxi-column>
+            <dxi-column dataField="description"  width="35%" caption="Description"></dxi-column>
+            <dxi-column dataField="itemType"  width="15%" caption="Mfgr"></dxi-column>
+            <dxi-column dataField="quantity"  width="10%" caption="Qty"></dxi-column>
           </dx-data-grid>
         </dxi-item>
 
@@ -149,49 +151,54 @@
       <dxi-item>
         <div class="tables">
           <div class="column1">
-            <dx-data-grid [dataSource]="changeLocDetailsResult" [height]="200" [showBorders]="true"
+            <dx-data-grid #chglocGridVar [dataSource]="changeLocDetailsResult" [height]="230" class="cell-highlighted" [showBorders]="true"
               [keyExpr]="['invSerialId', 'invBasicId']" (onSelectionChanged)="leftSelectionChanged($event)"
-              [showColumnLines]="true" [showRowLines]="true">
-              <dxo-row-dragging [data]="1" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
-              <dxo-editing mode="row" [allowUpdating]="true" newRowPosition="last">
-              </dxo-editing>
+               [showColumnLines]="true" [showRowLines]="true" (onFocusedRowChanged)="onFocusedRowChanged($event)" 
+               (onEditorPreparing)="onEditorPreparing($event)">  
+              <!--   <dxo-row-dragging [data]="1" group="tasksGroup"></dxo-row-dragging>
+             <dxo-editing mode="row" [allowUpdating]="true" newRowPosition="last">
+              </dxo-editing>  -->
 
               <dxo-scrolling mode="virtual"></dxo-scrolling>
-              <dxo-selection mode="multiple"></dxo-selection>
-              <dxi-column dataField="warehouse" dataType="string" [allowEditing]="false"></dxi-column>
-              <dxi-column dataField="location" dataType="string" [allowEditing]="false"></dxi-column>
-              <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="serNo" dataType="string" caption="Serial No"
+              <dxo-selection mode="multiple"></dxo-selection>               
+              <dxi-column dataField="warehouse" width="25%" dataType="string" [allowEditing]="false">               
+              </dxi-column>
+              <dxi-column dataField="location" width="25%" dataType="string" [allowEditing]="false"></dxi-column>
+              <dxi-column *ngIf="selectedInvType == 'SERIAL'" width="20%"  dataField="serNo" dataType="string" caption="Serial No"
                 [allowEditing]="false">
               </dxi-column>
-              <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="tagNo" dataType="string"
+              <dxi-column *ngIf="selectedInvType == 'SERIAL'" width="15%" dataField="tagNo" dataType="string"
                 [allowEditing]="false"></dxi-column>
-              <dxi-column dataField="quantity" [allowEditing]="false"></dxi-column>
-              <!-- <dxi-column *ngIf="selectedInvType === 'SERIAL'" dataField="pickQty"  [visible]="false"   [width]="50"  [formItem]="{visible: false}"  [allowEditing]="false" ></dxi-column> -->
-              <div>
-              <dxi-column *ngIf="selectedInvType != 'SERIAL'" dataField="pickQty" [allowEditing]="true"></dxi-column>
-            </div>
+               <dxi-column *ngIf="selectedInvType == 'BASIC'" width="20%"  dataField="quantity" [allowEditing]="false"></dxi-column>                 
+                <dxo-editing mode="batch"  [allowUpdating]="true"></dxo-editing>              
+               <dxi-column *ngIf="selectedInvType != 'SERIAL'" width="10%" dataField="pickQty" cssClass="pointer-column" [allowEditing]="true">
+                  <dxi-validation-rule type="numeric"></dxi-validation-rule>                                    
+                </dxi-column>
             </dx-data-grid>
           </div>
-          <div class="separator" style="text-align: center; vertical-align:middle;">
+          <div class="separator" style="text-align: center;padding-top: 100px;"  >
             <div>
-              <dx-button stylingMode="contained" text="-->" type="normal" (onClick)="moveToRight()">
+              <dx-button stylingMode="contained" icon="arrowright" type="default" style="width: 40px;
+              height: 40px;" stylingMode="contained" (onClick)="moveToRight()">
               </dx-button> &nbsp;
-              <dx-button stylingMode="contained" text="<--" type="normal" (onClick)="moveToLeft()">
+              <dx-button stylingMode="contained" icon="arrowleft" style="margin-top: 10px; width: 40px;
+              height: 40px;"  type="default" stylingMode="contained" (onClick)="moveToLeft()">
               </dx-button> &nbsp;
             </div>
           </div>
           <div class="column2">
-            <dx-data-grid [dataSource]="tableRight" [height]="200" [showBorders]="true"
+            <dx-data-grid #chglocRighttblGridVar [dataSource]="tableRight" [height]="230" [showBorders]="true"
               [keyExpr]="['invSerialId', 'invBasicId']" (onSelectionChanged)="rightSelectionChanged($event)">
-              <dxo-row-dragging [data]="2" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
-              <dxo-scrolling mode="virtual"></dxo-scrolling>
-              <dxo-selection mode="multiple"></dxo-selection>
+              <!-- <dxo-row-dragging [data]="2" group="tasksGroup"></dxo-row-dragging> -->
+              <dxo-scrolling mode="virtual"></dxo-scrolling>              
               <dxi-column dataField="warehouse" dataType="string"></dxi-column>
               <dxi-column dataField="location" dataType="string"></dxi-column>
               <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="serNo" dataType="string"></dxi-column>
               <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="tagNo" dataType="string"></dxi-column>
-              <dxi-column *ngIf="selectedInvType != 'SERIAL'" dataField="pickQty"></dxi-column>
+              <dxi-column *ngIf="selectedInvType != 'SERIAL'" dataField="quantity"></dxi-column>
+              <dxo-selection mode="multiple"></dxo-selection>
             </dx-data-grid>
+
           </div>
         </div>
       </dxi-item>

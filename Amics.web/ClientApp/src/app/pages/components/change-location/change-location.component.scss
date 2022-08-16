@@ -27,3 +27,21 @@
 .separator{
   min-width: 50px;
 }
+
+.cell-highlighted {
+  background: gray;  
+}
+
+.gridcell{
+  background-color: gray;  
+}
+.dx-iconcls {  
+  font-size: 4em;  
+  width: 40px;  
+  height: 40px;  
+  line-height: normal;  
+}  
+
+.pointer-column {
+  cursor: pointer;
+}
