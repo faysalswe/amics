@@ -5133,7 +5133,8 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE procedure  [dbo].[amics_sp_api_view_sopo]    
+
+ALTER procedure  [dbo].[amics_sp_api_view_sopo]    
  @somainid uniqueidentifier
 as
 BEGIN 
@@ -5143,7 +5144,7 @@ x.solineitem, x.polinesid, x.transferpo, x.itemnumber2, x.description2,x.invtype
 
 (SELECT        ISNULL(dbo.list_itemtypes.itemtype, '') AS itemtype, ISNULL(dbo.so_lines.itemnumber, dbo.po_lines.poitem) AS itemnumber, ISNULL(dbo.so_lines.description, 
                          dbo.po_lines.description) AS description, ISNULL(dbo.po_main.pomain, '') AS pomain, ISNULL(dbo.po_lines.quantity, 0) AS Ordered, ISNULL(dbo.po_lines.unitcost, 0) 
-                         AS unitcost, dbo.po_lines.unitcost * dbo.po_lines.quantity AS extcost, ISNULL(SUM(dbo.inv_receipts.recd_quantity), 0) + ISNULL(SUM(dbo.v_serialqty.serialqty), 0) 
+                         AS unitcost, dbo.po_lines.unitcost * dbo.po_lines.quantity AS extcost, ISNULL(SUM(dbo.inv_receipts.recd_quantity), 0) + ISNULL(SUM(dbo.amics_v_api_serialqty.serialqty), 0) 
                          AS Received, dbo.po_lines.deliverydate, ISNULL(dbo.list_status.status, '') AS status, dbo.so_lines.id AS solinesid, dbo.so_lines.somainid, 
                          ISNULL(dbo.po_main.requisition, '') AS requisition, dbo.so_lines.linenum, dbo.po_main.id AS pomainid, ISNULL(dbo.so_lines.itemnumber, '') AS solineitem, 
                          dbo.po_lines.id AS polinesid, ISNULL(dbo.po_main.transferpo, 0) AS transferpo, ISNULL(dbo.po_lines.poitem, dbo.so_lines.itemnumber) AS itemnumber2, 
@@ -5154,7 +5155,7 @@ FROM            dbo.list_items LEFT OUTER JOIN
                          dbo.so_lines INNER JOIN
                          dbo.po_lines ON dbo.so_lines.id = dbo.po_lines.so_linesid ON dbo.inv_receipts.sources_refid = dbo.po_lines.id ON 
                          dbo.list_items.id = dbo.po_lines.itemsid LEFT OUTER JOIN
-                         dbo.v_serialqty ON dbo.inv_receipts.id = dbo.v_serialqty.id LEFT OUTER JOIN
+                         dbo.amics_v_api_serialqty ON dbo.inv_receipts.id = dbo.amics_v_api_serialqty.id LEFT OUTER JOIN
                          dbo.list_invtypes ON dbo.list_invtypes.id = dbo.list_items.invtypeid LEFT OUTER JOIN
                          dbo.list_status RIGHT OUTER JOIN
                          dbo.po_main ON dbo.list_status.id = dbo.po_main.statusid ON dbo.po_lines.pomainid = dbo.po_main.id
@@ -5168,6 +5169,7 @@ GROUP BY ISNULL(dbo.list_itemtypes.itemtype, ''), ISNULL(dbo.po_lines.poitem, db
 WHERE  x.somainid = @somainid  ORDER BY x.linenum
 
 END
+GO
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
