@@ -1,62 +1,67 @@
 <div class="details-container content-block dx-card responsive-paddings">
   <div class="row">
-    <h6>Select Inquiry Option</h6>
+    <!-- <h6>Select Inquiry Option</h6> -->
   </div>
+  <br>
   <div class="row" style="align-items: center">
-    <dx-form id="form" [colCount]="5">
-      <dxi-item [colSpan]="2">
-        <dx-radio-group [items]="inquiryOptions" [value]="inquiryOptions[0]" layout="horizontal"
-          (onValueChanged)="onValueChanged($event)"></dx-radio-group>
-      </dxi-item>
-      <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-        <dx-text-box [(value)]="searchText" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+    <div class="custom-field">
+      <h1>
+        <span> Select Inquiry Option </span>
+      </h1>
+      <dx-form id="form" [colCount]="7" style="padding: 10px;">
+        <dxi-item [colSpan]="3">
+
+          <dx-radio-group [items]="inquiryOptions" [value]="inquiryOptions[0]" layout="horizontal"
+            (onValueChanged)="onValueChanged($event)"></dx-radio-group>
+
+        </dxi-item>
+        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+          <dx-text-box [(value)]="searchText" [stylingMode]="StylingMode" [labelMode]="LabelMode"
             [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="textBoxLabel" #partNumberVar>
-        </dx-text-box>
+          </dx-text-box>
 
-        <dxi-validation-rule type="required" message="Part Number is required">
-        </dxi-validation-rule>
-    </dxi-item>
-      <dxi-item [colSpan]="1">
-        <dx-button stylingMode="contained" text="search" text-align="center" type="default"
-          (onClick)="searchInquiryDetails()">
-        </dx-button>
-      </dxi-item>
-      <dxi-item [colSpan]="1">
-        <dx-check-box [value]="isCost" text="Include cost" dataField="Include cost"
-          (onValueChanged)="changeCost($event)"></dx-check-box>
-      </dxi-item>
+          <dxi-validation-rule type="required" message="Part Number is required">
+          </dxi-validation-rule>
+        </dxi-item>
+        <dxi-item [colSpan]="1">
+          <dx-button stylingMode="contained" text="search" text-align="center" type="default"
+            (onClick)="searchInquiryDetails()">
+          </dx-button>
+        </dxi-item>
+        <dxi-item [colSpan]="1">
+          <dx-check-box [value]="isCost" text="Include cost" dataField="Include cost"
+            (onValueChanged)="changeCost($event)"></dx-check-box>
+        </dxi-item>
 
-      <!-- <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp;  -->
-    </dx-form>
+        <!-- <dx-check-box text="Obsolete" dataField="obsolete"></dx-check-box> &nbsp;  -->
+      </dx-form>
+    </div>
   </div>
   <br>
   <br>
   <div class="row">
-    <dx-data-grid id="gridContainer" [dataSource]="inquiryResponseDetails" height="65vh" 
-    [showBorders]="true"
-    [showColumnLines]="true" [allowColumnResizing]="true"
-    [allowColumnReordering]="true"
-    [columnAutoWidth]="true"
-    [showRowLines]="true">
+    <dx-data-grid id="gridContainer" [dataSource]="inquiryResponseDetails" height="65vh" [showBorders]="true"
+      [showColumnLines]="true" [allowColumnResizing]="true" [allowColumnReordering]="true" [columnAutoWidth]="true"
+      [showRowLines]="true">
       <dxo-load-panel [enabled]="false"></dxo-load-panel>
       <dxo-scrolling mode="infinite"></dxo-scrolling>
-      <dxi-column dataField="itemtype" caption="Manufacture" width="9%"></dxi-column>
-      <dxi-column dataField="itemnumber" width="9%"></dxi-column>
-      <dxi-column dataField="description"width="23%"></dxi-column>
+      <dxi-column dataField="itemtype" caption="MFR" width="9%"></dxi-column>
+      <dxi-column dataField="itemnumber" width="6.864%"></dxi-column>
+      <dxi-column dataField="description" width="27.141%"></dxi-column>
       <dxi-column dataField="location" width="9%"></dxi-column>
-      <dxi-column dataField="quantity" width="9%"></dxi-column>
+      <dxi-column dataField="quantity" width="9%" alignment="right"></dxi-column>
       <dxi-column dataField="serial" width="9%"></dxi-column>
       <dxi-column dataField="lotno" caption="Tag #" width="8%"></dxi-column>
       <dxi-column dataField="er" caption="ER" width="8%"></dxi-column>
       <dxi-column dataField="mdatin" width="9%"></dxi-column>
-      <dxi-column dataField="cost" [visible]="isCost"width="0"></dxi-column>
+      <dxi-column dataField="cost" [visible]="isCost" width="7%"></dxi-column>
     </dx-data-grid>
   </div>
-    <div class="row"><br /></div>
+  <div class="row"><br /></div>
   <div class="row">
-     <div class="col" style="text-align: center">
-       <dx-button stylingMode="contained" text="print" type="default"> </dx-button>&nbsp;
-       <dx-button stylingMode="contained" text="exit" type="default"> </dx-button>
+    <div class="col" style="text-align: center">
+      <dx-button stylingMode="contained" text="print" type="default"> </dx-button>&nbsp;
+      <dx-button stylingMode="contained" text="exit" type="default"> </dx-button>
     </div>
   </div>
 </div>

@@ -37,7 +37,7 @@
 /* Defining the style of the
             heading/legend for custom fieldset */
 .custom-field h1 {
-    font: 15px normal;
+    font: 14px normal;
     font-weight: 400;
     font-family: Roboto,RobotoFallback,"Noto Kufi Arabic",Helvetica,Arial,sans-serif;
     margin: -16px -8px 0;
@@ -84,3 +84,11 @@
     position: relative;
     top: 8px;
 }
+
+
+
+
+
+// ::ng-deep .hidden-column {
+//     display: none;
+//   }

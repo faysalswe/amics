@@ -46,6 +46,9 @@ import dxNumberBox from 'devextreme/ui/number_box';
 import { Toolbar } from 'devextreme/ui/tree_list';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { isNumber, isNull } from 'util';
+import { BomComponent } from '../bom/bom.component';
+import { PoComponent } from '../po/po.component';
+import { NotesComponent } from '../notes/notes.component';
 @Component({
   selector: 'app-pmdetails',
   templateUrl: './pmdetails.component.html',
@@ -69,6 +72,9 @@ export class PMDetailsComponent implements AfterViewInit {
   @ViewChild('costVar', { static: false }) costVar!: DxTextBoxComponent;
   @ViewChild('markupVar', { static: false }) markupVar!: DxTextBoxComponent;
   @ViewChild('price_num', { static: false }) price_num!: DxTextBoxComponent;
+  @ViewChild('bomComp', { static: false }) bomComp!: BomComponent;
+  @ViewChild('poComp', { static: false }) poComp!: PoComponent;
+  @ViewChild('notesComp', { static: false }) notesComp!: NotesComponent;
 
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
   StylingMode: string = TextboxStyle.StylingMode;
@@ -127,6 +133,7 @@ export class PMDetailsComponent implements AfterViewInit {
   pmSearchResults: pmItemSearchResult[] = [];
   selectedItem: any;
   f2KeyRowIndex = 0;
+  crudStatus: boolean = false;
   @ViewChild('f2partNumberVar', { static: false }) f2partNumberVar! : ElementRef;
   @ViewChild('f2partNumberDesc', { static: false }) f2partNumberDesc! : ElementRef;
 
@@ -234,24 +241,7 @@ export class PMDetailsComponent implements AfterViewInit {
   logEvent(eventName: any) {
     console.log(eventName);
   }
-  onExporting(e: any) {
-    const workbook = new Workbook();
-    const worksheet = workbook.addWorksheet('pmWHLocations');
-
-    exportDataGrid({
-      component: e.component,
-      worksheet,
-      autoFilterEnabled: true,
-    }).then(() => {
-      workbook.xlsx.writeBuffer().then((buffer) => {
-        saveAs(
-          new Blob([buffer], { type: 'application/octet-stream' }),
-          'DataGrid.xlsx'
-        );
-      });
-    });
-    e.cancel = true;
-  }
+  
   ngOnInit(): void {
 
     this.searchService.getItemClass('', '').subscribe((l) => {
@@ -295,6 +285,7 @@ export class PMDetailsComponent implements AfterViewInit {
     });
     this.pmdataTransfer.selectedItemBomForPMDetails$.subscribe((boms) => {
       console.log(boms.length);
+      debugger
       this.bomDetails = boms;
       this.originalBomDetails = [...boms];
       console.log("bom details " + this.bomDetails.length);
@@ -324,16 +315,34 @@ export class PMDetailsComponent implements AfterViewInit {
         this.bomDetails = [];
         this.poDetails = [];
         this.readOnly = false;
+        this.crudStatus = true;
 
         setTimeout(() => {
-          this.AddBomLines();
+          if(this.selectedChild == this.childType.BOM){
+            this.bomComp.AddBomLines();
+          }
+          else if(this.selectedChild == this.childType.PO){
+            this.poComp.AddPoLines();
+          }
+          else if(this.selectedChild == this.childType.Notes){
+            this.notesComp.AddNotesLines();
+          }
         }, 500);
 
       } else if (crud === CRUD.Edit) {
         this.readOnly = false;
+        this.crudStatus = false;
 
         setTimeout(() => {
-          this.AddBomLines();
+          if(this.selectedChild == this.childType.BOM){
+            this.bomComp.AddBomLines();
+          }
+          else if(this.selectedChild == this.childType.PO){
+            this.poComp.AddPoLines();
+          }
+          else if(this.selectedChild == this.childType.Notes){
+            this.notesComp.AddNotesLines();
+          }
         }, 500);
 
       } else if (crud === CRUD.Save) {
@@ -343,6 +352,7 @@ export class PMDetailsComponent implements AfterViewInit {
         // this.onDelete();
         this.popupDeleteVisible = true;
         this.readOnly = true;
+        this.crudStatus = false;
       } else {
         this.readOnly = true;
       }
@@ -352,10 +362,10 @@ export class PMDetailsComponent implements AfterViewInit {
       if (popUp === PopUpAction.UF) {
       } else if (popUp === PopUpAction.VL) {
         this.popupVLVisible = true;
-        this.getLocations();
+        //this.getLocations();
       } else if (popUp === PopUpAction.VS) {
         this.popupVSVisible = true;
-        this.getSerial();
+        //this.getSerial();
       } else if (popUp === PopUpAction.Print) {
       }
     });
@@ -507,8 +517,7 @@ export class PMDetailsComponent implements AfterViewInit {
     useSubmitBehavior: true,
   };
   onSave() {
-
-
+    debugger
     document.getElementById('pmDetailsSubmit')?.click();
 
     if (!this.isFormValid()) {
@@ -518,11 +527,11 @@ export class PMDetailsComponent implements AfterViewInit {
 
     let bomDetails_VisibleRows: pmBomDetails[] = [];
 
-    let bomGridIce = this.dataGrid.instance.getVisibleRows();
+    let bomGridIce = this.bomComp.dataGrid.instance.getVisibleRows();
 
     for (let _i = 0; _i < bomGridIce.length; _i++) {
 
-      if (bomGridIce[_i].data.itemNumber !== undefined && bomGridIce[_i].data.quantity !== undefined) {  
+      if (bomGridIce[_i].data.ref !== undefined && bomGridIce[_i].data.quantity !== undefined) {  
           bomDetails_VisibleRows.push(bomGridIce[_i].data);
         }
 
@@ -546,7 +555,8 @@ export class PMDetailsComponent implements AfterViewInit {
 
     this.pmService.addorUpdatePMDetails(this.pmDetails, uomid).subscribe(
       (x) => {
-        if (this.copyToNewClicked) {
+        debugger
+        if (this.crudStatus) {
           var boms = this.copyToNewBomGridDetails(x.message);
           this.pmService.AddUpdateDeleteBomDetails(boms).subscribe(
             (b) => {
@@ -597,13 +607,8 @@ export class PMDetailsComponent implements AfterViewInit {
   }
 
   convertToBomGridDetails(parentId: string) {
-
-    
-
-    console.log(" parentId " + parentId);
+    debugger
     let bomGridDetails: pmBomGridDetails[] = [];
-
-    console.log(" bomGridDetails " + bomGridDetails.length + " len " + this.bomDetails.length);
 
     if (this.bomDetails.length == 0 && this.originalBomDetails.length == 0) {
       return bomGridDetails;
@@ -611,17 +616,15 @@ export class PMDetailsComponent implements AfterViewInit {
 
     // find inserted
     let newBoms = this.bomDetails.filter(
-      (b) => b.id === '00000000-0000-0000-0000-000000000000'
+      (b) => b.id == '00000000-0000-0000-0000-000000000000'
     );
-
-    console.log("newBoms " + newBoms.length);
 
     if (!!newBoms && newBoms.length > 0) {
       for (let _i = 0; _i < newBoms.length; _i++) {
         let newBom = new pmBomGridDetails();
         newBom.actionFlag = BomAction.Add;
         newBom.parent_ItemsId = parentId;
-        newBom.child_ItemsId = newBoms[_i].itemsid_Child.toString();
+        newBom.child_ItemsId = newBoms[_i]?.itemsid_Child?.toString();
         newBom.lineNum = newBoms[_i].lineNum;
         newBom.quantity = newBoms[_i].quantity.toFixed(2);
         newBom.ref = newBoms[_i].ref;
@@ -629,48 +632,52 @@ export class PMDetailsComponent implements AfterViewInit {
         newBom.comments = newBoms[_i].comments;
         newBom.createdby = this.authService.currentUser.toString();
 
-        console.log("new bom loop " + parentId + " itm " +newBoms[_i].itemsid_Child.toString());
-
         bomGridDetails.push(newBom);
       }
-      console.log("len " + bomGridDetails.length);
-      console.log(bomGridDetails);
     }
 
+    let updatedBoms = this.bomDetails.filter(
+      (b) => b.id != '00000000-0000-0000-0000-000000000000' && b.id != undefined
+    );
+
     //find Updated and deleted
-    for (var _i = 0, boms = this.originalBomDetails; _i < boms.length; _i++) {
-      var bom = new pmBomGridDetails();
-      var originalBom = this.bomDetails.find(
-        (b) => b.id == this.originalBomDetails[_i].id
-      );
-      if (!originalBom) {
-        bom.actionFlag = BomAction.Delete;
-      } else {
-        bom.actionFlag = BomAction.Update;
+    if(updatedBoms && updatedBoms.length > 0){
+      for (var _i = 0, boms = updatedBoms; _i < boms.length; _i++) {
+        var bom = new pmBomGridDetails();
+        var originalBom = updatedBoms.find(
+          (b) => b.id == this.originalBomDetails[_i].id
+        );
+        if (!originalBom) {
+          bom.actionFlag = BomAction.Delete;
+        } else {
+          bom.actionFlag = BomAction.Update;
+        }
+        bom.id = boms[_i].id.toString();
+        bom.parent_ItemsId = parentId;
+        bom.child_ItemsId = boms[_i]?.itemsid_Child?.toString();
+        bom.lineNum = _i + 1;
+        bom.quantity = boms[_i].quantity.toFixed(2);
+        bom.ref = boms[_i].ref;
+        bom.findNo = boms[_i].findNo;
+        bom.comments = boms[_i].comments;
+        bom.createdby = this.authService.currentUser.toString();
+        bomGridDetails.push(bom);
       }
-      bom.id = boms[_i].id.toString();
-      bom.parent_ItemsId = parentId;
-      bom.child_ItemsId = boms[_i].itemsid_Child.toString();
-      bom.lineNum = _i + 1;
-      bom.quantity = boms[_i].quantity.toFixed(2);
-      bom.ref = boms[_i].ref;
-      bom.findNo = boms[_i].findNo;
-      bom.comments = boms[_i].comments;
-      bom.createdby = this.authService.currentUser.toString();
-      bomGridDetails.push(bom);
     }
+    
     console.log("update/delete  " + bomGridDetails.length);
     return bomGridDetails;
   }
 
   copyToNewBomGridDetails(parentId: string) {
+    debugger
     let bomGridDetails: pmBomGridDetails[] = [];
 
     for (var _i = 0, boms = this.bomDetails; _i < boms.length; _i++) {
       var bom = new pmBomGridDetails();
       bom.actionFlag = BomAction.Add;
       bom.parent_ItemsId = parentId;
-      bom.child_ItemsId = boms[_i].itemsid_Child.toString();
+      bom.child_ItemsId = boms[_i]?.itemsid_Child?.toString();
       bom.lineNum = _i + 1;
       bom.quantity = boms[_i].quantity.toFixed(2);
       bom.ref = boms[_i].ref;
@@ -702,6 +709,7 @@ export class PMDetailsComponent implements AfterViewInit {
     this.bomDetails[toIndex].lineNum = toIndex + 1;
   }
   onDelete() {
+    debugger
     this.pmService
       .deletePMDetails(this.pmDetails.itemNumber, this.pmDetails.rev)
       .subscribe((x) => {
@@ -1228,6 +1236,14 @@ cancelSerialPopupButtonOptions = {
 
     cancelSerial(){
       this.updateSerialPopupVisible = false;
+    }
+
+    hideSerial(){
+      this.popupVSVisible = false;
+    }
+
+    hideLocation(){
+      this.popupVLVisible = false
     }
 
 }

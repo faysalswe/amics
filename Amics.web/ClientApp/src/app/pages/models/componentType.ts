@@ -15,5 +15,6 @@ export enum ComponentType {
   BulkTransfer = "bulkTransfer",
   DecreaseInventory = 'DecreaseInventory',
   Designer = 'Designer',
-  Viewer = 'Viewer'
+  Viewer = 'Viewer',
+  ReportItemslist = 'ReportItemslist'
 }
