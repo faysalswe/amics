@@ -201,12 +201,6 @@ export class PMDetailsComponent implements AfterViewInit {
     };
     this.onReorder = this.onReorder.bind(this);
     this.validateItem = this.validateItem.bind(this);
-    this.onSaving = this.onSaving.bind(this);
-    this.rowInserted = this.rowInserted.bind(this);
-    this.rowUpdated = this.rowUpdated.bind(this);
-    this.rowRemoved = this.rowRemoved.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-    this.selectedChanged = this.selectedChanged.bind(this);
     this.setCellValue = this.setCellValue.bind(this);
 
 
@@ -236,10 +230,6 @@ export class PMDetailsComponent implements AfterViewInit {
     setTimeout(() => {
       this.partNumberVar?.instance.focus();
     }, 0);
-  }
-
-  logEvent(eventName: any) {
-    console.log(eventName);
   }
   
   ngOnInit(): void {
@@ -375,7 +365,6 @@ export class PMDetailsComponent implements AfterViewInit {
 
     this.getListItemNumbers();
 
-    //this.AddBomLines();
 
   }
 
@@ -770,77 +759,6 @@ export class PMDetailsComponent implements AfterViewInit {
     this.editRowKey = e.key;
     // ...
   }
-  rowUpdated(e: any) {
-    console.log(e);
-    let key = e.key;
-    let newData = e.newData;
-    let oldData = e.oldData;
-    var item = this.lookupItemNumbers.find(
-      (i) => i.itemNumber == newData.itemNumber
-    );
-    if (!!item) {
-      let bitem = this.bomDetails.find((b) => b.itemNumber === key);
-      if (!!bitem) {
-        bitem.itemNumber = item.itemNumber;
-        bitem.itemtype = item.itemType;
-        bitem.description = item.description;
-        bitem.itemsid_Parent = Guid.parse(this.pmDetails.id);
-        bitem.itemsid_Child = item.id;
-        bitem.rev = item.rev;
-        bitem.uomref = item.uomref;
-        bitem.cost = item.cost;
-        bitem.lineNum = bitem.lineNum;
-        if (!!newData.quantity) {
-          bitem.quantity = newData.quantity;
-        }
-      }
-    }
-  }
-  rowRemoved(e: any) {
-    console.log(e);
-    let lineNum = e.data.lineNum;
-    if (this.bomDetails.length > 0) {
-      for (let i = lineNum; i <= this.bomDetails.length; i++) {
-        this.bomDetails[i - 1].lineNum = i;
-      }
-    }
-  }
-  rowInserted(e: any) {
-    console.log(e);
-    let key = e.key;
-    let newData = e.data;
-    var item = this.lookupItemNumbers.find(
-      (i) =>
-        i.itemNumber.toLocaleLowerCase() ==
-        newData.itemNumber.toLocaleLowerCase()
-    );
-    if (!!item) {
-      let bitem = this.bomDetails.find((b) => b.itemNumber === key);
-      if (!!bitem) {
-        bitem.id = '00000000-0000-0000-0000-000000000000';
-        bitem.itemNumber = item.itemNumber;
-        bitem.itemtype = item.itemType;
-        bitem.description = item.description;
-        bitem.itemsid_Parent = Guid.parse(this.pmDetails.id);
-        bitem.itemsid_Child = item.id;
-        bitem.rev = item.rev;
-        bitem.uomref = item.uomref;
-        bitem.cost = item.cost;
-        bitem.lineNum = this.bomDetails.length;
-        if (!!newData.quantity) {
-          bitem.quantity = newData.quantity;
-        }
-      }
-    }
-  }
-
-  
-  onSaving(e: any) {
-    console.log('onSaving');
-
-
-
-  }
 
   getCellValue() {
     const editRowIndex = this.dataGrid.instance.getRowIndexByKey(
@@ -851,28 +769,12 @@ export class PMDetailsComponent implements AfterViewInit {
     }
     return null;
   }
-  onKeyDown(e: any) {
-    if (this.readOnly) {
-      return;
-    }
-    console.log(e);
-    if (e.event.ctrlKey && e.event.key === 'ArrowDown') {
-      this.dataGrid.instance.saveEditData();
-      this.addRow();
-    } else if (e.event.ctrlKey && e.event.key === 'F2') {
-      this.popupF2Visible = true;
-    }
-  }
-
+  
   addRow() {
     this.dataGrid.instance.addRow();
     this.dataGrid.instance.deselectAll();
   }
 
-  selectedChanged(e: any) {
-    console.log(e);
-    this.selectedRowIndex = e.component.getRowIndexByKey(e.selectedRowKeys[0]);
-  }
   editRow(key: any) {
     //let selectedRowIndex = this.dataGrid.instance.getRowIndexByKey(key);
     let selectedRowIndex = this.bomDetails.findIndex(
@@ -894,37 +796,6 @@ export class PMDetailsComponent implements AfterViewInit {
     this.dataGrid.instance.cellValue(selectedRowIndex, 6, newData.extCost);
   }
 
-  submitSerialPopupButtonOptions = {
-    text: "Save and exit",
-    useSubmitBehavior: true,
-    type: "default"
-};
-
-cancelSerialPopupButtonOptions = {
-    text: "Cancel and exit",
-    useSubmitBehavior: true,
-    type: "default"
-
-};
-  updateSerialPopupVisible: boolean = false;
-  changeSerialSearchInfo: changeSerial = new changeSerial();
-  onRowSelection(e: any) {
-    let selectedRow = e.data;
-    this.changeSerialSearchInfo.serNoFm = selectedRow?.serlot;
-    this.changeSerialSearchInfo.serNoTo = selectedRow?.serlot;
-    this.changeSerialSearchInfo.tagNoFm = selectedRow?.tagcol;
-    this.changeSerialSearchInfo.tagNoTo = selectedRow?.tagcol;
-    this.changeSerialSearchInfo.modelFm = selectedRow?.color_model;
-    this.changeSerialSearchInfo.modelTo = selectedRow?.color_model;
-    this.changeSerialSearchInfo.costFm = selectedRow?.cost;
-    this.changeSerialSearchInfo.costTo = selectedRow?.cost;
-
-    this.changeSerialSearchInfo.serialId = selectedRow?.id;
-  }
-
-  edit() {
-    this.updateSerialPopupVisible = true;
-  }
 
   openMFRCodeBox() {
     this.mfrVar?.instance.open();
@@ -948,174 +819,6 @@ cancelSerialPopupButtonOptions = {
 
   openLocationCodeBox() {
     this.locationVar?.instance.open();
-  }
-
-  test(e: any) {
-    console.log(e);
-    console.log(e.row.data);
-  }
-
-  onInitialized(e:any){
-
-    console.log('onInitialized');
-    //this.AddBomLines();
-
-
-  }
-
-  onToolbarPreparing(e:any) {
-    e.toolbarOptions.visible = false;
-  }
-
-  AddBomLines() {
-
-   //const dataSource = this.dataGrid.instance.getDataSource();
-   // console.log( dataSource.items().length);
-
-    for(let i=0;i< this.bomDefaultRow;i++){
-      console.log('for--------');
-      this.dataGrid.instance.addRow();
-
-    }
-
-    let rows = this.dataGrid.instance.getVisibleRows();
-    let rowCount = rows.length;
-
-    let  rowIndex = rows.find(obj=>obj.data.itemNumber === undefined)?.rowIndex;
-
-    console.log(rows);
-    console.log(rowIndex);
-
-    for(let i=0;i<rowCount;i++){
-      this.dataGrid.instance.cellValue(i, 1, i+1);
-    }
-
-    setTimeout(() => {
-       this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(Number(rowIndex),"itemNumber") as HTMLElement);
-    }, 300);
-
-  }
-
-  onEditorPreparing(e: any) {
-
-    if (e.dataField === 'itemNumber' && e.parentType === 'dataRow') {
-
-
-      const defaultValueChangeHandler = e.editorOptions.onValueChanged;
-
-      e.editorOptions.onKeyDown = function (this: any, args: any) {
-
-        if (args.event.keyCode == 113){
-          console.log(this);
-          console.log(args);
-          this.basicPopupVisible = true;
-          this.f2KeyRowIndex =  e.row.rowIndex;
-        }
-      }.bind(this);
-
-      e.editorOptions.onValueChanged = function (this: any, args: any) {
-
-
-        let rows = this.dataGrid.instance.getVisibleRows();
-
-        let  itemLen = rows.filter((obj:any)=>obj.data.itemNumber?.toLowerCase() === args.value.toLowerCase())?.length;
-
-        if(itemLen>0){
-            alert('Item Number '+ args.value+' already added');
-            this.dataGrid.instance.cellValue(
-              e.row.rowIndex,
-              3,
-              ''
-            );
-            setTimeout(() => {
-              this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(e.row.rowIndex, "itemNumber"));
-            }, 300);
-
-        }
-        else{
-
-        let cellInfo = new pmSearch();
-        cellInfo.itemnumber = args.value;
-
-        this.searchService
-          .getItemNumberSearchResults(cellInfo)
-          .subscribe((response: pmItemSearchResult[]) => {
-
-
-            let obj = response?.find(
-              (x: pmItemSearchResult) =>
-                x.itemNumber.toLowerCase() == cellInfo.itemnumber.toLowerCase()
-            );
-
-            if (!!obj) {
-              this.dataGrid.instance.cellValue(e.row.rowIndex, 2, obj.itemType);
-              this.dataGrid.instance.cellValue(
-                e.row.rowIndex,
-                3,
-                obj.itemNumber
-              );
-              this.dataGrid.instance.cellValue(
-                e.row.rowIndex,
-                4,
-                obj.description
-              );
-
-              this.dataGrid.instance.cellValue(e.row.rowIndex, 6, obj.uomref);
-              this.dataGrid.instance.cellValue(e.row.rowIndex, 8, obj.cost);
-
-              this.dataGrid.instance.cellValue(e.row.rowIndex, 10, "00000000-0000-0000-0000-000000000000");
-              this.dataGrid.instance.cellValue(e.row.rowIndex, 11, obj.id);
-
-            } else {
-
-              alert('Invalid Itemnumber');
-
-              setTimeout(() => {
-                this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(e.row.rowIndex, "itemNumber"));
-              }, 300);
-
-            }
-          });
-
-        }
-
-      }.bind(this);
-
-    }
-
-    if (e.dataField === 'quantity' && e.parentType === 'dataRow') {
-      const defaultValueChangeHandler = e.editorOptions.onValueChanged;
-
-      e.editorOptions.onValueChanged = function (this: any, args: any) {
-
-        let costElement = this.dataGrid.instance.getCellElement(e.row.rowIndex, "cost");
-        this.dataGrid.instance.cellValue(
-          e.row.rowIndex,
-          5,
-          Number(args.value)
-        );
-        this.dataGrid.instance.cellValue(e.row.rowIndex, 9, e.row.data.cost * Number(args.value));
-        //this.dataGrid.instance.saveEditData();
-
-      }.bind(this);
-    }
-
-
-      if (e.dataField === 'ref' && e.parentType === 'dataRow') {
-
-       const defaultValueChangeHandler = e.editorOptions.onb;
-
-      e.editorOptions.onFocusOut = function (this: any, args: any) {
-
-        if(e.row.rowIndex === this.dataGrid.instance.getVisibleRows().length-1){
-            this.AddBomLines();
-        }
-
-      }.bind(this);
-     }
-
-
-
   }
 
   onF2Submit(form: FormGroup) {
@@ -1212,30 +915,6 @@ cancelSerialPopupButtonOptions = {
             this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(Number(this.f2KeyRowIndex),"quantity") as HTMLElement);
          }, 300);
         }
-    }
-
-
-    saveSerial(e: any){
-      debugger
-      this.changeSerialSearchInfo.costFm = this.changeSerialSearchInfo.costFm.toString();
-      this.changeSerialSearchInfo.costTo = this.changeSerialSearchInfo.costTo.toString();
-  
-      this.pmService.updateChangeSerialTag(this.changeSerialSearchInfo)
-          .subscribe((res: any) => {
-            this.updateSerialPopupVisible = false;
-            this.getSerial();
-          }, 
-          err => {
-            notify({ message: "Error occured during update serial", shading: true, position: top }, "error", 1500) 
-          
-          });
-  
-      e.preventDefault();
-      //alert("save clicked")
-    }
-
-    cancelSerial(){
-      this.updateSerialPopupVisible = false;
     }
 
     hideSerial(){
