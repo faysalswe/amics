@@ -4,10 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Aims.Core.Models;
-using Aims.PartMaster.Models;
-using Aims.PartMaster.Services;
 using Microsoft.Data.SqlClient;
+using Aims.PartMaster.Models;
 
 namespace Aims.Core.Services
 {
@@ -25,26 +23,15 @@ namespace Aims.Core.Services
         List<LstInvSerLot> ViewFromProjTransfer(string soMain);
         List<LstInvSerLot> ViewToProjTransfer(string soMain);
 
-        List<LstInvSerLot> ViewProjTransferRowClicked(string itemsid, string somainid, string tosomainid, string invtype, string itemno, string transoption)
+        List<LstInvSerLot> ViewProjTransferRowClicked(string itemsid, string somainid, string tosomainid, string invtype, string itemno, string transoption);
     }
     public class SalesOrderService: ISalesOrderService
     {
-        private readonly AmicsDbContext _amicsDbContext;
-        private readonly IInventoryService _inventoryService;
-        private readonly IBulkTransferService _bulkTransferService;
+        private readonly AmicsDbContext _amicsDbContext;     
         Utility util = new Utility();
-        //private IFavoritesService favService;
-
-        //public AddedInfoFavoritesService(IFavoritesService favService)
-        //{
-        //    this.favService = favService;
-        //}
-        public SalesOrderService(AmicsDbContext aimsDbContext, IInventoryService invService, IBulkTransferService bulkTransferService)
-        //public SalesOrderService(AmicsDbContext aimsDbContext)
+        public SalesOrderService(AmicsDbContext aimsDbContext)
         {
-            _amicsDbContext = aimsDbContext;
-            _inventoryService = invService;
-            _bulkTransferService = bulkTransferService;
+            _amicsDbContext = aimsDbContext;       
         }
 
         /// <summary>
@@ -62,8 +49,7 @@ namespace Aims.Core.Services
                     sqlCommand.CommandText = "amics_sp_api_search_SoOnOpen";
                     conn.Open();
 
-                    sqlCommand.CommandType = CommandType.StoredProcedure;
-                    //sqlCommand.Parameters.Add(new SqlParameter("@projectid", string.IsNullOrWhiteSpace(projectId) ? string.Empty : projectId));
+                    sqlCommand.CommandType = CommandType.StoredProcedure;                    
                     
                     var dataReader = sqlCommand.ExecuteReader();
                     while (dataReader.Read())
@@ -456,10 +442,7 @@ namespace Aims.Core.Services
                 sqlCommand.Parameters.Add(new SqlParameter("@budget", somain.Budget));
                 sqlCommand.Parameters.Add(new SqlParameter("@createdby", "admin"));
                 sqlCommand.Parameters.Add(new SqlParameter("@mdatIn", somain.MdatIn));
-                sqlCommand.Parameters.Add(new SqlParameter("@org", somain.Org));
-                //sqlCommand.ExecuteNonQuery();
-                //var command2 = _amicsDbContext.Database.GetDbConnection().CreateCommand();
-                //command2.CommandText = "select id from list_items where itemnumber='" + item.ItemNumber + "' and rev='" + revDef + "'";
+                sqlCommand.Parameters.Add(new SqlParameter("@org", somain.Org));              
                 var dataReader = sqlCommand.ExecuteReader();
                 if (dataReader.Read())
                 {
@@ -529,8 +512,7 @@ namespace Aims.Core.Services
                             command.Dispose();
                         }
                         catch (Exception ex)
-                        {
-                            //Log.ErrorLog(ex.Message, "Maintain : MaintainItemsBom");
+                        {                           
                         }
                         finally
                         {
@@ -666,22 +648,13 @@ namespace Aims.Core.Services
                         invSerLot.SoLinesId = sqlDataReader["solinesid"].ToString();
 
                         invSerLot.LineNum = Convert.ToInt32(sqlDataReader["linenum"].ToString());
-
-                        //invSerLot.Qtystring = String.Format("{0:0." + strQty + "}", sqlDataReader["Available"]);
-
+                   
                         if (sqlDataReader["sncost"] != DBNull.Value)
                             invSerLot.Cost = Convert.ToDouble(sqlDataReader["sncost"].ToString());
 
-                       // invSerLot.Coststring = String.Format("{0:0." + strCurr + "}", sqlDataReader["sncost"]);
-
-
+          
                         if (sqlDataReader["cost"] != DBNull.Value)
                             invSerLot.Cost = Convert.ToDouble(sqlDataReader["cost"].ToString());
-
-
-                        //if (sqlDataReader["sncost"] == DBNull.Value)
-                        //    invSerLot.Coststring = String.Format("{0:0." + strCurr + "}", sqlDataReader["cost"]);
-
 
                         lstInvSerLot.Add(invSerLot);
 
@@ -749,8 +722,7 @@ namespace Aims.Core.Services
             int TransNum = 0;
 
             string fromLocationId = "", toLocationId = "", sameWarehouse = "", sameLocation = "", previousItemsID = "";
-            var canSpExecute = 0; var spExecuted = 0;
-            // msgModel.Message = Convert.ToString(_bulkTransferService.ValidateLocation(toWarehouse, toLocation));
+            var canSpExecute = 0; var spExecuted = 0;            
             toLocationId = Convert.ToString(GetLocationID(toWarehouse, toLocation));            
             ////trans.sp_rec = Convert.ToInt32(_inventoryService.TransNumberRec());
             TransNum = GetTransLogNum();
@@ -768,8 +740,8 @@ namespace Aims.Core.Services
 
                 if (canSpExecute == 1)
                 {
-                    ExecuteSpTransferProjTrans(TransNum, userName, soMain, toSoMain, fromSoLine, toSoLine, toSolinesId);                    
-                    trans.sp_rec = Convert.ToInt32(_inventoryService.TransNumberRec());
+                    ExecuteSpTransferProjTrans(TransNum, userName, soMain, toSoMain, fromSoLine, toSoLine, toSolinesId);
+                    TransNum = GetTransLogNum();
                     canSpExecute = 0;
                     spExecuted = 1;
                 }

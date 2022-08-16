@@ -199,6 +199,14 @@ export class ChangeLocationComponent {
         this.tableRight = r;      
       });
 
+      let chgLocRows = this.chglocGridVar.instance.getVisibleRows();        
+
+      for (let _i = 0; _i < chgLocRows.length; _i++) {          
+        if (chgLocRows[_i].data.pickQty !== undefined) {               
+          console.log("pick  " + chgLocRows[_i].data.pickQty + " i val " +_i );               
+          this.chglocGridVar.instance.cellValue(_i, 4, '');
+        }          
+      } 
     });
   }
 
@@ -284,32 +292,34 @@ export class ChangeLocationComponent {
                 this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
               }, 300);         
           }
-          else if (Number(args.value) === 0)  {
+          else if (Number(args.value) < 0)  {
             alert("Invalid Pick Qty");
             this.chglocGridVar.instance.cellValue(
-              e.row.rowIndex,
-              4,
-              '');                
+              e.row.rowIndex, 4, '');                
               setTimeout(() => {
                 this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
               }, 300); 
           }
-          // else if (!isNaN(args.value))  {
-          //   alert("Invalid Pick Qty");
-          //   this.chglocGridVar.instance.cellValue(
-          //     e.row.rowIndex,
-          //     4,
-          //     '');                
-          //     setTimeout(() => {
-          //       this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
-          //     }, 300); 
-          // }
+          else if (Number(args.value) < 0)  {
+            alert("Invalid Pick Qty");
+            this.chglocGridVar.instance.cellValue(
+              e.row.rowIndex, 4, '');                
+              setTimeout(() => {
+                this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
+              }, 300); 
+          }
+          else if (!Number(args.value))  {
+            alert("Invalid Pick Qty");
+            this.chglocGridVar.instance.cellValue(
+              e.row.rowIndex, 4, '');                
+              setTimeout(() => {
+                this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
+              }, 300); 
+          }
           else if (args.value.length === 0) {
             alert("Enter Pick Qty");
             this.chglocGridVar.instance.cellValue(
-              e.row.rowIndex,
-              4,
-              '');                
+              e.row.rowIndex, 4, '');                
               setTimeout(() => {
                 this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
               }, 300); 
@@ -326,10 +336,9 @@ export class ChangeLocationComponent {
     }
 
   
-  onFocusedRowChanged(e: any) {   
-    alert("on focus row changed");
+  onFocusedRowChanged(e: any) 
+  {      
     console.log(e.row.data);
-
     const rowData = e.row && e.row.data;   
 
     if (rowData) {
@@ -346,8 +355,7 @@ export class ChangeLocationComponent {
         let chgLocRows = this.chglocGridVar.instance.getVisibleRows();
               
         let rowIndex = chgLocRows.find(obj=>obj.data.warehouse === undefined)?.rowIndex;  
-        console.log("chgLocRows[0].data.pickQty  " + chgLocRows[0].data.pickQty);
-        
+                
         for (let _i = 0; _i < chgLocRows.length; _i++) {          
           console.log("inside " + chgLocRows[_i].data.pickQty);
           if (chgLocRows[_i].data.pickQty !== undefined) {   

@@ -5,7 +5,7 @@ using System.Text;
 namespace Aims.Core.Models
 {
     public class LstChangeLocSearch
-    {
+    {      
         public string Project { get; set; }
         public string Name { get; set; }
         public string SoMain { get; set; }
@@ -23,7 +23,8 @@ namespace Aims.Core.Models
         public string SerNo { get; set; }
         public string TagNo { get; set; }
         public string InvSerialId { get; set; }
-        public string InvBasicId { get; set; }        
+        public string InvBasicId { get; set; }
+        public double Cost { get; set; }     
 
     }
 }

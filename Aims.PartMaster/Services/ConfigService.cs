@@ -29,6 +29,7 @@ namespace Aims.Core.Services
         LstMessage AddSecUserDetails(LstUser userinfo);
         LstMessage AddSecUserAccessDetails(List<LstUserAccess> userAccess);
         LstMessage AddSecWhAccessDetails(List<LstAccessWarehouse> whAccess);
+        LstMessage GetUserAccessByAccessNum(string userId, string accessNum);
 
     }
 
@@ -472,6 +473,44 @@ namespace Aims.Core.Services
                 }
             }
             return new LstMessage { Message = strResult };
+        }
+
+        /// <summary>
+        /// API Service to get sec_users_access.readonly access for passing userid and accessnumber. If readonly access is 0, then user cannot access the screen/page
+        /// </summary>
+        /// <param name="userId">userId</param> 
+        /// <param name="accessNum">access Number</param> 
+        public LstMessage GetUserAccessByAccessNum(string userId, string accessNum)
+        {
+            List<LstUserAccess> lstUserAccess = new List<LstUserAccess>();
+            var secUserAccess = "";
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_get_secuseraccessnum";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    sqlCommand.Parameters.Add(new SqlParameter("@userId", string.IsNullOrWhiteSpace(userId) ? string.Empty : userId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@accessNum", string.IsNullOrWhiteSpace(accessNum) ? string.Empty : accessNum));
+                    var dataReader = sqlCommand.ExecuteReader();
+                    if (dataReader.Read())
+                    {
+                        secUserAccess = dataReader["readonly"].ToString();
+                    }
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return new LstMessage { Message = secUserAccess };
         }
     }
 }
