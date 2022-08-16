@@ -22,9 +22,14 @@ namespace Aims.Core.Services
         LstMessage ProjTransferUpdate(List<LstProjectTransData> ProjectTransferData);       
         List<LstInvSerLot> ViewFromProjTransfer(string soMain);
         List<LstInvSerLot> ViewToProjTransfer(string soMain);
-
         List<LstInvSerLot> ViewProjTransferRowClicked(string itemsid, string somainid, string tosomainid, string invtype, string itemno, string transoption);
+        List<LstShipments> GetSoShipments(string soMainId);
+        string ValidatePackListNumber(string packListNumber);
+        List<LstPoOnSo> GetSoPurchaseOrder(string SoMainId);
+        List<LstSoLines> CreatePOfmSO(string SoMain, string level);
+        List<LstDocumentFields> GetDocuments(string SoMainId);
     }
+
     public class SalesOrderService: ISalesOrderService
     {
         private readonly AmicsDbContext _amicsDbContext;     
@@ -1118,5 +1123,339 @@ namespace Aims.Core.Services
             }
             return lstInvSerLot.ToList();
         }
+
+
+        //---------------------------------- Sales Order - Option Shipments ------------------------------------------------------
+        /// <summary>
+        /// API Service to populate data in the SO Shipments grid      
+        /// <param name="soMainId">soMainId</param>       
+        /// </summary>            
+        public List<LstShipments> GetSoShipments(string soMainId)
+        {
+            List<LstShipments> lstShipments = new List<LstShipments>();
+            string strCurr = util.ReturnZeros(2);
+            string strQty = util.ReturnZeros(2);
+
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_so_getshipments";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    sqlCommand.Parameters.Add(new SqlParameter("@somain", soMainId));
+                    var dataReader = sqlCommand.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        LstShipments shipment = new LstShipments();
+
+                        shipment.ItemNumber = dataReader["itemnumber"].ToString();
+                        shipment.Rev = dataReader["revision"].ToString();
+                        shipment.Description = dataReader["description"].ToString();
+                        shipment.ShipDate = dataReader["shipdate"].ToString();
+                        shipment.PackList = dataReader["packlist"].ToString();
+                        shipment.CustPo = dataReader["custpo"].ToString();
+
+                        if ((dataReader["shippedqty"] != DBNull.Value) || (dataReader["shippedqty"].ToString() != ""))
+                        {
+                            shipment.ShippedQuantity = String.Format("{0:0." + strQty + "}", dataReader["shippedqty"]);
+                        }
+
+                        shipment.EstDate = dataReader["estshipdate"].ToString();
+                        shipment.ShippedBy = dataReader["createdby"].ToString();
+                        shipment.MdatOut = dataReader["mdatout"].ToString();
+                        lstShipments.Add(shipment);
+                    }
+                    sqlCommand.Dispose();
+                    dataReader.Close();
+
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return lstShipments.ToList();
+        }
+
+
+        /// <summary>
+        /// API Service to validate packlist no on clicking VoidShip button, 
+        /// it redirects to report page if packlist number exists        
+        /// <param name="soMain">soMain</param>       
+        /// </summary>            
+        public string ValidatePackListNumber(string packListNumber)
+        {
+            string isValid = "0";
+
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_soshipment_validpacklstnum";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    sqlCommand.Parameters.Add(new SqlParameter("@packlstnum", packListNumber));
+                    var dataReader = sqlCommand.ExecuteReader();
+
+                    if (dataReader.Read())
+                    {
+                        isValid = "1";
+                    }
+                    sqlCommand.Dispose();
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return isValid;
+        }
+        //---------------------------------- Sales Order - Option Purchase Order  ------------------------------------------------------
+
+        /// <summary>
+        /// API Service to populate purchase order details in SO         
+        /// <param name="SoMainId">SoMainId</param>       
+        /// </summary>            
+        public List<LstPoOnSo> GetSoPurchaseOrder(string SoMainId)
+        {
+            string strCurr = util.ReturnZeros(2);
+            string strQty = util.ReturnZeros(2);
+            List<LstPoOnSo> lstPoOnSo = new List<LstPoOnSo>();
+
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_view_sopo";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    sqlCommand.Parameters.Add(new SqlParameter("@somainid", SoMainId));
+                    var dataReader = sqlCommand.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        LstPoOnSo objPoOnSo = new LstPoOnSo();
+                        objPoOnSo.dummy1 = dataReader["dummy1"].ToString();
+                        objPoOnSo.dummy2 = dataReader["dummy2"].ToString();
+                        objPoOnSo.ItemType = dataReader["itemtype"].ToString();
+                        objPoOnSo.ItemNumber = dataReader["itemnumber"].ToString();
+                        objPoOnSo.Desc = dataReader["description"].ToString();
+                        objPoOnSo.PoMain = dataReader["pomain"].ToString();
+
+                        if ((dataReader["Ordered"] != DBNull.Value) || (dataReader["Ordered"].ToString() != ""))
+                        {
+                            objPoOnSo.OrderdQty = String.Format("{0:0." + strQty + "}", dataReader["Ordered"]);
+                        }
+                        if ((dataReader["Received"] != DBNull.Value) || (dataReader["Received"].ToString() != ""))
+                        {
+                            objPoOnSo.ReceivedQty = String.Format("{0:0." + strQty + "}", dataReader["Received"]);
+                        }
+
+                        if ((dataReader["unitcost"] != DBNull.Value) || (dataReader["unitcost"].ToString() != ""))
+                        {
+                            objPoOnSo.UnitCost = String.Format("{0:0." + strCurr + "}", dataReader["unitcost"]);
+                        }
+
+                        if ((dataReader["extcost"] != DBNull.Value) || (dataReader["extcost"].ToString() != ""))
+                        {
+                            objPoOnSo.ExtCost = String.Format("{0:0." + strCurr + "}", dataReader["extcost"]);
+                        }
+
+                        if (dataReader["deliverydate"] != DBNull.Value)
+                        {
+                            objPoOnSo.DeliveryDate = String.Format("{0:MM/dd/yy}", Convert.ToDateTime((dataReader["deliverydate"])));
+                        }
+                        else
+                            objPoOnSo.DeliveryDate = "";
+
+
+                        objPoOnSo.InvType = dataReader["invtype"].ToString();
+
+                        objPoOnSo.PoMainId = dataReader["pomainid"].ToString();
+                        objPoOnSo.POLinesId = dataReader["polinesid"].ToString();
+                        lstPoOnSo.Add(objPoOnSo);
+                    }
+                    sqlCommand.Dispose();
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return lstPoOnSo.ToList();
+        }
+
+        /// <summary>
+        /// API Service to Create Requistion/PO, popup opens with level "use current level/lower level" on clicking "Create PO" button
+        /// To populate data based on the selection of level 
+        /// <param name="SoMainId">SoMainId</param>       
+        /// </summary>            
+        public List<LstSoLines> CreatePOfmSO(string SoMain, string level)
+        {
+            string strCurr = util.ReturnZeros(2);
+            string strQty = util.ReturnZeros(2);
+            List<LstSoLines> lstSoLines = new List<LstSoLines>();
+
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    if (level == "Current Level")
+                    {
+                        sqlCommand.CommandText = "amics_sp_api_view_sopocreate";
+                        sqlCommand.CommandType = CommandType.StoredProcedure;
+                        conn.Open();
+                        sqlCommand.Parameters.Add(new SqlParameter("@somain", SoMain));
+                        var dataReader = sqlCommand.ExecuteReader();
+
+                        while (dataReader.Read())
+                        {
+                            LstSoLines solines = new LstSoLines();
+                            solines.SoLineId = dataReader["id"].ToString();
+                            solines.Line = Convert.ToInt16(dataReader["linenum"]);
+                            solines.ItemsId = dataReader["itemsid"].ToString();
+                            solines.ItemNumber = dataReader["itemnumber"].ToString();
+                            solines.Rev = dataReader["revision"].ToString();
+                            solines.Description = dataReader["description"].ToString();
+
+                            solines.Qty = dataReader["quantity"].ToString();
+                            solines.ShippedQty = dataReader["pickedQty"].ToString();
+                            solines.Uom = dataReader["uom"].ToString();
+
+                            solines.Cost = Convert.ToDouble(dataReader["unitcost"]);
+                            solines.ExtCost = Convert.ToDouble(dataReader["extCost"]);
+
+                            solines.CostStr = String.Format("{0:0." + strCurr + "}", dataReader["unitcost"]);
+
+                            solines.CostStr1 = String.Format("{0:0." + strCurr + "}", dataReader["cost"]);
+                            solines.CostStr2 = String.Format("{0:0." + strCurr + "}", dataReader["pricemarkup"]);
+                            solines.CostStr4 = String.Format("{0:0." + strCurr + "}", dataReader["pmcostmarkup"]);
+
+                            solines.ExtCostStr = String.Format("{0:0." + strCurr + "}", dataReader["extCost"]);
+                            solines.QtyStr = String.Format("{0:0." + strQty + "}", dataReader["sopoqty"]);
+                            solines.ShippedQtyStr = String.Format("{0:0." + strQty + "}", dataReader["pickedQty"]);
+
+                            solines.MarkupStr = String.Format("{0:0." + strQty + "}", dataReader["markup"]);
+
+                            solines.ItemType = dataReader["itemtype"].ToString();
+
+                            solines.User1 = dataReader["user1"].ToString();
+                            solines.EstShipDate = dataReader["estshipdate"].ToString();
+                            solines.ShipDate = dataReader["shipdate"].ToString();
+                            solines.WarrantyYears = dataReader["warranty_years"].ToString();
+                            solines.WarrantyDays = dataReader["warranty_days"].ToString();
+                            solines.Markup = Convert.ToDouble(dataReader["markup"]);
+                            solines.SoLinesNotes = dataReader["solinesnotes"].ToString();
+                            solines.CustomersItemsId = dataReader["customerItem"].ToString();
+                            solines.Obsolete = dataReader["obsolete"].ToString();
+                            lstSoLines.Add(solines);
+                        }
+                        dataReader.Close();
+                    }
+                    else
+                    {
+                        //Lower level
+                        sqlCommand.CommandText = "amics_sp_api_summarized_bom_solines_po";
+                        sqlCommand.CommandType = CommandType.StoredProcedure;
+                        conn.Open();
+                        sqlCommand.Parameters.Add(new SqlParameter("@somain", SoMain));
+                        var dataReader = sqlCommand.ExecuteReader();
+
+                        while (dataReader.Read())
+                        {
+                            LstSoLines solines = new LstSoLines();
+
+                            solines.SoLineId = dataReader["childid"].ToString();
+                            solines.ItemNumber = dataReader["itemnumber"].ToString();
+                            solines.Rev = dataReader["rev"].ToString();
+                            solines.Description = dataReader["description"].ToString();
+                            solines.Qty = dataReader["totalqty"].ToString();
+                            solines.Uom = dataReader["uom"].ToString();
+                            solines.Cost = Convert.ToDouble(dataReader["unitcost"]);
+                            solines.CostStr = String.Format("{0:0." + strCurr + "}", dataReader["unitcost"]);
+                            solines.QtyStr = String.Format("{0:0." + strQty + "}", dataReader["totalqty"]);
+                        }
+                        dataReader.Close();
+                    }
+                    sqlCommand.Dispose();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return lstSoLines.ToList();
+        }
+
+        //On clicking button CreatePO, it redirects to Maintain Purchase Order
+        //---------------------------------- Sales Order - Option Documents ------------------------------------------------------
+        /// <summary>
+        /// API Service to get documents details
+        /// <param name="SoMainId">SoMainId</param>       
+        /// </summary>            
+        public List<LstDocumentFields> GetDocuments(string SoMainId)
+        {
+            List<LstDocumentFields> lstDocumentField = new List<LstDocumentFields>();
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_list_documents";
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    sqlCommand.Parameters.Add(new SqlParameter("@somainid", SoMainId));
+                    var dataReader = sqlCommand.ExecuteReader();
+
+                    while (dataReader.Read())
+                    {
+                        LstDocumentFields docField = new LstDocumentFields();
+
+                        docField.Id = dataReader["id"].ToString();
+                        docField.LineNumber = dataReader["linenum"].ToString();
+                        docField.docName = dataReader["filename"].ToString();
+                        docField.ParentId = dataReader["parentid"].ToString();
+
+                        lstDocumentField.Add(docField);
+                    }
+                    sqlCommand.Dispose();
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return lstDocumentField.ToList();
+        }
+
     }
 }

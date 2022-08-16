@@ -197,5 +197,66 @@ namespace Amics.Api.Controllers
 
             return lstProjTrans;
         }
+
+        /// <summary>
+        /// API Controller to populate data in the SO Shipments grid            
+        /// <param name="soMainId">soMainId</param>               
+        ///</summary>  
+        [HttpGet, Route("GetSoShipments")]
+        public List<LstShipments> GetSoShipments([FromQuery] string soMainId)
+        {
+            var lstShipments = _salesOrderService.GetSoShipments(soMainId);
+
+            return lstShipments;
+        }
+
+
+        /// <summary>
+        /// API Controller to populate data in the SO Shipments grid            
+        /// <param name="soMainId">soMainId</param>               
+        ///</summary>  
+        [HttpGet, Route("ValidatePackListNum")]
+        public string ValidatePackListNumber([FromQuery] string packlstNum)
+        {
+            var validPacklstNum = _salesOrderService.ValidatePackListNumber(packlstNum);
+
+            return validPacklstNum;
+        }
+
+        /// <summary>
+        /// API Controller to populate data in the SO Shipments grid            
+        /// <param name="soMainId">soMainId</param>               
+        ///</summary>  
+        [HttpGet, Route("GetSoPurchaseOrder")]
+        public List<LstPoOnSo> GetSoPurchOrder([FromQuery] string soMainId)
+        {
+            var lstSoPurchOrder = _salesOrderService.GetSoPurchaseOrder(soMainId);
+
+            return lstSoPurchOrder;
+        }
+
+        /// <summary>
+        /// API Controller to populate data in the SO Shipments grid            
+        /// <param name="soMain">soMain</param>               
+        ///</summary>  
+        [HttpGet, Route("GetSoCreatePO")]
+        public List<LstSoLines> CreatePOfmSO([FromQuery] string soMain, [FromQuery] string level)
+        {
+            var lstSocreatePo = _salesOrderService.CreatePOfmSO(soMain, level);
+
+            return lstSocreatePo;
+        }
+
+        /// <summary>
+        /// API Controller to populate data in the SO Shipments grid            
+        /// <param name="soMainId">soMainId</param>               
+        ///</summary>  
+        [HttpGet, Route("GetLstDocuments")]
+        public List<LstDocumentFields> GetDocuments([FromQuery] string SoMainId)
+        {
+            var lstDocuments = _salesOrderService.GetDocuments(SoMainId);
+
+            return lstDocuments;
+        }
     }
 }

@@ -5083,3 +5083,247 @@ end
 Go
 
 --------------------------------------------------------------------------------------------------------------------------------------------------
+
+--Sales Order - Option Shipments
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_soshipment_validpacklstnum]    Script Date: 15-08-2022 06:46:19 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_soshipment_validpacklstnum]     
+@packlstnum varchar(50)
+
+AS    
+BEGIN   
+	
+	Select distinct packlist from dbo.inv_soship inner join inv_pick on  inv_pick.inv_soshipid=inv_soship.id where packlist=@packlstnum and inv_pick.pick_quantity>0
+
+End
+Go
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+--Sales Order - Option Shipments
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_so_getshipments]    Script Date: 15-08-2022 06:46:19 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_so_getshipments]     
+@somain varchar(50)
+
+AS    
+BEGIN    
+Select  inv_soship.packlist, '' as custpo, list_items.itemnumber,list_items.rev as revision,list_items.description,convert(varchar,inv_soship.shipdate,1) as shipdate , 
+SUM(ISNULL(dbo.inv_pick.pick_quantity, 0)) AS shippedqty, convert(varchar,dbo.so_lines.estshipdate,1) as estshipdate, inv_pick.createdby,
+inv_soship.trackingnum as mdatout from  so_lines 
+inner join list_items on list_items.id = so_lines.itemsid 
+inner join inv_pick on inv_pick.sources_refid =so_lines.id 
+inner join inv_soship on inv_soship.id = inv_pick.inv_soshipid 
+inner join so_main on so_main.id = so_lines.somainid where so_main.id = @somain  and dbo.inv_pick.pick_quantity>0 
+group by inv_soship.packlist,list_items.itemnumber,list_items.rev,list_items.description,inv_soship.shipdate,dbo.so_lines.estshipdate, 
+inv_pick.createdby,inv_soship.trackingnum 
+End
+Go
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_view_sopo]    Script Date: 16-08-2022 02:57:33 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure  [dbo].[amics_sp_api_view_sopo]    
+ @somainid uniqueidentifier
+as
+BEGIN 
+SELECT '' AS dummy1, '' AS dummy2, x.itemtype, x.itemnumber, x.description, x.pomain, x.Ordered, x.unitcost, 
+x.unitcost*x.ordered AS extcost, x.deliverydate, x.Received, x.status, x.requisition, 
+x.solineitem, x.polinesid, x.transferpo, x.itemnumber2, x.description2,x.invtype,x.pomainid FROM  
+
+(SELECT        ISNULL(dbo.list_itemtypes.itemtype, '') AS itemtype, ISNULL(dbo.so_lines.itemnumber, dbo.po_lines.poitem) AS itemnumber, ISNULL(dbo.so_lines.description, 
+                         dbo.po_lines.description) AS description, ISNULL(dbo.po_main.pomain, '') AS pomain, ISNULL(dbo.po_lines.quantity, 0) AS Ordered, ISNULL(dbo.po_lines.unitcost, 0) 
+                         AS unitcost, dbo.po_lines.unitcost * dbo.po_lines.quantity AS extcost, ISNULL(SUM(dbo.inv_receipts.recd_quantity), 0) + ISNULL(SUM(dbo.v_serialqty.serialqty), 0) 
+                         AS Received, dbo.po_lines.deliverydate, ISNULL(dbo.list_status.status, '') AS status, dbo.so_lines.id AS solinesid, dbo.so_lines.somainid, 
+                         ISNULL(dbo.po_main.requisition, '') AS requisition, dbo.so_lines.linenum, dbo.po_main.id AS pomainid, ISNULL(dbo.so_lines.itemnumber, '') AS solineitem, 
+                         dbo.po_lines.id AS polinesid, ISNULL(dbo.po_main.transferpo, 0) AS transferpo, ISNULL(dbo.po_lines.poitem, dbo.so_lines.itemnumber) AS itemnumber2, 
+                         ISNULL(dbo.po_lines.description, dbo.so_lines.description) AS description2,dbo.list_invtypes.invtype
+FROM            dbo.list_items LEFT OUTER JOIN
+                         dbo.list_itemtypes ON dbo.list_items.itemtypeid = dbo.list_itemtypes.id RIGHT OUTER JOIN
+                         dbo.inv_receipts RIGHT OUTER JOIN
+                         dbo.so_lines INNER JOIN
+                         dbo.po_lines ON dbo.so_lines.id = dbo.po_lines.so_linesid ON dbo.inv_receipts.sources_refid = dbo.po_lines.id ON 
+                         dbo.list_items.id = dbo.po_lines.itemsid LEFT OUTER JOIN
+                         dbo.v_serialqty ON dbo.inv_receipts.id = dbo.v_serialqty.id LEFT OUTER JOIN
+                         dbo.list_invtypes ON dbo.list_invtypes.id = dbo.list_items.invtypeid LEFT OUTER JOIN
+                         dbo.list_status RIGHT OUTER JOIN
+                         dbo.po_main ON dbo.list_status.id = dbo.po_main.statusid ON dbo.po_lines.pomainid = dbo.po_main.id
+GROUP BY ISNULL(dbo.list_itemtypes.itemtype, ''), ISNULL(dbo.po_lines.poitem, dbo.so_lines.itemnumber), ISNULL(dbo.so_lines.itemnumber, dbo.po_lines.poitem), 
+                         ISNULL(dbo.po_lines.description, dbo.so_lines.description), ISNULL(dbo.so_lines.description, dbo.po_lines.description), ISNULL(dbo.po_main.pomain, ''), 
+                         ISNULL(dbo.po_lines.quantity, 0), ISNULL(dbo.po_lines.unitcost, 0), dbo.po_lines.unitcost * dbo.po_lines.quantity, dbo.po_lines.deliverydate, 
+                         ISNULL(dbo.list_status.status, ''), dbo.so_lines.id, dbo.so_lines.somainid, ISNULL(dbo.po_main.requisition, ''), dbo.so_lines.linenum, dbo.po_main.id, 
+                         ISNULL(dbo.so_lines.itemnumber, ''), dbo.po_lines.id, ISNULL(dbo.po_main.transferpo, 0),dbo.list_invtypes.invtype
+) as x 
+
+WHERE  x.somainid = @somainid  ORDER BY x.linenum
+
+END
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+--sp_view_sopocreate_essex
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_view_sopocreate]    Script Date: 16-08-2022 03:28:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[amics_sp_api_view_sopocreate]
+@somain varchar(50)
+As
+BEGIN
+select so_lines.id,list_itemtypes.itemtype,linenum,dbo.so_lines.itemnumber,revision,
+dbo.so_lines.description,so_lines.itemsid,list_customers_items.customer_item as customerItem, 
+quantity,SUM(isnull(inv_pick.pick_quantity,0)) as pickedQty,uom,so_lines.user1,unitcost,ISNULL(dbo.so_lines.markup,1) as markup, 
+(quantity*unitcost) as extCost, convert(varchar,estshipdate,1) as estshipdate, 
+convert(varchar,shipdate,1) as shipdate,warranty_years,warranty_days,  
+ISNULL(dbo.list_items.cost,1) as cost, 
+ISNULL(dbo.so_lines.unitcost,1)*ISNULL(dbo.list_items.markup,1) as pricemarkup, 
+ISNULL(dbo.list_items.cost,1)*ISNULL(dbo.list_items.markup,1) as pmcostmarkup, 
+solinesnotes, dbo.list_items.obsolete, 
+(quantity - (select ISNULL(SUM(ISNULL(po_lines.quantity,0)),0) from po_lines where so_linesid=so_lines.id)) as sopoqty
+ from so_lines left outer join list_customers_items on list_customers_items.id = so_lines.customers_itemsid   
+left outer join inv_pick on inv_pick.sources_refid = so_lines.id LEFT OUTER JOIN list_items ON list_items.id = so_lines.itemsid left outer join list_itemtypes on list_itemtypes.id = list_items.itemtypeid where somainid=(select top 1 id from so_main where  somain=@somain)  
+and (quantity - (select ISNULL(SUM(po_lines.quantity),0) from po_lines where so_linesid=so_lines.id)) > 0
+and dbo.list_items.userbit2 = 1
+group by so_lines.id,list_itemtypes.itemtype,linenum,dbo.so_lines.itemnumber,revision,dbo.so_lines.description,so_lines.itemsid,list_customers_items.customer_item,quantity,uom,so_lines.user1,  
+unitcost,dbo.so_lines.markup,dbo.list_items.markup,dbo.list_items.cost,estshipdate,shipdate,warranty_years,warranty_days,solinesnotes,dbo.list_items.obsolete order by linenum  
+
+END
+GO
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+--sp_summarized_bom_solines_po5
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_summarized_bom_solines_po]    Script Date: 16-08-2022 04:49:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+  
+CREATE PROCEDURE [dbo].[amics_sp_api_summarized_bom_solines_po]  @somain varchar(50)   
+ AS   
+  declare @sumbom table (parentid2 uniqueidentifier,childid2 uniqueidentifier, item2 varchar(50),rev varchar(50),qty2 decimal (18,8),  
+   descript2 varchar(150),cost2 money,reclevel2 smallint,factor2 decimal (18,8))   
+  declare @sumbom_final table (childid uniqueidentifier,itemnumber varchar(50),description varchar(150),rev varchar(50),totalqty decimal(18,8),uom varchar(50),unitcost decimal(18,8))   
+  declare @itemsid uniqueidentifier,@qty decimal(18,8),@item varchar(50),@rev2 varchar(50),@description varchar(150),  
+   @itemsid_parent uniqueidentifier,@itemsid_child uniqueidentifier,@cost money,@rec_level smallint,@factor decimal(18,8),  
+   @item_exist varchar(50),@buy smallint,@allocated decimal(18,8),@onhand decimal(18,8),@avail decimal(18,8),@uom varchar(50),@unitcost decimal(18,8)  
+ BEGIN   
+   
+  declare cuMyCursor Cursor For (select itemsid,quantity,itemnumber,so_lines.description,revision from so_lines   
+   inner join so_main on so_lines.somainid=so_main.id where somain=@somain ) -- Sales Order Line items  
+  Open cuMyCursor   
+  Fetch Next from cuMyCursor into @itemsid,@qty,@item,@description,@rev2 -- Scan thru sales order lines  
+  while @@fetch_status = 0   
+  begin   
+   insert into @sumbom values(null,@itemsid,@item,'',@qty,@description,0,0,0)   
+--   insert into @sumbom (item2,descript2,childid2,qty2) values(@item,@description,@itemsid,@qty)   
+   insert into @sumbom exec amics_sp_api_summarized_bom @itemsid,@qty  -- Inserts all summarized bom for that sales order line item  
+   Fetch Next from cuMyCursor into @itemsid,@qty,@item,@description,@rev2 -- Scan thru sales order lines  
+  end   
+  close cuMyCursor   
+  deallocate cuMyCursor   
+ ---------  The following code combines the requirement  
+  declare cuMyCursorFinal Cursor For (select childid2,item2,descript2,qty2 from @sumbom)  
+  open cuMyCursorFinal   
+  fetch next from cuMyCursorFinal into @itemsid,@item,@description,@qty  
+  while @@fetch_status=0   
+  begin  
+   set @buy=(select buyitem from list_items where id=@itemsid)  
+   if @buy=1 -- Select only make items   
+   begin  
+    set @rev2=(select rev from list_items where id=@itemsid)  
+    set @allocated=(select sum(quantity) from inv_allocate where itemsid=@itemsid and quantity>0)  
+   set @onhand =(select SUM(quantity) from inv_basic inner join list_locations on inv_basic.locationsid=list_locations.id where itemsid=@itemsid and quantity>0 and list_locations.invalid<>1)   
+   set @avail  =ISNULL(@onhand,0)-ISNULL(@allocated,0)  
+    set @item_exist=(select itemnumber from @sumbom_final where childid=@itemsid)  
+      
+    set @uom=(select uomref from list_uoms where id =(select top 1 uomid from list_items where id=@itemsid))  
+    set @unitcost=(select cost from list_items where id=@itemsid)  
+      
+     if @item_exist is null  
+      if @avail<=0 insert into @sumbom_final values (@itemsid,@item,@description,@rev2,@qty,@uom,@unitcost)  
+     --insert into @sumbom_final values (@itemsid,@item,@description,@rev2,@qty)  
+    else  
+     update @sumbom_final set totalqty=totalqty+@qty where childid=@itemsid  
+     update @sumbom_final set uom= @uom   
+     update @sumbom_final set unitcost= @unitcost      
+       
+  end  
+   fetch next from cuMyCursorFinal into @itemsid,@item,@description,@qty  
+  end  
+  close cuMyCursorFinal   
+  deallocate cuMyCursorFinal   
+    
+ select * from @sumbom_final order by itemnumber --where itemnumber like 'MSVA-38%'  
+ END   
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_summarized_bom]    Script Date: 16-08-2022 08:56:07 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_summarized_bom]
+    @StartProductID [uniqueidentifier],@nqty decimal(18,8)
+AS
+    
+BEGIN
+	declare @qty2 float ;
+	SET NOCOUNT ON;
+    WITH [BOM_cte]([itemsid_parent], [itemsid_child], [itemnumber] , [rev],[qty], [description], [cost], [RecursionLevel],[factor] ) -- CTE name and columns
+    AS (
+		SELECT bom1.[itemsid_parent], bom1.[itemsid_child], p.[itemnumber] , p.[rev],cast(isnull(@nqty*bom1.[quantity],0)as decimal(18,8))   , p.[description], p.[cost],  1,cast(@nqty as decimal(30,8)) as factor -- Get the initial list of components for the bike assembly
+        FROM [dbo].[items_bom] bom1
+            INNER JOIN [dbo].[list_items] p 
+            ON bom1.[itemsid_child] = p.[id] 
+        WHERE bom1.[itemsid_parent] = @StartProductID 
+        UNION ALL
+        SELECT bom.[itemsid_parent], bom.[itemsid_child], p.[itemnumber] , p.[rev],cast(isnull(cte.qty*bom.[quantity],0) as decimal(18,8)), p.[description], p.[cost],  [RecursionLevel] + 1,cast(factor as decimal(30,8)) as factor -- Join recursive member to anchor
+        FROM [BOM_cte] cte
+            INNER JOIN [dbo].[items_bom] bom 
+            ON bom.[itemsid_parent] = cte.[itemsid_child]
+            INNER JOIN [dbo].[list_items] p 
+            ON bom.[itemsid_child] = p.[id] 
+		) 
+        -- Outer select from the CTE
+    SELECT b.[itemsid_parent], b.[itemsid_child], b.[itemnumber] as 'Item Number',b.[rev],cast(sum(b.[qty])as Decimal(18,8)) as quantity   , b.[Description] as Description, b.[Cost] as cost , b.[RecursionLevel],@nqty*b.[qty] as factor
+	FROM [BOM_cte] b
+    GROUP BY b.[itemsid_child], b.[itemnumber],b.[rev],b.[itemsid_parent], b.[RecursionLevel], b.[description],b.[qty],b.[cost]
+    ORDER BY b.[itemsid_parent], b.[itemsid_child]
+    OPTION (MAXRECURSION 25) 
+
+   END;
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_list_documents]    Script Date: 16-08-2022 03:28:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[amics_sp_api_list_documents]
+@soMainId varchar(50)
+As
+BEGIN
+
+ Select id, parentid,linenum,filename from list_documents where parentid=@soMainId
+
+END
+GO
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
