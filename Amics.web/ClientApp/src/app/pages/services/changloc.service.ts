@@ -39,8 +39,8 @@ export class ChangeLocService {
         if (req.itemnumber == "null") { req.itemnumber = ''; }
         if (req.soMain == "null") { req.soMain = ''; }
         if (req.soLinesId == "null") { req.soLinesId = ''; }
-
-        let url = `${this.api}/ChangeLocViewDetails?somain=${req.soMain}&itemnumber=${req.itemnumber}&userId="admin"&soLinesId=${req.soLinesId}&invType=${req.invType}`;
+        let username = "admin";
+        let url = `${this.api}/ChangeLocViewDetails?somain=${req.soMain}&itemnumber=${req.itemnumber}&userId=${username}&soLinesId=${req.soLinesId}&invType=${req.invType}`;
         return this.httpClient.get<ChangeLocSearchResult[]>(url);
     }
 
@@ -56,6 +56,9 @@ export class ChangeLocService {
         let url = `${this.api}/UpdateChangeLoc`;
         return this.httpClient.post<ChangeLocSearchResult[]>(url, { 'userName': userName, 'toWarehouse': toWarehouse, 'toLocation': toLocation });
     }
-
-
+    
+    getChgLocTransLocSelectedItemDetails(itemsid: string, username: string, soLinesId: string, invType: string) {        
+        let url = `${this.api}/ChangeLocSelectedItems?itemsId=${itemsid}&username=${username}&solinesId=${soLinesId}&invType=${invType}`;
+        return this.httpClient.get<ChangeLocSearchResult[]>(url);
+    }
 }

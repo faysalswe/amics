@@ -3557,3 +3557,1773 @@ END
 GO
 
 ---------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_chgLoc_basic_selecteditems]    Script Date: 03-08-2022 02:48:40 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_chgLoc_basic_selecteditems]     
+@itemsId uniqueidentifier,   
+@userId varchar(50),  
+@soLinesId uniqueidentifier
+AS    
+BEGIN    
+    select itl.id,itl.invbasicid,itl.quantity,list_locations.location,list_warehouses.warehouse,itl.createdby  from dbo.inv_transfer_location as itl 
+    left outer join dbo.inv_basic on inv_basic.id = itl.invbasicid 
+    left outer join dbo.list_items on list_items.id = inv_basic.itemsid 
+    left outer join dbo.list_locations on list_locations.id = inv_basic.locationsid 
+    left outer join dbo.list_warehouses on list_warehouses.id = list_locations.warehousesid 
+    where list_items.id = @itemsId and itl.createdby = @userId and itl.solinesid=@soLinesId
+END
+GO
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_chgLoc_serial_selecteditems]    Script Date: 03-08-2022 02:48:40 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_api_chgLoc_serial_selecteditems]     
+@itemsId uniqueidentifier,   
+@userId varchar(50),  
+@soLinesId uniqueidentifier
+AS    
+BEGIN    
+		select itl.id,itl.invserialid,itl.quantity, inv_serial.serno,inv_serial.tagno,inv_serial.model,list_locations.location,list_warehouses.warehouse,itl.createdby  from dbo.inv_transfer_location as itl 
+        inner join dbo.inv_serial on inv_serial.id = itl.invserialid 
+        inner join dbo.list_items on list_items.id = inv_serial.itemsid 
+        left outer join dbo.list_locations on list_locations.id = inv_serial.locationsid 
+        left outer join dbo.list_warehouses on list_warehouses.id = list_locations.warehousesid 
+        where list_items.id= @itemsId and itl.createdby = @userId and itl.solinesid=@soLinesId
+END
+GO
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_shipment_serial_selecteditems]    Script Date: 08-08-2022 05:18:35 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_shipment_serial_selecteditems]     
+@itemsId uniqueidentifier,   
+@userId varchar(50),  
+@soLinesId uniqueidentifier
+AS    
+BEGIN    
+
+ select itl.id,itl.invserialid,itl.quantity,inv_serial.serno,inv_serial.tagno,inv_serial.model,list_locations.location,list_warehouses.warehouse,itl.createdby  
+ from dbo.inv_pick_ship as itl 
+ inner join dbo.inv_serial on inv_serial.id = itl.invserialid 
+ inner join dbo.list_items on list_items.id = inv_serial.itemsid 
+ left outer join dbo.list_locations on list_locations.id = inv_serial.locationsid 
+ left outer join dbo.list_warehouses on list_warehouses.id = list_locations.warehousesid 
+ where list_items.id=@itemsId and itl.createdby = @userId and itl.solinesid=@soLinesId
+		
+END
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_shipment_basic_selecteditems]    Script Date: 08-08-2022 05:18:35 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_shipment_basic_selecteditems]     
+@itemsId uniqueidentifier,   
+@userId varchar(50),  
+@soLinesId uniqueidentifier
+AS    
+BEGIN    
+
+select itl.id,itl.invbasicid,itl.quantity,list_locations.location,list_warehouses.warehouse,itl.createdby  from dbo.inv_pick_ship as itl 
+left outer join dbo.inv_basic on inv_basic.id = itl.invbasicid 
+left outer join dbo.list_items on list_items.id = inv_basic.itemsid 
+left outer join dbo.list_locations on list_locations.id = inv_basic.locationsid 
+left outer join dbo.list_warehouses on list_warehouses.id = list_locations.warehousesid 
+where list_items.id=@itemsId and itl.createdby = @userId and itl.solinesid=@soLinesId
+		
+END
+-------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_shipment_ship]    Script Date: 08-08-2022 06:41:52 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_api_shipment_ship] @user varchar(50)=''  
+AS  
+BEGIN  
+       declare @packlist varchar(50),@invsoshipid uniqueidentifier,@xfr_transnum int,@prefix varchar(50),@shipvia varchar(50) = '' , 
+		@total_solines smallint ,@counter_solines smallint ,@ship_id uniqueidentifier,@ship_solinesid uniqueidentifier,
+		@ship_invbasicid uniqueidentifier,@ship_invserialid uniqueidentifier,@ship_quantity decimal(18,8),@somain varchar(50),@itemsid uniqueidentifier,
+		@item varchar(50),@descr varchar(150),@line smallint,@invtype varchar(50),@itemtype varchar(50),
+		@translogid uniqueidentifier,@locationsid uniqueidentifier,@warehouse varchar(50),@location varchar(50),@serno varchar(50),@tagno varchar(50),
+		@cost decimal(18,8),@serialcounter smallint,@basiccounter smallint,@today smalldatetime
+
+	if @user!=''  
+	begin  
+		set @today=getdate()
+		set @prefix=(select packlist_prefix from list_prefix_suffix)  
+		update list_next_number set translognum=translognum+1  
+		set @xfr_transnum=(select translognum from list_next_number)  
+		update list_next_number set packlist=packlist+1  
+		set @packlist=@prefix+(select cast(packlist as varchar(50)) from list_next_number)  
+		set @invsoshipid=newid()  
+		set @shipvia=(select top 1 isnull(FieldValue,'') from inv_pick_ship  
+			inner join so_lines on inv_pick_ship.solinesid=so_lines.id  
+			inner join so_main on so_lines.somainid =so_main.id  
+			inner join list_dropdowns on so_main.shipviaid=list_dropdowns.id )  
+               
+		INSERT INTO inv_soship (packlist, id,shiptoname,shiptoaddress1,shiptoaddress2,shiptoaddress3,shiptoaddress4,shiptoaddress5,shiptoaddress6,  
+			 shipdate, createddate, createdby, invoiced,shipvia,packnote,trackingnum,invoicenote) select @packlist,@invsoshipid,  
+				  'Maryland Procurement Office','9800 Savage Road','','Ft. George G. Meade','MD','20755','USA',  
+				  getdate(),getdate(),@user,0,@shipvia,'','',''  
+				  Insert into inv_pick ( sourcesid, sources_refid, Inv_soshipid,inv_serialid,inv_basicid,prior_quantity,pick_quantity,prior_shipped,Trans_date,createdby)  
+						 Select (select top 1 id from inv_sources where sourceref='SHIPPING'),solinesid,@invsoshipid,invserialid,invbasicid,1,quantity,0,getdate(),@user  
+						 from dbo.inv_pick_ship where not exists  (select id from inv_pick where inv_soshipid=@invsoshipid and invserialid=inv_pick_ship.invserialid )  
+						 and createdby=@user  
+		update inv_serial set quantity=0 where id in (select invserialid from inv_pick_ship where createdby=@user)  
+		UPDATE inv_basic SET inv_basic.quantity = inv_basic.quantity-inv_pick_ship.quantity  
+						 FROM inv_pick_ship, inv_basic WHERE inv_pick_ship.invbasicid = inv_basic.id and inv_pick_ship.createdby=@user  
+   
+		insert into translog (id,itemsid,trans,transnum,transdate,transqty,itemnumber,description,itemtype,warehouse,location,reason,  
+								source,ref,invtype,notes,createdby,revision,createddate,modifieddate,location2,user2,cost)  
+					select distinct newid(),itemsid,'SHIP',@xfr_transnum,@today,count(inv_serial.itemsid),itemnumber,description,  
+					isnull(itemtype,'') as itemtype,warehouse,location,'SHIP','',@packlist,'SERIAL','',@user,'',@today,@today,'',  
+					(select somain from so_main where id = (select somainid from so_lines where id=inv_pick_ship.solinesid)),inv_serial.cost
+					from inv_pick_ship inner join inv_serial on inv_pick_ship.invserialid =inv_serial.id  
+					left join list_locations on inv_serial.locationsid=list_locations.id  
+					left join list_warehouses on list_locations.warehousesid=list_warehouses.id  
+					left join list_items on inv_serial.itemsid=list_items.id  
+					left join list_itemtypes on list_items.itemtypeid=list_itemtypes.id  
+							where  inv_pick_ship.createdby=@user
+							   group by itemsid,itemnumber,description,itemtype,warehouse,location,solinesid,inv_serial.cost 
+
+		insert into translogsn (id,translogid, serno,tagno,createdby,location,warehouse,cost)  
+					select  newid(),(select id from translog where itemsid=so_lines.itemsid  and transnum=@xfr_transnum and user2=so_main.somain and cost=inv_serial.cost
+					 and location=list_locations.location),  
+					serno,tagno,@user,location,warehouse,inv_serial.cost from inv_pick_ship  
+					inner join so_lines on inv_pick_ship.solinesid =so_lines.id 
+					inner join so_main on so_lines.somainid=so_main.id 
+					inner join inv_serial on inv_pick_ship.invserialid=inv_serial.id  
+					inner join list_locations on inv_serial.locationsid=list_locations.id  
+					inner join list_warehouses on list_locations.warehousesid=list_warehouses.id  
+
+		insert into translog (id,itemsid,trans,transnum,transdate,transqty,itemnumber,description,itemtype,warehouse,location,reason,  
+				  source,ref,invtype,notes,createdby,revision,createddate,modifieddate,location2,user1,user2,cost)  
+				  select distinct newid(),itemsid,'SHIP',@xfr_transnum,@today,inv_pick_ship.quantity,itemnumber,description,itemtype,  
+				  warehouse,location,'SHIP','',@packlist,'BASIC','',@user,'',@today,@today,'',  
+				  (select linenum from so_lines where id=inv_pick_ship.solinesid),
+				  (select somain from so_main where id = (select somainid from so_lines where id=inv_pick_ship.solinesid)),inv_basic.cost
+				  from inv_pick_ship  
+				  inner join inv_basic on inv_pick_ship.invbasicid=inv_basic.id  
+				  left join list_items on inv_basic.itemsid=list_items.id  
+				  left join list_itemtypes on list_items.itemtypeid=list_itemtypes.id  
+				  left join list_locations on inv_basic.locationsid=list_locations.id  
+				  left join list_warehouses on list_locations.warehousesid=list_warehouses.id  
+				  where inv_pick_ship.createdby=@user  
+		delete inv_pick_ship where createdby =@user 
+		select @packlist 
+		end 
+END
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_shipment_pickshipcntchk] Script Date: 08-08-2022 06:36:24 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_shipment_pickshipcntchk] 
+ 	@createdby varchar(50)	
+AS
+BEGIN  		 	
+	Select COUNT(*) from inv_pick_ship where createdby=@createdby
+END
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_shipment_invshippickdelete]    Script Date: 08-08-2022 07:38:55 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_shipment_invshippickdelete] 
+@createdby varchar(50)=''
+AS
+BEGIN  		 
+	delete from inv_pick_ship where createdby = @createdby
+END
+GO
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_shipment_pickship_update]    Script Date: 08-08-2022 07:39:11 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_shipment_pickship_update] 
+@id uniqueidentifier=null,
+@action int=0,
+@quantity decimal=0,
+@invbasicid uniqueidentifier=null,
+@invserialid uniqueidentifier=null,
+@solinesid uniqueidentifier=null,
+@createdby varchar(50)=''
+
+AS
+BEGIN  	
+	if @action = 1
+		begin
+			set @id = NEWID()
+			if (@invbasicid is not null)
+				insert into dbo.inv_pick_ship (id,solinesid,invbasicid,quantity,createddate,createdby) values (NEWID(),@solinesid,@invbasicid,@quantity,GETDATE(),@createdby)
+			else
+				insert into dbo.inv_pick_ship (id,solinesid,invserialid,quantity,createddate,createdby) values (NEWID(),@solinesid,@invserialid,@quantity,GETDATE(),@createdby)
+			
+		end
+	else --action 2
+	begin
+		if(@invbasicid is not null)
+			 delete from inv_pick_ship where invbasicid = @invbasicid and createdby = @createdby
+		else
+			 delete from inv_pick_ship where invserialid = @invserialid and createdby = @createdby
+	end 
+	
+END
+GO
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_shipment_pickqty_toship]    Script Date: 08-08-2022 06:36:00 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_shipment_pickqty_toship] 
+ 	@solinesid uniqueidentifier  = 0x0,
+	@invserialid uniqueidentifier = 0x0,
+	@invbasicid uniqueidentifier = 0x0
+	
+ AS
+ BEGIN   
+	declare @EmptyGuid UNIQUEIDENTIFIER = 0x0  
+	if (@invserialid != @EmptyGuid)
+		begin
+			select isnull(quantity,0) as quantity,createdby from inv_pick_ship where solinesid =@solinesid  and invserialid=@invserialid 
+			union all 
+			select isnull(quantity,0) as quantity,createdby from inv_transfer_location where solinesid =@solinesid  and invserialid=@invserialid  
+			select isnull(quantity,0) as quantity,createdby from inv_serial where id =@invserialid
+		end 
+	else
+		begin			
+			 select isnull(quantity,0) as quantity,createdby from inv_pick_ship where solinesid =@solinesid  and invbasicid=@invbasicid 
+			 union all 
+			 select isnull(quantity,0) as quantity,createdby from inv_transfer_location where solinesid =@solinesid and invbasicid=@invbasicid  
+			 select isnull(quantity,0) as quantity,createdby from inv_basic where id =@invbasicid
+		end
+ END
+ GO
+
+ ----------------------------------------------------------------------------------------------------------------------------------------------
+
+ 
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_search_SoOnOpen]    Script Date: 09-08-2022 08:54:29 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_api_search_SoOnOpen]     
+AS     
+BEGIN 		
+	Select distinct top 10 dbo.so_main.somain, dbo.so_main.id,convert(varchar,dbo.so_main.sodate,101) as sodate,dbo.so_main.customername,
+	dbo.so_main.createddate FROM dbo.so_main order by createddate desc
+END
+GO
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_so_search]    Script Date: 09-08-2022 09:14:34 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ CREATE PROCEDURE [dbo].[amics_sp_api_so_search]   
+ @somain    varchar (50)='',   
+ @user3        varchar (50)='',  -- Requestor  
+ @status    varchar (50)='',  
+ @projectid    varchar (50)='',  
+ @projectname    varchar (50)='',  
+ @searchflag int = 3,
+ @mdatIn varchar(50) = ''
+  
+ AS  
+   
+Begin  
+ SELECT distinct( dbo.so_main.somain), dbo.so_main.id, convert(varchar,dbo.so_main.sodate,101) as sodate, dbo.so_main.customername,so_main.createddate  
+FROM dbo.so_main left join list_projects on so_main.projectid=list_projects.id
+where 
+somain LIKE	case  when @somain ='' then '%%' else '%'+@somain+'%' end
+and project like case  when @projectid ='' then '%%' else @projectid+'%' end    
+and name like case  when @projectname ='' then '%%' else @projectname+'%' end    
+and statusid = case when @status!='' then (select id from list_status where status=@status) else statusid end 
+and user3 LIKE	case  when @user3 ='' then '%%' else @user3+'%' end
+and year(sodate) =case when @searchflag =1 then year(getdate()) when @searchflag=2 then year(getdate())-1 else year(sodate) end 
+and mdat_in LIKE case  when @mdatIn ='' then '%%' else '%'+@mdatIn+'%' end
+order by so_main.somain  desc
+End
+Go
+--exec [dbo].[sp_search_essex_so5]    @somain='0497'
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+--Sp_View_SoMain_Essex_5
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_view_somain]    Script Date: 10-08-2022 10:56:10 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_api_view_somain]
+@soMainId uniqueidentifier =null
+As
+BEGIN
+SELECT dbo.so_main.id,dbo.list_customers.id as customerid,so_main.contactsid, 
+ dbo.so_main.somain,
+ convert(varchar,dbo.so_main.sodate,101)as sodate, 
+ '' AS ordertype,
+--(select list_dropdowns.FieldValue from list_dropdowns where list_dropdowns.id=dbo.so_main.ordertypeid) AS ordertype,
+ISNULL(dbo.so_main.user1,'') as user1,
+ISNULL(dbo.so_main.user2,'') as user2,
+ISNULL(dbo.so_main.user3,'') as user3,
+ISNULL(dbo.so_main.user4,'') as user4,
+ISNULL(dbo.so_main.user5,'') as user5,
+ISNULL(dbo.so_main.user6,'') as user6,
+ISNULL(dbo.so_main.user7,'') as user7,
+ISNULL(dbo.so_main.user8,'') as user8,
+ISNULL(dbo.list_status.status, '') AS status,
+(select list_dropdowns.FieldValue from list_dropdowns where list_dropdowns.id = dbo.so_main.shipviaid) AS shipvia,
+(select list_dropdowns.FieldValue from list_dropdowns where list_dropdowns.id = dbo.so_main.termsid) AS terms,
+(select list_dropdowns.FieldValue from list_dropdowns where list_dropdowns.id = dbo.so_main.fobid)AS fob,
+    
+ dbo.so_main.billtoname,
+ dbo.so_main.billtoaddress1,
+ dbo.so_main.billtoaddress2,
+ dbo.so_main.billtoaddress3,
+ dbo.so_main.billtoaddress4, 
+ dbo.so_main.billtoaddress5,
+ dbo.so_main.billtoaddress6,
+ dbo.so_main.shiptoname,
+ dbo.so_main.shiptoaddress1,
+ dbo.so_main.shiptoaddress2, 
+ dbo.so_main.shiptoaddress3,
+ dbo.so_main.shiptoaddress4,
+ dbo.so_main.shiptoaddress5,
+ dbo.so_main.shiptoaddress6,
+ ISNULL(dbo.so_main.sonotes,'') as sonotes, 
+ ISNULL(dbo.so_main.shipnotes,'') as shipnotes, 
+ ISNULL(dbo.so_main.invoicenotes,'') as invoicenotes,
+ ISNULL(dbo.list_customers.acctmsg, '') AS acctmsg,
+ ISNULL(dbo.so_main.custpo, '') AS custpo, 
+ ISNULL(dbo.so_main.salesperson, '') AS salesperson,
+ ISNULL(dbo.so_main.customername, '') AS customername,
+ ISNULL(dbo.list_customers.smallname,'') AS smallname, 
+ --ISNULL(dbo.list_customers.customer, '') AS customer,
+ ISNULL(dbo.list_customers.fax, '') AS fax,
+ ISNULL(dbo.list_customers.phone, '') AS phone,
+ ISNULL(dbo.so_main.commission, 0) AS commission,  
+ ISNULL(dbo.so_main.salestax, 0) AS salestax,
+ dbo.list_customer_contacts.name as contactName,dbo.list_customer_contacts.phone as contactPhone,
+ dbo.list_customer_contacts.email as contactEmail,dbo.list_customer_contacts.fax as contactFax,
+  convert(varchar,dbo.so_main.est,101)as est, 
+  convert(varchar,dbo.so_main.reqdate,101)as reqdate, 
+  convert(varchar,dbo.so_main.prcomp,101)as prcomp, 
+  convert(varchar,dbo.so_main.funded,101)as funded, 
+ so_main.budget,so_main.mdat_in,so_main.org,
+ dbo.list_projects.id as projectUid, dbo.list_projects.project as projectid, dbo.list_projects.name as projectName,dbo.list_contracts.contractnum
+ ,isnull(dbo.list_contracts.markup1,1) as markup1
+ ,isnull(dbo.list_contracts.markup2,1) as markup2 
+ FROM dbo.so_main LEFT OUTER JOIN 
+ dbo.list_customers ON dbo.so_main.customersid = dbo.list_customers.id LEFT OUTER JOIN 
+ dbo.list_customer_contacts ON dbo.so_main.contactsid = dbo.list_customer_contacts.id LEFT OUTER JOIN  
+ dbo.list_projects ON dbo.so_main.projectid = dbo.list_projects.id LEFT OUTER JOIN  
+ --dbo.so_lines ON dbo.so_main.id = dbo.so_lines.somainid LEFT OUTER JOIN  
+ dbo.list_status ON dbo.so_main.statusid = dbo.list_status.id LEFT OUTER JOIN  
+ dbo.list_contracts ON dbo.list_contracts.id = dbo.list_projects.contractid
+
+ where so_main.id= @soMainId
+END
+GO
+
+---------------------------------------------------------------------------------------------------------------------
+
+--sp_view_solines_essex
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_view_solines]    Script Date: 10-08-2022 12:03:39 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[amics_sp_api_view_solines]
+--SOLINES>COST(20)*MARKUP1(1.1)*MARKUP2(1.3)
+--COST_U --> SOLINES.COST or price
+--COST_L --> SOLINes.cost * SOLines.markup
+--POCOST_U --> POLINES.unitcost 
+--POCOST_L --> POLINES.UNITCOST* SOLines.markup
+@somain varchar(50)
+AS
+BEGIN
+     select so_lines.id,list_itemtypes.itemtype,so_lines.linenum,dbo.so_lines.itemnumber,so_lines.revision,dbo.so_lines.description,
+  so_lines.itemsid,'' as customerItem, 
+     so_lines.quantity,SUM(isnull(inv_pick.pick_quantity,0)) as pickedQty,uom,so_lines.user1,so_lines.unitcost as socost,
+     ISNULL(dbo.so_lines.markup,1) as markup, 
+     ISNULL(dbo.so_lines.unitcost,0) as COST_U, 
+     ISNULL(dbo.so_lines.unitcost,0)*ISNULL(dbo.so_lines.markup,1) as COST_L,  
+     ISNULL(dbo.po_lines.unitcost,0) as POCOST_U,
+     ISNULL(dbo.po_lines.unitcost,0)*ISNULL(dbo.so_lines.markup,1) as POCOST_L,
+     (so_lines.quantity*so_lines.unitcost) as extCost,
+     convert(varchar,estshipdate,1) as estshipdate,          
+     convert(varchar,shipdate,1) as shipdate,so_lines.warranty_years,so_lines.warranty_days,
+     solinesnotes, dbo.list_items.obsolete 
+     from so_lines 
+--     LEFT OUTER JOIN list_customers_items on list_customers_items.id = so_lines.customers_itemsid   
+     LEFT OUTER JOIN inv_pick on inv_pick.sources_refid = so_lines.id 
+     LEFT OUTER JOIN list_items ON list_items.id = so_lines.itemsid 
+     LEFT OUTER JOIN list_itemtypes on list_itemtypes.id = list_items.itemtypeid 
+     LEFT OUTER JOIN so_main on so_main.id = so_lines.somainid    
+     --LEFT OUTER JOIN list_contracts on list_contracts.id = so_main.contactsid
+     LEFT OUTER JOIN po_lines on po_lines.so_linesid = so_lines.id 
+     where somainid=(select top 1 id from so_main where  somain=@somain)  
+     group by 
+     so_lines.id,list_itemtypes.itemtype,so_lines.linenum,dbo.so_lines.itemnumber,so_lines.revision,
+     dbo.so_lines.description,so_lines.itemsid,so_lines.quantity,uom,so_lines.user1,  
+     so_lines.unitcost,dbo.so_lines.markup,dbo.list_items.markup,dbo.list_items.cost,estshipdate,shipdate,so_lines.warranty_years,
+     so_lines.warranty_days,solinesnotes,dbo.list_items.obsolete,dbo.po_lines.unitcost order by linenum  
+END
+GO
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_validate_so]    Script Date: 10-08-2022 01:04:55 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [dbo].[amics_sp_api_validate_so]
+	@Project varchar(50),
+	@Status varchar(50),
+	@Shipvia varchar(50)	
+As
+Begin
+
+Declare @projid uniqueidentifier, @statusid uniqueidentifier, @shipviaid uniqueidentifier
+declare @messages varchar(250)
+
+set @projid=(Select id from list_projects where project=@Project)
+set @statusid=(select id from list_status where status=@Status)
+set @shipviaid=(select id from list_dropdowns where ColNum='942' and FieldValue=@Shipvia)
+
+create table #validataions1 (results varchar(250))
+
+if @projid is null and @Project != ''
+begin 
+set @messages  = (select messagetext from list_messages where messagenum =182)
+insert into #validataions1 values (@messages + ' Project Id')
+end
+
+if @statusid is null and @Status != ''
+begin 
+set @messages = (select messagetext from list_messages where messagenum =182)
+insert into #validataions1 values (@messages + ' Status')
+end
+
+if @shipviaid is null and @Shipvia !=''
+begin
+set @messages=(select messagetext from list_messages where messagenum=182)
+insert into #validataions1 values (@messages + ' Ship Via')
+end
+
+select * from #validataions1
+drop table #validataions1
+
+End
+GO
+---------------------------------------------------------------------------------------------------------------------------------------------
+-- sp_maintain_Essex_so5
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_so]    Script Date: 10-08-2022 02:28:30 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_maintain_so]  	
+ @id	uniqueidentifier=null,  	
+ @actionflag smallint,  	
+ @somain varchar(50),  	
+ @sodate smalldatetime=null,  	
+ @custpo varchar(50)='',  	
+ @salesperson varchar(50)='',  	
+ @salestax money=0,  	
+ @commission decimal(18,2)=0,  	
+ @customername varchar(50)='',  	
+ @status varchar(50)='',  	
+ @terms varchar(50)='',  	
+ @fob varchar(50)='',  	
+ @shipvia varchar(50)='',  	
+ @ordertype varchar(50)='',  	
+ @billtoname varchar(50)='',	  	
+ @billtoaddress1 varchar(50)='',	  	
+ @billtoaddress2 varchar(50)='',  	
+ @billtoaddress3 varchar(50)='',	  	
+ @billtoaddress4 varchar(50)='',	  	
+ @billtoaddress5 varchar(50)='',  	
+ @billtoaddress6 varchar(50)='',	  	
+ @shiptoname varchar(50)='',	  	
+ @shiptoaddress1 varchar(50)='',  	
+ @shiptoaddress2 varchar(50)='',	  	
+ @shiptoaddress3 varchar(50)='',	  	
+ @shiptoaddress4 varchar(50)='',  	
+ @shiptoaddress5 varchar(50)='',	  	
+ @shiptoaddress6 varchar(50)='',	  	
+ @Contactsid uniqueidentifier=null,  	
+ @sonotes text='',  	
+ @shipnotes text='',	  	
+ @salespersonnotes text='',  	
+ @packnotes text='',  	
+ @invoicenotes text='',  	
+ @createdby varchar(50)=null,  	
+ @user1 varchar(50)='',  
+ @user2 varchar(50)='',  
+ @user3 varchar(50)='',  
+ @user4 varchar(50)='',  
+ @user5  varchar(50)='', 
+ @user6  varchar(50)='', 
+ @user7 varchar(50)='',  
+ @user8 varchar(50)='', 
+ @est varchar(50)='', 
+ @reqdate varchar(50)='', 
+ @prcomp varchar(50)='', 
+ @funded varchar(50)='',
+ @projectid uniqueidentifier=null,  
+ @budget varchar(50)='',
+ @mdatIn varchar(50)='',
+ @org varchar(50)=''
+ 
+ AS  
+ Declare  
+ @termsid uniqueidentifier,  
+ @fobid uniqueidentifier,  
+ @shipviaid uniqueidentifier, 
+ @ordertypeid uniqueidentifier,  
+ @statusid uniqueidentifier,  
+ @customersid uniqueidentifier  
+ BEGIN  
+ Set @termsid = (select TOP 1 id from list_dropdowns where ColNum='940' AND FieldValue = @terms)  
+ Set @fobid = (select TOP 1 id from list_dropdowns where ColNum='941' AND FieldValue  = @fob)  
+ Set @shipviaid = (select TOP 1 id from list_dropdowns where ColNum='942' AND FieldValue = @shipvia)  
+ Set @ordertypeid = (select TOP 1 id from list_dropdowns where ColNum='268' AND FieldValue  = @ordertype)  
+ --set @somain=upper(@somain)
+ if @ordertypeid IS null  	
+ begin  		
+ insert into dbo.list_dropdowns (ID,ColNum,FieldName,FieldValue,createdby,CreatedDate) values ('D5DB79D8-7BFA-4174-B374-7B8CA3D0362A',268,'Sales Order Type','RMA','IMPORT',GETDATE())  		
+ set @ordertypeid='D5DB79D8-7BFA-4174-B374-7B8CA3D0362A'  	
+ end	  
+ Set @statusid = (Select top 1 id from dbo.list_status where status = @status)  
+ Set @customersid ='924E5C51-BF60-42EB-8781-EA91D4275688' -- (Select top 1 id from dbo.list_customers where customer = @customername)  	
+ if @actionflag=1 
+ SET @id = NEWID()  	 
+ if @actionflag=1  		
+ insert into so_main (id, somain,sodate,custpo,salesperson,salestax,commission,customername,customersid ,statusid,termsid,
+ fobid,shipviaid ,ordertypeid ,billtoname ,billtoaddress1,billtoaddress2,
+ billtoaddress3,billtoaddress4,billtoaddress5,billtoaddress6,shiptoname,shiptoaddress1,
+ shiptoaddress2,shiptoaddress3,shiptoaddress4,shiptoaddress5,shiptoaddress6,contactsid,
+ sonotes,shipnotes,salespersonnotes,packnotes,invoicenotes,createdby,user1,user2,user3,user4,user5,user6,user7,user8,projectid,budget,est,reqdate,prcomp,funded,mdat_in,org) 
+ values(
+ @id, upper(@somain),@sodate,upper(@custpo),upper(@salesperson),@salestax,@commission,upper(@customername),@customersid ,@statusid,@termsid,
+ @fobid,@shipviaid ,@ordertypeid ,upper(@billtoname) ,@billtoaddress1,@billtoaddress2,
+ @billtoaddress3,@billtoaddress4,@billtoaddress5,@billtoaddress6,@shiptoname,@shiptoaddress1,
+ @shiptoaddress2,@shiptoaddress3,@shiptoaddress4,@shiptoaddress5,@shiptoaddress6,@contactsid,
+ @sonotes,@shipnotes,@salespersonnotes,@packnotes,@invoicenotes,@createdby,
+ upper(@user1),upper(@user2),upper(@user3),upper(@user4),upper(@user5),upper(@user6),
+ upper(@user7),upper(@user8),@projectid,@budget,@est,@reqdate,@prcomp,@funded,@mdatIn,@org)
+ else if @actionflag=2
+ update so_main set somain=upper(@somain),sodate=@sodate,custpo=upper(@custpo),salesperson=upper(@salesperson),salestax=@salestax,
+ commission=@commission,customername=upper(@customername),customersid=@customersid,
+ statusid=@statusid,termsid=@termsid,fobid=@fobid,shipviaid=@shipviaid,ordertypeid =@ordertypeid,
+ billtoname =@billtoname,billtoaddress1=@billtoaddress1,billtoaddress2=@billtoaddress2,
+ billtoaddress3=@billtoaddress3,billtoaddress4=@billtoaddress4,billtoaddress5=@billtoaddress5,
+ billtoaddress6=@billtoaddress6,shiptoname=@shiptoname,shiptoaddress1=@shiptoaddress1,
+ shiptoaddress2=@shiptoaddress2,shiptoaddress3=@shiptoaddress3,shiptoaddress4=@shiptoaddress4,
+ shiptoaddress5=@shiptoaddress5,shiptoaddress6=@shiptoaddress6,contactsid=@contactsid,
+ sonotes=@sonotes,shipnotes=@shipnotes,salespersonnotes=@salespersonnotes,packnotes=@packnotes,invoicenotes=@invoicenotes,user1=upper(@user1)
+ ,user2=UPPER(@user2),user3=upper(@user3),user4=upper(@user4),user5=upper(@user5),user6=upper(@user6),user7=upper(@user7),user8=upper(@user8),
+ projectid=@projectid,budget=@budget,est=@est,reqdate=@reqdate,prcomp=@prcomp,funded=@funded,mdat_in=@mdatIn,org=@org
+ where id=@id  
+ else if @actionflag=3
+ delete from so_main where id=@id 
+ select @id as id  
+ 
+ END
+ GO
+ --------------------------------------------------------------------------------------------------------------------------------------------
+
+ --sp_maintain_solines5_essex
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_solines]    Script Date: 10-08-2022 03:06:32 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[amics_sp_api_maintain_solines]  
+ @somain varchar(50)= '',  
+ @customersItem varchar(50)='',  
+ @customers_itemsid uniqueidentifier=null,  
+ @line int = 0,  
+ @itemnumber varchar(50)= '',  
+ @rev varchar(50)= '',  
+ @description varchar(150)= '',  
+ @qty decimal(18,8)=null,  
+ @uom varchar(50)= '',  
+ @unitcost decimal(18,8)=0,  
+ @markup decimal(18,8)=1,  
+ @extcost decimal(18,8)=0,  
+ @estshipdate datetime= '',  
+ @shipdate datetime= '',  
+ @warrantyyear varchar(50)= null,  
+ @warrantydays varchar(50)= null,  
+ @createdby varchar(50)= '',  
+ @actionflag smallint,  
+ @solineid varchar(50)='',  
+ @solinesnotes varchar(MAX)=''  ,
+ @user1 varchar(50)='',  
+ @linenum smallint = 0,
+ @markupflag smallint = 0 
+ As  
+ Declare @id uniqueidentifier,  
+ @somainid uniqueidentifier,  
+ @itemsid uniqueidentifier,  
+ @locationsid uniqueidentifier,  
+ @uomid uniqueidentifier, 
+ @projectid uniqueidentifier,
+ @contractid uniqueidentifier, 
+ @somarkup decimal(18,8) = 1
+ BEGIN  
+ 
+ Set @id = NEWID()  
+ Set @somainid = (Select top 1 id from dbo.so_main where somain=@somain)  
+ Set @customers_itemsid = (Select top 1 id from dbo.list_customers_items where customer_item=@customersItem)  
+ Set @itemsid=(select top 1 id from dbo.list_items where itemnumber=@itemnumber and rev=@rev)  
+ Set @uomid=(select top 1 id from dbo.list_uoms where uomref =@uom)  
+ Set @projectid =(select top 1 projectid from dbo.so_main where somain=@somain)  
+ Set @contractid =(select top 1 contractid from dbo.list_projects where id=@projectid)  
+ Set @somarkup = (select (isnull(markup1,1)) *  (isnull(markup2,1)) from list_contracts where id=@contractid)
+ Set @somarkup = ISNULL(@somarkup,1)   
+
+ print @contractid
+ if @actionflag=1  
+ 
+   insert into so_lines (id,somainid,customers_itemsid,itemsid,linenum,itemnumber,revision,quantity,uom,unitcost,estshipdate,
+   shipdate,description,warranty_years,warranty_days,createdby,createddate,solinesnotes,user1,markup)
+   values  
+   (@id,@somainid,@customers_itemsid,@itemsid,@line,@itemnumber,@rev,@qty,@uom,@unitcost,@estshipdate,@shipdate,@description,
+   @warrantyyear,@warrantydays,@createdby,getdate(),@solinesnotes,@user1,@somarkup)  
+   
+ else if @actionflag=2   
+ if @markupflag = 1
+   update so_lines set customers_itemsid=@customers_itemsid,
+   itemsid=@itemsid,linenum=@line,itemnumber=@itemnumber,revision=@rev,quantity=@qty,uom=@uom,
+   unitcost=@unitcost,estshipdate=@estshipdate,shipdate=@shipdate,description=@description,warranty_years=@warrantyyear,
+   warranty_days=@warrantydays,solinesnotes=@solinesnotes,user1=@user1,markup=@somarkup where id= @solineid
+ else
+   update so_lines set customers_itemsid=@customers_itemsid,
+   itemsid=@itemsid,linenum=@line,itemnumber=@itemnumber,revision=@rev,quantity=@qty,uom=@uom,
+   unitcost=@unitcost,estshipdate=@estshipdate,shipdate=@shipdate,description=@description,warranty_years=@warrantyyear,
+   warranty_days=@warrantydays,solinesnotes=@solinesnotes,user1=@user1 where id= @solineid
+ 
+ 
+ else if @actionflag=3  
+   delete from so_lines where id = @solineid
+   
+ END
+ GO
+
+ -----------------------------------------------------------------------------------------------------------------------------------------
+
+ --Below solines query used for copy to new and project transfer view(top grid populate)
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_so_lines_copy]    Script Date: 11-08-2022 08:52:21 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_so_lines_copy] 
+@somain varchar(50)=''
+AS
+BEGIN  	
+	
+Select so_lines.id,list_itemtypes.itemtype,linenum,dbo.so_lines.itemnumber,revision,dbo.so_lines.description,so_lines.itemsid,list_customers_items.customer_item as customerItem,
+quantity,SUM(isnull(inv_pick.pick_quantity,0)) as pickedQty,uom,so_lines.user1,unitcost,ISNULL(dbo.so_lines.markup,1) as markup,
+(quantity*unitcost) as extCost, convert(varchar,estshipdate,1) as estshipdate, convert(varchar,shipdate,1) as shipdate,warranty_years,warranty_days, 
+ISNULL(dbo.list_items.cost,1) as cost, ISNULL(dbo.so_lines.unitcost,1)*ISNULL(dbo.list_items.markup,1) as pricemarkup,
+ISNULL(dbo.list_items.cost,1)*ISNULL(dbo.list_items.markup,1) as pmcostmarkup,
+solinesnotes, dbo.list_items.obsolete,isnull(case when list_items.invtypeid='A834DD54-EFE3-451E-8AC1-4ABFD866F5C6' then (select isnull(sum(quantity),0) from inv_serial 
+where inv_serial.so_linesid=so_lines.id and inv_serial.transferid is null) + (select isnull(sum(quantity),0) from inv_serial where inv_serial.transferid=so_lines.id)  
+else (select sum(quantity) from inv_basic where inv_basic.so_linesid=so_lines.id and inv_basic.itemsid= dbo.list_items.id) end,0 ) as availqty from so_lines left outer join list_customers_items on list_customers_items.id = so_lines.customers_itemsid 
+left outer join inv_pick on inv_pick.sources_refid = so_lines.id LEFT OUTER JOIN list_items ON list_items.id = so_lines.itemsid left outer join list_itemtypes on list_itemtypes.id = list_items.itemtypeid where somainid=(select top 1 id from so_main where  somain=@somain) 
+group by so_lines.id,list_itemtypes.itemtype,linenum,dbo.so_lines.itemnumber,revision,dbo.so_lines.description,so_lines.itemsid,list_customers_items.customer_item,quantity,uom,so_lines.user1, 
+unitcost,dbo.so_lines.markup,dbo.list_items.markup,dbo.list_items.cost,estshipdate,shipdate,warranty_years,warranty_days,solinesnotes,dbo.list_items.obsolete,list_items.invtypeid,list_items.id order by linenum 
+
+END
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+--sp_proj_transfer5
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_proj_transfer]    Script Date: 12-08-2022 03:44:30 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_api_proj_transfer]
+
+    @xfr_transnum int,@xfr_user varchar(50),@xfr_trans varchar(50)='CHG LOC',@xfr_source2 varchar(50)=''
+
+    ,@lic_plate_flag bit =0
+
+    ,@xfr_somain varchar(50)=''
+
+    ,@xfr_tosomain varchar(50)=''
+
+    ,@xfr_fromline varchar(50)=''
+
+    ,@xfr_toline varchar(50)=''
+
+    ,@xfr_tosolinesid uniqueidentifier = null
+
+AS
+
+BEGIN
+
+    -- Begin declare
+
+    declare @xfr_translogid1 uniqueidentifier,@xfr_translogid2 uniqueidentifier,@sourcesid uniqueidentifier,
+
+        @reasonid uniqueidentifier,@xfr_source varchar(50),
+
+        @xfr_invbasicid_from uniqueidentifier,@xfr_invbasicid_to uniqueidentifier,
+
+        @xfr_invbasicid_exist uniqueidentifier,@xfr_invserialid_exist uniqueidentifier,
+
+        @xfr_itemid uniqueidentifier,@xfr_fromlocid uniqueidentifier,@xfr_tolocid uniqueidentifier,
+
+        @xfr_invserialid uniqueidentifier,@xfr_refid uniqueidentifier,@invxfrid uniqueidentifier,
+
+        @xfr_transqty decimal(18,8),@xfr_licplt varchar(50),@xfr_expdate smalldatetime,
+
+        @xfr_priorqty_from decimal(18,8),@xfr_priorqty_to decimal(18,8),@xfr_lot varchar(50),@xfr_color varchar(50),
+
+        @xfr_serno varchar(50),@xfr_tagno varchar(50),@xfr_cost money,@xfr_model varchar(50),
+
+        @xfr_fromwh varchar(50),@xfr_fromloc varchar(50),@xfr_towh varchar(50),@xfr_toloc varchar(50),
+
+        @xfr_item varchar(50),@xfr_rev varchar(50),@xfr_desc varchar(75),
+
+        @xfr_type varchar(50),@xfr_itemtype varchar(50),@xfr_transdate smalldatetime,@xfr_sources_refid uniqueidentifier,
+
+        @from_warehouse varchar(50),@lic_plate varchar(50),@xfr_notes varchar(max),@xfr_extid uniqueidentifier,
+
+        @somainid uniqueidentifier,@er varchar(50),@solinesid uniqueidentifier--,@somain1 varchar(50),@somain2 varchar(50)
+
+
+    declare @xfr_somainid uniqueidentifier = null,@xfr_tosomainid uniqueidentifier = null,@xfr_solinesid uniqueidentifier = null
+
+    set @xfr_somainid= (select id from so_main where somain=@xfr_somain)
+
+    set @xfr_tosomainid= (select id from so_main where somain=@xfr_tosomain)
+
+    set @xfr_solinesid= (select id from so_lines where somainid=@xfr_somainid and linenum=@xfr_fromline)
+
+--    set @xfr_tosolinesid= (select id from so_lines where somainid=@xfr_tosomainid and linenum=@xfr_toline)
+    -- End declare
+
+        set @from_warehouse=(select top 1 warehouse from inv_trans inner join list_locations on inv_trans.fromlocid=list_locations.id
+
+            inner join list_warehouses on list_locations.warehousesid=list_warehouses.id where inv_trans.transnum=@xfr_transnum)
+
+        exec amics_sp_api_pick_fifo @fifo_transnum=@xfr_transnum,@fifo_warehouse=@from_warehouse
+
+    -- Begin Initialize
+
+    set @xfr_translogid1=(select newid())
+
+    set @xfr_translogid2=(select newid())
+
+    set @invxfrid=(select newid())
+
+    set @xfr_transdate=getdate()
+
+    set @sourcesid=(select id from inv_sources where sourceref=@xfr_source)
+
+    -- End Initialize
+
+    -- Begin Process Transactions
+
+    declare cuMyCursor Cursor For (select itemsid,invbasicid,invserialid,refid,tolocid,transqty,notes
+
+         from inv_trans where transnum=@xfr_transnum )
+
+    Open cuMyCursor
+
+    Fetch Next from cuMyCursor into @xfr_itemid,@xfr_invbasicid_from,@xfr_invserialid,@xfr_refid,@xfr_tolocid,@xfr_transqty,@xfr_notes
+
+    while @@fetch_status = 0
+
+    begin
+
+        select @xfr_itemid=
+
+            case
+
+                when @xfr_invbasicid_from is not null then (select itemsid from inv_basic where id=@xfr_invbasicid_from)
+
+                when @xfr_invserialid is not null then (select itemsid from inv_serial where id=@xfr_invserialid)
+
+            end
+
+        select @xfr_cost=
+
+            case
+
+                when @xfr_invbasicid_from is not null then (select cost from inv_basic where id=@xfr_invbasicid_from)
+
+                when @xfr_invserialid is not null then (select cost from inv_serial where id=@xfr_invserialid)
+
+            end
+
+       
+
+        set @xfr_item=(select itemnumber from list_items where id=@xfr_itemid)
+
+        set @xfr_rev=(select rev from list_items where id=@xfr_itemid)
+
+        set @xfr_desc=(select description from list_items where id=@xfr_itemid)
+
+        set    @xfr_itemtype=dbo.amics_fn_api_itemtype(@xfr_item,@xfr_rev)
+
+        set @xfr_type=dbo.amics_fn_api_invtype(@xfr_item,@xfr_rev)
+		
+
+        if @xfr_invbasicid_from is not null
+
+            set @xfr_fromlocid=(select locationsid from inv_basic where id=@xfr_invbasicid_from)
+
+        else
+
+            set @xfr_fromlocid=(select locationsid from inv_serial where id=@xfr_invserialid)
+
+        if @xfr_invbasicid_from is not null and @xfr_type='BASIC'
+
+        begin
+
+            set @xfr_lot=''
+
+            set @xfr_priorqty_from=(select quantity from inv_basic where id=@xfr_invbasicid_from)
+
+            set @xfr_sources_refid=(select sources_refid from inv_basic where id=@xfr_invbasicid_from)
+
+        end
+
+        if @xfr_invbasicid_from is not null and @xfr_type='LOT'
+
+        begin
+
+            set @xfr_lot=(select lotno from inv_basic where id=@xfr_invbasicid_from)
+
+            set @xfr_lot=isnull(@xfr_lot,'')
+
+            set @xfr_color=(select color from inv_basic where id=@xfr_invbasicid_from)
+
+            set @xfr_priorqty_from=(select quantity from inv_basic where id=@xfr_invbasicid_from)
+
+            set @xfr_sources_refid=(select sources_refid from inv_basic where id=@xfr_invbasicid_from)
+
+            set @xfr_licplt=(select lic_plate from inv_basic where id=@xfr_invbasicid_from)           
+
+            set @xfr_expdate=(select expdate from inv_basic where id=@xfr_invbasicid_from)
+
+            set @xfr_extid=(select extendedid from inv_basic where id=@xfr_invbasicid_from)
+
+        end
+
+        if @xfr_invserialid is not null and @xfr_type='SERIAL'
+
+        begin
+
+            set @xfr_serno=(select serno from inv_serial where id=@xfr_invserialid)
+
+            set @xfr_tagno=(select tagno from inv_serial where id=@xfr_invserialid)
+
+            set @xfr_model=(select model from inv_serial where id=@xfr_invserialid)
+
+            set @xfr_priorqty_from=(select quantity from inv_serial where id=@xfr_invserialid)
+
+            set @lic_plate=(select lic_plate_number from inv_serial where id=@xfr_invserialid)
+
+                     set @somainid=(select somainid from so_lines  where so_lines.id=@xfr_tosolinesid)
+
+                     --set @somain1=(select somain from so_main where id=@somainid)
+
+            update inv_serial set transferid=@xfr_tosolinesid,so_mainid=@somainid from inv_serial where inv_serial.id = @xfr_invserialid
+
+        end
+
+        set @xfr_fromwh =(SELECT dbo.list_warehouses.warehouse FROM dbo.list_warehouses INNER JOIN
+
+                dbo.list_locations ON dbo.list_warehouses.id = dbo.list_locations.warehousesid where
+
+                list_locations.id=@xfr_fromlocid)
+
+        set @xfr_towh =(SELECT dbo.list_warehouses.warehouse FROM dbo.list_warehouses INNER JOIN
+
+                dbo.list_locations ON dbo.list_warehouses.id = dbo.list_locations.warehousesid where
+
+                list_locations.id=@xfr_tolocid)
+
+        set @xfr_fromloc=(SELECT dbo.list_locations.location FROM dbo.list_locations where list_locations.id=@xfr_fromlocid)
+
+        set @xfr_toloc=(SELECT dbo.list_locations.location FROM dbo.list_locations where list_locations.id=@xfr_tolocid)
+		
+----- declate project transfer location--------
+
+       declare @xfr_fromwhid uniqueidentifier,@xfr_towhid uniqueidentifier    
+
+       set @xfr_fromwhid =(SELECT dbo.list_warehouses.id FROM dbo.list_warehouses INNER JOIN
+
+                dbo.list_locations ON dbo.list_warehouses.id = dbo.list_locations.warehousesid where
+
+                list_locations.id=@xfr_fromlocid)
+
+    
+
+        set @xfr_towhid =(SELECT dbo.list_warehouses.id FROM dbo.list_warehouses INNER JOIN
+
+                dbo.list_locations ON dbo.list_warehouses.id = dbo.list_locations.warehousesid where
+
+                list_locations.id=@xfr_tolocid)
+
+------------------------------------------------
+                
+
+        -- Start Updates and inserts within the loop
+
+    insert into inv_transfer (locationsid_from,locationsid_to,inv_basicid_from,inv_basicid_to,
+
+        inv_serialid,priorqty,priorqty2,thisqty,createdby,transfernum,notes)
+
+        values (@xfr_Fromlocid,@xfr_tolocid,@xfr_invbasicid_from,@xfr_invbasicid_to,@xfr_invserialid,
+
+        @xfr_priorqty_from,@xfr_priorqty_to,@xfr_transqty,@xfr_user,@xfr_transnum,@xfr_notes)
+
+ 
+
+        if @xfr_invbasicid_from is not null
+
+        begin
+
+            update inv_basic set quantity=(quantity-@xfr_transqty) where id=@xfr_invbasicid_from
+
+            if @xfr_sources_refid is null
+
+            set @xfr_invbasicid_exist=(select id from inv_basic where itemsid=@xfr_itemid
+
+                and locationsid=@xfr_tolocid and cost=@xfr_cost and isnull(lotno,'')=isnull(@xfr_lot,'') and isnull(color,'')=isnull(@xfr_color,'') and lic_plate=@xfr_licplt and sources_refid is null)
+
+            else
+
+            set @xfr_invbasicid_exist=(select id from inv_basic where itemsid=@xfr_itemid
+
+                and locationsid=@xfr_tolocid and cost=@xfr_cost and isnull(lotno,'')=isnull(@xfr_lot,'') and isnull(color,'')=isnull(@xfr_color,'') and sources_refid=@xfr_sources_refid and lic_plate=@xfr_licplt)
+
+       
+
+            if @xfr_invbasicid_exist is not null
+
+                begin
+
+                                  set @solinesid=(select so_linesid from inv_basic where id=@xfr_invbasicid_exist)
+
+                                  set @er=(select somain from so_lines inner join so_main on so_lines.somainid=so_main.id where so_lines.id=@solinesid)
+
+                       update inv_basic set quantity=quantity+@xfr_transqty,er=@er where id=@xfr_invbasicid_exist
+
+                          set @lic_plate = (select lic_plate_number from inv_basic where id=@xfr_invbasicid_exist)
+
+                end
+
+            else
+
+                begin
+
+               
+
+                   declare @invbasicid uniqueidentifier 
+
+                    set @invbasicid =(select newid())
+
+                                  set @er=(select somain from so_lines inner join so_main on so_lines.somainid=so_main.id where so_lines.id=@xfr_tosolinesid)
+
+                   
+
+                    insert into inv_basic (id,locationsid,itemsid,quantity,cost,lotno,createdby,color,sources_refid,lic_plate,expdate,extendedid,so_linesid,er) values
+
+                    (@invbasicid,@xfr_tolocid,@xfr_itemid,@xfr_transqty,@xfr_cost,@xfr_lot,@xfr_user,@xfr_color,@xfr_sources_refid,@xfr_licplt,@xfr_expdate,@xfr_extid,@xfr_tosolinesid,@er)
+
+                   
+
+                    if @xfr_sources_refid is null
+
+                        set @lic_plate=(select lic_plate_number from inv_basic where itemsid=@xfr_itemid
+
+                        and locationsid=@xfr_tolocid and cost=@xfr_cost and isnull(lotno,'')=isnull(@xfr_lot,'') and isnull(color,'')=isnull(@xfr_color,'')  and lic_plate=@xfr_licplt and sources_refid is null)
+
+                    else
+
+                        set @lic_plate=(select lic_plate_number from inv_basic where itemsid=@xfr_itemid
+
+                        and locationsid=@xfr_tolocid and cost=@xfr_cost and isnull(lotno,'')=isnull(@xfr_lot,'') and isnull(color,'')=isnull(@xfr_color,'')  and lic_plate=@xfr_licplt and sources_refid=@xfr_sources_refid)
+						              
+
+        insert into dbo.translog_project(id,itemsid,somainid,tosomainid,solinesid,tosolinesid,fromwhsid,fromlocid,towhsid,tolocid,basicid,transqty,translogid,createddate,createdby,translogid2)
+
+        values(NEWID(),@xfr_itemid,@xfr_somainid,@xfr_tosomainid,@xfr_solinesid,@xfr_tosolinesid,@xfr_fromwhid,@xfr_fromlocid,@xfr_towhid,@xfr_tolocid,@invbasicid,@xfr_transqty,@xfr_translogid1,GETDATE(),@xfr_user,@xfr_translogid2)
+
+            end
+
+        end
+
+        if @xfr_invserialid is not null
+
+        begin     
+
+                     set @solinesid =(select isnull(inv_serial.transferid,inv_serial.so_linesid) from inv_serial where id=@xfr_invserialid)
+
+                     set @somainid=(select somainid from so_lines  where so_lines.id=@solinesid )
+
+--                   set @somain2=(select somain from so_main where id=@somainid)
+
+            update inv_serial set quantity=0,so_mainid=@somainid where id=@xfr_invserialid
+
+            update inv_serial set locationsid=@xfr_tolocid,quantity=1,so_mainid=@somainid where id=@xfr_invserialid
+
+            set @lic_plate = (select lic_plate_number from inv_serial where id=@xfr_invserialid)
+
+           
+
+        end
+
+        if @xfr_type='LOT'
+
+        begin
+
+            exec amics_sp_api_update_transloglot
+
+                @translogid        =    @xfr_translogid1,
+
+                @quantity        =    @xfr_transqty,
+
+                @lotno            =    @xfr_lot,
+
+                @color            =    @xfr_color,
+
+                @user            =    @xfr_user,
+
+                @cost            =    @xfr_Cost,
+
+                @loc            =    @xfr_fromloc,
+
+                @whs            =    @xfr_fromwh
+
+               
+
+            exec amics_sp_api_update_transloglot
+
+                @translogid        =    @xfr_translogid2,
+
+                @quantity        =    @xfr_transqty,
+
+                @lotno            =    @xfr_lot,
+
+                @color            =    @xfr_color,
+
+                @user            =    @xfr_user,
+
+                @cost            =    @xfr_Cost,
+
+                @loc            =    @xfr_toloc,
+
+                @whs            =    @xfr_towh,
+
+                @lic_plate        =   @lic_plate,
+
+                @lic_plate_flag    =    @lic_plate_flag
+
+        end
+
+        if @xfr_type='SERIAL'
+
+        begin
+
+                exec  amics_sp_api_update_translogsn
+
+                @translogid        =    @xfr_translogid1,
+
+                @serno            =    @xfr_serno,
+
+                @tagno            =    @xfr_tagno,
+
+                @model            =    @xfr_model,
+
+                @user            =    @xfr_user,
+
+                @cost            =    @xfr_cost,
+
+                @loc            =    @xfr_fromloc,
+
+                @whs            =    @xfr_fromwh,
+
+                @lic_plate        =   @lic_plate,
+
+                @lic_plate_flag    =    @lic_plate_flag
+
+                
+
+                exec  amics_sp_api_update_translogsn
+
+                @translogid        =    @xfr_translogid2,
+
+                @serno            =    @xfr_serno,
+
+                @tagno            =    @xfr_tagno,
+
+                @model            =    @xfr_model,
+
+                @user            =    @xfr_user,
+
+                @cost            =    @xfr_Cost,
+
+                @loc            =    @xfr_toloc,
+
+                @whs            =    @xfr_towh,
+
+                @lic_plate        =   @lic_plate,
+
+                @lic_plate_flag    =    @lic_plate_flag
+
+    
+
+ 
+
+    
+
+ 
+
+                       
+
+        insert into dbo.translog_project(id,itemsid,somainid,tosomainid,solinesid,tosolinesid,fromwhsid,fromlocid,towhsid,tolocid,serialid,transqty,translogid,createddate,createdby,translogid2)
+
+        values(NEWID(),@xfr_itemid,@xfr_somainid,@xfr_tosomainid,@xfr_solinesid,@xfr_tosolinesid,@xfr_fromwhid,@xfr_fromlocid,@xfr_towhid,@xfr_tolocid,@xfr_invserialid,1.00,@xfr_translogid1,GETDATE(),@xfr_user,@xfr_translogid2)
+
+       
+
+        --insert into dbo.translog_project(id,itemsid,somainid,tosomainid,solinesid,tosolinesid,fromwhsid,fromlocid,towhsid,tolocid,serialid,transqty,translogid,createddate,createdby)
+
+        --values(NEWID(),@xfr_itemid,@xfr_somainid,@xfr_tosomainid,@xfr_solinesid,@xfr_tosolinesid,@xfr_fromwhid,@xfr_fromlocid,@xfr_towhid,@xfr_tolocid,@xfr_invserialid,-1,@xfr_translogid2,GETDATE(),@xfr_user)
+
+                
+
+        end
+
+        -- End Updates and inserts within the loop
+
+               
+
+    Fetch Next from cuMyCursor into @xfr_itemid,@xfr_invbasicid_from,@xfr_invserialid,@xfr_refid,@xfr_tolocid,@xfr_transqty,@xfr_notes
+
+    end
+
+    close cuMyCursor
+
+    deallocate cuMyCursor
+
+    if @xfr_type='SERIAL' set @xfr_transqty=(select count(*) from translogsn where translogid=@xfr_translogid1)
+
+    if @xfr_type='SERIAL' set @lic_plate=null
+
+    if @xfr_type='SERIAL' set @lic_plate_flag=null
+
+    if @xfr_type='LOT' set @xfr_transqty=(select sum(quantity) from transloglot where translogid=@xfr_translogid1)
+
+    else set @xfr_transqty=@xfr_transqty
+
+    if @xfr_type='LOT' set @lic_plate=null
+
+    if @xfr_type='LOT' set @lic_plate_flag=null
+
+   
+
+    set @xfr_transqty=@xfr_transqty*-1
+
+    exec amics_sp_api_update_translog
+
+    @translogid        =    @xfr_translogid1,
+
+    @itemid            =    @xfr_itemid,
+
+    @Invtype        =    @xfr_type,
+
+    @Itemtype        =    @xfr_itemtype,
+
+    @Rev            =    @xfr_rev,
+
+    @trans            =    @xfr_trans,
+
+    @item            =    @xfr_Item,
+
+    @Description    =    @xfr_desc,
+
+    @Warehouse        =    @xfr_fromwh,
+
+    @Location        =    @xfr_fromloc,
+
+    @Reason            =    @xfr_source2,
+
+    @Source            =    '',
+
+    @Ref            =    '',
+
+    @notes            =    @xfr_notes,
+
+    @Quantity        =    @xfr_transqty,
+
+    @Cost            =    @xfr_cost,
+
+    @transdate        =    @xfr_transdate,
+
+    @user            =    @xfr_user,
+
+       @userfield2          =      @xfr_somain
+
+ 
+
+WAITFOR DELAY '000:00:02'    -- wait for 2 seconds
+
+ 
+
+    set @xfr_transqty=@xfr_transqty*-1
+
+    exec amics_sp_api_update_translog
+
+    @translogid        =    @xfr_translogid2,
+
+    @itemid            =    @xfr_itemid,
+
+    @Invtype        =    @xfr_type,
+
+    @Itemtype        =    @xfr_itemtype,
+
+    @Rev            =    @xfr_rev,
+
+    @trans            =    @xfr_trans,
+
+    @item            =    @xfr_Item,
+
+    @Description    =    @xfr_desc,
+
+    @Warehouse        =    @xfr_towh,
+
+    @Location        =    @xfr_toloc,
+
+    @Reason            =    @xfr_source2,
+
+    @Source            =    '',
+
+    @Ref            =    '',
+
+    @notes            =    @xfr_notes,
+
+    @Quantity        =    @xfr_transqty,
+
+    @Cost            =    @xfr_cost,
+
+    @transdate        =    @xfr_transdate,
+
+    @user            =    @xfr_user,
+
+    @lic_plate        =   @lic_plate,
+
+    @lic_plate_flag    =    @lic_plate_flag ,
+
+    @userfield2          =      @xfr_tosomain
+
+    -- End Updates and inserts outside the loop 
+
+    -- End Process Transactions
+
+END
+GO
+ 
+----------------------------------------------------------------------------------------------------------------------------------------
+
+--sp_inv_somain_details_items_combined
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_inv_somain_details_items_combined]    Script Date: 12-08-2022 03:56:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ 
+CREATE PROCEDURE [dbo].[amics_sp_api_inv_somain_details_items_combined]
+    @somain varchar(50),
+    @itemnumber varchar(50)
+AS
+BEGIN
+
+declare @solinesid uniqueidentifier,@linenum smallint,@itemtype varchar(50),@desc varchar(150),@qty decimal (18,0),@itemsid uniqueidentifier
+--- BASIC CALCULATIONS START----
+	if (select top 1 invtype from list_items inner join list_invtypes on list_items.invtypeid=list_invtypes.id where itemnumber=@itemnumber ) = 'BASIC'
+	SELECT dbo.list_warehouses.warehouse, NULL AS serialid, dbo.inv_basic.id as basicid, dbo.inv_basic.cost, 
+	0 AS sncost, dbo.so_lines.linenum, dbo.list_itemtypes.itemtype, dbo.list_items.itemnumber, dbo.list_items.description, 
+	dbo.so_lines.quantity, dbo.list_locations.location, dbo.inv_basic.quantity AS available, dbo.so_main.somain, 
+	dbo.so_lines.id AS solinesid, '' AS serno, '' AS tagno, SUM(SUM(ISNULL(dbo.inv_basic.quantity, 0))) OVER(PARTITION BY dbo.so_lines.ID) AS 'Total'
+	FROM            dbo.list_items LEFT OUTER JOIN
+	 dbo.list_itemtypes ON dbo.list_items.itemtypeid = dbo.list_itemtypes.id RIGHT OUTER JOIN
+	 dbo.list_warehouses RIGHT OUTER JOIN
+	 dbo.list_locations ON dbo.list_warehouses.id = dbo.list_locations.warehousesid RIGHT OUTER JOIN
+	 dbo.inv_basic ON dbo.list_locations.id = dbo.inv_basic.locationsid ON dbo.list_items.id = dbo.inv_basic.itemsid RIGHT OUTER JOIN
+	 dbo.so_lines ON dbo.inv_basic.so_linesid = dbo.so_lines.id RIGHT OUTER JOIN
+	 dbo.so_main ON dbo.so_lines.somainid = dbo.so_main.id
+	GROUP BY dbo.list_warehouses.warehouse, dbo.inv_basic.id, dbo.inv_basic.cost, dbo.so_lines.linenum, dbo.list_itemtypes.itemtype, dbo.list_items.itemnumber, dbo.list_items.description, dbo.so_lines.quantity, 
+	 dbo.list_locations.location, dbo.inv_basic.quantity, dbo.so_main.somain, dbo.so_lines.id
+	HAVING        (dbo.list_items.itemnumber = @itemnumber) AND (dbo.so_main.somain != @somain) AND isnull(dbo.inv_basic.quantity,0) >0
+--- BASIC CALCULATIONS END
+else  -- Serial items 
+	begin -- ELSE SERIAL CALCULATIONS START ---
+		set @solinesid=(select so_lines.id  from so_lines inner join so_main on so_lines.somainid=so_main.id where somain=@somain and itemnumber=@itemnumber)
+		set @itemsid=(select top 1  itemsid from so_lines where id=@solinesid )
+		set @linenum=(select linenum from so_lines where id=@solinesid)
+		set @desc=(select description from so_lines where id=@solinesid)
+		set @qty=(select quantity from so_lines where id=@solinesid)
+		set @itemtype =(select isnull(itemtype,'') as itemtype from so_lines 
+			left join list_items on so_lines.itemsid =list_items.id 
+			left join list_itemtypes on list_items.itemtypeid=list_itemtypes.id
+			where so_lines.id=@solinesid )
+		select * from ( SELECT     TOP (100) PERCENT 
+			dbo.list_warehouses.warehouse,dbo.inv_serial.id as serialid,  null as basicid,0 as cost,dbo.inv_serial.cost as sncost,
+			@linenum as linenum,@itemtype as itemtype ,@itemnumber as itemnumber,@desc as description,@qty as quantity,
+			list_locations.location AS location,ISNULL(dbo.inv_serial.quantity, 0) AS Available,
+			isnull(
+				(select somain from so_lines inner join so_main on so_lines.somainid=so_main.id where so_lines.id=inv_serial.transferid),
+				(select somain from so_lines inner join so_main on so_lines.somainid=so_main.id where so_lines.id=inv_serial.so_linesid)
+				) as somain
+			,@solinesid as solinesid ,
+			ISNULL(dbo.inv_serial.serno, '') AS serno,ISNULL(dbo.inv_serial.tagno, '') AS tagno, 1 as total
+			FROM   inv_serial 
+			left join list_locations on inv_serial.locationsid=list_locations.id 
+			left join list_warehouses on list_locations.warehousesid =list_warehouses.id 
+			where inv_serial.itemsid=@itemsid and inv_serial.quantity>0) as x where somain!=@somain 
+
+	END
+END -- END OF PROCEDURE
+--UNION
+--select * from (
+--SELECT     TOP (100) PERCENT 
+--dbo.list_warehouses.warehouse,dbo.inv_serial.id as serialid, '' as basicid,
+--0 as cost,dbo.inv_serial.cost as sncost,dbo.so_lines.linenum,dbo.list_itemtypes.itemtype,
+--dbo.so_lines.itemnumber,dbo.so_lines.description,dbo.so_lines.quantity,list_locations_1.location AS location,
+--ISNULL(dbo.inv_serial.quantity, 0) AS Available,
+--dbo.so_main.somain,dbo.so_lines.id AS solinesid,ISNULL(dbo.inv_serial.serno, '') AS serno, 
+--ISNULL(dbo.inv_serial.tagno, '') AS tagno,1 as total
+----SUM(ISNULL(dbo.inv_serial.quantity, 0)) OVER(PARTITION BY dbo.so_lines.ID) AS 'Total'
+--FROM   -- inv_basic join is doing nothing
+--dbo.list_locations AS list_locations_1 RIGHT OUTER JOIN
+--dbo.list_itemtypes RIGHT OUTER JOIN
+--dbo.list_items ON dbo.list_itemtypes.id = dbo.list_items.itemtypeid RIGHT OUTER JOIN
+--dbo.inv_serial ON dbo.list_items.id = dbo.inv_serial.itemsid RIGHT OUTER JOIN 
+--dbo.so_lines ON dbo.so_lines.id = dbo.inv_serial.transferid or (dbo.so_lines.id = dbo.inv_serial.so_linesid and dbo.inv_serial.transferid is null) RIGHT OUTER JOIN 
+--dbo.so_main ON dbo.so_lines.somainid = dbo.so_main.id ON list_locations_1.id = dbo.inv_serial.locationsid RIGHT OUTER JOIN
+--dbo.list_warehouses ON  list_locations_1.warehousesid =  dbo.list_warehouses.id
+--GROUP BY dbo.so_lines.linenum, dbo.list_itemtypes.itemtype, dbo.so_lines.itemnumber, dbo.so_lines.description, dbo.so_lines.quantity, 
+--dbo.so_main.somain, dbo.inv_serial.pickid, dbo.so_lines.id, 
+--ISNULL(dbo.inv_serial.serno, ''), ISNULL(dbo.inv_serial.tagno, ''),
+--dbo.inv_serial.quantity,dbo.list_warehouses.warehouse, list_locations_1.location,  
+--dbo.inv_serial.id ,dbo.inv_serial.cost,inv_serial.transferid
+
+--HAVING (dbo.so_main.somain !=  @somain) AND (dbo.so_lines.quantity > 0) AND inv_serial.transferid is not null and 
+--ISNULL(dbo.inv_serial.quantity, 0) >0 AND 
+--dbo.so_lines.itemnumber= @itemnumber
+--ORDER BY dbo.so_lines.linenum
+--)
+ --as y
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_view_project_transfer]    Script Date: 12-08-2022 06:51:21 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[amics_sp_api_view_project_transfer]
+  @somain varchar(50),
+  @actionflag int =0
+  As
+  Begin
+      if @actionflag = 0 -- FROM PROJECT
+      begin
+            
+            
+			select distinct Mfr,[Part Number],[Description], [From ER], sum(transqty) as [Task Qty],[To ER],[Trans Date],itemsid,somainid,tosomainid,invtype from ( 
+			SELECT TOP (100) PERCENT dbo.list_itemtypes.itemtype AS MFR, dbo.list_items.itemnumber AS [Part Number], dbo.list_items.description AS Description, 
+			(SELECT somain FROM dbo.so_main WHERE (id = dbo.translog_project.somainid)) AS [From ER], sum(dbo.translog_project.transqty) as transqty, 
+			(SELECT somain FROM dbo.so_main AS so_main_1 WHERE (id = dbo.translog_project.tosomainid)) AS [To ER],convert(varchar,dbo.translog_project.createddate,101) AS [Trans Date], 
+			dbo.translog_project.itemsid,dbo.translog_project.somainid, dbo.translog_project.tosomainid, dbo.translog_project.solinesid, dbo.translog_project.serialid,dbo.list_invtypes.invtype FROM 
+			dbo.list_itemtypes RIGHT OUTER JOIN dbo.list_items ON dbo.list_itemtypes.id = dbo.list_items.itemtypeid RIGHT OUTER JOIN 
+			dbo.translog_project ON dbo.list_items.id = dbo.translog_project.itemsid  RIGHT OUTER JOIN 
+			dbo.list_invtypes ON dbo.list_invtypes.id = dbo.list_items.invtypeid 
+			group by dbo.list_itemtypes.itemtype, dbo.list_items.itemnumber,Description,dbo.translog_project.somainid, 
+			dbo.translog_project.tosomainid,dbo.translog_project.createddate,dbo.translog_project.itemsid, 
+			dbo.translog_project.solinesid,dbo.translog_project.serialid,dbo.list_invtypes.invtype 
+			ORDER BY MFR) as x group by mfr,[Part Number],[Description], [From ER], transqty,[To ER],[Trans Date],itemsid,somainid,tosomainid,invtype 
+			having [From ER]=@somain order by mfr 
+             
+		 
+	 end
+	 else -- TO PROJECT
+	 begin	     
+		   select distinct Mfr,[Part Number],[Description], [From ER], sum(transqty) as [Task Qty],[To ER],[Trans Date],itemsid,somainid,tosomainid,invtype from ( 
+             SELECT TOP (100) PERCENT dbo.list_itemtypes.itemtype AS MFR, dbo.list_items.itemnumber AS [Part Number], dbo.list_items.description AS Description, 
+             (SELECT somain FROM dbo.so_main WHERE (id = dbo.translog_project.somainid)) AS [From ER], sum(dbo.translog_project.transqty) as transqty, 
+             (SELECT somain FROM dbo.so_main AS so_main_1 WHERE (id = dbo.translog_project.tosomainid)) AS [To ER],convert(varchar,dbo.translog_project.createddate,101) AS [Trans Date], 
+             dbo.translog_project.itemsid,dbo.translog_project.somainid, dbo.translog_project.tosomainid, dbo.translog_project.solinesid, dbo.translog_project.serialid,dbo.list_invtypes.invtype FROM 
+             dbo.list_itemtypes RIGHT OUTER JOIN dbo.list_items ON dbo.list_itemtypes.id = dbo.list_items.itemtypeid RIGHT OUTER JOIN 
+             dbo.translog_project ON dbo.list_items.id = dbo.translog_project.itemsid  RIGHT OUTER JOIN 
+             dbo.list_invtypes ON dbo.list_invtypes.id = dbo.list_items.invtypeid 
+             group by dbo.list_itemtypes.itemtype, dbo.list_items.itemnumber,Description,dbo.translog_project.somainid, 
+             dbo.translog_project.tosomainid,dbo.translog_project.createddate,dbo.translog_project.itemsid, 
+             dbo.translog_project.solinesid,dbo.translog_project.serialid,dbo.list_invtypes.invtype 
+             ORDER BY MFR) as x group by mfr,[Part Number],[Description], [From ER], transqty,[To ER],[Trans Date],itemsid,somainid,tosomainid,invtype 
+             having [To ER]=@somain order by mfr 
+	 end
+End
+Go
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_view_project_transfer_details]    Script Date: 15-08-2022 02:59:56 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[amics_sp_api_view_project_transfer_details]
+@itemsid uniqueidentifier,
+@fromsomainid uniqueidentifier,
+@tosomainid uniqueidentifier,
+@tranoption varchar(10),
+@itemtype varchar(10)
+As
+begin
+if @tranoption='ERIN'
+begin
+   if @itemtype = 'SERIAL'
+begin
+select serno,tagno,inv_serial.cost as cost from translog_project 
+inner join inv_serial on translog_project.serialid=inv_serial.id
+ where translog_project.itemsid=@itemsid and somainid=@fromsomainid and tosomainid=@tosomainid
+end
+else
+begin
+   select location,transqty,inv_basic.cost as cost from translog_project 
+   inner join inv_basic on translog_project.basicid=inv_basic.id inner join list_locations on list_locations.id=inv_basic.locationsid 
+   where translog_project.itemsid=@itemsid and somainid=@fromsomainid and tosomainid=@tosomainid
+end
+end
+else if @tranoption='EROUT'
+begin
+   if @itemtype = 'SERIAL'
+begin
+select serno,tagno,inv_serial.cost as cost from translog_project 
+inner join inv_serial on translog_project.serialid=inv_serial.id
+ where translog_project.itemsid=@itemsid and somainid=@tosomainid and tosomainid =@fromsomainid
+end
+else
+begin
+   select location,transqty,inv_basic.cost as cost from translog_project 
+   inner join inv_basic on translog_project.basicid=inv_basic.id inner join list_locations on list_locations.id=inv_basic.locationsid 
+   where translog_project.itemsid=@itemsid and somainid=@fromsomainid and tosomainid=@tosomainid
+end
+end 
+end
+Go
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+--Sales Order - Option Shipments
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_soshipment_validpacklstnum]    Script Date: 15-08-2022 06:46:19 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_soshipment_validpacklstnum]     
+@packlstnum varchar(50)
+
+AS    
+BEGIN   
+	
+	Select distinct packlist from dbo.inv_soship inner join inv_pick on  inv_pick.inv_soshipid=inv_soship.id where packlist=@packlstnum and inv_pick.pick_quantity>0
+
+End
+Go
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+--Sales Order - Option Shipments
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_so_getshipments]    Script Date: 15-08-2022 06:46:19 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_so_getshipments]     
+@somain varchar(50)
+
+AS    
+BEGIN    
+Select  inv_soship.packlist, '' as custpo, list_items.itemnumber,list_items.rev as revision,list_items.description,convert(varchar,inv_soship.shipdate,1) as shipdate , 
+SUM(ISNULL(dbo.inv_pick.pick_quantity, 0)) AS shippedqty, convert(varchar,dbo.so_lines.estshipdate,1) as estshipdate, inv_pick.createdby,
+inv_soship.trackingnum as mdatout from  so_lines 
+inner join list_items on list_items.id = so_lines.itemsid 
+inner join inv_pick on inv_pick.sources_refid =so_lines.id 
+inner join inv_soship on inv_soship.id = inv_pick.inv_soshipid 
+inner join so_main on so_main.id = so_lines.somainid where so_main.id = @somain  and dbo.inv_pick.pick_quantity>0 
+group by inv_soship.packlist,list_items.itemnumber,list_items.rev,list_items.description,inv_soship.shipdate,dbo.so_lines.estshipdate, 
+inv_pick.createdby,inv_soship.trackingnum 
+End
+Go
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_view_sopo]    Script Date: 16-08-2022 02:57:33 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure  [dbo].[amics_sp_api_view_sopo]    
+ @somainid uniqueidentifier
+as
+BEGIN 
+SELECT '' AS dummy1, '' AS dummy2, x.itemtype, x.itemnumber, x.description, x.pomain, x.Ordered, x.unitcost, 
+x.unitcost*x.ordered AS extcost, x.deliverydate, x.Received, x.status, x.requisition, 
+x.solineitem, x.polinesid, x.transferpo, x.itemnumber2, x.description2,x.invtype,x.pomainid FROM  
+
+(SELECT        ISNULL(dbo.list_itemtypes.itemtype, '') AS itemtype, ISNULL(dbo.so_lines.itemnumber, dbo.po_lines.poitem) AS itemnumber, ISNULL(dbo.so_lines.description, 
+                         dbo.po_lines.description) AS description, ISNULL(dbo.po_main.pomain, '') AS pomain, ISNULL(dbo.po_lines.quantity, 0) AS Ordered, ISNULL(dbo.po_lines.unitcost, 0) 
+                         AS unitcost, dbo.po_lines.unitcost * dbo.po_lines.quantity AS extcost, ISNULL(SUM(dbo.inv_receipts.recd_quantity), 0) + ISNULL(SUM(dbo.v_serialqty.serialqty), 0) 
+                         AS Received, dbo.po_lines.deliverydate, ISNULL(dbo.list_status.status, '') AS status, dbo.so_lines.id AS solinesid, dbo.so_lines.somainid, 
+                         ISNULL(dbo.po_main.requisition, '') AS requisition, dbo.so_lines.linenum, dbo.po_main.id AS pomainid, ISNULL(dbo.so_lines.itemnumber, '') AS solineitem, 
+                         dbo.po_lines.id AS polinesid, ISNULL(dbo.po_main.transferpo, 0) AS transferpo, ISNULL(dbo.po_lines.poitem, dbo.so_lines.itemnumber) AS itemnumber2, 
+                         ISNULL(dbo.po_lines.description, dbo.so_lines.description) AS description2,dbo.list_invtypes.invtype
+FROM            dbo.list_items LEFT OUTER JOIN
+                         dbo.list_itemtypes ON dbo.list_items.itemtypeid = dbo.list_itemtypes.id RIGHT OUTER JOIN
+                         dbo.inv_receipts RIGHT OUTER JOIN
+                         dbo.so_lines INNER JOIN
+                         dbo.po_lines ON dbo.so_lines.id = dbo.po_lines.so_linesid ON dbo.inv_receipts.sources_refid = dbo.po_lines.id ON 
+                         dbo.list_items.id = dbo.po_lines.itemsid LEFT OUTER JOIN
+                         dbo.v_serialqty ON dbo.inv_receipts.id = dbo.v_serialqty.id LEFT OUTER JOIN
+                         dbo.list_invtypes ON dbo.list_invtypes.id = dbo.list_items.invtypeid LEFT OUTER JOIN
+                         dbo.list_status RIGHT OUTER JOIN
+                         dbo.po_main ON dbo.list_status.id = dbo.po_main.statusid ON dbo.po_lines.pomainid = dbo.po_main.id
+GROUP BY ISNULL(dbo.list_itemtypes.itemtype, ''), ISNULL(dbo.po_lines.poitem, dbo.so_lines.itemnumber), ISNULL(dbo.so_lines.itemnumber, dbo.po_lines.poitem), 
+                         ISNULL(dbo.po_lines.description, dbo.so_lines.description), ISNULL(dbo.so_lines.description, dbo.po_lines.description), ISNULL(dbo.po_main.pomain, ''), 
+                         ISNULL(dbo.po_lines.quantity, 0), ISNULL(dbo.po_lines.unitcost, 0), dbo.po_lines.unitcost * dbo.po_lines.quantity, dbo.po_lines.deliverydate, 
+                         ISNULL(dbo.list_status.status, ''), dbo.so_lines.id, dbo.so_lines.somainid, ISNULL(dbo.po_main.requisition, ''), dbo.so_lines.linenum, dbo.po_main.id, 
+                         ISNULL(dbo.so_lines.itemnumber, ''), dbo.po_lines.id, ISNULL(dbo.po_main.transferpo, 0),dbo.list_invtypes.invtype
+) as x 
+
+WHERE  x.somainid = @somainid  ORDER BY x.linenum
+
+END
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+--sp_view_sopocreate_essex
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_view_sopocreate]    Script Date: 16-08-2022 03:28:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[amics_sp_api_view_sopocreate]
+@somain varchar(50)
+As
+BEGIN
+select so_lines.id,list_itemtypes.itemtype,linenum,dbo.so_lines.itemnumber,revision,
+dbo.so_lines.description,so_lines.itemsid,list_customers_items.customer_item as customerItem, 
+quantity,SUM(isnull(inv_pick.pick_quantity,0)) as pickedQty,uom,so_lines.user1,unitcost,ISNULL(dbo.so_lines.markup,1) as markup, 
+(quantity*unitcost) as extCost, convert(varchar,estshipdate,1) as estshipdate, 
+convert(varchar,shipdate,1) as shipdate,warranty_years,warranty_days,  
+ISNULL(dbo.list_items.cost,1) as cost, 
+ISNULL(dbo.so_lines.unitcost,1)*ISNULL(dbo.list_items.markup,1) as pricemarkup, 
+ISNULL(dbo.list_items.cost,1)*ISNULL(dbo.list_items.markup,1) as pmcostmarkup, 
+solinesnotes, dbo.list_items.obsolete, 
+(quantity - (select ISNULL(SUM(ISNULL(po_lines.quantity,0)),0) from po_lines where so_linesid=so_lines.id)) as sopoqty
+ from so_lines left outer join list_customers_items on list_customers_items.id = so_lines.customers_itemsid   
+left outer join inv_pick on inv_pick.sources_refid = so_lines.id LEFT OUTER JOIN list_items ON list_items.id = so_lines.itemsid left outer join list_itemtypes on list_itemtypes.id = list_items.itemtypeid where somainid=(select top 1 id from so_main where  somain=@somain)  
+and (quantity - (select ISNULL(SUM(po_lines.quantity),0) from po_lines where so_linesid=so_lines.id)) > 0
+and dbo.list_items.userbit2 = 1
+group by so_lines.id,list_itemtypes.itemtype,linenum,dbo.so_lines.itemnumber,revision,dbo.so_lines.description,so_lines.itemsid,list_customers_items.customer_item,quantity,uom,so_lines.user1,  
+unitcost,dbo.so_lines.markup,dbo.list_items.markup,dbo.list_items.cost,estshipdate,shipdate,warranty_years,warranty_days,solinesnotes,dbo.list_items.obsolete order by linenum  
+
+END
+GO
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+--sp_summarized_bom_solines_po5
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_summarized_bom_solines_po]    Script Date: 16-08-2022 04:49:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+  
+CREATE PROCEDURE [dbo].[amics_sp_api_summarized_bom_solines_po]  @somain varchar(50)   
+ AS   
+  declare @sumbom table (parentid2 uniqueidentifier,childid2 uniqueidentifier, item2 varchar(50),rev varchar(50),qty2 decimal (18,8),  
+   descript2 varchar(150),cost2 money,reclevel2 smallint,factor2 decimal (18,8))   
+  declare @sumbom_final table (childid uniqueidentifier,itemnumber varchar(50),description varchar(150),rev varchar(50),totalqty decimal(18,8),uom varchar(50),unitcost decimal(18,8))   
+  declare @itemsid uniqueidentifier,@qty decimal(18,8),@item varchar(50),@rev2 varchar(50),@description varchar(150),  
+   @itemsid_parent uniqueidentifier,@itemsid_child uniqueidentifier,@cost money,@rec_level smallint,@factor decimal(18,8),  
+   @item_exist varchar(50),@buy smallint,@allocated decimal(18,8),@onhand decimal(18,8),@avail decimal(18,8),@uom varchar(50),@unitcost decimal(18,8)  
+ BEGIN   
+   
+  declare cuMyCursor Cursor For (select itemsid,quantity,itemnumber,so_lines.description,revision from so_lines   
+   inner join so_main on so_lines.somainid=so_main.id where somain=@somain ) -- Sales Order Line items  
+  Open cuMyCursor   
+  Fetch Next from cuMyCursor into @itemsid,@qty,@item,@description,@rev2 -- Scan thru sales order lines  
+  while @@fetch_status = 0   
+  begin   
+   insert into @sumbom values(null,@itemsid,@item,'',@qty,@description,0,0,0)   
+--   insert into @sumbom (item2,descript2,childid2,qty2) values(@item,@description,@itemsid,@qty)   
+   insert into @sumbom exec amics_sp_api_summarized_bom @itemsid,@qty  -- Inserts all summarized bom for that sales order line item  
+   Fetch Next from cuMyCursor into @itemsid,@qty,@item,@description,@rev2 -- Scan thru sales order lines  
+  end   
+  close cuMyCursor   
+  deallocate cuMyCursor   
+ ---------  The following code combines the requirement  
+  declare cuMyCursorFinal Cursor For (select childid2,item2,descript2,qty2 from @sumbom)  
+  open cuMyCursorFinal   
+  fetch next from cuMyCursorFinal into @itemsid,@item,@description,@qty  
+  while @@fetch_status=0   
+  begin  
+   set @buy=(select buyitem from list_items where id=@itemsid)  
+   if @buy=1 -- Select only make items   
+   begin  
+    set @rev2=(select rev from list_items where id=@itemsid)  
+    set @allocated=(select sum(quantity) from inv_allocate where itemsid=@itemsid and quantity>0)  
+   set @onhand =(select SUM(quantity) from inv_basic inner join list_locations on inv_basic.locationsid=list_locations.id where itemsid=@itemsid and quantity>0 and list_locations.invalid<>1)   
+   set @avail  =ISNULL(@onhand,0)-ISNULL(@allocated,0)  
+    set @item_exist=(select itemnumber from @sumbom_final where childid=@itemsid)  
+      
+    set @uom=(select uomref from list_uoms where id =(select top 1 uomid from list_items where id=@itemsid))  
+    set @unitcost=(select cost from list_items where id=@itemsid)  
+      
+     if @item_exist is null  
+      if @avail<=0 insert into @sumbom_final values (@itemsid,@item,@description,@rev2,@qty,@uom,@unitcost)  
+     --insert into @sumbom_final values (@itemsid,@item,@description,@rev2,@qty)  
+    else  
+     update @sumbom_final set totalqty=totalqty+@qty where childid=@itemsid  
+     update @sumbom_final set uom= @uom   
+     update @sumbom_final set unitcost= @unitcost      
+       
+  end  
+   fetch next from cuMyCursorFinal into @itemsid,@item,@description,@qty  
+  end  
+  close cuMyCursorFinal   
+  deallocate cuMyCursorFinal   
+    
+ select * from @sumbom_final order by itemnumber --where itemnumber like 'MSVA-38%'  
+ END   
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_summarized_bom]    Script Date: 16-08-2022 08:56:07 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_api_summarized_bom]
+    @StartProductID [uniqueidentifier],@nqty decimal(18,8)
+AS
+    
+BEGIN
+	declare @qty2 float ;
+	SET NOCOUNT ON;
+    WITH [BOM_cte]([itemsid_parent], [itemsid_child], [itemnumber] , [rev],[qty], [description], [cost], [RecursionLevel],[factor] ) -- CTE name and columns
+    AS (
+		SELECT bom1.[itemsid_parent], bom1.[itemsid_child], p.[itemnumber] , p.[rev],cast(isnull(@nqty*bom1.[quantity],0)as decimal(18,8))   , p.[description], p.[cost],  1,cast(@nqty as decimal(30,8)) as factor -- Get the initial list of components for the bike assembly
+        FROM [dbo].[items_bom] bom1
+            INNER JOIN [dbo].[list_items] p 
+            ON bom1.[itemsid_child] = p.[id] 
+        WHERE bom1.[itemsid_parent] = @StartProductID 
+        UNION ALL
+        SELECT bom.[itemsid_parent], bom.[itemsid_child], p.[itemnumber] , p.[rev],cast(isnull(cte.qty*bom.[quantity],0) as decimal(18,8)), p.[description], p.[cost],  [RecursionLevel] + 1,cast(factor as decimal(30,8)) as factor -- Join recursive member to anchor
+        FROM [BOM_cte] cte
+            INNER JOIN [dbo].[items_bom] bom 
+            ON bom.[itemsid_parent] = cte.[itemsid_child]
+            INNER JOIN [dbo].[list_items] p 
+            ON bom.[itemsid_child] = p.[id] 
+		) 
+        -- Outer select from the CTE
+    SELECT b.[itemsid_parent], b.[itemsid_child], b.[itemnumber] as 'Item Number',b.[rev],cast(sum(b.[qty])as Decimal(18,8)) as quantity   , b.[Description] as Description, b.[Cost] as cost , b.[RecursionLevel],@nqty*b.[qty] as factor
+	FROM [BOM_cte] b
+    GROUP BY b.[itemsid_child], b.[itemnumber],b.[rev],b.[itemsid_parent], b.[RecursionLevel], b.[description],b.[qty],b.[cost]
+    ORDER BY b.[itemsid_parent], b.[itemsid_child]
+    OPTION (MAXRECURSION 25) 
+
+   END;
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_list_documents]    Script Date: 16-08-2022 03:28:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[amics_sp_api_list_documents]
+@soMainId varchar(50)
+As
+BEGIN
+
+ Select id, parentid,linenum,filename from list_documents where parentid=@soMainId
+
+END
+GO
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------

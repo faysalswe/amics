@@ -2308,7 +2308,309 @@ GO
 --------------------------------------------------------------------------------------------------------------------------
 
 
+/****** Object:  Table [dbo].[list_customers]    Script Date: 10-08-2022 11:00:23 AM ******/
+SET ANSI_NULLS ON
+GO
 
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[list_customers](
+	[id] [uniqueidentifier] NOT NULL,
+	[smallname] [varchar](50) NOT NULL,
+	[customer] [varchar](100) NULL,
+	[custtype] [varchar](50) NULL,
+	[custtypeid] [uniqueidentifier] NULL,
+	[termsid] [uniqueidentifier] NULL,
+	[statusid] [uniqueidentifier] NULL,
+	[shipviaid] [uniqueidentifier] NULL,
+	[fobid] [uniqueidentifier] NULL,
+	[usersid] [uniqueidentifier] NULL,
+	[acctmsg] [varchar](100) NULL,
+	[vendornum] [varchar](50) NULL,
+	[commission] [varchar](50) NULL,
+	[phone] [varchar](50) NULL,
+	[fax] [varchar](50) NULL,
+	[user1] [varchar](50) NULL,
+	[user2] [varchar](50) NULL,
+	[user3] [varchar](50) NULL,
+	[user4] [decimal](18, 0) NULL,
+	[user5] [decimal](18, 0) NULL,
+	[user6] [bit] NULL,
+	[user7] [bit] NULL,
+	[inactive] [bit] NULL,
+	[notes] [varchar](max) NULL,
+	[exempt] [bit] NULL,
+	[exemptnum] [varchar](50) NULL,
+	[glcode] [varchar](50) NULL,
+	[aracct] [varchar](50) NULL,
+	[createdby] [varchar](50) NOT NULL,
+	[createddate] [datetime] NOT NULL,
+	[taxpercent] [decimal](5, 2) NULL,
+	[taxcode] [varchar](50) NULL,
+	[email] [varchar](50) NULL,
+	[salesrep1] [varchar](50) NULL,
+	[salesrep2] [varchar](50) NULL,
+	[salesrep3] [varchar](50) NULL,
+	[salesrepcomm1] [decimal](18, 8) NULL,
+	[salesrepcomm2] [decimal](18, 8) NULL,
+	[salesrepcomm3] [decimal](18, 8) NULL,
+	[account] [varchar](50) NULL,
+	[glsales] [varchar](50) NULL,
+	[pricelevel] [smallint] NULL,
+	[creditlimit] [smallint] NULL,
+	[paymethod] [varchar](50) NULL,
+	[customersince] [smalldatetime] NULL,
+	[website] [varchar](50) NULL,
+	[duedays] [smallint] NULL,
+ CONSTRAINT [custid_pk] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+--)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_custome__id__7D0605A0]  DEFAULT (newid()) FOR [id]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__custi__7DFA29D9]  DEFAULT (space((1))) FOR [smallname]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_custo__name__7EEE4E12]  DEFAULT (space((1))) FOR [customer]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__custt__7FE2724B]  DEFAULT (space((1))) FOR [custtype]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__vendo__01CABABD]  DEFAULT (space((1))) FOR [vendornum]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__commi__02BEDEF6]  DEFAULT (space((1))) FOR [commission]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__phone__03B3032F]  DEFAULT (space((1))) FOR [phone]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_custom__fax__04A72768]  DEFAULT (space((1))) FOR [fax]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__user1__059B4BA1]  DEFAULT (space((1))) FOR [user1]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__user2__068F6FDA]  DEFAULT (space((1))) FOR [user2]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__user3__07839413]  DEFAULT (space((1))) FOR [user3]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__user4__0877B84C]  DEFAULT ((0)) FOR [user4]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__user5__096BDC85]  DEFAULT ((0)) FOR [user5]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__exemp__0A6000BE]  DEFAULT (space((1))) FOR [exemptnum]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__glcod__0B5424F7]  DEFAULT (space((1))) FOR [glcode]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__aracc__0C484930]  DEFAULT (space((1))) FOR [aracct]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__creat__0D3C6D69]  DEFAULT (space((1))) FOR [createdby]
+GO
+
+ALTER TABLE [dbo].[list_customers] ADD  CONSTRAINT [DF__list_cust__creat__0E3091A2]  DEFAULT (getdate()) FOR [createddate]
+GO
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  Table [dbo].[list_contracts]    Script Date: 10-08-2022 10:59:27 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[list_contracts](
+	[id] [uniqueidentifier] NULL,
+	[contractnum] [varchar](50) NULL,
+	[description] [varchar](50) NULL,
+	[markup1] [decimal](18, 8) NULL,
+	[markup2] [decimal](18, 8) NULL,
+	[createdby] [varchar](50) NOT NULL,
+	[createddate] [datetime] NOT NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[list_contracts] ADD  DEFAULT (newid()) FOR [id]
+GO
+
+ALTER TABLE [dbo].[list_contracts] ADD  DEFAULT (space((1))) FOR [contractnum]
+GO
+
+ALTER TABLE [dbo].[list_contracts] ADD  DEFAULT (space((1))) FOR [description]
+GO
+
+ALTER TABLE [dbo].[list_contracts] ADD  DEFAULT ((0)) FOR [markup1]
+GO
+
+ALTER TABLE [dbo].[list_contracts] ADD  DEFAULT ((0)) FOR [markup2]
+GO
+
+ALTER TABLE [dbo].[list_contracts] ADD  DEFAULT (space((1))) FOR [createdby]
+GO
+
+ALTER TABLE [dbo].[list_contracts] ADD  DEFAULT (getdate()) FOR [createddate]
+GO
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  Table [dbo].[list_customer_contacts]    Script Date: 10-08-2022 10:59:05 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[list_customer_contacts](
+	[id] [uniqueidentifier] NULL,
+	[customersid] [uniqueidentifier] NULL,
+	[name] [varchar](50) NULL,
+	[email] [varchar](50) NULL,
+	[phone] [varchar](50) NULL,
+	[ext] [varchar](50) NULL,
+	[fax] [varchar](50) NULL,
+	[mobile] [varchar](50) NULL,
+	[comments] [varchar](100) NULL,
+	[createdby] [varchar](50) NOT NULL,
+	[createddate] [datetime] NOT NULL,
+	[title] [varchar](50) NULL,
+	[linenum] [smallint] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[list_customer_contacts] ADD  CONSTRAINT [DF__list_custome__id__6740E1B3]  DEFAULT (newid()) FOR [id]
+GO
+
+ALTER TABLE [dbo].[list_customer_contacts] ADD  CONSTRAINT [DF__list_custo__name__683505EC]  DEFAULT (space((1))) FOR [name]
+GO
+
+ALTER TABLE [dbo].[list_customer_contacts] ADD  CONSTRAINT [DF__list_cust__email__69292A25]  DEFAULT (space((1))) FOR [email]
+GO
+
+ALTER TABLE [dbo].[list_customer_contacts] ADD  CONSTRAINT [DF__list_cust__phone__6A1D4E5E]  DEFAULT (space((1))) FOR [phone]
+GO
+
+ALTER TABLE [dbo].[list_customer_contacts] ADD  CONSTRAINT [DF__list_custom__ext__6B117297]  DEFAULT (space((1))) FOR [ext]
+GO
+
+ALTER TABLE [dbo].[list_customer_contacts] ADD  CONSTRAINT [DF__list_custom__fax__6C0596D0]  DEFAULT (space((1))) FOR [fax]
+GO
+
+ALTER TABLE [dbo].[list_customer_contacts] ADD  CONSTRAINT [DF__list_cust__mobil__6CF9BB09]  DEFAULT (space((1))) FOR [mobile]
+GO
+
+ALTER TABLE [dbo].[list_customer_contacts] ADD  CONSTRAINT [DF__list_cust__comme__6DEDDF42]  DEFAULT (space((1))) FOR [comments]
+GO
+
+ALTER TABLE [dbo].[list_customer_contacts] ADD  CONSTRAINT [DF__list_cust__creat__6EE2037B]  DEFAULT (space((1))) FOR [createdby]
+GO
+
+ALTER TABLE [dbo].[list_customer_contacts] ADD  CONSTRAINT [DF__list_cust__creat__6FD627B4]  DEFAULT (getdate()) FOR [createddate]
+GO
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  Table [dbo].[list_customers_items]    Script Date: 10-08-2022 12:53:36 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[list_customers_items](
+	[id] [uniqueidentifier] NULL,
+	[customersid] [uniqueidentifier] NULL,
+	[itemsid] [uniqueidentifier] NULL,
+	[customer_uomid] [uniqueidentifier] NULL,
+	[customer_item] [varchar](50) NULL,
+	[customer_quantity] [decimal](18, 0) NULL,
+	[customer_price] [money] NULL,
+	[user1] [varchar](50) NULL,
+	[user2] [decimal](18, 0) NULL,
+	[user3] [money] NULL,
+	[createdby] [varchar](50) NOT NULL,
+	[createddate] [datetime] NOT NULL,
+	[line_pm] [int] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[list_customers_items] ADD  DEFAULT (newid()) FOR [id]
+GO
+
+ALTER TABLE [dbo].[list_customers_items] ADD  DEFAULT (space((1))) FOR [customer_item]
+GO
+
+ALTER TABLE [dbo].[list_customers_items] ADD  DEFAULT ((0)) FOR [customer_quantity]
+GO
+
+ALTER TABLE [dbo].[list_customers_items] ADD  DEFAULT ((0)) FOR [customer_price]
+GO
+
+ALTER TABLE [dbo].[list_customers_items] ADD  DEFAULT (space((1))) FOR [user1]
+GO
+
+ALTER TABLE [dbo].[list_customers_items] ADD  DEFAULT ((0)) FOR [user2]
+GO
+
+ALTER TABLE [dbo].[list_customers_items] ADD  DEFAULT ((0)) FOR [user3]
+GO
+
+ALTER TABLE [dbo].[list_customers_items] ADD  DEFAULT (space((1))) FOR [createdby]
+GO
+
+ALTER TABLE [dbo].[list_customers_items] ADD  DEFAULT (getdate()) FOR [createddate]
+GO
+
+----------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  Table [dbo].[translog_project]    Script Date: 12-08-2022 06:53:31 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[translog_project](
+	[id] [uniqueidentifier] NULL,
+	[itemsid] [uniqueidentifier] NULL,
+	[somainid] [uniqueidentifier] NULL,
+	[tosomainid] [uniqueidentifier] NULL,
+	[solinesid] [uniqueidentifier] NULL,
+	[tosolinesid] [uniqueidentifier] NULL,
+	[fromwhsid] [uniqueidentifier] NULL,
+	[fromlocid] [uniqueidentifier] NULL,
+	[towhsid] [uniqueidentifier] NULL,
+	[tolocid] [uniqueidentifier] NULL,
+	[serialid] [uniqueidentifier] NULL,
+	[transqty] [decimal](18, 0) NULL,
+	[translogid] [uniqueidentifier] NULL,
+	[createddate] [smalldatetime] NULL,
+	[createdby] [varchar](50) NULL,
+	[translogid2] [uniqueidentifier] NULL,
+	[basicid] [uniqueidentifier] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[translog_project] ADD  CONSTRAINT [DF_translog_project_id]  DEFAULT (newid()) FOR [id]
+GO
+
+
+----------------------------------------------------------------------------------------------------------------------------
 
 
 
