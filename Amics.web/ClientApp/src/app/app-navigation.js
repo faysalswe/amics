@@ -105,7 +105,7 @@ exports.navigation = [
             {
                 text: 'Equipment Request',
                 path: '/equipment',
-                title: 'eqipment request',
+              title: 'Equipment Request',
                 type: componentType_1.ComponentType.ER
             },
             {

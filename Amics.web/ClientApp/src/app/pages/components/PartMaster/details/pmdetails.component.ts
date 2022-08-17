@@ -266,7 +266,7 @@ export class PMDetailsComponent implements AfterViewInit {
     });
     this.pmdataTransfer.selectedItemBomForPMDetails$.subscribe((boms) => {
       console.log(boms.length);
-      debugger
+      //debugger
       this.bomDetails = boms;
       this.originalBomDetails = [...boms];
       console.log("bom details " + this.bomDetails.length);
@@ -497,7 +497,7 @@ export class PMDetailsComponent implements AfterViewInit {
     useSubmitBehavior: true,
   };
   onSave() {
-    debugger
+    //debugger
     document.getElementById('pmDetailsSubmit')?.click();
 
     if (!this.isFormValid()) {
@@ -535,7 +535,7 @@ export class PMDetailsComponent implements AfterViewInit {
 
     this.pmService.addorUpdatePMDetails(this.pmDetails, uomid).subscribe(
       (x) => {
-        debugger
+        //debugger
         if (this.crudStatus) {
           var boms = this.copyToNewBomGridDetails(x.message);
           this.pmService.AddUpdateDeleteBomDetails(boms).subscribe(
@@ -587,7 +587,7 @@ export class PMDetailsComponent implements AfterViewInit {
   }
 
   convertToBomGridDetails(parentId: string) {
-    debugger
+    //debugger
     let bomGridDetails: pmBomGridDetails[] = [];
 
     if (this.bomDetails.length == 0 && this.originalBomDetails.length == 0) {
@@ -650,7 +650,7 @@ export class PMDetailsComponent implements AfterViewInit {
   }
 
   copyToNewBomGridDetails(parentId: string) {
-    debugger
+    //debugger
     let bomGridDetails: pmBomGridDetails[] = [];
 
     for (var _i = 0, boms = this.bomDetails; _i < boms.length; _i++) {
@@ -689,7 +689,7 @@ export class PMDetailsComponent implements AfterViewInit {
     this.bomDetails[toIndex].lineNum = toIndex + 1;
   }
   onDelete() {
-    debugger
+    //debugger
     this.pmService
       .deletePMDetails(this.pmDetails.itemNumber, this.pmDetails.rev)
       .subscribe((x) => {
