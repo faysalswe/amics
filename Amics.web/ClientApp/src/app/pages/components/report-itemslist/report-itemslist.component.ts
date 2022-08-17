@@ -19,7 +19,7 @@ import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 
 export class ReportItemslistComponent implements OnInit {
 
-  reportUrl: string = "Translog";
+  reportUrl: string = "ListItems";
   invokeAction: string = '/DXXRDV';
 
   constructor(@Inject('BASE_URL') public hostUrl: string) {

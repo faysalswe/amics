@@ -115,28 +115,20 @@ export class PMDetailsComponent implements AfterViewInit {
   toastType = 'info';
   toastMessage = '';
   popupVLVisible = false;
-  popupF2Visible = false;
   popupVSVisible = false;
   lookupItemNumbers: pmItemSearchResult[] = [];
   selectedRowIndex = -1;
   editRowKey!: number;
-  componentTypeF2: ComponentType = ComponentType.PartMasterF2;
   labelMap: typeof LabelMap;
   focusOnQty: any;
   rowIndex = 0;
 
   closeBasicPopUp: any;
   saveBasicPopUp: any;
-  basicPopupVisible = false;
 
   fSearchFG!: FormGroup;
-  pmSearchResults: pmItemSearchResult[] = [];
-  selectedItem: any;
-  f2KeyRowIndex = 0;
   crudStatus: boolean = false;
-  @ViewChild('f2partNumberVar', { static: false }) f2partNumberVar! : ElementRef;
-  @ViewChild('f2partNumberDesc', { static: false }) f2partNumberDesc! : ElementRef;
-
+  
   constructor(
     private searchService: SearchService,
     private pmdataTransfer: PartMasterDataTransService,
@@ -216,7 +208,7 @@ export class PMDetailsComponent implements AfterViewInit {
     this.closeBasicPopUp = {
       text: 'Cancel and Exit',
       onClick(e: any) {
-        that.basicPopupVisible = false;
+        //that.basicPopupVisible = false;
       },
     };
 
@@ -255,7 +247,6 @@ export class PMDetailsComponent implements AfterViewInit {
 
       console.log(e);
 
-      this.popupF2Visible = false;
       this.dataGrid.instance.saveEditData();
       this.addRow();
       this.dataGrid.instance.cellValue(this.bomDetails.length, 3, e.itemNumber);
@@ -519,10 +510,10 @@ export class PMDetailsComponent implements AfterViewInit {
     let bomGridIce = this.bomComp.dataGrid.instance.getVisibleRows();
 
     for (let _i = 0; _i < bomGridIce.length; _i++) {
-
-      if (bomGridIce[_i].data.ref !== undefined && bomGridIce[_i].data.quantity !== undefined) {  
-          bomDetails_VisibleRows.push(bomGridIce[_i].data);
-        }
+      bomDetails_VisibleRows.push(bomGridIce[_i].data);
+      // if (bomGridIce[_i].data.ref !== undefined && bomGridIce[_i].data.quantity !== undefined) {  
+      //     bomDetails_VisibleRows.push(bomGridIce[_i].data);
+      //   }
 
     }
 
@@ -826,96 +817,11 @@ export class PMDetailsComponent implements AfterViewInit {
     console.log('Name', form.value.f2PartDesc);
   }
 
-  findPartNumbers(pn: string, desc: string){
-    console.log(pn);
-    console.log(desc);
-    let obj : pmSearch = new pmSearch();
-    obj.itemnumber = pn;
-    obj.description = desc;
-    this.searchService.getItemNumberSearchResults(obj).subscribe(r => {
-      this.pmSearchResults = r;
-    });
-  }
-
-
-  selectedItemNumber: string = '';
   OnPNSearchShow(){
     console.log('OnPNSearchShow');
     //this.f2partNumberVar.nativeElement.focus();
     console.log('OnPNSearchShow2');
   }
-
-  onShown(e:any): void {
-    //this.chart.render();
-    console.log('OnPNSearchShow2');
-  }
- 
-  dblclick(e: any){
-   // console.log('OnPNSearchShow');
-    //this.f2partNumberVar.nativeElement.focus();
-   // console.log('OnPNSearchShow2');
-  }
-
-
- onSelectionChanged(e: any) {
-        console.log(e);
-        // this.f2partNumberVar.nativeElement.value = "";
-        // this.f2partNumberDesc.nativeElement.value = "";        
-        if (!!e.addedItems[0]) {
-            this.selectedItem = e.addedItems[0];
-            console.log(this.selectedItem);
-            this.selectedItemNumber = this.selectedItem.itemNumber;
-            // this.pmDataTransService.selectedItemChanged(this.selectedItem, this.componentType);
-
-            this.dataGrid.instance.cellValue(
-              this.f2KeyRowIndex,
-              3,
-              this.selectedItemNumber
-            );
-            this.basicPopupVisible = false;
-
-
-            let cellInfo = new pmSearch();
-           cellInfo.itemnumber = this.selectedItemNumber;
-
-        this.searchService
-          .getItemNumberSearchResults(cellInfo)
-          .subscribe((response: pmItemSearchResult[]) => {
-
-
-            let obj = response?.find(
-              (x: pmItemSearchResult) =>
-                x.itemNumber.toLowerCase() == cellInfo.itemnumber.toLowerCase()
-            );
-
-            console.log(obj);
-
-            if (!!obj) {
-              this.dataGrid.instance.cellValue(this.f2KeyRowIndex, 2, obj.itemType);
-              this.dataGrid.instance.cellValue(
-                this.f2KeyRowIndex,
-                3,
-                obj.itemNumber
-              );
-              this.dataGrid.instance.cellValue(
-                this.f2KeyRowIndex,
-                4,
-                obj.description
-              );
-
-              this.dataGrid.instance.cellValue(this.f2KeyRowIndex, 6, obj.uomref);
-              this.dataGrid.instance.cellValue(this.f2KeyRowIndex, 8, obj.cost);
-
-              this.dataGrid.instance.cellValue(this.f2KeyRowIndex, 10, "00000000-0000-0000-0000-000000000000");
-              this.dataGrid.instance.cellValue(this.f2KeyRowIndex, 11, obj.id);
-
-            }
-          })
-          setTimeout(() => {
-            this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(Number(this.f2KeyRowIndex),"quantity") as HTMLElement);
-         }, 300);
-        }
-    }
 
     hideSerial(){
       this.popupVSVisible = false;
