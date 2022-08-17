@@ -45,7 +45,7 @@ export class PMSearchComponent implements OnInit, AfterViewInit {
         private pmDataTransService: PartMasterDataTransService
     ) {
         this.labelMap = LabelMap;
-        this.search();
+        //this.search();
     }
     ngAfterViewInit(): void {
         //this.focusOnItemNumber();
