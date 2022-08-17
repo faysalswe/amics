@@ -153,7 +153,7 @@
         <div class="tables">
           <div class="column1">
             <dx-data-grid #chglocGridVar [dataSource]="changeLocDetailsResult" [height]="230" class="cell-highlighted" [showBorders]="true"
-              [keyExpr]="['invSerialId', 'invBasicId']" (onSelectionChanged)="leftSelectionChanged($event)"
+              [keyExpr]="['invSerialId', 'invBasicId']"  (onSelectionChanged)="leftSelectionChanged($event)"
                [showColumnLines]="true" [showRowLines]="true" (onFocusedRowChanged)="onFocusedRowChanged($event)" 
                (onEditorPreparing)="onEditorPreparing($event)">  
               <!--   <dxo-row-dragging [data]="1" group="tasksGroup"></dxo-row-dragging>
@@ -161,7 +161,7 @@
               </dxo-editing>  -->
 
               <dxo-scrolling mode="virtual"></dxo-scrolling>
-              <dxo-selection mode="multiple"></dxo-selection>               
+              <dxo-selection [showCheckBoxesMode]="checkboxMode" mode="multiple" ></dxo-selection>                             
               <dxi-column dataField="warehouse" width="25%" dataType="string" [allowEditing]="false">               
               </dxi-column>
               <dxi-column dataField="location" width="25%" dataType="string" [allowEditing]="false"></dxi-column>

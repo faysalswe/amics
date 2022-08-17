@@ -12,7 +12,7 @@ import { LabelMap } from "src/app/pages/models/Label";
 import { TextboxStyle } from '../textbox-style/textbox-style';
 import { DxDataGridModule,DxDataGridComponent, DxSelectBoxComponent } from 'devextreme-angular';
 import { DxiDataGridColumn } from 'devextreme-angular/ui/nested/base/data-grid-column-dxi';
-
+import CheckBox from 'devextreme/ui/check_box'; 
 
 @Component({
   selector: "app-change-loc",
@@ -184,11 +184,13 @@ export class ChangeLocationComponent {
           d.pickQty = d.pickQty;           
           console.log(d.pickQty);
           this.changeLocDetailsResult.push(d);
-          console.log(this.changeLocDetailsResult);          
+          console.log(this.changeLocDetailsResult);                    
         }
+        this.checkboxMode="none";
         this.changeLocDetailsResultCopy = [...this.changeLocDetailsResult];
       }
       else {
+        this.checkboxMode="always";
         this.changeLocDetailsResult = r;
         this.changeLocDetailsResultCopy = [...r];
       }
@@ -204,7 +206,7 @@ export class ChangeLocationComponent {
       for (let _i = 0; _i < chgLocRows.length; _i++) {          
         if (chgLocRows[_i].data.pickQty !== undefined) {               
           console.log("pick  " + chgLocRows[_i].data.pickQty + " i val " +_i );               
-          this.chglocGridVar.instance.cellValue(_i, 4, '');
+          this.chglocGridVar.instance.cellValue(_i, 3, '');
         }          
       } 
     });
@@ -269,9 +271,25 @@ export class ChangeLocationComponent {
     this.chglocGridVar.instance.refresh();
   }
 
+  checkboxMode: string='none';
+
   onEditorPreparing(e: any) {
-        
-      if (e.dataField === 'pickQty' && e.parentType === 'dataRow') {
+    
+// if(e.command === "select"){
+  
+//   if(this.selectedInvType === "BASIC"){
+//     e.editorOptions.visible = false; 
+//     this.checkboxMode="none";
+//     console.log(this.checkboxMode);
+//   }
+//   else{
+//     e.editorOptions.visible = true;  
+//     this.checkboxMode="always";
+//     console.log(this.checkboxMode);
+//   }
+// }
+ 
+       if (e.dataField === 'pickQty' && e.parentType === 'dataRow') {
         const defaultValueChangeHandler = e.editorOptions.onValueChanged;
   
         e.editorOptions.onValueChanged = function (this: any, args: any) {
@@ -286,7 +304,7 @@ export class ChangeLocationComponent {
             alert("Invalid Pick Qty");
             this.chglocGridVar.instance.cellValue(
               e.row.rowIndex,
-              4,
+              3,
               '');                
               setTimeout(() => {
                 this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
@@ -295,7 +313,7 @@ export class ChangeLocationComponent {
           else if (Number(args.value) < 0)  {
             alert("Invalid Pick Qty");
             this.chglocGridVar.instance.cellValue(
-              e.row.rowIndex, 4, '');                
+              e.row.rowIndex, 3, '');                
               setTimeout(() => {
                 this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
               }, 300); 
@@ -303,7 +321,7 @@ export class ChangeLocationComponent {
           else if (Number(args.value) < 0)  {
             alert("Invalid Pick Qty");
             this.chglocGridVar.instance.cellValue(
-              e.row.rowIndex, 4, '');                
+              e.row.rowIndex, 3, '');                
               setTimeout(() => {
                 this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
               }, 300); 
@@ -311,7 +329,7 @@ export class ChangeLocationComponent {
           else if (!Number(args.value))  {
             alert("Invalid Pick Qty");
             this.chglocGridVar.instance.cellValue(
-              e.row.rowIndex, 4, '');                
+              e.row.rowIndex, 3, '');                
               setTimeout(() => {
                 this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
               }, 300); 
@@ -319,7 +337,7 @@ export class ChangeLocationComponent {
           else if (args.value.length === 0) {
             alert("Enter Pick Qty");
             this.chglocGridVar.instance.cellValue(
-              e.row.rowIndex, 4, '');                
+              e.row.rowIndex, 3, '');                
               setTimeout(() => {
                 this.chglocGridVar.instance.focus(this.chglocGridVar.instance.getCellElement(e.row.rowIndex, "pickQty"));
               }, 300); 
@@ -327,7 +345,7 @@ export class ChangeLocationComponent {
           else{                  
             this.chglocGridVar.instance.cellValue(
               e.row.rowIndex,
-              4,
+              3,
               Number(args.value)
             );            
           }
@@ -375,7 +393,7 @@ export class ChangeLocationComponent {
       
         if (picklen == pickQtyVar.length){
           alert("Please enter PickQty");          
-          this.chglocGridVar.instance.getCellElement(0, 4);
+          this.chglocGridVar.instance.getCellElement(0, 3);
           return false;
         }
     
@@ -476,6 +494,18 @@ export class ChangeLocationComponent {
     this.updateTempTransactionTable();
 
   }
+
+  onCellPrepared(e: any)
+  {
+    console.log("cell prepared");
+    if (this.selectedInvType != "SERIAL") {  
+      console.log("cell prepared SERIAL");
+      var editor = CheckBox.getInstance(e.cellElement.querySelector(".dx-select-checkbox"));  
+      editor.option("disabled", true);  
+      e.cellElement.style.pointerEvents = 'none';  
+  }  
+  }
+
   leftSelectionChanged(data: any) {
     console.log("leftSelectionChanged" + data.selectedRowKeys);
    // console.log(data)    
