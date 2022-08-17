@@ -11,7 +11,8 @@ namespace Amics.web.PredefinedReports
         public static Dictionary<string, Func<XtraReport>> Reports = new Dictionary<string, Func<XtraReport>>()
         {
             ["RepxReport"] = () => new RepxReport(),
-            ["Translog"] = () => new Translog()
+            ["Translog"] = () => new Translog(),
+            ["ListItems"] = () => new ListItems()
 
         };
     }

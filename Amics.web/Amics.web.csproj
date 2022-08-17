@@ -59,11 +59,13 @@
     <None Remove="ClientApp\dist\app-name\Roboto-700.fc482e6133cf5e26.woff" />
     <None Remove="ClientApp\dist\app-name\runtime.8d04fb1dda83bc0a.js" />
     <None Remove="ClientApp\dist\app-name\styles.c9a54c1d1cd81c42.css" />
+    <None Remove="PredefinedReports\ListItems.vsrepx" />
     <None Remove="PredefinedReports\Translog.vsrepx" />
     <None Remove="Reports\RepxReport.vsrepx" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="PredefinedReports\ListItems.vsrepx" />
     <EmbeddedResource Include="PredefinedReports\RepxReport.vsrepx" />
     <EmbeddedResource Include="PredefinedReports\Translog.vsrepx" />
   </ItemGroup>
@@ -74,6 +76,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="PredefinedReports\ListItems.cs">
+      <DependentUpon>ListItems.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="PredefinedReports\ListItems.Designer.cs">
+      <DependentUpon>ListItems.vsrepx</DependentUpon>
+    </Compile>
     <Compile Update="PredefinedReports\RepxReport.cs">
       <DependentUpon>RepxReport.vsrepx</DependentUpon>
     </Compile>
