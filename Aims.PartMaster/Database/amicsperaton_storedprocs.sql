@@ -5329,3 +5329,197 @@ GO
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------
+
+--sp_report_soprint_essex5
+/****** Object:  StoredProcedure [dbo].[amics_sp_rpt_soprint]    Script Date: 17-08-2022 01:22:56 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_rpt_soprint]
+@somain varchar(50)
+AS
+
+
+declare
+@compaddress1 varchar(50),@compaddress2 varchar(50),@compaddress3 varchar(50),
+@compaddress4 varchar(50),@compaddress5 varchar(50),@compaddress6 varchar(50)
+
+BEGIN
+
+set @compaddress1=(select top 1 address1 from list_companies)
+set @compaddress2=(select top 1 address2 from list_companies)
+set @compaddress3=(select top 1 address3 from list_companies)
+set @compaddress4=(select top 1 address4 from list_companies)
+set @compaddress5=(select top 1 address5 from list_companies)
+set @compaddress6=(select top 1 address6 from list_companies)
+
+SELECT        
+(select dbo.formataddress (@compaddress1,@compaddress2,@compaddress3,@compaddress4,@compaddress5,@compaddress6)) as compaddress,
+rtrim(isnull(dbo.so_main.somain,'')) as somain, 
+rtrim(isnull(dbo.so_main.user2,'')) as erdesc, 
+rtrim(isnull(dbo.so_main.customername,'')) as customername, 
+rtrim(isnull(dbo.list_projects.project,'')) as project, 
+rtrim(isnull(dbo.list_projects.name,'')) as projectname, 
+rtrim(isnull(dbo.list_status.status,'')) as status, 
+rtrim(isnull(dbo.so_main.user1 ,'')) AS budauth, 
+rtrim(isnull(dbo.list_shipvia.shipvia,'')) as shipvia, 
+dbo.so_lines.linenum, 
+rtrim(isnull(dbo.so_lines.itemnumber,'')) as itemnumber, 
+rtrim(isnull(dbo.so_lines.description,'')) AS partdesc, 
+isnull(dbo.so_lines.quantity,0) as quantity, 
+isnull(dbo.so_lines.unitcost,0) as unitcost,
+isnull(dbo.so_main.sonotes,'') as sonotes,
+isnull(dbo.so_lines.solinesnotes,'') as solinesnotes
+FROM            dbo.list_shipvia RIGHT OUTER JOIN
+                         dbo.so_main ON dbo.list_shipvia.id = dbo.so_main.shipviaid LEFT OUTER JOIN
+                         dbo.list_status ON dbo.so_main.statusid = dbo.list_status.id LEFT OUTER JOIN
+                         dbo.list_projects ON dbo.so_main.projectid = dbo.list_projects.id LEFT OUTER JOIN
+                         dbo.so_lines ON dbo.so_main.id = dbo.so_lines.somainid
+WHERE        (dbo.so_main.somain = @somain)
+order by linenum
+
+END
+GO
+---------------------------------------------------------------------------------------------------------------------------------
+
+--sp_report_er_postatus5
+/****** Object:  StoredProcedure [dbo].[amics_sp_rpt_er_postatus]    Script Date: 17-08-2022 01:25:38 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_rpt_er_postatus] @somain varchar(50)
+AS
+BEGIN
+select x.linenum,x.itemtype,x.itemnumber,x.description,x.pomain,x.poqty,sum(x.recd_quantity) as recd_quantity,x.unitcost,x.extcost,x.deliverydate,x.user2 from 
+(select so_lines.linenum, isnull(itemtype,'') as itemtype ,isnull(po_lines.poitem,'') as itemnumber,
+isnull(po_lines.description,'') as description,isnull(pomain,'') as pomain,
+isnull(po_lines.quantity,0) as poqty,
+ISNULL(CONVERT(VARCHAR(10), dbo.po_lines.deliverydate, 101), '') as deliverydate, 
+sum(isnull(inv_receipts.recd_quantity,0))+(select count(id) from inv_serial where receiptsid=inv_receipts.id) as recd_quantity,
+po_lines.unitcost,po_lines.quantity*po_lines.unitcost as extcost,so_main.user2
+from so_main 
+left join so_lines on so_main.id=so_lines.somainid
+left join po_lines on so_lines.id=po_lines.so_linesid
+left join po_main on po_lines.pomainid=po_main.id
+left join list_items on po_lines.itemsid=list_items.id 
+left join list_itemtypes on list_items.itemtypeid=list_itemtypes.id 
+left join inv_receipts on po_lines.id=inv_receipts.sources_refid
+where somain=@somain and so_lines.quantity>0 and po_main.pomain!=''
+group by so_lines.linenum,itemtype,po_lines.poitem,po_lines.description,pomain,po_lines.quantity,deliverydate,recd_quantity,inv_receipts.id,po_lines.linenum,po_lines.unitcost,so_main.user2
+) as x
+group by  x.linenum,x.itemtype,x.itemnumber,x.description,x.pomain,x.poqty,x.unitcost,x.extcost,x.deliverydate,x.user2 order by itemtype,linenum
+
+END
+GO
+-- exec [dbo].[sp_report_er_postatus5] 'TF-11-0268'
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+--sp_report_erinv5
+/****** Object:  StoredProcedure [dbo].[amics_sp_rpt_erinv]    Script Date: 17-08-2022 01:28:50 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[amics_sp_rpt_erinv]
+	@somain varchar(50)
+AS
+BEGIN
+SELECT        TOP (100) PERCENT dbo.so_lines.linenum, dbo.list_itemtypes.itemtype, dbo.so_lines.itemnumber, dbo.so_lines.description, dbo.so_lines.quantity, 
+                         CASE list_invtypes.invtype WHEN 'Serial' THEN list_locations.location ELSE list_locations_1.location END AS location, 
+						     SUM(ISNULL(dbo.inv_basic.quantity, 0) + ISNULL(dbo.inv_serial.quantity, 0)) AS Available,
+						 dbo.so_main.somain, dbo.so_lines.id AS solinesid, ISNULL(dbo.inv_serial.serno, '') 
+                         AS serno, ISNULL(dbo.inv_serial.tagno, '') AS tagno, STR(SUM(ISNULL(dbo.inv_basic.quantity, 0)), 4, 0) AS locqty,
+    SUM(SUM(ISNULL(dbo.inv_basic.quantity, 0) + ISNULL(dbo.inv_serial.quantity, 0))) OVER(PARTITION BY dbo.so_lines.ID) AS 'Total'
+FROM            dbo.list_itemtypes RIGHT OUTER JOIN
+                         dbo.list_invtypes RIGHT OUTER JOIN
+                         dbo.list_items ON dbo.list_invtypes.id = dbo.list_items.invtypeid ON dbo.list_itemtypes.id = dbo.list_items.itemtypeid RIGHT OUTER JOIN
+                         dbo.inv_basic RIGHT OUTER JOIN
+                         dbo.inv_serial RIGHT OUTER JOIN
+                         dbo.so_lines ON ISNULL(dbo.inv_serial.transferid, dbo.inv_serial.so_linesid) = dbo.so_lines.id LEFT OUTER JOIN
+                         dbo.list_locations ON dbo.inv_serial.locationsid = dbo.list_locations.id ON dbo.inv_basic.so_linesid = dbo.so_lines.id LEFT OUTER JOIN
+                         dbo.list_locations AS list_locations_1 ON dbo.inv_basic.locationsid = list_locations_1.id ON dbo.list_items.id = dbo.so_lines.itemsid RIGHT OUTER JOIN
+                         dbo.so_main ON dbo.so_lines.somainid = dbo.so_main.id
+GROUP BY dbo.so_lines.linenum, dbo.list_itemtypes.itemtype, dbo.so_lines.itemnumber, dbo.so_lines.description, dbo.so_lines.quantity, 
+                         CASE list_invtypes.invtype WHEN 'Serial' THEN list_locations.location ELSE list_locations_1.location END, dbo.so_main.somain, dbo.so_lines.id, ISNULL(dbo.inv_serial.serno, ''), ISNULL(dbo.inv_serial.tagno, 
+                         ''), dbo.list_invtypes.invtype
+HAVING      (dbo.so_main.somain = @somain) AND (dbo.so_lines.quantity > 0) AND 
+SUM(ISNULL(dbo.inv_basic.quantity, 0) + ISNULL(dbo.inv_serial.quantity, 0)) >0 
+order by linenum,TAGNO,SERNO
+
+END
+-- COMMENTED BELOW ON 04/28/16
+--BEGIN
+--SELECT     TOP (100) PERCENT 
+--	dbo.so_lines.linenum,
+--	dbo.list_itemtypes.itemtype,
+--	dbo.so_lines.itemnumber,
+--	dbo.so_lines.description,
+--	dbo.so_lines.quantity,
+--    ISNULL(ISNULL(dbo.list_locations.location, list_locations_1.location), '') AS location,
+--    SUM(ISNULL(dbo.inv_basic.quantity, 0) + ISNULL(dbo.inv_serial.quantity, 0)) AS Available,
+--    dbo.so_main.somain,
+--    dbo.so_lines.id AS solinesid,
+--    ISNULL(dbo.inv_serial.serno, '') AS serno, 
+--    ISNULL(dbo.inv_serial.tagno, '') AS tagno,
+--	str(SUM(ISNULL(dbo.inv_basic.quantity, 0)),4,0) as locqty,
+--    SUM(SUM(ISNULL(dbo.inv_basic.quantity, 0) + ISNULL(dbo.inv_serial.quantity, 0))) OVER(PARTITION BY dbo.so_lines.ID) AS 'Total'
+--FROM   
+--	dbo.list_locations AS list_locations_1 RIGHT OUTER JOIN
+--    dbo.list_itemtypes RIGHT OUTER JOIN
+--    dbo.list_items ON dbo.list_itemtypes.id = dbo.list_items.itemtypeid RIGHT OUTER JOIN
+--    dbo.inv_basic RIGHT OUTER JOIN
+--    dbo.so_lines ON dbo.inv_basic.so_linesid = dbo.so_lines.id LEFT OUTER JOIN
+--    dbo.list_locations ON dbo.inv_basic.locationsid = dbo.list_locations.id LEFT OUTER JOIN
+--    dbo.inv_serial ON 
+--	CASE WHEN inv_serial.transferid IS NOT NULL THEN inv_serial.transferid 
+--	ELSE inv_serial.so_linesid END = dbo.so_lines.id 
+----	dbo.so_lines.id = dbo.inv_serial.so_linesid 
+--	ON dbo.list_items.id = dbo.so_lines.itemsid RIGHT OUTER JOIN
+--    dbo.so_main ON dbo.so_lines.somainid = dbo.so_main.id ON list_locations_1.id = dbo.inv_serial.locationsid
+--GROUP BY dbo.so_lines.linenum, dbo.list_itemtypes.itemtype, dbo.so_lines.itemnumber, dbo.so_lines.description, dbo.so_lines.quantity, 
+--         ISNULL(ISNULL(dbo.list_locations.location, list_locations_1.location), ''), dbo.so_main.somain, dbo.inv_serial.pickid, dbo.so_lines.id, 
+--         ISNULL(dbo.inv_serial.serno, ''), ISNULL(dbo.inv_serial.tagno, '')
+--		--,dbo.inv_basic.quantity
+--					 --,dbo.inv_serial.serno
+--HAVING      (dbo.so_main.somain = @somain) AND (dbo.so_lines.quantity > 0) AND 
+--SUM(ISNULL(dbo.inv_basic.quantity, 0) + ISNULL(dbo.inv_serial.quantity, 0)) >0 
+--order by linenum,itemtype,location,serno
+--end 
+-- COMMENTED ABOVE ON 04/28/16
+--union
+--SELECT     TOP (100) PERCENT 
+--	dbo.so_lines.linenum,
+--	dbo.list_itemtypes.itemtype,
+--	dbo.so_lines.itemnumber,
+--	dbo.so_lines.description,
+--	dbo.so_lines.quantity,
+--    ISNULL(dbo.list_locations.location,'') AS location,
+--    ISNULL(dbo.inv_serial.quantity, 0) AS Available,
+--    dbo.so_main.somain,
+--    dbo.so_lines.id AS solinesid,
+--    ISNULL(dbo.inv_serial.serno, '') AS serno, 
+--    ISNULL(dbo.inv_serial.tagno, '') AS tagno,
+--    sum(dbo.inv_serial.quantity) AS 'Total'
+
+--from so_lines left join list_items on so_lines.itemsid=list_items.id left join list_itemtypes on list_items.itemtypeid=list_itemtypes.id 
+--left join inv_serial on so_lines.id=inv_serial.transferid left join list_locations on inv_serial.locationsid=list_locations.id 
+--left join so_main on so_lines.somainid=so_main.id 
+--GROUP BY dbo.so_lines.linenum, dbo.list_itemtypes.itemtype, dbo.so_lines.itemnumber, dbo.so_lines.description, dbo.so_lines.quantity, 
+--                      ISNULL(dbo.list_locations.location, ''), dbo.so_main.somain,  dbo.so_lines.id, 
+--                      ISNULL(dbo.inv_serial.serno, ''), ISNULL(dbo.inv_serial.tagno, ''),dbo.inv_serial.quantity,dbo.inv_serial.serno
+--HAVING      (dbo.so_main.somain = @somain) AND (dbo.so_lines.quantity > 0) AND 
+--ISNULL(dbo.inv_serial.quantity, 0) >0
+----(dbo.inv_serial.pickid IS NULL or dbo.inv_serial.quantity > 0)
+--ORDER BY dbo.so_lines.linenum -- dbo.list_itemtypes.itemtype
+--END
+
+
+-- exec sp_report_erinv5 'ertm02262-1'
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+

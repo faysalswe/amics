@@ -354,28 +354,32 @@ export class ChangeLocationComponent {
     if (this.selectedView.invType === 'BASIC'){
         let chgLocRows = this.chglocGridVar.instance.getVisibleRows();
               
-        let rowIndex = chgLocRows.find(obj=>obj.data.warehouse === undefined)?.rowIndex;  
+        let rowIndex = chgLocRows.find(obj=>obj.data.pickQty === undefined)?.rowIndex;  
                 
-        for (let _i = 0; _i < chgLocRows.length; _i++) {          
-          console.log("inside " + chgLocRows[_i].data.pickQty);
+        for (let _i = 0; _i < chgLocRows.length; _i++) {                  
           if (chgLocRows[_i].data.pickQty !== undefined) {   
             chgLoc_VisibleRows.push(chgLocRows[_i].data);
           }  
+          console.log("pickvar " + chgLocRows[_i].data.pickQty);
           pickQtyVar.push(chgLocRows[_i].data.pickQty);
         }   
-
+              
         let picklen=0;
         for (let _i = 0; _i < pickQtyVar.length; _i++){          
           if (pickQtyVar[_i] === undefined) { 
             picklen += 1;
           }
         }
-        if (picklen == pickQtyVar.length){
-          alert("Please enter PickQty");
-          return;
-        }
 
-        console.log(pickQtyVar);
+        console.log("pickvar len" + pickQtyVar.length + " picklen " + picklen);
+      
+        if (picklen == pickQtyVar.length){
+          alert("Please enter PickQty");          
+          this.chglocGridVar.instance.getCellElement(0, 4);
+          return false;
+        }
+    
+      
         if (chgLoc_VisibleRows.length > 0)
           this.changeLocDetailsResult = chgLoc_VisibleRows;
           
