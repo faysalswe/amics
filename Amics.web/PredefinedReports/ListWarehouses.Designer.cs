@@ -10,9 +10,9 @@
 
 namespace Amics.web.PredefinedReports {
     
-    public partial class ListItems : DevExpress.XtraReports.UI.XtraReport {
+    public partial class ListWarehouses : DevExpress.XtraReports.UI.XtraReport {
         private void InitializeComponent() {
-            DevExpress.XtraReports.ReportInitializer reportInitializer = new DevExpress.XtraReports.ReportInitializer(this, "Amics.web.PredefinedReports.ListItems.vsrepx");
+            DevExpress.XtraReports.ReportInitializer reportInitializer = new DevExpress.XtraReports.ReportInitializer(this, "Amics.web.PredefinedReports.ListWarehouses.vsrepx");
 
             // Controls
             this.TopMargin = reportInitializer.GetControl<DevExpress.XtraReports.UI.TopMarginBand>("TopMargin");
@@ -31,9 +31,6 @@ namespace Amics.web.PredefinedReports {
             this.tableRow2 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableRow>("tableRow2");
             this.tableCell3 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell3");
             this.tableCell4 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell4");
-
-            // Parameters
-            this.itemnumber = reportInitializer.GetParameter("itemnumber");
 
             // Data Sources
             this.sqlDataSource1 = reportInitializer.GetDataSource<DevExpress.DataAccess.Sql.SqlDataSource>("sqlDataSource1");
@@ -67,6 +64,5 @@ namespace Amics.web.PredefinedReports {
         private DevExpress.XtraReports.UI.XRControlStyle DetailData1;
         private DevExpress.XtraReports.UI.XRControlStyle DetailData3_Odd;
         private DevExpress.XtraReports.UI.XRControlStyle PageInfo;
-        private DevExpress.XtraReports.Parameters.Parameter itemnumber;
     }
 }
