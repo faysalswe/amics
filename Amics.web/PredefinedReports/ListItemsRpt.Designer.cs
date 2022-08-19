@@ -10,9 +10,9 @@
 
 namespace Amics.web.PredefinedReports {
     
-    public partial class ListItems : DevExpress.XtraReports.UI.XtraReport {
+    public partial class ListItemsRpt : DevExpress.XtraReports.UI.XtraReport {
         private void InitializeComponent() {
-            DevExpress.XtraReports.ReportInitializer reportInitializer = new DevExpress.XtraReports.ReportInitializer(this, "Amics.web.PredefinedReports.ListItems.vsrepx");
+            DevExpress.XtraReports.ReportInitializer reportInitializer = new DevExpress.XtraReports.ReportInitializer(this, "Amics.web.PredefinedReports.ListItemsRpt.vsrepx");
 
             // Controls
             this.TopMargin = reportInitializer.GetControl<DevExpress.XtraReports.UI.TopMarginBand>("TopMargin");
@@ -33,7 +33,10 @@ namespace Amics.web.PredefinedReports {
             this.tableCell4 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell4");
 
             // Parameters
-            this.itemnumber = reportInitializer.GetParameter("itemnumber");
+            this.parameter1 = reportInitializer.GetParameter("parameter1");
+            this.parameter2 = reportInitializer.GetParameter("parameter2");
+            this.header1 = reportInitializer.GetParameter("header1");
+            this.header2 = reportInitializer.GetParameter("header2");
 
             // Data Sources
             this.sqlDataSource1 = reportInitializer.GetDataSource<DevExpress.DataAccess.Sql.SqlDataSource>("sqlDataSource1");
@@ -67,6 +70,9 @@ namespace Amics.web.PredefinedReports {
         private DevExpress.XtraReports.UI.XRControlStyle DetailData1;
         private DevExpress.XtraReports.UI.XRControlStyle DetailData3_Odd;
         private DevExpress.XtraReports.UI.XRControlStyle PageInfo;
-        private DevExpress.XtraReports.Parameters.Parameter itemnumber;
+        private DevExpress.XtraReports.Parameters.Parameter parameter1;
+        private DevExpress.XtraReports.Parameters.Parameter parameter2;
+        private DevExpress.XtraReports.Parameters.Parameter header1;
+        private DevExpress.XtraReports.Parameters.Parameter header2;
     }
 }

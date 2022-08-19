@@ -22,6 +22,7 @@ using Microsoft.OpenApi.Models;
 using DevExpress.AspNetCore;
 using DevExpress.AspNetCore.Reporting;
 using DevExpress.XtraReports.Web.Extensions;
+using DevExpress.XtraReports.Services;
 using Amics.web.Services;
 using System;
 
@@ -71,8 +72,8 @@ namespace Amics.web
             // Use the AddMvcCore (or AddMvc) method to add MVC services. 080522
             services.AddMvcCore(); // 080522
                                    // services.AddScoped<ReportStorageWebExtension, CustomReportStorageWebExtension>();// 080522
-            services.AddScoped<ReportStorageWebExtension, CustomReportStorageWebExtension>();
-
+            //services.AddScoped<ReportStorageWebExtension, CustomReportStorageWebExtension>();
+            services.AddScoped<IReportProvider, CustomReportProvider>();
 
             services.ConfigureReportingServices(configurator => {
                 configurator.ConfigureReportDesigner(designerConfigurator => {
@@ -104,7 +105,7 @@ namespace Amics.web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             DevExpress.XtraReports.Configuration.Settings.Default.UserDesignerOptions.DataBindingMode = DevExpress.XtraReports.UI.DataBindingMode.Expressions;
-            DevExpress.XtraReports.Web.ClientControls.LoggerService.Initialize(new MyLoggerService());
+            //DevExpress.XtraReports.Web.ClientControls.LoggerService.Initialize(new MyLoggerService());
 
             if (env.IsDevelopment())
             {
