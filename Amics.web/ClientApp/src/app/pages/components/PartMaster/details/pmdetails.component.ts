@@ -274,7 +274,7 @@ export class PMDetailsComponent implements AfterViewInit {
     });
     this.pmdataTransfer.selectedItemBomForPMDetails$.subscribe((boms) => {
       console.log(boms.length);
-      debugger
+      //debugger
       this.bomDetails = boms;
       this.originalBomDetails = [...boms];
       console.log("bom details " + this.bomDetails.length);

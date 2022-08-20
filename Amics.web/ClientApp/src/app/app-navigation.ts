@@ -110,7 +110,7 @@ export const navigation = [
       {
         text: 'Equipment Request',
         path: '/equipment',
-        title: 'eqipment request',
+        title: 'Equipment Request',
         type: ComponentType.ER
       },
       {
