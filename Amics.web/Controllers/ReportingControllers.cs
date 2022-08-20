@@ -43,10 +43,16 @@ namespace Amics.web.Controllers
             ds.RebuildResultSchema();
             dataSources.Add("translog", ds);
 
-            SelectQuery query3 =  SelectQueryFluentBuilder.AddTable("amics_sp_api_search_items").SelectAllColumnsFromTable().Build("amics_sp_api_search_items");
-            ds.Queries.Add(query3);
+            //SelectQuery query3 =  SelectQueryFluentBuilder.AddTable("amics_sp_api_search_items").SelectAllColumnsFromTable().Build("amics_sp_api_search_items");
+            //ds.Queries.Add(query3);
+            //ds.RebuildResultSchema();
+            //dataSources.Add("amics_sp_api_search_items", ds);
+
+            StoredProcQuery spQuery = new StoredProcQuery("spQuery", "amics_sp_api_search_items");
+            ds.Queries.Add(spQuery);
             ds.RebuildResultSchema();
             dataSources.Add("amics_sp_api_search_items", ds);
+
 
 
             var model = modelGenerator.GetModel(reportUrl, dataSources, ReportDesignerController.DefaultUri, WebDocumentViewerController.DefaultUri, QueryBuilderController.DefaultUri);

@@ -1,4 +1,5 @@
 import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
  
 @Component({
@@ -19,15 +20,18 @@ import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 
 export class ReportItemslistComponent implements OnInit {
 
-  reportUrl: string = "ListItems";
+  reportUrl: string = "Translog";
   invokeAction: string = '/DXXRDV';
 
-  constructor(@Inject('BASE_URL') public hostUrl: string) {
+  constructor(@Inject('BASE_URL') public hostUrl: string, private activatedRoute: ActivatedRoute) {
     console.log(hostUrl);
   }
 
   ngOnInit(): void {
-
+    let reportName = localStorage.getItem("reportUrl");
+    if(reportName != undefined && reportName != ""){
+      this.reportUrl = reportName;
+    }
     console.log('ngOnInit ngOnInit');
 
   }

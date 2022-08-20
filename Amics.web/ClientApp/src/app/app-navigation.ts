@@ -25,7 +25,7 @@ export const navigation = [
       {
         text: 'ReportItems',
         path: '/reportitemslist',
-        title: ' ReportItems',
+        title: 'ReportItems',
         type: ComponentType.ReportItemslist  
 
       },

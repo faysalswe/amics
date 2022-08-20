@@ -19,6 +19,7 @@ export class TabService {
   removeTabObservable$ = this.removeTabSource.asObservable();
 
   addTab(title: string, component: string, selector: string, type: ComponentType) {
+    debugger
     const index = this.tabs.findIndex(t => t.title == title);
     if (index === -1) {
       const tab = new TabInfo(title, type);

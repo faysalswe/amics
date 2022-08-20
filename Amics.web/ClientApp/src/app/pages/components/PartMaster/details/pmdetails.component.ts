@@ -49,6 +49,10 @@ import { isNumber, isNull } from 'util';
 import { BomComponent } from '../bom/bom.component';
 import { PoComponent } from '../po/po.component';
 import { NotesComponent } from '../notes/notes.component';
+import { Router } from '@angular/router';
+import { TabService } from 'src/app/pages/services/tab.service';
+import { TabInfo } from "../../../models/tabInfo";
+import { report } from 'process';
 @Component({
   selector: 'app-pmdetails',
   templateUrl: './pmdetails.component.html',
@@ -80,6 +84,7 @@ export class PMDetailsComponent implements AfterViewInit {
   StylingMode: string = TextboxStyle.StylingMode;
   LabelMode: string = TextboxStyle.LabelMode;
   bomDefaultRow : number = 2;
+  newGuidId = "00000000-0000-0000-0000-000000000000";
 
   warehouses: Warehouse[] = [];
   warehouseNames: string[] = [];
@@ -116,6 +121,7 @@ export class PMDetailsComponent implements AfterViewInit {
   toastMessage = '';
   popupVLVisible = false;
   popupVSVisible = false;
+  popupPrintVisible = false;
   lookupItemNumbers: pmItemSearchResult[] = [];
   selectedRowIndex = -1;
   editRowKey!: number;
@@ -133,7 +139,9 @@ export class PMDetailsComponent implements AfterViewInit {
     private searchService: SearchService,
     private pmdataTransfer: PartMasterDataTransService,
     private pmService: PartMasterService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    private tabService: TabService
   ) {
 
     this.labelMap = LabelMap;
@@ -285,6 +293,11 @@ export class PMDetailsComponent implements AfterViewInit {
 
     this.pmdataTransfer.itemSelectedChild$.subscribe((child) => {
       this.selectedChild = child;
+      setTimeout(() => {
+        if(this.selectedChild == this.childType.BOM){
+          this.bomComp.AddBomLines();
+        }
+      }, 500);
     });
 
     this.pmdataTransfer.selectedCRUD$.subscribe((crud) => {
@@ -348,6 +361,7 @@ export class PMDetailsComponent implements AfterViewInit {
         this.popupVSVisible = true;
         //this.getSerial();
       } else if (popUp === PopUpAction.Print) {
+        this.popupPrintVisible = true;
       }
     });
     this.pmdataTransfer.copyToNewSelected$.subscribe(
@@ -497,7 +511,7 @@ export class PMDetailsComponent implements AfterViewInit {
     useSubmitBehavior: true,
   };
   onSave() {
-    debugger
+    
     document.getElementById('pmDetailsSubmit')?.click();
 
     if (!this.isFormValid()) {
@@ -596,7 +610,7 @@ export class PMDetailsComponent implements AfterViewInit {
 
     // find inserted
     let newBoms = this.bomDetails.filter(
-      (b) => b.id == '00000000-0000-0000-0000-000000000000'
+      (b) => b.id == this.newGuidId
     );
 
     if (!!newBoms && newBoms.length > 0) {
@@ -617,7 +631,7 @@ export class PMDetailsComponent implements AfterViewInit {
     }
 
     let updatedBoms = this.bomDetails.filter(
-      (b) => b.id != '00000000-0000-0000-0000-000000000000' && b.id != undefined
+      (b) => b.id != this.newGuidId && b.id != undefined
     );
 
     //find Updated and deleted
@@ -653,7 +667,11 @@ export class PMDetailsComponent implements AfterViewInit {
     debugger
     let bomGridDetails: pmBomGridDetails[] = [];
 
-    for (var _i = 0, boms = this.bomDetails; _i < boms.length; _i++) {
+    let newBoms = this.bomDetails.filter(
+      (b) => b.id != undefined
+    );
+
+    for (var _i = 0, boms = newBoms; _i < boms.length; _i++) {
       var bom = new pmBomGridDetails();
       bom.actionFlag = BomAction.Add;
       bom.parent_ItemsId = parentId;
@@ -829,6 +847,26 @@ export class PMDetailsComponent implements AfterViewInit {
 
     hideLocation(){
       this.popupVLVisible = false
+    }
+
+    hidePrintPopup(){
+      this.popupPrintVisible = false;
+    }
+
+    goToReport(reportName: string){
+      this.popupPrintVisible = false;
+      localStorage.setItem('reportUrl', reportName);
+      let tabToRemove: TabInfo = new TabInfo("ReportItems" ,ComponentType.ReportItemslist);
+      let removeTab = this.tabService.tabs.find(x => x.type == tabToRemove.type);
+      const index = this.tabService.tabs.indexOf(removeTab);
+      if(index != -1){
+        this.tabService.removeTab(removeTab);
+      }
+      
+      //this.router.navigate(['/reportitemslist'], { queryParams: { reportUrl: reportName } });
+      setTimeout(() => {
+        this.tabService.addTab("ReportItems", "ReportItemslist", "ReportItems",ComponentType.ReportItemslist);
+      }, 1000)
     }
 
 }
