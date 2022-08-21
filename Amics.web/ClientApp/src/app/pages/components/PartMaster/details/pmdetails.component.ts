@@ -83,7 +83,7 @@ export class PMDetailsComponent implements AfterViewInit {
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
   StylingMode: string = TextboxStyle.StylingMode;
   LabelMode: string = TextboxStyle.LabelMode;
-  bomDefaultRow : number = 2;
+  bomDefaultRow: number = 2;
   newGuidId = "00000000-0000-0000-0000-000000000000";
 
   warehouses: Warehouse[] = [];
@@ -134,7 +134,7 @@ export class PMDetailsComponent implements AfterViewInit {
 
   fSearchFG!: FormGroup;
   crudStatus: boolean = false;
-  
+
   constructor(
     private searchService: SearchService,
     private pmdataTransfer: PartMasterDataTransService,
@@ -231,7 +231,7 @@ export class PMDetailsComponent implements AfterViewInit {
       this.partNumberVar?.instance.focus();
     }, 0);
   }
-  
+
   ngOnInit(): void {
 
     this.searchService.getItemClass('', '').subscribe((l) => {
@@ -294,7 +294,7 @@ export class PMDetailsComponent implements AfterViewInit {
     this.pmdataTransfer.itemSelectedChild$.subscribe((child) => {
       this.selectedChild = child;
       setTimeout(() => {
-        if(this.selectedChild == this.childType.BOM){
+        if (this.selectedChild == this.childType.BOM) {
           this.bomComp.AddBomLines();
         }
       }, 500);
@@ -312,13 +312,13 @@ export class PMDetailsComponent implements AfterViewInit {
         this.crudStatus = true;
 
         setTimeout(() => {
-          if(this.selectedChild == this.childType.BOM){
+          if (this.selectedChild == this.childType.BOM) {
             this.bomComp.AddBomLines();
           }
-          else if(this.selectedChild == this.childType.PO){
+          else if (this.selectedChild == this.childType.PO) {
             this.poComp.AddPoLines();
           }
-          else if(this.selectedChild == this.childType.Notes){
+          else if (this.selectedChild == this.childType.Notes) {
             this.notesComp.AddNotesLines();
           }
         }, 500);
@@ -328,13 +328,13 @@ export class PMDetailsComponent implements AfterViewInit {
         this.crudStatus = false;
 
         setTimeout(() => {
-          if(this.selectedChild == this.childType.BOM){
+          if (this.selectedChild == this.childType.BOM) {
             this.bomComp.AddBomLines();
           }
-          else if(this.selectedChild == this.childType.PO){
+          else if (this.selectedChild == this.childType.PO) {
             this.poComp.AddPoLines();
           }
-          else if(this.selectedChild == this.childType.Notes){
+          else if (this.selectedChild == this.childType.Notes) {
             this.notesComp.AddNotesLines();
           }
         }, 500);
@@ -400,22 +400,22 @@ export class PMDetailsComponent implements AfterViewInit {
 
   updateWarehouseSelection(location: string = '', onload: boolean = false) {
     if (!this.pmDetails.warehouse || !location) {
-        this.validLocationNames = [];
-        this.pmDetails.location = '';
-        return;
+      this.validLocationNames = [];
+      this.pmDetails.location = '';
+      return;
     }
 
     let wid = this.groupedWarehouses[this.pmDetails.warehouse];
     if (!!wid) {
-        let locWid=this.groupedLocations[wid[0].id];
-        if (!!locWid) {
-            let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
-            this.validLocationNames = locations.map(l => l.location);
-        }
-        else{
-            this.pmDetails.location ='';
-            alert("There is no location for " + this.pmDetails.warehouse);
-        }
+      let locWid = this.groupedLocations[wid[0].id];
+      if (!!locWid) {
+        let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
+        this.validLocationNames = locations.map(l => l.location);
+      }
+      else {
+        this.pmDetails.location = '';
+        alert("There is no location for " + this.pmDetails.warehouse);
+      }
     } else { this.validLocationNames = []; }
   }
 
@@ -511,13 +511,13 @@ export class PMDetailsComponent implements AfterViewInit {
     useSubmitBehavior: true,
   };
   onSave() {
-    
+
     document.getElementById('pmDetailsSubmit')?.click();
 
     if (!this.isFormValid()) {
       return;
     }
-     
+
 
     let bomDetails_VisibleRows: pmBomDetails[] = [];
 
@@ -570,7 +570,7 @@ export class PMDetailsComponent implements AfterViewInit {
           );
         } else {
           var boms = this.convertToBomGridDetails(x.message);
-          console.log("boms "+boms.length);
+          console.log("boms " + boms.length);
 
           this.pmService.AddUpdateDeleteBomDetails(boms).subscribe(
             (b) => {
@@ -624,7 +624,7 @@ export class PMDetailsComponent implements AfterViewInit {
         newBom.ref = newBoms[_i].ref;
         newBom.findNo = newBoms[_i].findNo;
         newBom.comments = newBoms[_i].comments;
-        newBom.createdby = this.authService.currentUser.toString();
+        newBom.createdby = this.authService.currentUser();
 
         bomGridDetails.push(newBom);
       }
@@ -635,7 +635,7 @@ export class PMDetailsComponent implements AfterViewInit {
     );
 
     //find Updated and deleted
-    if(updatedBoms && updatedBoms.length > 0){
+    if (updatedBoms && updatedBoms.length > 0) {
       for (var _i = 0, boms = updatedBoms; _i < boms.length; _i++) {
         var bom = new pmBomGridDetails();
         var originalBom = updatedBoms.find(
@@ -654,11 +654,11 @@ export class PMDetailsComponent implements AfterViewInit {
         bom.ref = boms[_i].ref;
         bom.findNo = boms[_i].findNo;
         bom.comments = boms[_i].comments;
-        bom.createdby = this.authService.currentUser.toString();
+        bom.createdby = this.authService.currentUser();
         bomGridDetails.push(bom);
       }
     }
-    
+
     console.log("update/delete  " + bomGridDetails.length);
     return bomGridDetails;
   }
@@ -681,7 +681,7 @@ export class PMDetailsComponent implements AfterViewInit {
       bom.ref = boms[_i].ref;
       bom.findNo = boms[_i].findNo;
       bom.comments = boms[_i].comments;
-      bom.createdby = this.authService.currentUser.toString();
+      bom.createdby = this.authService.currentUser();
       bomGridDetails.push(bom);
     }
 
@@ -778,7 +778,7 @@ export class PMDetailsComponent implements AfterViewInit {
     }
     return null;
   }
-  
+
   addRow() {
     this.dataGrid.instance.addRow();
     this.dataGrid.instance.deselectAll();
@@ -835,38 +835,38 @@ export class PMDetailsComponent implements AfterViewInit {
     console.log('Name', form.value.f2PartDesc);
   }
 
-  OnPNSearchShow(){
+  OnPNSearchShow() {
     console.log('OnPNSearchShow');
     //this.f2partNumberVar.nativeElement.focus();
     console.log('OnPNSearchShow2');
   }
 
-    hideSerial(){
-      this.popupVSVisible = false;
+  hideSerial() {
+    this.popupVSVisible = false;
+  }
+
+  hideLocation() {
+    this.popupVLVisible = false
+  }
+
+  hidePrintPopup() {
+    this.popupPrintVisible = false;
+  }
+
+  goToReport(reportName: string) {
+    this.popupPrintVisible = false;
+    localStorage.setItem('reportUrl', reportName);
+    let tabToRemove: TabInfo = new TabInfo("ReportItems", ComponentType.ReportItemslist);
+    let removeTab = this.tabService.tabs.find(x => x.type == tabToRemove.type);
+    const index = this.tabService.tabs.indexOf(removeTab);
+    if (index != -1) {
+      this.tabService.removeTab(removeTab);
     }
 
-    hideLocation(){
-      this.popupVLVisible = false
-    }
+    //this.router.navigate(['/reportitemslist'], { queryParams: { reportUrl: reportName } });
 
-    hidePrintPopup(){
-      this.popupPrintVisible = false;
-    }
+    this.tabService.addTab("ReportItems", "ReportItemslist", "ReportItems", ComponentType.ReportItemslist);
 
-    goToReport(reportName: string){
-      this.popupPrintVisible = false;
-      localStorage.setItem('reportUrl', reportName);
-      let tabToRemove: TabInfo = new TabInfo("ReportItems" ,ComponentType.ReportItemslist);
-      let removeTab = this.tabService.tabs.find(x => x.type == tabToRemove.type);
-      const index = this.tabService.tabs.indexOf(removeTab);
-      if(index != -1){
-        this.tabService.removeTab(removeTab);
-      }
-      
-      //this.router.navigate(['/reportitemslist'], { queryParams: { reportUrl: reportName } });
-      setTimeout(() => {
-        this.tabService.addTab("ReportItems", "ReportItemslist", "ReportItems",ComponentType.ReportItemslist);
-      }, 1000)
-    }
+  }
 
 }

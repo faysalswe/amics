@@ -19,13 +19,13 @@ export class TabService {
   removeTabObservable$ = this.removeTabSource.asObservable();
 
   addTab(title: string, component: string, selector: string, type: ComponentType) {
-    debugger
     const index = this.tabs.findIndex(t => t.title == title);
     if (index === -1) {
       const tab = new TabInfo(title, type);
       this.tabs.push(tab);
       console.log(`added Tab with title ${title}`)
       this.addTabSource.next(tab);
+      this.showTabSource.next(title);
     } else {
       this.showTabSource.next(title);
     }
