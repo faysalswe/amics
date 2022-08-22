@@ -11,6 +11,7 @@ import { TextboxStyle } from '../textbox-style/textbox-style';
 })
 export class ReportsComponent implements OnInit {
 
+  popupVisible = false;
   pivotGridDataSource: any;
   popupVisible_101_104 = false;
   popupVisible_106 = false;
@@ -64,12 +65,15 @@ export class ReportsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  rowSelectionItem: any;
   onSelectionChanged(e: any) {
-    console.log(e);
-    var selectedItem = e.selectedRowsData[0];
-    console.log(selectedItem);
-    this.showModel(selectedItem.reportId)
+    this.rowSelectionItem = e.selectedRowsData[0];
     
+}
+
+edit() {
+  debugger
+  this.showModel(this.rowSelectionItem.reportId)
 }
 
   // onClick(Report #) {

@@ -83,7 +83,6 @@ export class BomComponent implements OnInit {
   }
 
   AddBomLines() {
-
     //const dataSource = this.dataGrid.instance.getDataSource();
     // console.log( dataSource.items().length);
 

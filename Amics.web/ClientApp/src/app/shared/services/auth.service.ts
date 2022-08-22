@@ -14,6 +14,7 @@ export class AuthService {
   user$: Observable<ApplicationUser> = this._appUser.asObservable();
   user?: string;
 
+  appUser = new ApplicationUser();
   get loggedIn(): boolean {
     return !!this.user;
   }
@@ -37,6 +38,7 @@ export class AuthService {
         .then((result) => {
           if (!!result) {
             this.getUser().then(x => {
+              this.appUser = x;
               this.user = x.userId;
               if (!!x.userId) {
                 this.router.navigate([this._lastAuthenticatedPath])
@@ -86,6 +88,9 @@ export class AuthService {
   currentUser(){
     return this.user;
   }
+  currentAppUser(){
+    return this.appUser;
+  }
   getUser(): Promise<ApplicationUser> {
     let user = new ApplicationUser();
 
@@ -96,6 +101,7 @@ export class AuthService {
         if (x) {
           user = new ApplicationUser(x.userId, x.userName, x.firstName, x.password, x.warehouse, x.lastName, x.email, x.userDataBase, x.buyer, x.salesPerson, x.webAccess, x.amicsUser, x.empList, x.invTrans, x.forgotPwdAns);
           this.user = user.userId;
+          this.appUser = x;
         }
         this._appUser.next(user);
 
