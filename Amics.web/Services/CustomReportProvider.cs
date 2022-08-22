@@ -3,6 +3,8 @@ using DevExpress.XtraReports.UI;
 using Amics.web.PredefinedReports;
 using System;
 using System.Web;
+using Amics.web.PredefinedReports.SalesOrder;
+
 namespace Amics.web.Services
 {
     public class CustomReportProvider : IReportProvider
@@ -25,11 +27,13 @@ namespace Amics.web.Services
             {
                 report = new ListItemsRpt();
             }
-            else if (reportName == "ListItemsCS")
-            {
+            else if (reportName == "ListItemsCS"){
                 report = new ListItemsCS();
             }
-            
+            else if (reportName == "erinv")
+            {
+                report = new erinv();
+            }
             else
             {
                 throw new DevExpress.XtraReports.Web.ClientControls.FaultException(
