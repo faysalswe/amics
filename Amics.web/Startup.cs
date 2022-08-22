@@ -24,17 +24,25 @@ using DevExpress.AspNetCore.Reporting;
 using DevExpress.XtraReports.Web.Extensions;
 using Amics.web.Services;
 using System;
+using DevExpress.DashboardAspNetCore;
+using DevExpress.DashboardCommon;
+using DevExpress.DashboardWeb;
+using DevExpress.DataAccess.Json;
+using Microsoft.Extensions.FileProviders;
 
 namespace Amics.web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
+            FileProvider = hostingEnvironment.ContentRootFileProvider;
         }
 
         public IConfiguration Configuration { get; }
+
+        public IFileProvider FileProvider { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -62,6 +70,7 @@ namespace Amics.web
                 });
             });
             services.AddControllersWithViews();
+            services.AddControllers();
             services.AddHealthChecks();            
              
             services.AddMvc().AddNewtonsoftJson();
@@ -72,6 +81,15 @@ namespace Amics.web
             services.AddMvcCore(); // 080522
                                    // services.AddScoped<ReportStorageWebExtension, CustomReportStorageWebExtension>();// 080522
             services.AddScoped<ReportStorageWebExtension, CustomReportStorageWebExtension>();
+
+            services.AddScoped<DashboardConfigurator>((IServiceProvider serviceProvider) => {
+                DashboardConfigurator configurator = new DashboardConfigurator();
+                configurator.SetDashboardStorage(new DashboardFileStorage(FileProvider.GetFileInfo("App_Data/Dashboards").PhysicalPath));
+                configurator.SetDataSourceStorage(CreateDataSourceStorage());
+                configurator.SetConnectionStringsProvider(new DashboardConnectionStringsProvider(Configuration));
+                configurator.ConfigureDataConnection += Configurator_ConfigureDataConnection;
+                return configurator;
+            });
 
 
             services.ConfigureReportingServices(configurator => {
@@ -87,6 +105,9 @@ namespace Amics.web
                 options.AddPolicy("AllowCorsPolicy", builder => {
                     // Allow all ports on local host.
                     builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+                    builder.WithHeaders("Content-Type");
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyMethod();
                     builder.WithHeaders("Content-Type");
                 });
             });
@@ -140,6 +161,10 @@ namespace Amics.web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+
+                EndpointRouteBuilderExtension.MapDashboardRoute(endpoints, "api/dashboard", "DefaultDashboard");
+                // Requires CORS policies.
+                endpoints.MapControllers().RequireCors("CorsPolicy");
             });
 
             app.UseAuthentication();
@@ -166,5 +191,40 @@ namespace Amics.web
                 }
             });
         }
+
+        public DataSourceInMemoryStorage CreateDataSourceStorage()
+        {
+            DataSourceInMemoryStorage dataSourceStorage = new DataSourceInMemoryStorage();
+
+            DashboardJsonDataSource jsonDataSourceSupport = new DashboardJsonDataSource("Support");
+            jsonDataSourceSupport.ConnectionName = "jsonSupport";
+            jsonDataSourceSupport.RootElement = "Employee";
+            dataSourceStorage.RegisterDataSource("jsonDataSourceSupport", jsonDataSourceSupport.SaveToXml());
+
+            DashboardJsonDataSource jsonDataSourceCategories = new DashboardJsonDataSource("Categories");
+            jsonDataSourceCategories.ConnectionName = "jsonCategories";
+            jsonDataSourceCategories.RootElement = "Products";
+            dataSourceStorage.RegisterDataSource("jsonDataSourceCategories", jsonDataSourceCategories.SaveToXml());
+            return dataSourceStorage;
+        }
+        private void Configurator_ConfigureDataConnection(object sender, ConfigureDataConnectionWebEventArgs e)
+        {
+            if (e.ConnectionName == "jsonSupport")
+            {
+                Uri fileUri = new Uri(FileProvider.GetFileInfo("App_data/Support.json").PhysicalPath, UriKind.RelativeOrAbsolute);
+                JsonSourceConnectionParameters jsonParams = new JsonSourceConnectionParameters();
+                jsonParams.JsonSource = new UriJsonSource(fileUri);
+                e.ConnectionParameters = jsonParams;
+            }
+            if (e.ConnectionName == "jsonCategories")
+            {
+                Uri fileUri = new Uri(FileProvider.GetFileInfo("App_data/Categories.json").PhysicalPath, UriKind.RelativeOrAbsolute);
+                JsonSourceConnectionParameters jsonParams = new JsonSourceConnectionParameters();
+                jsonParams.JsonSource = new UriJsonSource(fileUri);
+                e.ConnectionParameters = jsonParams;
+            }
+        }
     }
+
+
 }

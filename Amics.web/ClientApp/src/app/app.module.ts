@@ -39,7 +39,10 @@ import { DecreaseInventoryComponent } from './pages/components/DecreaseInventory
 import { ChangeLocationComponent } from './pages/components/change-location/change-location.component';
 import { ReportItemslistComponent } from './pages/components/report-itemslist/report-itemslist.component';
 import { DxReportViewerModule } from 'devexpress-reporting-angular';
+import { DashboardDesignerComponent } from './pages/components/dashoard/dashboard-designer/dashboard-designer.component';
+import { DashboardViewerComponent } from './pages/components/dashoard/dashboard-viewer/dashboard-viewer.component';
 /*import { ReportViewerComponent } from './pages/components/report-viewer/report-viewer.component';*/
+import { DxDashboardControlModule } from 'devexpress-dashboard-angular';
 
 export function appUserServiceFactory(authService: AuthService): Function {
   return () => authService.getUser();
@@ -76,11 +79,13 @@ export function appEnvironmentFactory(
     StatusComponent,
     DecreaseInventoryComponent,
     ReportItemslistComponent,
+    DashboardDesignerComponent,
+    DashboardViewerComponent
     /*ReportViewerComponent*/
   ],
   imports: [
     CommonModule,
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }), 
+    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     SideNavOuterToolbarModule,
     SideNavInnerToolbarModule,
     SingleCardModule,
@@ -96,7 +101,8 @@ export function appEnvironmentFactory(
     PartMasterModule,
     SharedModule,
     ReactiveFormsModule,
-    DxReportViewerModule
+    DxReportViewerModule,
+    DxDashboardControlModule
   ],
   providers: [
     {

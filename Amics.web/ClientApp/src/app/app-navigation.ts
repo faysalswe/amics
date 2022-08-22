@@ -12,13 +12,13 @@ export const navigation = [
     items: [
       {
         text: 'Designer',
-        //path: '/profile',
+        path: '/dashboard-designer',
         title: ' Designer',
         type: ComponentType.Designer
       },
       {
         text: 'Viewer',
-        //path: '/profile',
+        path: '/dashboard-viewer',
         title: ' Viewer',
         type: ComponentType.Viewer
       },
@@ -26,7 +26,7 @@ export const navigation = [
         text: 'ReportItems',
         path: '/reportitemslist',
         title: ' ReportItems',
-        type: ComponentType.ReportItemslist  
+        type: ComponentType.ReportItemslist
 
       },
     ]
@@ -46,7 +46,7 @@ export const navigation = [
         path: '/increase-inventory',
         title: 'Increase Inventory',
         type: ComponentType.IncreaseInventory
-      },     
+      },
       {
         text: 'Decrease Inventory',
         path: '/decrease-inventory',

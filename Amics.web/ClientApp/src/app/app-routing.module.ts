@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginFormComponent, ResetPasswordFormComponent, CreateAccountFormComponent, ChangePasswordFormComponent } from './shared/components';
 import { AuthGuardService } from './shared/services';
 import { HomeComponent } from './pages/components/home/home.component';
-import { ProfileComponent } from './pages/components/profile/profile.component'; 
+import { ProfileComponent } from './pages/components/profile/profile.component';
 import { IncreaseInventoryComponent } from "./pages/components/IncreaseInventory/increase.inventory.component";
 import { InquiryComponent } from './pages/components/inquiry/inquiry.component';
 import { EquipmentComponent } from './pages/components/equipment/equipment.component';
@@ -13,6 +13,8 @@ import { BulkTransferComponent } from './pages/components/bulk-transfer/bulk-tra
 import { ChangeLocationComponent } from './pages/components/change-location/change-location.component';
 import { DecreaseInventoryComponent } from './pages/components/DecreaseInventory/decrease.inventory.component';
 import { ReportItemslistComponent } from './pages/components/report-itemslist/report-itemslist.component';
+import { DashboardDesignerComponent } from './pages/components/dashoard/dashboard-designer/dashboard-designer.component';
+import { DashboardViewerComponent } from './pages/components/dashoard/dashboard-viewer/dashboard-viewer.component';
 
 const routes: Routes = [
   {
@@ -88,6 +90,16 @@ const routes: Routes = [
   {
     path: 'bulkTransfer',
     component: BulkTransferComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'dashboard-designer',
+    component: DashboardDesignerComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'dashboard-viewer',
+    component: DashboardViewerComponent,
     canActivate: [AuthGuardService]
   },
   {

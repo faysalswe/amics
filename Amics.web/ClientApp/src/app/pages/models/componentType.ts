@@ -14,7 +14,7 @@ export enum ComponentType {
   Report2 = "report2",
   BulkTransfer = "bulkTransfer",
   DecreaseInventory = 'DecreaseInventory',
-  Designer = 'Designer',
-  Viewer = 'Viewer',
+  Designer = 'DashboardDesignerComponent',
+  Viewer = 'DashboardViewerComponent',
   ReportItemslist = 'ReportItemslist'
 }
