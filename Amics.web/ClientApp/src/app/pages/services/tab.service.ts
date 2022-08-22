@@ -25,6 +25,7 @@ export class TabService {
       this.tabs.push(tab);
       console.log(`added Tab with title ${title}`)
       this.addTabSource.next(tab);
+      this.showTabSource.next(title);
     } else {
       this.showTabSource.next(title);
     }

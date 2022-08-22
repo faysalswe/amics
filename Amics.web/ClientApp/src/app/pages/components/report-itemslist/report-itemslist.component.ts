@@ -1,4 +1,5 @@
 import { Component, Inject,OnInit,  ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { DxReportViewerComponent } from 'devexpress-reporting-angular';
 
 @Component({
@@ -22,7 +23,7 @@ export class ReportItemslistComponent implements OnInit {
 
   @ViewChild('paramValue', { static: false }) public paramValue: ElementRef;
 
-  reportUrl: string ;
+  reportUrl: string;
   invokeAction: string = '/DXXRDV';
   Param: string;
 
