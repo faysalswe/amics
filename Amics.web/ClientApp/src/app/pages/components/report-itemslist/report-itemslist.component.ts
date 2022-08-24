@@ -56,18 +56,19 @@ export class ReportItemslistComponent implements OnInit {
         //this.reportUrl = "ListItemsCS" + this.Param;
 
 
-    this.Param = "?somain=ertm02262-1"; //itemCode_num  "labelMap.partNumber_num"
+    this.Param = "?somain=TEST SHIP"; //itemCode_num  "labelMap.partNumber_num"
+    this.Param += "&lblReportid=1000";
     this.Param += "&lblAvailable=Available";
     this.Param += "&lblDesc=Description";
     this.Param += "&lblLine=Line";
     this.Param += "&lblLocation=Location";
     this.Param += "&lblMfr=Mfr";
     this.Param += "&lblPn=Part Number";
-    this.Param += "&lblQty=Quantity";
+    this.Param += "&lblLocqty=Quantity";
     this.Param += "&lblSerno=Serial No.";
     this.Param += "&lblTagno=Tag No.";
-    this.Param += "&lblTotal_qty=Total Qty";
-    this.reportUrl = "erinv" + this.Param;
+    this.Param += "&lblTotal_qty=ER Qty";
+    this.reportUrl = "erinventory" + this.Param;
    
   }
 

@@ -30,9 +30,9 @@ namespace Amics.web.Services
             else if (reportName == "ListItemsCS"){
                 report = new ListItemsCS();
             }
-            else if (reportName == "erinv")
+            else if (reportName == "erinventory")
             {
-                report = new erinv();
+                report = new erinventory();
             }
             else
             {
