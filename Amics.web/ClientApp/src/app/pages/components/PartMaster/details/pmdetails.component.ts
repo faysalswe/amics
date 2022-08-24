@@ -49,6 +49,10 @@ import { isNumber, isNull } from 'util';
 import { BomComponent } from '../bom/bom.component';
 import { PoComponent } from '../po/po.component';
 import { NotesComponent } from '../notes/notes.component';
+import { Router } from '@angular/router';
+import { TabService } from 'src/app/pages/services/tab.service';
+import { TabInfo } from "../../../models/tabInfo";
+import { report } from 'process';
 @Component({
   selector: 'app-pmdetails',
   templateUrl: './pmdetails.component.html',
@@ -79,7 +83,8 @@ export class PMDetailsComponent implements AfterViewInit {
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
   StylingMode: string = TextboxStyle.StylingMode;
   LabelMode: string = TextboxStyle.LabelMode;
-  bomDefaultRow : number = 2;
+  bomDefaultRow: number = 2;
+  newGuidId = "00000000-0000-0000-0000-000000000000";
 
   warehouses: Warehouse[] = [];
   warehouseNames: string[] = [];
@@ -115,33 +120,28 @@ export class PMDetailsComponent implements AfterViewInit {
   toastType = 'info';
   toastMessage = '';
   popupVLVisible = false;
-  popupF2Visible = false;
   popupVSVisible = false;
+  popupPrintVisible = false;
   lookupItemNumbers: pmItemSearchResult[] = [];
   selectedRowIndex = -1;
   editRowKey!: number;
-  componentTypeF2: ComponentType = ComponentType.PartMasterF2;
   labelMap: typeof LabelMap;
   focusOnQty: any;
   rowIndex = 0;
 
   closeBasicPopUp: any;
   saveBasicPopUp: any;
-  basicPopupVisible = false;
 
   fSearchFG!: FormGroup;
-  pmSearchResults: pmItemSearchResult[] = [];
-  selectedItem: any;
-  f2KeyRowIndex = 0;
   crudStatus: boolean = false;
-  @ViewChild('f2partNumberVar', { static: false }) f2partNumberVar! : ElementRef;
-  @ViewChild('f2partNumberDesc', { static: false }) f2partNumberDesc! : ElementRef;
 
   constructor(
     private searchService: SearchService,
     private pmdataTransfer: PartMasterDataTransService,
     private pmService: PartMasterService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    private tabService: TabService
   ) {
 
     this.labelMap = LabelMap;
@@ -201,12 +201,6 @@ export class PMDetailsComponent implements AfterViewInit {
     };
     this.onReorder = this.onReorder.bind(this);
     this.validateItem = this.validateItem.bind(this);
-    this.onSaving = this.onSaving.bind(this);
-    this.rowInserted = this.rowInserted.bind(this);
-    this.rowUpdated = this.rowUpdated.bind(this);
-    this.rowRemoved = this.rowRemoved.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-    this.selectedChanged = this.selectedChanged.bind(this);
     this.setCellValue = this.setCellValue.bind(this);
 
 
@@ -222,7 +216,7 @@ export class PMDetailsComponent implements AfterViewInit {
     this.closeBasicPopUp = {
       text: 'Cancel and Exit',
       onClick(e: any) {
-        that.basicPopupVisible = false;
+        //that.basicPopupVisible = false;
       },
     };
 
@@ -238,10 +232,6 @@ export class PMDetailsComponent implements AfterViewInit {
     }, 0);
   }
 
-  logEvent(eventName: any) {
-    console.log(eventName);
-  }
-  
   ngOnInit(): void {
 
     this.searchService.getItemClass('', '').subscribe((l) => {
@@ -265,7 +255,6 @@ export class PMDetailsComponent implements AfterViewInit {
 
       console.log(e);
 
-      this.popupF2Visible = false;
       this.dataGrid.instance.saveEditData();
       this.addRow();
       this.dataGrid.instance.cellValue(this.bomDetails.length, 3, e.itemNumber);
@@ -285,7 +274,7 @@ export class PMDetailsComponent implements AfterViewInit {
     });
     this.pmdataTransfer.selectedItemBomForPMDetails$.subscribe((boms) => {
       console.log(boms.length);
-      debugger
+      //debugger
       this.bomDetails = boms;
       this.originalBomDetails = [...boms];
       console.log("bom details " + this.bomDetails.length);
@@ -304,6 +293,11 @@ export class PMDetailsComponent implements AfterViewInit {
 
     this.pmdataTransfer.itemSelectedChild$.subscribe((child) => {
       this.selectedChild = child;
+      setTimeout(() => {
+        if (this.selectedChild == this.childType.BOM) {
+          this.bomComp.AddBomLines();
+        }
+      }, 500);
     });
 
     this.pmdataTransfer.selectedCRUD$.subscribe((crud) => {
@@ -318,13 +312,13 @@ export class PMDetailsComponent implements AfterViewInit {
         this.crudStatus = true;
 
         setTimeout(() => {
-          if(this.selectedChild == this.childType.BOM){
+          if (this.selectedChild == this.childType.BOM) {
             this.bomComp.AddBomLines();
           }
-          else if(this.selectedChild == this.childType.PO){
+          else if (this.selectedChild == this.childType.PO) {
             this.poComp.AddPoLines();
           }
-          else if(this.selectedChild == this.childType.Notes){
+          else if (this.selectedChild == this.childType.Notes) {
             this.notesComp.AddNotesLines();
           }
         }, 500);
@@ -334,13 +328,13 @@ export class PMDetailsComponent implements AfterViewInit {
         this.crudStatus = false;
 
         setTimeout(() => {
-          if(this.selectedChild == this.childType.BOM){
+          if (this.selectedChild == this.childType.BOM) {
             this.bomComp.AddBomLines();
           }
-          else if(this.selectedChild == this.childType.PO){
+          else if (this.selectedChild == this.childType.PO) {
             this.poComp.AddPoLines();
           }
-          else if(this.selectedChild == this.childType.Notes){
+          else if (this.selectedChild == this.childType.Notes) {
             this.notesComp.AddNotesLines();
           }
         }, 500);
@@ -367,6 +361,7 @@ export class PMDetailsComponent implements AfterViewInit {
         this.popupVSVisible = true;
         //this.getSerial();
       } else if (popUp === PopUpAction.Print) {
+        this.popupPrintVisible = true;
       }
     });
     this.pmdataTransfer.copyToNewSelected$.subscribe(
@@ -375,7 +370,6 @@ export class PMDetailsComponent implements AfterViewInit {
 
     this.getListItemNumbers();
 
-    //this.AddBomLines();
 
   }
 
@@ -406,22 +400,22 @@ export class PMDetailsComponent implements AfterViewInit {
 
   updateWarehouseSelection(location: string = '', onload: boolean = false) {
     if (!this.pmDetails.warehouse || !location) {
-        this.validLocationNames = [];
-        this.pmDetails.location = '';
-        return;
+      this.validLocationNames = [];
+      this.pmDetails.location = '';
+      return;
     }
 
     let wid = this.groupedWarehouses[this.pmDetails.warehouse];
     if (!!wid) {
-        let locWid=this.groupedLocations[wid[0].id];
-        if (!!locWid) {
-            let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
-            this.validLocationNames = locations.map(l => l.location);
-        }
-        else{
-            this.pmDetails.location ='';
-            alert("There is no location for " + this.pmDetails.warehouse);
-        }
+      let locWid = this.groupedLocations[wid[0].id];
+      if (!!locWid) {
+        let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
+        this.validLocationNames = locations.map(l => l.location);
+      }
+      else {
+        this.pmDetails.location = '';
+        alert("There is no location for " + this.pmDetails.warehouse);
+      }
     } else { this.validLocationNames = []; }
   }
 
@@ -517,23 +511,23 @@ export class PMDetailsComponent implements AfterViewInit {
     useSubmitBehavior: true,
   };
   onSave() {
-    debugger
+
     document.getElementById('pmDetailsSubmit')?.click();
 
     if (!this.isFormValid()) {
       return;
     }
-     
+
 
     let bomDetails_VisibleRows: pmBomDetails[] = [];
 
     let bomGridIce = this.bomComp.dataGrid.instance.getVisibleRows();
 
     for (let _i = 0; _i < bomGridIce.length; _i++) {
-
-      if (bomGridIce[_i].data.ref !== undefined && bomGridIce[_i].data.quantity !== undefined) {  
-          bomDetails_VisibleRows.push(bomGridIce[_i].data);
-        }
+      bomDetails_VisibleRows.push(bomGridIce[_i].data);
+      // if (bomGridIce[_i].data.ref !== undefined && bomGridIce[_i].data.quantity !== undefined) {  
+      //     bomDetails_VisibleRows.push(bomGridIce[_i].data);
+      //   }
 
     }
 
@@ -576,7 +570,7 @@ export class PMDetailsComponent implements AfterViewInit {
           );
         } else {
           var boms = this.convertToBomGridDetails(x.message);
-          console.log("boms "+boms.length);
+          console.log("boms " + boms.length);
 
           this.pmService.AddUpdateDeleteBomDetails(boms).subscribe(
             (b) => {
@@ -616,7 +610,7 @@ export class PMDetailsComponent implements AfterViewInit {
 
     // find inserted
     let newBoms = this.bomDetails.filter(
-      (b) => b.id == '00000000-0000-0000-0000-000000000000'
+      (b) => b.id == this.newGuidId
     );
 
     if (!!newBoms && newBoms.length > 0) {
@@ -630,18 +624,18 @@ export class PMDetailsComponent implements AfterViewInit {
         newBom.ref = newBoms[_i].ref;
         newBom.findNo = newBoms[_i].findNo;
         newBom.comments = newBoms[_i].comments;
-        newBom.createdby = this.authService.currentUser.toString();
+        newBom.createdby = this.authService.currentUser();
 
         bomGridDetails.push(newBom);
       }
     }
 
     let updatedBoms = this.bomDetails.filter(
-      (b) => b.id != '00000000-0000-0000-0000-000000000000' && b.id != undefined
+      (b) => b.id != this.newGuidId && b.id != undefined
     );
 
     //find Updated and deleted
-    if(updatedBoms && updatedBoms.length > 0){
+    if (updatedBoms && updatedBoms.length > 0) {
       for (var _i = 0, boms = updatedBoms; _i < boms.length; _i++) {
         var bom = new pmBomGridDetails();
         var originalBom = updatedBoms.find(
@@ -660,11 +654,11 @@ export class PMDetailsComponent implements AfterViewInit {
         bom.ref = boms[_i].ref;
         bom.findNo = boms[_i].findNo;
         bom.comments = boms[_i].comments;
-        bom.createdby = this.authService.currentUser.toString();
+        bom.createdby = this.authService.currentUser();
         bomGridDetails.push(bom);
       }
     }
-    
+
     console.log("update/delete  " + bomGridDetails.length);
     return bomGridDetails;
   }
@@ -673,7 +667,11 @@ export class PMDetailsComponent implements AfterViewInit {
     debugger
     let bomGridDetails: pmBomGridDetails[] = [];
 
-    for (var _i = 0, boms = this.bomDetails; _i < boms.length; _i++) {
+    let newBoms = this.bomDetails.filter(
+      (b) => b.id != undefined
+    );
+
+    for (var _i = 0, boms = newBoms; _i < boms.length; _i++) {
       var bom = new pmBomGridDetails();
       bom.actionFlag = BomAction.Add;
       bom.parent_ItemsId = parentId;
@@ -683,7 +681,7 @@ export class PMDetailsComponent implements AfterViewInit {
       bom.ref = boms[_i].ref;
       bom.findNo = boms[_i].findNo;
       bom.comments = boms[_i].comments;
-      bom.createdby = this.authService.currentUser.toString();
+      bom.createdby = this.authService.currentUser();
       bomGridDetails.push(bom);
     }
 
@@ -770,77 +768,6 @@ export class PMDetailsComponent implements AfterViewInit {
     this.editRowKey = e.key;
     // ...
   }
-  rowUpdated(e: any) {
-    console.log(e);
-    let key = e.key;
-    let newData = e.newData;
-    let oldData = e.oldData;
-    var item = this.lookupItemNumbers.find(
-      (i) => i.itemNumber == newData.itemNumber
-    );
-    if (!!item) {
-      let bitem = this.bomDetails.find((b) => b.itemNumber === key);
-      if (!!bitem) {
-        bitem.itemNumber = item.itemNumber;
-        bitem.itemtype = item.itemType;
-        bitem.description = item.description;
-        bitem.itemsid_Parent = Guid.parse(this.pmDetails.id);
-        bitem.itemsid_Child = item.id;
-        bitem.rev = item.rev;
-        bitem.uomref = item.uomref;
-        bitem.cost = item.cost;
-        bitem.lineNum = bitem.lineNum;
-        if (!!newData.quantity) {
-          bitem.quantity = newData.quantity;
-        }
-      }
-    }
-  }
-  rowRemoved(e: any) {
-    console.log(e);
-    let lineNum = e.data.lineNum;
-    if (this.bomDetails.length > 0) {
-      for (let i = lineNum; i <= this.bomDetails.length; i++) {
-        this.bomDetails[i - 1].lineNum = i;
-      }
-    }
-  }
-  rowInserted(e: any) {
-    console.log(e);
-    let key = e.key;
-    let newData = e.data;
-    var item = this.lookupItemNumbers.find(
-      (i) =>
-        i.itemNumber.toLocaleLowerCase() ==
-        newData.itemNumber.toLocaleLowerCase()
-    );
-    if (!!item) {
-      let bitem = this.bomDetails.find((b) => b.itemNumber === key);
-      if (!!bitem) {
-        bitem.id = '00000000-0000-0000-0000-000000000000';
-        bitem.itemNumber = item.itemNumber;
-        bitem.itemtype = item.itemType;
-        bitem.description = item.description;
-        bitem.itemsid_Parent = Guid.parse(this.pmDetails.id);
-        bitem.itemsid_Child = item.id;
-        bitem.rev = item.rev;
-        bitem.uomref = item.uomref;
-        bitem.cost = item.cost;
-        bitem.lineNum = this.bomDetails.length;
-        if (!!newData.quantity) {
-          bitem.quantity = newData.quantity;
-        }
-      }
-    }
-  }
-
-  
-  onSaving(e: any) {
-    console.log('onSaving');
-
-
-
-  }
 
   getCellValue() {
     const editRowIndex = this.dataGrid.instance.getRowIndexByKey(
@@ -851,28 +778,12 @@ export class PMDetailsComponent implements AfterViewInit {
     }
     return null;
   }
-  onKeyDown(e: any) {
-    if (this.readOnly) {
-      return;
-    }
-    console.log(e);
-    if (e.event.ctrlKey && e.event.key === 'ArrowDown') {
-      this.dataGrid.instance.saveEditData();
-      this.addRow();
-    } else if (e.event.ctrlKey && e.event.key === 'F2') {
-      this.popupF2Visible = true;
-    }
-  }
 
   addRow() {
     this.dataGrid.instance.addRow();
     this.dataGrid.instance.deselectAll();
   }
 
-  selectedChanged(e: any) {
-    console.log(e);
-    this.selectedRowIndex = e.component.getRowIndexByKey(e.selectedRowKeys[0]);
-  }
   editRow(key: any) {
     //let selectedRowIndex = this.dataGrid.instance.getRowIndexByKey(key);
     let selectedRowIndex = this.bomDetails.findIndex(
@@ -894,37 +805,6 @@ export class PMDetailsComponent implements AfterViewInit {
     this.dataGrid.instance.cellValue(selectedRowIndex, 6, newData.extCost);
   }
 
-  submitSerialPopupButtonOptions = {
-    text: "Save and exit",
-    useSubmitBehavior: true,
-    type: "default"
-};
-
-cancelSerialPopupButtonOptions = {
-    text: "Cancel and exit",
-    useSubmitBehavior: true,
-    type: "default"
-
-};
-  updateSerialPopupVisible: boolean = false;
-  changeSerialSearchInfo: changeSerial = new changeSerial();
-  onRowSelection(e: any) {
-    let selectedRow = e.data;
-    this.changeSerialSearchInfo.serNoFm = selectedRow?.serlot;
-    this.changeSerialSearchInfo.serNoTo = selectedRow?.serlot;
-    this.changeSerialSearchInfo.tagNoFm = selectedRow?.tagcol;
-    this.changeSerialSearchInfo.tagNoTo = selectedRow?.tagcol;
-    this.changeSerialSearchInfo.modelFm = selectedRow?.color_model;
-    this.changeSerialSearchInfo.modelTo = selectedRow?.color_model;
-    this.changeSerialSearchInfo.costFm = selectedRow?.cost;
-    this.changeSerialSearchInfo.costTo = selectedRow?.cost;
-
-    this.changeSerialSearchInfo.serialId = selectedRow?.id;
-  }
-
-  edit() {
-    this.updateSerialPopupVisible = true;
-  }
 
   openMFRCodeBox() {
     this.mfrVar?.instance.open();
@@ -950,300 +830,43 @@ cancelSerialPopupButtonOptions = {
     this.locationVar?.instance.open();
   }
 
-  test(e: any) {
-    console.log(e);
-    console.log(e.row.data);
-  }
-
-  onInitialized(e:any){
-
-    console.log('onInitialized');
-    //this.AddBomLines();
-
-
-  }
-
-  onToolbarPreparing(e:any) {
-    e.toolbarOptions.visible = false;
-  }
-
-  AddBomLines() {
-
-   //const dataSource = this.dataGrid.instance.getDataSource();
-   // console.log( dataSource.items().length);
-
-    for(let i=0;i< this.bomDefaultRow;i++){
-      console.log('for--------');
-      this.dataGrid.instance.addRow();
-
-    }
-
-    let rows = this.dataGrid.instance.getVisibleRows();
-    let rowCount = rows.length;
-
-    let  rowIndex = rows.find(obj=>obj.data.itemNumber === undefined)?.rowIndex;
-
-    console.log(rows);
-    console.log(rowIndex);
-
-    for(let i=0;i<rowCount;i++){
-      this.dataGrid.instance.cellValue(i, 1, i+1);
-    }
-
-    setTimeout(() => {
-       this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(Number(rowIndex),"itemNumber") as HTMLElement);
-    }, 300);
-
-  }
-
-  onEditorPreparing(e: any) {
-
-    if (e.dataField === 'itemNumber' && e.parentType === 'dataRow') {
-
-
-      const defaultValueChangeHandler = e.editorOptions.onValueChanged;
-
-      e.editorOptions.onKeyDown = function (this: any, args: any) {
-
-        if (args.event.keyCode == 113){
-          console.log(this);
-          console.log(args);
-          this.basicPopupVisible = true;
-          this.f2KeyRowIndex =  e.row.rowIndex;
-        }
-      }.bind(this);
-
-      e.editorOptions.onValueChanged = function (this: any, args: any) {
-
-
-        let rows = this.dataGrid.instance.getVisibleRows();
-
-        let  itemLen = rows.filter((obj:any)=>obj.data.itemNumber?.toLowerCase() === args.value.toLowerCase())?.length;
-
-        if(itemLen>0){
-            alert('Item Number '+ args.value+' already added');
-            this.dataGrid.instance.cellValue(
-              e.row.rowIndex,
-              3,
-              ''
-            );
-            setTimeout(() => {
-              this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(e.row.rowIndex, "itemNumber"));
-            }, 300);
-
-        }
-        else{
-
-        let cellInfo = new pmSearch();
-        cellInfo.itemnumber = args.value;
-
-        this.searchService
-          .getItemNumberSearchResults(cellInfo)
-          .subscribe((response: pmItemSearchResult[]) => {
-
-
-            let obj = response?.find(
-              (x: pmItemSearchResult) =>
-                x.itemNumber.toLowerCase() == cellInfo.itemnumber.toLowerCase()
-            );
-
-            if (!!obj) {
-              this.dataGrid.instance.cellValue(e.row.rowIndex, 2, obj.itemType);
-              this.dataGrid.instance.cellValue(
-                e.row.rowIndex,
-                3,
-                obj.itemNumber
-              );
-              this.dataGrid.instance.cellValue(
-                e.row.rowIndex,
-                4,
-                obj.description
-              );
-
-              this.dataGrid.instance.cellValue(e.row.rowIndex, 6, obj.uomref);
-              this.dataGrid.instance.cellValue(e.row.rowIndex, 8, obj.cost);
-
-              this.dataGrid.instance.cellValue(e.row.rowIndex, 10, "00000000-0000-0000-0000-000000000000");
-              this.dataGrid.instance.cellValue(e.row.rowIndex, 11, obj.id);
-
-            } else {
-
-              alert('Invalid Itemnumber');
-
-              setTimeout(() => {
-                this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(e.row.rowIndex, "itemNumber"));
-              }, 300);
-
-            }
-          });
-
-        }
-
-      }.bind(this);
-
-    }
-
-    if (e.dataField === 'quantity' && e.parentType === 'dataRow') {
-      const defaultValueChangeHandler = e.editorOptions.onValueChanged;
-
-      e.editorOptions.onValueChanged = function (this: any, args: any) {
-
-        let costElement = this.dataGrid.instance.getCellElement(e.row.rowIndex, "cost");
-        this.dataGrid.instance.cellValue(
-          e.row.rowIndex,
-          5,
-          Number(args.value)
-        );
-        this.dataGrid.instance.cellValue(e.row.rowIndex, 9, e.row.data.cost * Number(args.value));
-        //this.dataGrid.instance.saveEditData();
-
-      }.bind(this);
-    }
-
-
-      if (e.dataField === 'ref' && e.parentType === 'dataRow') {
-
-       const defaultValueChangeHandler = e.editorOptions.onb;
-
-      e.editorOptions.onFocusOut = function (this: any, args: any) {
-
-        if(e.row.rowIndex === this.dataGrid.instance.getVisibleRows().length-1){
-            this.AddBomLines();
-        }
-
-      }.bind(this);
-     }
-
-
-
-  }
-
   onF2Submit(form: FormGroup) {
     console.log('Name', form.value.f2PartNumber);
     console.log('Name', form.value.f2PartDesc);
   }
 
-  findPartNumbers(pn: string, desc: string){
-    console.log(pn);
-    console.log(desc);
-    let obj : pmSearch = new pmSearch();
-    obj.itemnumber = pn;
-    obj.description = desc;
-    this.searchService.getItemNumberSearchResults(obj).subscribe(r => {
-      this.pmSearchResults = r;
-    });
-  }
-
-
-  selectedItemNumber: string = '';
-  OnPNSearchShow(){
+  OnPNSearchShow() {
     console.log('OnPNSearchShow');
     //this.f2partNumberVar.nativeElement.focus();
     console.log('OnPNSearchShow2');
   }
 
-  onShown(e:any): void {
-    //this.chart.render();
-    console.log('OnPNSearchShow2');
-  }
- 
-  dblclick(e: any){
-   // console.log('OnPNSearchShow');
-    //this.f2partNumberVar.nativeElement.focus();
-   // console.log('OnPNSearchShow2');
+  hideSerial() {
+    this.popupVSVisible = false;
   }
 
+  hideLocation() {
+    this.popupVLVisible = false
+  }
 
- onSelectionChanged(e: any) {
-        console.log(e);
-        // this.f2partNumberVar.nativeElement.value = "";
-        // this.f2partNumberDesc.nativeElement.value = "";        
-        if (!!e.addedItems[0]) {
-            this.selectedItem = e.addedItems[0];
-            console.log(this.selectedItem);
-            this.selectedItemNumber = this.selectedItem.itemNumber;
-            // this.pmDataTransService.selectedItemChanged(this.selectedItem, this.componentType);
+  hidePrintPopup() {
+    this.popupPrintVisible = false;
+  }
 
-            this.dataGrid.instance.cellValue(
-              this.f2KeyRowIndex,
-              3,
-              this.selectedItemNumber
-            );
-            this.basicPopupVisible = false;
-
-
-            let cellInfo = new pmSearch();
-           cellInfo.itemnumber = this.selectedItemNumber;
-
-        this.searchService
-          .getItemNumberSearchResults(cellInfo)
-          .subscribe((response: pmItemSearchResult[]) => {
-
-
-            let obj = response?.find(
-              (x: pmItemSearchResult) =>
-                x.itemNumber.toLowerCase() == cellInfo.itemnumber.toLowerCase()
-            );
-
-            console.log(obj);
-
-            if (!!obj) {
-              this.dataGrid.instance.cellValue(this.f2KeyRowIndex, 2, obj.itemType);
-              this.dataGrid.instance.cellValue(
-                this.f2KeyRowIndex,
-                3,
-                obj.itemNumber
-              );
-              this.dataGrid.instance.cellValue(
-                this.f2KeyRowIndex,
-                4,
-                obj.description
-              );
-
-              this.dataGrid.instance.cellValue(this.f2KeyRowIndex, 6, obj.uomref);
-              this.dataGrid.instance.cellValue(this.f2KeyRowIndex, 8, obj.cost);
-
-              this.dataGrid.instance.cellValue(this.f2KeyRowIndex, 10, "00000000-0000-0000-0000-000000000000");
-              this.dataGrid.instance.cellValue(this.f2KeyRowIndex, 11, obj.id);
-
-            }
-          })
-          setTimeout(() => {
-            this.dataGrid.instance.focus(this.dataGrid.instance.getCellElement(Number(this.f2KeyRowIndex),"quantity") as HTMLElement);
-         }, 300);
-        }
+  goToReport(reportName: string) {
+    this.popupPrintVisible = false;
+    localStorage.setItem('reportUrl', reportName);
+    let tabToRemove: TabInfo = new TabInfo("ReportItems", ComponentType.ReportItemslist);
+    let removeTab = this.tabService.tabs.find(x => x.type == tabToRemove.type);
+    const index = this.tabService.tabs.indexOf(removeTab);
+    if (index != -1) {
+      this.tabService.removeTab(removeTab);
     }
 
+    //this.router.navigate(['/reportitemslist'], { queryParams: { reportUrl: reportName } });
 
-    saveSerial(e: any){
-      debugger
-      this.changeSerialSearchInfo.costFm = this.changeSerialSearchInfo.costFm.toString();
-      this.changeSerialSearchInfo.costTo = this.changeSerialSearchInfo.costTo.toString();
-  
-      this.pmService.updateChangeSerialTag(this.changeSerialSearchInfo)
-          .subscribe((res: any) => {
-            this.updateSerialPopupVisible = false;
-            this.getSerial();
-          }, 
-          err => {
-            notify({ message: "Error occured during update serial", shading: true, position: top }, "error", 1500) 
-          
-          });
-  
-      e.preventDefault();
-      //alert("save clicked")
-    }
+    this.tabService.addTab("ReportItems", "ReportItemslist", "ReportItems", ComponentType.ReportItemslist);
 
-    cancelSerial(){
-      this.updateSerialPopupVisible = false;
-    }
-
-    hideSerial(){
-      this.popupVSVisible = false;
-    }
-
-    hideLocation(){
-      this.popupVLVisible = false
-    }
+  }
 
 }

@@ -8,13 +8,14 @@ import { PMFooterComponent } from './footer/pmfooter.component';
 import { NotesComponent } from './notes/notes.component';
 import { PartMasterComponent } from './partmaster.component';
 import { PoComponent } from './po/po.component';
+import { PrintComponent } from './print/print.component';
 import { ViewLocationComponent } from './viewLocation/viewLocation.component';
 import { ViewSerialComponent } from './viewSerial/viewSerial.component';
 @NgModule({
     imports: [DevExpressModule,CommonModule,SharedModule],
     declarations: [PartMasterComponent, PMDetailsComponent, PMFooterComponent, ViewLocationComponent,
-        ViewSerialComponent, BomComponent, PoComponent, NotesComponent],
+        ViewSerialComponent, BomComponent, PoComponent, NotesComponent, PrintComponent],
     exports: [PartMasterComponent, PMDetailsComponent, PMFooterComponent, ViewLocationComponent,
-        ViewSerialComponent, BomComponent, PoComponent, NotesComponent]
+        ViewSerialComponent, BomComponent, PoComponent, NotesComponent, PrintComponent]
 })
 export class PartMasterModule { }

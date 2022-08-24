@@ -7,50 +7,52 @@
   <dxi-item>
     <dxi-location [row]="0" [col]="0" [rowspan]="2"></dxi-location>
     <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
-      <dx-form id="form" [colCount]="1">
-        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
-            [label]="'MDAT Number'">
-          </dx-text-box>
-        </dxi-item>
-        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
-            [ngAddLabel]="labelMap.er_num">
-          </dx-text-box>
-        </dxi-item>
-        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
-            [label]="'Packlist Number'">
-          </dx-text-box>
-        </dxi-item>
-        <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
-            [ngAddLabel]="labelMap.status_num">
-          </dx-text-box>
-        </dxi-item>
+      <form (submit)="handleSubmit($event)">
+        <dx-form [(formData)]="mdatSearchInfo" id="form" [colCount]="1">
+          <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+            <dx-text-box [(value)]="mdatSearchInfo.mdatNum" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+              [elementAttr]="{ class: 'myclass' }" [label]="'MDAT Number'">
+            </dx-text-box>
+          </dxi-item>
+          <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+            <dx-text-box [(value)]="mdatSearchInfo.er" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+              [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.er_num">
+            </dx-text-box>
+          </dxi-item>
+          <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+            <dx-text-box [(value)]="mdatSearchInfo.packlistNum" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+              [elementAttr]="{ class: 'myclass' }" [label]="'Packlist Number'">
+            </dx-text-box>
+          </dxi-item>
+          <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
+            <dx-text-box [(value)]="mdatSearchInfo.status" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+              [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.status_num">
+            </dx-text-box>
+          </dxi-item>
+          <br>
+          <dxi-item itemType="button" type="default" stylingMode="contained" style="justify-content: center;"
+              [buttonOptions]="submitButtonOptions">
+            </dxi-item>
 
+          <dxi-item [colSpan]="1">
 
+            <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="mdatNum"
+              [hoverStateEnabled]="true" [showBorders]="true"
+              [selectedRowKeys]="[]" height="50vh" (onSelectionChanged)="onSelectionChanged($event)">
+              <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
+              <dxo-selection mode="single"></dxo-selection>
+              <dxo-paging [pageSize]="10"> </dxo-paging>
 
+              <dxi-column dataField="mdatNum" caption="MDAT Number" [allowEditing]="false" width="50%"></dxi-column>
+              <dxi-column dataField="description" [allowEditing]="false" width="50%"></dxi-column>
 
-        <dxi-item [colSpan]="1">
-
-          <br />
-          <dx-button stylingMode="contained" text="search" type="default" width="400">
-          </dx-button>
-          <br />
-          <br />
-          <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="itemNumber"
-            [columns]="['MDAT Number', 'description']" [hoverStateEnabled]="true" [showBorders]="true"
-            [selectedRowKeys]="[]" height="50vh" (onSelectionChanged)="onSelectionChanged($event)">
-            <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
-            <dxo-selection mode="single"></dxo-selection>
-            <dxo-paging [pageSize]="10"> </dxo-paging>
-            <dxo-pager [visible]="true" [allowedPageSizes]="[10, 20, 30]" displayMode="compact"
-              [showPageSizeSelector]="false" [showInfo]="true" [showNavigationButtons]="true">
-            </dxo-pager>
-          </dx-data-grid>
-        </dxi-item>
-      </dx-form>
+              <dxo-pager [visible]="true" [allowedPageSizes]="[10, 20, 30]" displayMode="compact"
+                [showPageSizeSelector]="false" [showInfo]="true" [showNavigationButtons]="true">
+              </dxo-pager>
+            </dx-data-grid>
+          </dxi-item>
+        </dx-form>
+      </form>
     </div>
   </dxi-item>
 
@@ -85,24 +87,20 @@
           </dx-text-box>
         </dxi-item>
         <dxi-item [colSpan]="1">
-          <dx-date-box [label]="'Submitted Date'"
-            placeholder="Select..." [stylingMode]="StylingMode" [labelMode]="LabelMode" 
-            style="margin-top: 10px"></dx-date-box>
+          <dx-date-box [label]="'Submitted Date'" placeholder="Select..." [stylingMode]="StylingMode"
+            [labelMode]="LabelMode" style="margin-top: 10px"></dx-date-box>
         </dxi-item>
         <dxi-item [colSpan]="1">
-          <dx-date-box [label]="'Approve Date'"
-            placeholder="Select..." [stylingMode]="StylingMode" [labelMode]="LabelMode" 
-            style="margin-top: 10px"></dx-date-box>
+          <dx-date-box [label]="'Approve Date'" placeholder="Select..." [stylingMode]="StylingMode"
+            [labelMode]="LabelMode" style="margin-top: 10px"></dx-date-box>
         </dxi-item>
         <dxi-item [colSpan]="1">
-          <dx-date-box [label]="'Shipped Date'"
-            placeholder="Select..." [stylingMode]="StylingMode" [labelMode]="LabelMode" 
-            style="margin-top: 10px"></dx-date-box>
+          <dx-date-box [label]="'Shipped Date'" placeholder="Select..." [stylingMode]="StylingMode"
+            [labelMode]="LabelMode" style="margin-top: 10px"></dx-date-box>
         </dxi-item>
         <dxi-item [colSpan]="1">
-          <dx-date-box [label]="'Cancelled Date'"
-            placeholder="Select..." [stylingMode]="StylingMode" [labelMode]="LabelMode" 
-            style="margin-top: 10px"></dx-date-box>
+          <dx-date-box [label]="'Cancelled Date'" placeholder="Select..." [stylingMode]="StylingMode"
+            [labelMode]="LabelMode" style="margin-top: 10px"></dx-date-box>
         </dxi-item>
       </dx-form>
     </div>

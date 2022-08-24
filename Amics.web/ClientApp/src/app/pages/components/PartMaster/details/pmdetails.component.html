@@ -367,24 +367,6 @@
   </ng-container>
   <div>
     <dx-popup
-      [width]="800"
-      [height]="800"
-      [showTitle]="true"
-      title="search partnumber"
-      [dragEnabled]="false"
-      [closeOnOutsideClick]="false"
-      [showCloseButton]="true"
-      container=".dx-viewport"
-      [(visible)]="popupF2Visible"
-    >
-      <br />
-
-      <app-pmsearch [componentType]="componentTypeF2"></app-pmsearch>
-      <dxo-position at="center" my="center"> </dxo-position>
-    </dx-popup>
-  </div>
-  <div>
-    <dx-popup
       [width]="400"
       [height]="150"
       [showTitle]="true"
@@ -465,6 +447,12 @@
     ></app-viewSerial>
   </div>
   <div>
+    <app-print *ngIf="popupPrintVisible"
+    (viewPrintPopup)="hidePrintPopup()"
+    (viewReport)="goToReport($event)"
+    ></app-print>
+  </div>
+  <div>
     <dx-popup
       [width]="400"
       [height]="500"
@@ -498,83 +486,5 @@
   </div>
 </div>
 
-<dx-popup
-  [width]="650"
-  [height]="550"
-  [showTitle]="true"
-  title="Search"
-  [dragEnabled]="false"
-  [showCloseButton]="true"
-  [(visible)]="basicPopupVisible"
-  (onShown)="onShown($event)"
->
-  <!-- <dxi-toolbar-item
-    widget="dxButton"
-    toolbar="bottom"
-    location="after"
-    [options]="closeBasicPopUp"
-  >
-  </dxi-toolbar-item>
-  <dxi-toolbar-item
-    widget="dxButton"
-    toolbar="bottom"
-    location="after"
-    [options]="saveBasicPopUp"
-  ></dxi-toolbar-item> -->
 
-  <dxo-position at="center" my="center" of="window"></dxo-position>
-  <div *dxTemplate="let data of 'content'">
-    <dx-scroll-view width="100%" height="100%">
-      <div id="textBlock" style="margin-top: 3px; margin-bottom: 10px">
-           
-        <div style="width:50%;float:left;padding-left: 20px;">
-          <dx-text-box     
-            [stylingMode]="StylingMode"
-            [labelMode]="LabelMode"
-            [elementAttr]="{ class: 'myclass' }"
-            [ngAddLabel]="labelMap.partNumber_num"
-            #f2partNumberVar>
-         </dx-text-box>
-        </div>
-        <div style="width:50%;float:left;padding-left: 20px;">
-        <dx-text-box     
-          [stylingMode]="StylingMode"
-          [labelMode]="LabelMode"
-          [elementAttr]="{ class: 'myclass' }"
-          [ngAddLabel]="labelMap.description_num"
-          #f2partNumberDesc>
-        </dx-text-box>
-    </div>
- 
- 
-      <div class="row" style="justify-content: center;padding-top: 20px;">
-        <dx-button
-          stylingMode="contained"
-          text="Search"
-          width="150"
-          type="default"
-          (onClick)="findPartNumbers(f2partNumberVar.value, f2partNumberDesc.value)"
-        >
-        </dx-button>
-      </div>
 
-      </div>
-      <dx-list #grid id="gridContainer" 
-        [dataSource]="pmSearchResults" 
-        [hoverStateEnabled]="true" 
-        selectionMode="single"
-        [selectedItemKeys]="[selectedItemNumber]"   
-        [height]="370" [focusStateEnabled]="true"
-        (onSelectionChanged)="onSelectionChanged($event)" 
-        (dblclick)="dblclick($event)"
-        (keyDown)="onSelectionChanged($event)" sc>
-        <div *dxTemplate="let item of 'item'">
-          <div>
-            <div class="name" style="font-weight:bold;">{{ item.itemNumber}}</div>
-            <div class="description" style="font-style: italic;font-size: small;">{{ item.description }}</div>
-          </div>
-        </div>
-      </dx-list>
-    </dx-scroll-view>
-  </div>
-</dx-popup>
