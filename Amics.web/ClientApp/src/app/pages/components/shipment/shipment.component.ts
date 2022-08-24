@@ -50,29 +50,11 @@ export class ShipmentComponent {
     width: "100%",
     type: "default"
   };
-
-  doneClick() {
-    this.SearchBtnClick();
-    notify('The Done button was clicked');
-  }
   
-  pmSearchResults = [    
-    { itemNumber: "Blue", description: "This is a blue color" },
-    { itemNumber: "Red", description: "This is a red color" },
-    { itemNumber: "Orange", description: "This is a orange color" },
-    { itemNumber: "Green", description: "This is a green color" },
-  ];
-  // selectedItemNumber: string = '';
-  // statusList = [];
-  // locationList = [];
   selectedProject: any;  
   selectedInvType = "BASIC";
   selectedProjectId: string = '';
   selectedRowView: any;
-  //selectedProjectName: string = '';
-
-  tableRight: Array<Shipment> = [];
-  tableLeft: Array<Shipment> = [];
 
   StylingMode: string = TextboxStyle.StylingMode;
   LabelMode: string = TextboxStyle.LabelMode;
@@ -132,8 +114,7 @@ export class ShipmentComponent {
   }
 
   getDetails(){
-    console.log(this.selectedRowView);
-    console.log("selectedRowView " + this.selectedRowView.itemnumber + " so "+ this.selectedRowView.soMain);
+    console.log(this.selectedRowView);    
     this.shipmtService.getShipmentViewDetails(this.selectedRowView).subscribe(r => {
       console.log(r);
       this.shipViewLftTblDetails = r;
@@ -244,8 +225,7 @@ export class ShipmentComponent {
         for (let _i = 0; _i < chgLocRows.length; _i++) {                  
           if (chgLocRows[_i].data.pickQty !== undefined) {   
             shipmentVisibleRows.push(chgLocRows[_i].data);
-          }  
-          console.log("pickvar " + chgLocRows[_i].data.pickQty);
+          }            
           pickQtyVar.push(chgLocRows[_i].data.pickQty);
         } 
         
@@ -286,8 +266,7 @@ export class ShipmentComponent {
                 transItem.invBasicId = this.shipViewLftTblDetails[_i].invBasicId;
                 transItem.invSerialId = this.shipViewLftTblDetails[_i].invSerialId;
                 transItem.id = "";
-                transItem.createdBy = 'admin';      
-               // console.log("qty " +this.shipViewLftTblDetails[_i].quantity + "basid " + this.shipViewLftTblDetails[_i].invBasicId + " serid " +this.changeLocDetailsResult[_i].invSerialId);        
+                transItem.createdBy = 'admin';                     
                 this.shipInvPickShipItem.push(transItem);               
         }  
       }   
@@ -374,45 +353,5 @@ export class ShipmentComponent {
        }, 500);
       }
     }
-  }
-
-  onAdd(event: any) {
-    debugger
-
-    let rowData = new Shipment();
-    let itemData = event.itemData;
-    rowData.wareHouse = itemData.wareHouse;
-    rowData.location = itemData.location;
-    rowData.serialNo = itemData.serialNo;
-    rowData.tagNo = itemData.tagNo;
-    rowData.qty = itemData.qty;
-
-    let element = event.element.parentElement.className;
-
-    if (element == 'column1') {
-      if (this.tableLeft[event.toIndex] !== undefined) {
-        this.tableLeft.splice(event.toIndex, 0, rowData);
-      }
-      else {
-        this.tableLeft.push(rowData);
-      }
-      this.tableRight.splice(event.fromIndex, 1);
-    }
-    else if (element == 'column2') {
-      if (this.tableRight[event.toIndex] !== undefined) {
-        this.tableRight.splice(event.toIndex, 0, rowData);
-      }
-      else {
-        this.tableRight.push(rowData);
-      }
-      this.tableLeft.splice(event.fromIndex, 1);
-    }
-  }
-}
-export class Shipment {
-  wareHouse: string = "";
-  location: string = "";
-  serialNo: string = "";
-  tagNo: string = "";
-  qty: string = "";
+  } 
 }
