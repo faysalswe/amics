@@ -7,95 +7,91 @@
     <dxi-item>
         <dxi-location [row]="0" [col]="0" [rowspan]="2"></dxi-location>
         <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
-            <dx-form id="form" [colCount]="1">
+        <div class="pmsearch-container ">
+            <form (submit)="onFormSubmit($event)">
+                <dx-form [(formData)]="shipmentSearch" [colCount]="1" labelMode="floating" labelLocation="left">
+                <dxi-item itemType="group" verticalAlignment="">
                 <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                    <dx-text-box [(value)]="shipmentSearch.er"  [stylingMode]="StylingMode" [labelMode]="LabelMode"
                         [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.er_num">
                     </dx-text-box>
                 </dxi-item>
                 <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                    <dx-text-box [(value)]="shipmentSearch.projectId" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                         [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_Id_num">
                     </dx-text-box>
                 </dxi-item>
                 <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                    <dx-text-box [(value)]="shipmentSearch.projectName" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                         [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_name_num">
                     </dx-text-box>
                 </dxi-item>
                 <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                    <dx-text-box [(value)]="shipmentSearch.budget" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                         [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.budgetAuth_num">
                     </dx-text-box>
                 </dxi-item>
                 <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+                    <dx-text-box [(value)]="shipmentSearch.task" [stylingMode]="StylingMode" [labelMode]="LabelMode"
                         [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.taskDescription_num">
                     </dx-text-box>
                 </dxi-item>
 
-
-
-
-                <dxi-item [colSpan]="1">
-                    <!-- <dx-text-box dataField=" ER" label="ER"></dx-text-box>
-                    <br />
-                    <dx-text-box dataField=" Projectid" label="Projectid"></dx-text-box>
-                    <br />
-                    <dx-text-box dataField="Project Name" label="project Name"></dx-text-box>
-                    <br />
-                    <dx-text-box dataField="Budget Authority" label="Budget Authority"></dx-text-box>
-                    <br />
-                    <dx-text-box dataField="Task Description" label="Task Description"></dx-text-box>
-                    <br /> -->
-                    <dx-button stylingMode="contained" text="search" type="default" width="400">
-                    </dx-button>
-                    <br />
-                    <br />
-                    <h4>Project</h4>
-                    <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
-                        selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="30vh"
-                        [focusStateEnabled]="true" pageLoadMode="scrollBottom">
-                        <div *dxTemplate="let item of 'item'">
-                            <div>
-                                <div class="name">{{ item.itemNumber}}</div>
-                                <div class="description">{{ item.description }}</div>
-                            </div>
-                        </div>
-                    </dx-list>
+                <dxi-item itemType="button" type="default" stylingMode="contained" [buttonOptions]="submitButtonOptions">
                 </dxi-item>
-            </dx-form>
+            </dxi-item>
+              </dx-form>
+            </form>
+          </div>
+          <br />
+
+          <div style="height: calc(100vh - 480px); float: left; margin: 0px; padding: 0px; ">
+            <dx-list #grid id="gridContainer" [dataSource]="shipmtSearchResult" [hoverStateEnabled]="true"
+              selectionMode="single" height="100vh" [focusStateEnabled]="true"
+              pageLoadMode="scrollBottom" (onSelectionChanged)="onSelectionChanged($event)"
+              (keyDown)="onSelectionChanged($event)">
+               <!-- [selectedItemKeys]="[selectedProductId]"  > -->
+              <div *dxTemplate="let item of 'item'">
+                <div>
+                  <!-- <div class="name">{{ item.soMain}}</div> -->
+                  <div class="name">{{ item.project}}</div>
+                  <div class="name">{{ item.name}}</div>
+                </div>
+              </div>
+            </dx-list>
+          </div>
         </div>
     </dxi-item>
+
     <dxi-item>
         <dxi-location [row]="0" [col]="1"></dxi-location>
         <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
-            <dx-form id="form" [colCount]="14" labelMode="floating">
-                <dxi-item [colSpan]="6" *ngDisplayLabel="100" [isRequired]="false">
-                    <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
+            <dx-form  [(formData)]="shipmtSearchSelected" id="form" [colCount]="14" labelMode="floating">
+                <dxi-item [colSpan]="5" *ngDisplayLabel="100" [isRequired]="false">
+                    <dx-text-box [stylingMode]="StylingMode" [(value)]="shipmtSearchSelected.projectName"  [labelMode]="LabelMode"
                         [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.project_name_num">
                     </dx-text-box>
                 </dxi-item>
                 <!-- <dxi-item [colSpan]="6">
                     <dx-text-box dataField="Project Name" label="Project Name"></dx-text-box>
                 </dxi-item> -->
-                <dxi-item itemType="group" [colSpan]="8" [colCount]="12">
+                <!-- <dxi-item itemType="group" [colSpan]="8" [colCount]="12">
                     <dxi-item [colSpan]="9" *ngDisplayLabel="100" [isRequired]="false">
                         <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
                             style="height: 60px;" [elementAttr]="{ class: 'myclass' }"
                             [ngAddLabel]="labelMap.lineNotes_num" #markupVar>
                         </dx-text-box>
-                    </dxi-item>
+                    </dxi-item> -->
                     <!-- <dxi-item dataField="Line Notes" [colSpan]="9" editorType="dxTextArea">
                     </dxi-item> -->
-                    <dxi-item [colSpan]="3">
+                    <!-- <dxi-item [colSpan]="3">
                         <dx-button stylingMode="contained" text="Enlarged View" type="default" width="350">
                         </dx-button>
                     </dxi-item>
-                </dxi-item>
-                <dxi-item itemtype="empty" [colSpan]="14"></dxi-item>
+                </dxi-item> -->
+                <!-- <dxi-item itemtype="empty" [colSpan]="14"></dxi-item> -->
 
-                <dxi-item itemType="group" [colSpan]="6" [colCount]="4">
+                <dxi-item itemType="group" [colSpan]="7" [colCount]="4">
                     <dxi-item [colSpan]="1" editorType="dxCheckBox" dataField="packingList" [label]="{text: ' '}"
                         [editorOptions]="{text: 'Packing List'}">
                     </dxi-item>
@@ -104,33 +100,31 @@
                     </dxi-item>
 
                     <dxi-item [colSpan]="2" *ngDisplayLabel="100" [isRequired]="false">
-                        <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode"
-                            [elementAttr]="{ class: 'myclass' }" [label]="'MDAT OUT'">
+                        <dx-text-box [stylingMode]="StylingMode" [(value)]="shipmtSearchSelected.mdatOut"  [labelMode]="LabelMode"
+                            [elementAttr]="{ class: 'myclass' }" [label]="'Mdat Out'">
                         </dx-text-box>
-                    </dxi-item>
-
-                    <!-- <dxi-item [colSpan]="2">
-                        <dx-text-box dataField="MDAT OUT" label="MDAT OUT"></dx-text-box>
-                    </dxi-item> -->
-                </dxi-item>
-
+                    </dxi-item>                
+                </dxi-item>   
+                <dxi-item itemType="empty" [colSpan]="14"></dxi-item>
 
                 <dxi-item itemType="empty" [colSpan]="8"></dxi-item>
                 <dxi-item itemType="empty" [colSpan]="14"></dxi-item>
-
                 <dxi-item [colSpan]="14">
-                    <dx-data-grid #grid id="gridContainer" [dataSource]="gridList" keyExpr="itemNumber" [columns]="[
-              'Equip Request', 
-              'Line No',
-              'Part Number',
-              'Description',
-              'Mfgr',
-              'Qty']" [hoverStateEnabled]="true" [showBorders]="true" [selectedRowKeys]="[]" height="30vh">
-                        <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
-                        <dxo-selection mode="single"></dxo-selection>
+                    <dx-data-grid id="gridContainer" [dataSource]="shipViewGridList" keyExpr="soLinesId"
+                      [hoverStateEnabled]="true" [showBorders]="true" [selectedRowKeys]="[]" height="35vh" [focusedRowEnabled]="true"                       
+                      [showColumnLines]="true" [showRowLines]="true"
+                      (onSelectionChanged)="onSelectionChangedView($event)" (keyDown)="onSelectionChangedView($event)">
+                      <dxo-scrolling mode="infinite"></dxo-scrolling>
+                      <dxo-sorting mode="multiple"></dxo-sorting>
+                      <dxo-selection mode="single"></dxo-selection>
+                      <dxi-column dataField="soMain"  width="13%" caption="Equip Request"></dxi-column>
+                      <dxi-column dataField="lineNum"  width="6%" caption="Line No"></dxi-column>
+                      <dxi-column dataField="itemnumber"  width="18%" caption="Part Number"></dxi-column>
+                      <dxi-column dataField="description"  width="35%" caption="Description"></dxi-column>
+                      <dxi-column dataField="itemType"  width="15%" caption="Mfgr"></dxi-column>
+                      <dxi-column dataField="quantity"  width="10%" caption="Qty"></dxi-column>                     
                     </dx-data-grid>
-                </dxi-item>
-
+                  </dxi-item>                  
             </dx-form>
         </div>
     </dxi-item>
@@ -138,54 +132,64 @@
         <dxi-location [row]="1" [col]="1"></dxi-location>
         <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
             <dx-form id="form" labelMode="floating">
-                <dxi-item>
+                 <dxi-item> 
                     <div class="tables">
                         <div class="column1">
-                            <dx-data-grid [dataSource]="tableLeft" [height]="200" [showBorders]="true">
-                                <dxo-row-dragging [data]="1" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
-                                <dxo-scrolling mode="virtual"></dxo-scrolling>
-
-                                <dxi-column dataField="wareHouse" dataType="string"></dxi-column>
-                                <dxi-column dataField="location" dataType="string"></dxi-column>
-                                <dxi-column dataField="serialNo" dataType="string"></dxi-column>
-                                <dxi-column dataField="tagNo" dataType="string"></dxi-column>
-                                <dxi-column dataField="qty" dataType="string"></dxi-column>
-                            </dx-data-grid>
+                            <dx-data-grid #shipmtLftTblVar [dataSource]="shipViewLftTblDetails" [height]="230" class="cell-highlighted" [showBorders]="true"
+                            [keyExpr]="['invSerialId', 'invBasicId']" 
+                             [showColumnLines]="true" [showRowLines]="true"
+                             (onEditorPreparing)="onEditorPreparing($event)" (onSelectionChanged)="leftTblSelectionChanged($event)"> 
+                            <dxo-scrolling mode="virtual"></dxo-scrolling>
+                            <dxo-selection [showCheckBoxesMode]="checkboxMode" mode="multiple" ></dxo-selection>    <!--[showCheckBoxesMode]="checkboxMode"                           -->
+                            <dxi-column dataField="warehouse" width="25%" dataType="string" [allowEditing]="false">               
+                            </dxi-column>
+                            <dxi-column dataField="location" width="25%" dataType="string" [allowEditing]="false"></dxi-column>
+                            <dxi-column *ngIf="selectedInvType == 'SERIAL'" width="20%"  dataField="serNo" dataType="string" caption="Serial No"
+                              [allowEditing]="false">
+                            </dxi-column>
+                            <dxi-column *ngIf="selectedInvType == 'SERIAL'" width="15%" dataField="tagNo" dataType="string"
+                              [allowEditing]="false"></dxi-column>
+                             <dxi-column *ngIf="selectedInvType == 'BASIC'" width="20%"  dataField="quantity" [allowEditing]="false"></dxi-column>                 
+                              <dxo-editing mode="batch"  [allowUpdating]="true"></dxo-editing>              
+                             <dxi-column *ngIf="selectedInvType != 'SERIAL'" width="10%" dataField="pickQty" cssClass="pointer-column" [allowEditing]="true">
+                                <dxi-validation-rule type="numeric"></dxi-validation-rule>                                    
+                              </dxi-column>
+                          </dx-data-grid>                         
                         </div>
-                        <div class="separator"></div>
+                        <div class="separator" style="text-align: center;padding-top: 100px;" >
+                            <div>
+                                <dx-button stylingMode="contained" icon="arrowright" type="default" style="width: 40px;
+                                height: 40px;" stylingMode="contained" (onClick)="moveToRight()">
+                                </dx-button> &nbsp;
+                                <dx-button stylingMode="contained" icon="arrowleft" style="margin-top: -10px; width: 40px;
+                                height: 40px;"  type="default" stylingMode="contained" (onClick)="moveToLeft()">
+                                </dx-button> &nbsp;
+                              </div> 
+                        </div>
                         <div class="column2">
-                            <dx-data-grid [dataSource]="tableRight" [height]="200" [showBorders]="true">
-                                <dxo-row-dragging [data]="2" group="tasksGroup" [onAdd]="onAdd"></dxo-row-dragging>
-                                <dxo-scrolling mode="virtual"></dxo-scrolling>
-
-                                <dxi-column dataField="wareHouse" dataType="string"></dxi-column>
-                                <dxi-column dataField="location" dataType="string"></dxi-column>
-                                <dxi-column dataField="serialNo" dataType="string"></dxi-column>
-                                <dxi-column dataField="tagNo" dataType="string"></dxi-column>
-                            </dx-data-grid>
+                           <dx-data-grid #shipmtRighttblGridVar [dataSource]="shipViewRightTblDetails" [height]="230" [showBorders]="true"
+                            [keyExpr]="['invSerialId', 'invBasicId']"
+                            (onSelectionChanged)="rightTblSelectionChanged($event)">
+                            <dxo-scrolling mode="virtual"></dxo-scrolling>              
+                            <dxi-column dataField="warehouse" dataType="string"></dxi-column>
+                            <dxi-column dataField="location" dataType="string"></dxi-column>
+                            <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="serNo" dataType="string"></dxi-column>
+                            <dxi-column *ngIf="selectedInvType == 'SERIAL'" dataField="tagNo" dataType="string"></dxi-column>
+                            <dxi-column *ngIf="selectedInvType != 'SERIAL'" dataField="quantity"></dxi-column>
+                            <dxo-selection mode="multiple"></dxo-selection>
+                          </dx-data-grid>                         
                         </div>
                     </div>
-                </dxi-item>
-
+                </dxi-item> 
             </dx-form>
         </div>
     </dxi-item>
     <dxi-item>
         <dxi-location [row]="2" [col]="0" [colspan]="2"></dxi-location>
         <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
-            <dx-form id="form" [colCount]="5">
-                <dxi-item [colSpan]="1" style="text-align: center;">
-                    <dx-button stylingMode="contained" text="search" type="default">
-                    </dx-button>
-                </dxi-item>
-                <dxi-item [colSpan]="2" style="float: right;">
-                    <dx-button stylingMode="contained" text="Select All" type="default">
-                    </dx-button> &nbsp;
-                    <dx-button stylingMode="contained" text="Clear All" type="default">
-                    </dx-button>
-                </dxi-item>
-                <dxi-item [colSpan]="1" style="text-align: center;">
-                    <dx-button stylingMode="contained" text="Ship" type="default">
+            <dx-form id="form" [colCount]="5">               
+                <dxi-item [colSpan]="4" style="text-align: center;">
+                    <dx-button stylingMode="contained" text="Ship" type="default"  (onClick)="ship()">
                     </dx-button> &nbsp;
                     <dx-button stylingMode="contained" text="Exit" type="default">
                     </dx-button>

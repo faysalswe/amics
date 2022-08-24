@@ -173,6 +173,7 @@ namespace Aims.Core.Services
                     sqlCommand.Parameters.Add(new SqlParameter("@item", itemnumber.Trim()));
                     sqlCommand.Parameters.Add(new SqlParameter("@user", userId.Trim()));
                     sqlCommand.Parameters.Add(new SqlParameter("@solinesid", soLineId.Trim()));
+                    sqlCommand.Parameters.Add(new SqlParameter("@screen", "Shipment"));
 
                     conn.Open();
                     var dataReader = sqlCommand.ExecuteReader();

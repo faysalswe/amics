@@ -3651,89 +3651,163 @@ where list_items.id=@itemsId and itl.createdby = @userId and itl.solinesid=@soLi
 END
 -------------------------------------------------------------------------------------------------------------------------------------
 
-/****** Object:  StoredProcedure [dbo].[amics_sp_api_shipment_ship]    Script Date: 08-08-2022 06:41:52 PM ******/
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_shipment_ship]    Script Date: 23-08-2022 09:13:27 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+CREATE PROCEDURE [dbo].[amics_sp_api_shipment_ship] @user varchar(50)='',@mdatout varchar(50) 
 
-CREATE PROCEDURE [dbo].[amics_sp_api_shipment_ship] @user varchar(50)=''  
-AS  
-BEGIN  
-       declare @packlist varchar(50),@invsoshipid uniqueidentifier,@xfr_transnum int,@prefix varchar(50),@shipvia varchar(50) = '' , 
-		@total_solines smallint ,@counter_solines smallint ,@ship_id uniqueidentifier,@ship_solinesid uniqueidentifier,
-		@ship_invbasicid uniqueidentifier,@ship_invserialid uniqueidentifier,@ship_quantity decimal(18,8),@somain varchar(50),@itemsid uniqueidentifier,
-		@item varchar(50),@descr varchar(150),@line smallint,@invtype varchar(50),@itemtype varchar(50),
-		@translogid uniqueidentifier,@locationsid uniqueidentifier,@warehouse varchar(50),@location varchar(50),@serno varchar(50),@tagno varchar(50),
-		@cost decimal(18,8),@serialcounter smallint,@basiccounter smallint,@today smalldatetime
+AS 
 
-	if @user!=''  
-	begin  
-		set @today=getdate()
-		set @prefix=(select packlist_prefix from list_prefix_suffix)  
-		update list_next_number set translognum=translognum+1  
-		set @xfr_transnum=(select translognum from list_next_number)  
-		update list_next_number set packlist=packlist+1  
-		set @packlist=@prefix+(select cast(packlist as varchar(50)) from list_next_number)  
-		set @invsoshipid=newid()  
-		set @shipvia=(select top 1 isnull(FieldValue,'') from inv_pick_ship  
-			inner join so_lines on inv_pick_ship.solinesid=so_lines.id  
-			inner join so_main on so_lines.somainid =so_main.id  
-			inner join list_dropdowns on so_main.shipviaid=list_dropdowns.id )  
+BEGIN 
+
+       declare @packlist varchar(50),@invsoshipid uniqueidentifier,@xfr_transnum int,@prefix varchar(50),@shipvia varchar(50) = '' ,
+
+              @total_solines smallint ,@counter_solines smallint ,@ship_id uniqueidentifier,@ship_solinesid uniqueidentifier,
+
+              @ship_invbasicid uniqueidentifier,@ship_invserialid uniqueidentifier,@ship_quantity decimal(18,8),@somain varchar(50),@itemsid uniqueidentifier,
+
+              @item varchar(50),@descr varchar(150),@line smallint,@invtype varchar(50),@itemtype varchar(50),
+
+              @translogid uniqueidentifier,@locationsid uniqueidentifier,@warehouse varchar(50),@location varchar(50),@serno varchar(50),@tagno varchar(50),
+
+              @cost decimal(18,8),@serialcounter smallint,@basiccounter smallint,@today smalldatetime
+
+ 
+
+       if @user!='' 
+
+       begin 
+
+              set @today=getdate()
+
+              set @prefix=(select packlist_prefix from list_prefix_suffix) 
+
+              update list_next_number set translognum=translognum+1 
+
+              set @xfr_transnum=(select translognum from list_next_number) 
+
+              update list_next_number set packlist=packlist+1 
+
+              set @packlist=@prefix+(select cast(packlist as varchar(50)) from list_next_number) 
+
+              set @invsoshipid=newid() 
+
+              set @shipvia=(select top 1 isnull(FieldValue,'') from inv_pick_ship 
+
+                     inner join so_lines on inv_pick_ship.solinesid=so_lines.id 
+
+                     inner join so_main on so_lines.somainid =so_main.id 
+
+                     inner join list_dropdowns on so_main.shipviaid=list_dropdowns.id ) 
+
                
-		INSERT INTO inv_soship (packlist, id,shiptoname,shiptoaddress1,shiptoaddress2,shiptoaddress3,shiptoaddress4,shiptoaddress5,shiptoaddress6,  
-			 shipdate, createddate, createdby, invoiced,shipvia,packnote,trackingnum,invoicenote) select @packlist,@invsoshipid,  
-				  'Maryland Procurement Office','9800 Savage Road','','Ft. George G. Meade','MD','20755','USA',  
-				  getdate(),getdate(),@user,0,@shipvia,'','',''  
-				  Insert into inv_pick ( sourcesid, sources_refid, Inv_soshipid,inv_serialid,inv_basicid,prior_quantity,pick_quantity,prior_shipped,Trans_date,createdby)  
-						 Select (select top 1 id from inv_sources where sourceref='SHIPPING'),solinesid,@invsoshipid,invserialid,invbasicid,1,quantity,0,getdate(),@user  
-						 from dbo.inv_pick_ship where not exists  (select id from inv_pick where inv_soshipid=@invsoshipid and invserialid=inv_pick_ship.invserialid )  
-						 and createdby=@user  
-		update inv_serial set quantity=0 where id in (select invserialid from inv_pick_ship where createdby=@user)  
-		UPDATE inv_basic SET inv_basic.quantity = inv_basic.quantity-inv_pick_ship.quantity  
-						 FROM inv_pick_ship, inv_basic WHERE inv_pick_ship.invbasicid = inv_basic.id and inv_pick_ship.createdby=@user  
+
+              INSERT INTO inv_soship (packlist, id,shiptoname,shiptoaddress1,shiptoaddress2,shiptoaddress3,shiptoaddress4,shiptoaddress5,shiptoaddress6, 
+
+                      shipdate, createddate, createdby, invoiced,shipvia,packnote,trackingnum,invoicenote) select @packlist,@invsoshipid, 
+
+                             'Maryland Procurement Office','9800 Savage Road','','Ft. George G. Meade','MD','20755','USA', 
+
+                             getdate(),getdate(),@user,0,@shipvia,'',@mdatout,''
+
+                             Insert into inv_pick ( sourcesid, sources_refid, Inv_soshipid,inv_serialid,inv_basicid,prior_quantity,pick_quantity,prior_shipped,Trans_date,createdby) 
+
+                                          Select (select top 1 id from inv_sources where sourceref='SHIPPING'),solinesid,@invsoshipid,invserialid,invbasicid,1,quantity,0,getdate(),@user 
+
+                                          from dbo.inv_pick_ship where not exists  (select id from inv_pick where inv_soshipid=@invsoshipid and invserialid=inv_pick_ship.invserialid ) 
+
+                                          and createdby=@user 
+
+              update inv_serial set quantity=0 where id in (select invserialid from inv_pick_ship where createdby=@user) 
+
+              UPDATE inv_basic SET inv_basic.quantity = inv_basic.quantity-inv_pick_ship.quantity 
+
+                                          FROM inv_pick_ship, inv_basic WHERE inv_pick_ship.invbasicid = inv_basic.id and inv_pick_ship.createdby=@user 
+
    
-		insert into translog (id,itemsid,trans,transnum,transdate,transqty,itemnumber,description,itemtype,warehouse,location,reason,  
-								source,ref,invtype,notes,createdby,revision,createddate,modifieddate,location2,user2,cost)  
-					select distinct newid(),itemsid,'SHIP',@xfr_transnum,@today,count(inv_serial.itemsid),itemnumber,description,  
-					isnull(itemtype,'') as itemtype,warehouse,location,'SHIP','',@packlist,'SERIAL','',@user,'',@today,@today,'',  
-					(select somain from so_main where id = (select somainid from so_lines where id=inv_pick_ship.solinesid)),inv_serial.cost
-					from inv_pick_ship inner join inv_serial on inv_pick_ship.invserialid =inv_serial.id  
-					left join list_locations on inv_serial.locationsid=list_locations.id  
-					left join list_warehouses on list_locations.warehousesid=list_warehouses.id  
-					left join list_items on inv_serial.itemsid=list_items.id  
-					left join list_itemtypes on list_items.itemtypeid=list_itemtypes.id  
-							where  inv_pick_ship.createdby=@user
-							   group by itemsid,itemnumber,description,itemtype,warehouse,location,solinesid,inv_serial.cost 
 
-		insert into translogsn (id,translogid, serno,tagno,createdby,location,warehouse,cost)  
-					select  newid(),(select id from translog where itemsid=so_lines.itemsid  and transnum=@xfr_transnum and user2=so_main.somain and cost=inv_serial.cost
-					 and location=list_locations.location),  
-					serno,tagno,@user,location,warehouse,inv_serial.cost from inv_pick_ship  
-					inner join so_lines on inv_pick_ship.solinesid =so_lines.id 
-					inner join so_main on so_lines.somainid=so_main.id 
-					inner join inv_serial on inv_pick_ship.invserialid=inv_serial.id  
-					inner join list_locations on inv_serial.locationsid=list_locations.id  
-					inner join list_warehouses on list_locations.warehousesid=list_warehouses.id  
+              insert into translog (id,itemsid,trans,transnum,transdate,transqty,itemnumber,description,itemtype,warehouse,location,reason, 
 
-		insert into translog (id,itemsid,trans,transnum,transdate,transqty,itemnumber,description,itemtype,warehouse,location,reason,  
-				  source,ref,invtype,notes,createdby,revision,createddate,modifieddate,location2,user1,user2,cost)  
-				  select distinct newid(),itemsid,'SHIP',@xfr_transnum,@today,inv_pick_ship.quantity,itemnumber,description,itemtype,  
-				  warehouse,location,'SHIP','',@packlist,'BASIC','',@user,'',@today,@today,'',  
-				  (select linenum from so_lines where id=inv_pick_ship.solinesid),
-				  (select somain from so_main where id = (select somainid from so_lines where id=inv_pick_ship.solinesid)),inv_basic.cost
-				  from inv_pick_ship  
-				  inner join inv_basic on inv_pick_ship.invbasicid=inv_basic.id  
-				  left join list_items on inv_basic.itemsid=list_items.id  
-				  left join list_itemtypes on list_items.itemtypeid=list_itemtypes.id  
-				  left join list_locations on inv_basic.locationsid=list_locations.id  
-				  left join list_warehouses on list_locations.warehousesid=list_warehouses.id  
-				  where inv_pick_ship.createdby=@user  
-		delete inv_pick_ship where createdby =@user 
-		select @packlist 
-		end 
+                                                       source,ref,invtype,notes,createdby,revision,createddate,modifieddate,location2,user2,cost) 
+
+                                  select distinct newid(),itemsid,'SHIP',@xfr_transnum,@today,count(inv_serial.itemsid),itemnumber,description, 
+
+                                  isnull(itemtype,'') as itemtype,warehouse,location,'SHIP',@mdatout,@packlist,'SERIAL','',@user,'',@today,@today,'', 
+
+                                  (select somain from so_main where id = (select somainid from so_lines where id=inv_pick_ship.solinesid)),inv_serial.cost
+
+                                  from inv_pick_ship inner join inv_serial on inv_pick_ship.invserialid =inv_serial.id 
+
+                                  left join list_locations on inv_serial.locationsid=list_locations.id 
+
+                                  left join list_warehouses on list_locations.warehousesid=list_warehouses.id 
+
+                                  left join list_items on inv_serial.itemsid=list_items.id 
+
+                                  left join list_itemtypes on list_items.itemtypeid=list_itemtypes.id 
+
+                                                where  inv_pick_ship.createdby=@user
+
+                                                   group by itemsid,itemnumber,description,itemtype,warehouse,location,solinesid,inv_serial.cost
+
+ 
+
+              insert into translogsn (id,translogid, serno,tagno,createdby,location,warehouse,cost) 
+
+                                  select  newid(),(select id from translog where itemsid=so_lines.itemsid  and transnum=@xfr_transnum and user2=so_main.somain and cost=inv_serial.cost
+
+                                  and location=list_locations.location), 
+
+                                  serno,tagno,@user,location,warehouse,inv_serial.cost from inv_pick_ship 
+
+                                  inner join so_lines on inv_pick_ship.solinesid =so_lines.id
+
+                                  inner join so_main on so_lines.somainid=so_main.id
+
+                                  inner join inv_serial on inv_pick_ship.invserialid=inv_serial.id 
+
+                                  inner join list_locations on inv_serial.locationsid=list_locations.id 
+
+                                  inner join list_warehouses on list_locations.warehousesid=list_warehouses.id 
+
+ 
+
+              insert into translog (id,itemsid,trans,transnum,transdate,transqty,itemnumber,description,itemtype,warehouse,location,reason, 
+
+                             source,ref,invtype,notes,createdby,revision,createddate,modifieddate,location2,user1,user2,cost) 
+
+                             select distinct newid(),itemsid,'SHIP',@xfr_transnum,@today,inv_pick_ship.quantity,itemnumber,description,itemtype, 
+
+                             warehouse,location,'SHIP',@mdatout,@packlist,'BASIC','',@user,'',@today,@today,'', 
+
+                             (select linenum from so_lines where id=inv_pick_ship.solinesid),
+
+                             (select somain from so_main where id = (select somainid from so_lines where id=inv_pick_ship.solinesid)),inv_basic.cost
+
+                             from inv_pick_ship 
+
+                             inner join inv_basic on inv_pick_ship.invbasicid=inv_basic.id 
+
+                             left join list_items on inv_basic.itemsid=list_items.id 
+
+                             left join list_itemtypes on list_items.itemtypeid=list_itemtypes.id 
+
+                             left join list_locations on inv_basic.locationsid=list_locations.id 
+
+                             left join list_warehouses on list_locations.warehousesid=list_warehouses.id 
+
+                             where inv_pick_ship.createdby=@user 
+
+              delete inv_pick_ship where createdby =@user
+
+              select @packlist
+
+              end
+
 END
-
+GO
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
 
