@@ -5597,3 +5597,123 @@ END
 
 -------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_loadcontract]    Script Date: 25-08-2022 05:01:17 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[amics_sp_api_loadcontract]   
+@contract varchar(50)='',
+@project varchar(50)=''
+AS   
+BEGIN   
+
+if (@contract != '' or @contract is not null) and (@project != '' or @project is not null)
+	begin    
+	 select distinct list_contracts.id,list_contracts.contractnum,list_contracts.description,list_contracts.markup1,list_contracts.markup2,
+	 list_contracts.createdby,list_contracts.createddate from list_contracts left outer join list_projects on list_contracts.id = list_projects.contractid 
+	 where contractnum like '%'+ @contract +'%' and project like '%'+ @project +'%' order by contractnum asc
+	 end
+else if (@contract != '' or @contract is not null) and (@project = '' or @project is null)
+	begin	
+	 select distinct list_contracts.id,list_contracts.contractnum,list_contracts.description,list_contracts.markup1,list_contracts.markup2,
+	 list_contracts.createdby,list_contracts.createddate from list_contracts left outer join list_projects on list_contracts.id = list_projects.contractid 
+	 where contractnum like '%'+ @Contract +'%' order by contractnum asc
+	 end
+else if (@contract = '' or @contract is null) and (@project != '' or @project is not null)
+	begin	
+	select distinct list_contracts.id,list_contracts.contractnum,list_contracts.description,list_contracts.markup1,list_contracts.markup2,
+	list_contracts.createdby,list_contracts.createddate from list_contracts left outer join list_projects on list_contracts.id = list_projects.contractid
+	where project like '%'+ @Project +'%'order by contractnum asc
+	end
+else
+	begin
+	select distinct list_contracts.id,list_contracts.contractnum,list_contracts.description,list_contracts.markup1,list_contracts.markup2,
+	list_contracts.createdby,list_contracts.createddate from list_contracts left outer join list_projects on list_contracts.id = list_projects.contractid 
+	order by contractnum asc
+	end
+END
+GO
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_load_projects]    Script Date: 24-08-2022 01:14:33 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_api_load_projects]   
+@contractid varchar(50)
+AS   
+BEGIN  
+
+select list_projects.id,project,name,manager,contact1,contact2,notes,address1,address2,address3,address4,address5,address6,address7,shipnotes,
+contractid,isnull(list_warehouses.warehouse,'') as warehouse from list_projects 
+left outer join list_warehouses on list_warehouses.id = list_projects.warehousesid 
+where contractid=@contractid  order by list_projects.project asc
+
+END
+GO
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_contracts]    Script Date: 24-08-2022 01:14:33 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_api_maintain_contracts]   
+@id uniqueidentifier=null,
+@contractnum varchar(50),
+@description varchar(50),
+@markup1 decimal(18,8),
+@markup2 decimal(18,8),
+@createdby varchar(50),
+@actionFlag smallint
+AS   
+BEGIN   
+
+if (@actionFlag = 1)                 
+    insert into list_contracts (id,contractnum,description,markup1,markup2,createdby,createddate) values (NEWID(),@contractnum,@description,
+	@markup1,@markup2,@createdby,GETDATE())
+else if (@actionFlag = 2)   
+    update list_contracts set contractnum=@contractnum,description=@description,markup1=@markup1,markup2=@markup2 where id=@id
+else if (@actionFlag = 3)
+    delete from list_contracts where id=@id
+
+END
+GO
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/****** Object:  StoredProcedure [dbo].[amics_sp_api_maintain_projects]    Script Date: 24-08-2022 01:14:33 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[amics_sp_api_maintain_projects]   
+@id uniqueidentifier=null,
+@contractid uniqueidentifier=null,
+@project varchar(50),
+@name varchar(50),
+@createdby varchar(50),
+@actionFlag smallint
+AS   
+BEGIN   
+
+if (@actionFlag = 1)                 
+    insert into list_projects (id,project,name,createdby,createddate,contractid) values (NEWID(),@project,@name,@createdby,GETDATE(),@contractid)
+else if (@actionFlag = 2)   
+    update list_projects set project=@project,name=@name,contractid=@contractid where id=@id
+else if (@actionFlag = 3)
+    delete from list_projects where id=@id
+
+END
+GO
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
