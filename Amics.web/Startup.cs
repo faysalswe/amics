@@ -4,24 +4,11 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-
-//using DevExpress.AspNetCore;
-//using DevExpress.AspNetCore.Reporting;
-//using DevExpress.XtraReports.Web.Extensions;
-//using Microsoft.AspNetCore.Builder;
-//using Microsoft.AspNetCore.Hosting;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.SpaServices.AngularCli;
-//using Microsoft.Extensions.Configuration;
-//using Microsoft.Extensions.DependencyInjection;
-//using Microsoft.Extensions.Hosting;
-//using Microsoft.Extensions.Logging;
-//using DocumentViewerApp.Services;
-
+using Microsoft.OpenApi.Models; 
 using DevExpress.AspNetCore;
 using DevExpress.AspNetCore.Reporting;
 using DevExpress.XtraReports.Web.Extensions;
+using DevExpress.XtraReports.Services;
 using Amics.web.Services;
 using System;
 using DevExpress.DashboardAspNetCore;
@@ -82,7 +69,17 @@ namespace Amics.web
             // Use the AddMvcCore (or AddMvc) method to add MVC services. 080522
             services.AddMvcCore(); // 080522
                                    // services.AddScoped<ReportStorageWebExtension, CustomReportStorageWebExtension>();// 080522
-            services.AddScoped<ReportStorageWebExtension, CustomReportStorageWebExtension>();
+                                   //services.AddScoped<ReportStorageWebExtension, CustomReportStorageWebExtension>();
+            services.AddScoped<IReportProvider, CustomReportProvider>();
+
+            services.ConfigureReportingServices(configurator => {
+                configurator.ConfigureReportDesigner(designerConfigurator => {
+                    designerConfigurator.RegisterDataSourceWizardConfigFileConnectionStringsProvider();
+                });
+                configurator.ConfigureWebDocumentViewer(viewerConfigurator => {
+                    viewerConfigurator.UseCachedReportSourceBuilder();
+                });
+            });
 
             //var builder = WebApplication.CreateBuilder(args);
             //IFileProvider? fileProvider = builder.Environment.ContentRootFileProvider;
@@ -97,16 +94,7 @@ namespace Amics.web
                      builder.WithHeaders("Content-Type");
                  });
              });
-
-            //services.AddScoped<DashboardConfigurator>((IServiceProvider serviceProvider) => {
-            //    DashboardConfigurator configurator = new DashboardConfigurator();
-            //    configurator.SetDashboardStorage(new DashboardFileStorage(FileProvider.GetFileInfo("App_Data/Dashboards").PhysicalPath));
-            //    //configurator.SetDataSourceStorage(CreateDataSourceStorage());
-            //    configurator.SetConnectionStringsProvider(new DashboardConnectionStringsProvider(Configuration));
-            //    //configurator.SetConnectionStringsProvider(new MyDataSourceWizardConnectionStringsProvider());
-            //    //configurator.ConfigureDataConnection += Configurator_ConfigureDataConnection;
-            //    return configurator;
-            //});
+                        
 
             services.AddScoped<DashboardConfigurator>((IServiceProvider serviceProvider) => {
                 DashboardConfigurator configurator = new DashboardConfigurator();
@@ -116,15 +104,7 @@ namespace Amics.web
                 configurator.ConfigureDataConnection += Configurator_ConfigureDataConnection;
                 return configurator;
             });
-
-            services.ConfigureReportingServices(configurator => {
-                configurator.ConfigureReportDesigner(designerConfigurator => {
-                    designerConfigurator.RegisterDataSourceWizardConfigFileConnectionStringsProvider();
-                });
-                configurator.ConfigureWebDocumentViewer(viewerConfigurator => {
-                    viewerConfigurator.UseCachedReportSourceBuilder();
-                });
-            });
+                      
 
             services.AddCors(options => {
                 options.AddPolicy("AllowCorsPolicy", builder => {
@@ -179,9 +159,15 @@ namespace Amics.web
             }
 
             app.UseRouting();
+           
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+            });
+
 
             app.UseCors("CorsPolicy");
-
             app.UseEndpoints(endpoints => {
                 // Maps the dashboard route.
                 EndpointRouteBuilderExtension.MapDashboardRoute(endpoints, "api/dashboard", "DefaultDashboard");
