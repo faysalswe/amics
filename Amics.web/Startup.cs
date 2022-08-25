@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting; 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models; 
+using Microsoft.OpenApi.Models;
 using DevExpress.AspNetCore;
 using DevExpress.AspNetCore.Reporting;
 using DevExpress.XtraReports.Web.Extensions;
@@ -35,7 +35,7 @@ namespace Amics.web
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {       
+        {
 
             services.AddSwaggerGen(options =>
             {
@@ -60,8 +60,8 @@ namespace Amics.web
             });
             services.AddControllersWithViews();
             services.AddControllers();
-            services.AddHealthChecks();            
-             
+            services.AddHealthChecks();
+
             services.AddMvc().AddNewtonsoftJson();
 
             // Register reporting services in an application's dependency injection container. 080522
@@ -94,7 +94,7 @@ namespace Amics.web
                      builder.WithHeaders("Content-Type");
                  });
              });
-                        
+
 
             services.AddScoped<DashboardConfigurator>((IServiceProvider serviceProvider) => {
                 DashboardConfigurator configurator = new DashboardConfigurator();
@@ -104,7 +104,7 @@ namespace Amics.web
                 configurator.ConfigureDataConnection += Configurator_ConfigureDataConnection;
                 return configurator;
             });
-                      
+
 
             services.AddCors(options => {
                 options.AddPolicy("AllowCorsPolicy", builder => {
@@ -138,7 +138,7 @@ namespace Amics.web
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Amics 2.0"); 
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Amics 2.0");
                 });
             }
             else
@@ -147,7 +147,7 @@ namespace Amics.web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             // Initialize reporting services. 080522
@@ -159,7 +159,7 @@ namespace Amics.web
             }
 
             app.UseRouting();
-           
+
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(
                     name: "default",
@@ -177,7 +177,7 @@ namespace Amics.web
 
             app.UseAuthentication();
             app.UseAuthorization();
-          
+
             app.UseCors("AllowCorsPolicy");
             app.UseEndpoints(endpoints =>
             {
@@ -234,5 +234,5 @@ namespace Amics.web
             }
         }
     }
-     
+
 }

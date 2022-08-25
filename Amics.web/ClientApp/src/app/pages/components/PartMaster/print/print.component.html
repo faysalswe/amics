@@ -1,0 +1,54 @@
+<dx-popup
+      [width]="450"
+      [height]="450"
+      [showTitle]="true"
+      title="Print"
+      [dragEnabled]="false"
+      [closeOnOutsideClick]="false"
+      [showCloseButton]="true"
+      container=".dx-viewport"
+      [(visible)]="printPopup"
+      (onHiding)="HidingPrint()"
+    >
+    <br>
+    <br>
+      
+      <!-- <dxi-item itemType="button" type="default" stylingMode="contained" style="justify-content: center;"
+              [buttonOptions]="submitButtonOptions">
+       </dxi-item> -->
+       <div class="row" style="justify-content: center">
+        <dx-button
+          stylingMode="contained"
+          text="Partmaster And BOM"
+          width="190"
+          type="default"
+          (onClick)="populateReport('RepxReport')"
+        >
+        </dx-button>
+      </div>
+      <br>
+      <br>
+      <div class="row" style="justify-content: center">
+        <dx-button
+          stylingMode="contained"
+          text="Transaction Log"
+          width="190"
+          type="default"
+          (onClick)="populateReport('Translog')"
+        >
+        </dx-button>
+      </div>
+      <br>
+      <br>
+      <div class="row" style="justify-content: center">
+        <dx-button
+          stylingMode="contained"
+          text="exit"
+          width="190"
+          type="default"
+        >
+        </dx-button>
+      </div>
+      
+
+    </dx-popup>

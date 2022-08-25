@@ -12,7 +12,7 @@
   <dx-sortable filter=".dx-tab" [data]="tabs" itemOrientation="horizontal" dragDirection="horizontal"
     (onDragStart)="onTabDragStart($event)" (onReorder)="onTabDrop($event)">
     <dx-tab-panel [dataSource]="tabs" itemTitleTemplate="title" itemTemplate="item"
-      [deferRendering]="false" [showNavButtons]="true" [repaintChangesOnly]="true" [selectedIndex]="selectedIndex">
+      [deferRendering]="false" [showNavButtons]="true" [repaintChangesOnly]="true" [(selectedIndex)]="selectedIndex">
       <div *dxTemplate="let content of 'title'">
         <span>{{ content.title }}</span><i class="dx-icon dx-icon-close" (click)="closeButtonHandler(content)"></i>
       </div>

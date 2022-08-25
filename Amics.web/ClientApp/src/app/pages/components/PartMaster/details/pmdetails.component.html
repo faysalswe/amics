@@ -447,6 +447,12 @@
     ></app-viewSerial>
   </div>
   <div>
+    <app-print *ngIf="popupPrintVisible"
+    (viewPrintPopup)="hidePrintPopup()"
+    (viewReport)="goToReport($event)"
+    ></app-print>
+  </div>
+  <div>
     <dx-popup
       [width]="400"
       [height]="500"
@@ -479,5 +485,6 @@
     ></dx-toast>
   </div>
 </div>
+
 
 

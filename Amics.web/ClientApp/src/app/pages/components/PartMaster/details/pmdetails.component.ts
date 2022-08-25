@@ -49,6 +49,10 @@ import { isNumber, isNull } from 'util';
 import { BomComponent } from '../bom/bom.component';
 import { PoComponent } from '../po/po.component';
 import { NotesComponent } from '../notes/notes.component';
+import { Router } from '@angular/router';
+import { TabService } from 'src/app/pages/services/tab.service';
+import { TabInfo } from "../../../models/tabInfo";
+import { report } from 'process';
 @Component({
   selector: 'app-pmdetails',
   templateUrl: './pmdetails.component.html',
@@ -79,7 +83,8 @@ export class PMDetailsComponent implements AfterViewInit {
   secUserId = 'E02310D5-227F-4DB8-8B42-C6AE3A3CB60B';
   StylingMode: string = TextboxStyle.StylingMode;
   LabelMode: string = TextboxStyle.LabelMode;
-  bomDefaultRow : number = 2;
+  bomDefaultRow: number = 2;
+  newGuidId = "00000000-0000-0000-0000-000000000000";
 
   warehouses: Warehouse[] = [];
   warehouseNames: string[] = [];
@@ -116,6 +121,7 @@ export class PMDetailsComponent implements AfterViewInit {
   toastMessage = '';
   popupVLVisible = false;
   popupVSVisible = false;
+  popupPrintVisible = false;
   lookupItemNumbers: pmItemSearchResult[] = [];
   selectedRowIndex = -1;
   editRowKey!: number;
@@ -128,12 +134,14 @@ export class PMDetailsComponent implements AfterViewInit {
 
   fSearchFG!: FormGroup;
   crudStatus: boolean = false;
-  
+
   constructor(
     private searchService: SearchService,
     private pmdataTransfer: PartMasterDataTransService,
     private pmService: PartMasterService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    private tabService: TabService
   ) {
 
     this.labelMap = LabelMap;
@@ -223,7 +231,7 @@ export class PMDetailsComponent implements AfterViewInit {
       this.partNumberVar?.instance.focus();
     }, 0);
   }
-  
+
   ngOnInit(): void {
 
     this.searchService.getItemClass('', '').subscribe((l) => {
@@ -285,6 +293,11 @@ export class PMDetailsComponent implements AfterViewInit {
 
     this.pmdataTransfer.itemSelectedChild$.subscribe((child) => {
       this.selectedChild = child;
+      setTimeout(() => {
+        if (this.selectedChild == this.childType.BOM) {
+          this.bomComp.AddBomLines();
+        }
+      }, 500);
     });
 
     this.pmdataTransfer.selectedCRUD$.subscribe((crud) => {
@@ -299,13 +312,13 @@ export class PMDetailsComponent implements AfterViewInit {
         this.crudStatus = true;
 
         setTimeout(() => {
-          if(this.selectedChild == this.childType.BOM){
+          if (this.selectedChild == this.childType.BOM) {
             this.bomComp.AddBomLines();
           }
-          else if(this.selectedChild == this.childType.PO){
+          else if (this.selectedChild == this.childType.PO) {
             this.poComp.AddPoLines();
           }
-          else if(this.selectedChild == this.childType.Notes){
+          else if (this.selectedChild == this.childType.Notes) {
             this.notesComp.AddNotesLines();
           }
         }, 500);
@@ -315,13 +328,13 @@ export class PMDetailsComponent implements AfterViewInit {
         this.crudStatus = false;
 
         setTimeout(() => {
-          if(this.selectedChild == this.childType.BOM){
+          if (this.selectedChild == this.childType.BOM) {
             this.bomComp.AddBomLines();
           }
-          else if(this.selectedChild == this.childType.PO){
+          else if (this.selectedChild == this.childType.PO) {
             this.poComp.AddPoLines();
           }
-          else if(this.selectedChild == this.childType.Notes){
+          else if (this.selectedChild == this.childType.Notes) {
             this.notesComp.AddNotesLines();
           }
         }, 500);
@@ -348,6 +361,7 @@ export class PMDetailsComponent implements AfterViewInit {
         this.popupVSVisible = true;
         //this.getSerial();
       } else if (popUp === PopUpAction.Print) {
+        this.popupPrintVisible = true;
       }
     });
     this.pmdataTransfer.copyToNewSelected$.subscribe(
@@ -386,22 +400,22 @@ export class PMDetailsComponent implements AfterViewInit {
 
   updateWarehouseSelection(location: string = '', onload: boolean = false) {
     if (!this.pmDetails.warehouse || !location) {
-        this.validLocationNames = [];
-        this.pmDetails.location = '';
-        return;
+      this.validLocationNames = [];
+      this.pmDetails.location = '';
+      return;
     }
 
     let wid = this.groupedWarehouses[this.pmDetails.warehouse];
     if (!!wid) {
-        let locWid=this.groupedLocations[wid[0].id];
-        if (!!locWid) {
-            let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
-            this.validLocationNames = locations.map(l => l.location);
-        }
-        else{
-            this.pmDetails.location ='';
-            alert("There is no location for " + this.pmDetails.warehouse);
-        }
+      let locWid = this.groupedLocations[wid[0].id];
+      if (!!locWid) {
+        let locations: WarehouseLocation[] = this.groupedLocations[wid[0].id];
+        this.validLocationNames = locations.map(l => l.location);
+      }
+      else {
+        this.pmDetails.location = '';
+        alert("There is no location for " + this.pmDetails.warehouse);
+      }
     } else { this.validLocationNames = []; }
   }
 
@@ -497,13 +511,13 @@ export class PMDetailsComponent implements AfterViewInit {
     useSubmitBehavior: true,
   };
   onSave() {
-    //debugger
+
     document.getElementById('pmDetailsSubmit')?.click();
 
     if (!this.isFormValid()) {
       return;
     }
-     
+
 
     let bomDetails_VisibleRows: pmBomDetails[] = [];
 
@@ -535,7 +549,7 @@ export class PMDetailsComponent implements AfterViewInit {
 
     this.pmService.addorUpdatePMDetails(this.pmDetails, uomid).subscribe(
       (x) => {
-        //debugger
+        debugger
         if (this.crudStatus) {
           var boms = this.copyToNewBomGridDetails(x.message);
           this.pmService.AddUpdateDeleteBomDetails(boms).subscribe(
@@ -556,7 +570,7 @@ export class PMDetailsComponent implements AfterViewInit {
           );
         } else {
           var boms = this.convertToBomGridDetails(x.message);
-          console.log("boms "+boms.length);
+          console.log("boms " + boms.length);
 
           this.pmService.AddUpdateDeleteBomDetails(boms).subscribe(
             (b) => {
@@ -587,7 +601,7 @@ export class PMDetailsComponent implements AfterViewInit {
   }
 
   convertToBomGridDetails(parentId: string) {
-    //debugger
+    debugger
     let bomGridDetails: pmBomGridDetails[] = [];
 
     if (this.bomDetails.length == 0 && this.originalBomDetails.length == 0) {
@@ -596,7 +610,7 @@ export class PMDetailsComponent implements AfterViewInit {
 
     // find inserted
     let newBoms = this.bomDetails.filter(
-      (b) => b.id == '00000000-0000-0000-0000-000000000000'
+      (b) => b.id == this.newGuidId
     );
 
     if (!!newBoms && newBoms.length > 0) {
@@ -610,18 +624,18 @@ export class PMDetailsComponent implements AfterViewInit {
         newBom.ref = newBoms[_i].ref;
         newBom.findNo = newBoms[_i].findNo;
         newBom.comments = newBoms[_i].comments;
-        newBom.createdby = this.authService.currentUser.toString();
+        newBom.createdby = this.authService.currentUser();
 
         bomGridDetails.push(newBom);
       }
     }
 
     let updatedBoms = this.bomDetails.filter(
-      (b) => b.id != '00000000-0000-0000-0000-000000000000' && b.id != undefined
+      (b) => b.id != this.newGuidId && b.id != undefined
     );
 
     //find Updated and deleted
-    if(updatedBoms && updatedBoms.length > 0){
+    if (updatedBoms && updatedBoms.length > 0) {
       for (var _i = 0, boms = updatedBoms; _i < boms.length; _i++) {
         var bom = new pmBomGridDetails();
         var originalBom = updatedBoms.find(
@@ -640,20 +654,24 @@ export class PMDetailsComponent implements AfterViewInit {
         bom.ref = boms[_i].ref;
         bom.findNo = boms[_i].findNo;
         bom.comments = boms[_i].comments;
-        bom.createdby = this.authService.currentUser.toString();
+        bom.createdby = this.authService.currentUser();
         bomGridDetails.push(bom);
       }
     }
-    
+
     console.log("update/delete  " + bomGridDetails.length);
     return bomGridDetails;
   }
 
   copyToNewBomGridDetails(parentId: string) {
-    //debugger
+    debugger
     let bomGridDetails: pmBomGridDetails[] = [];
 
-    for (var _i = 0, boms = this.bomDetails; _i < boms.length; _i++) {
+    let newBoms = this.bomDetails.filter(
+      (b) => b.id != undefined
+    );
+
+    for (var _i = 0, boms = newBoms; _i < boms.length; _i++) {
       var bom = new pmBomGridDetails();
       bom.actionFlag = BomAction.Add;
       bom.parent_ItemsId = parentId;
@@ -663,7 +681,7 @@ export class PMDetailsComponent implements AfterViewInit {
       bom.ref = boms[_i].ref;
       bom.findNo = boms[_i].findNo;
       bom.comments = boms[_i].comments;
-      bom.createdby = this.authService.currentUser.toString();
+      bom.createdby = this.authService.currentUser();
       bomGridDetails.push(bom);
     }
 
@@ -689,7 +707,7 @@ export class PMDetailsComponent implements AfterViewInit {
     this.bomDetails[toIndex].lineNum = toIndex + 1;
   }
   onDelete() {
-    //debugger
+    debugger
     this.pmService
       .deletePMDetails(this.pmDetails.itemNumber, this.pmDetails.rev)
       .subscribe((x) => {
@@ -760,7 +778,7 @@ export class PMDetailsComponent implements AfterViewInit {
     }
     return null;
   }
-  
+
   addRow() {
     this.dataGrid.instance.addRow();
     this.dataGrid.instance.deselectAll();
@@ -817,18 +835,38 @@ export class PMDetailsComponent implements AfterViewInit {
     console.log('Name', form.value.f2PartDesc);
   }
 
-  OnPNSearchShow(){
+  OnPNSearchShow() {
     console.log('OnPNSearchShow');
     //this.f2partNumberVar.nativeElement.focus();
     console.log('OnPNSearchShow2');
   }
 
-    hideSerial(){
-      this.popupVSVisible = false;
+  hideSerial() {
+    this.popupVSVisible = false;
+  }
+
+  hideLocation() {
+    this.popupVLVisible = false
+  }
+
+  hidePrintPopup() {
+    this.popupPrintVisible = false;
+  }
+
+  goToReport(reportName: string) {
+    this.popupPrintVisible = false;
+    localStorage.setItem('reportUrl', reportName);
+    let tabToRemove: TabInfo = new TabInfo("ReportItems", ComponentType.ReportItemslist);
+    let removeTab = this.tabService.tabs.find(x => x.type == tabToRemove.type);
+    const index = this.tabService.tabs.indexOf(removeTab);
+    if (index != -1) {
+      this.tabService.removeTab(removeTab);
     }
 
-    hideLocation(){
-      this.popupVLVisible = false
-    }
+    //this.router.navigate(['/reportitemslist'], { queryParams: { reportUrl: reportName } });
+
+    this.tabService.addTab("ReportItems", "ReportItemslist", "ReportItems", ComponentType.ReportItemslist);
+
+  }
 
 }

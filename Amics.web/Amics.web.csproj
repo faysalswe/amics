@@ -38,6 +38,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="PredefinedReports\ReportsFactory.cs" />
+    <Compile Remove="Services\CustomReportStorageWebExtension.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="ClientApp\dist\app-name\3rdpartylicenses.txt" />
     <None Remove="ClientApp\dist\app-name\dxiconsmaterial.4fbd12445891f41b.woff2" />
     <None Remove="ClientApp\dist\app-name\dxiconsmaterial.c736714c16d6fe9a.woff" />
@@ -61,19 +66,21 @@
     <None Remove="ClientApp\dist\app-name\runtime.8d04fb1dda83bc0a.js" />
     <None Remove="ClientApp\dist\app-name\styles.c9a54c1d1cd81c42.css" />
     <None Remove="PredefinedReports\ListItems.vsrepx" />
+    <None Remove="PredefinedReports\ListItemsRpt.vsrepx" />
+    <None Remove="PredefinedReports\ListWarehouses.vsrepx" />
     <None Remove="PredefinedReports\Translog.vsrepx" />
-    <None Remove="Reports\RepxReport.vsrepx" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="PredefinedReports\ListItems.vsrepx" />
+    <EmbeddedResource Include="PredefinedReports\ListItemsRpt.vsrepx" />
+    <EmbeddedResource Include="PredefinedReports\ListWarehouses.vsrepx" />
     <EmbeddedResource Include="PredefinedReports\RepxReport.vsrepx" />
     <EmbeddedResource Include="PredefinedReports\Translog.vsrepx" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Reports\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -82,6 +89,18 @@
     </Compile>
     <Compile Update="PredefinedReports\ListItems.Designer.cs">
       <DependentUpon>ListItems.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="PredefinedReports\ListItemsRpt.cs">
+      <DependentUpon>ListItemsRpt.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="PredefinedReports\ListItemsRpt.Designer.cs">
+      <DependentUpon>ListItemsRpt.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="PredefinedReports\ListWarehouses.cs">
+      <DependentUpon>ListWarehouses.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="PredefinedReports\ListWarehouses.Designer.cs">
+      <DependentUpon>ListWarehouses.vsrepx</DependentUpon>
     </Compile>
     <Compile Update="PredefinedReports\RepxReport.cs">
       <DependentUpon>RepxReport.vsrepx</DependentUpon>
