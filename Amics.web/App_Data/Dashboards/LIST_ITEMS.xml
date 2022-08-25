@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard>
+  <Title Text="New Dashboard" />
+  <DataSources>
+    <SqlDataSource Name="amics_sp_api_search_items" ComponentName="sqlDataSource1">
+      <Connection Name="localhost_amicsperaton_Connection" FromAppConfig="true" />
+      <Query Type="StoredProcQuery" Name="amics_sp_api_search_items">
+        <Parameter Name="@item" Type="System.String"></Parameter>
+        <Parameter Name="@rev" Type="System.String"></Parameter>
+        <Parameter Name="@description" Type="System.String"></Parameter>
+        <Parameter Name="@itemtype" Type="System.String"></Parameter>
+        <Parameter Name="@itemclass" Type="System.String"></Parameter>
+        <Parameter Name="@itemcode" Type="System.String"></Parameter>
+        <Parameter Name="@warehouse" Type="System.String"></Parameter>
+        <Parameter Name="@location" Type="System.String"></Parameter>
+        <Parameter Name="@user1" Type="System.String"></Parameter>
+        <Parameter Name="@user2" Type="System.String"></Parameter>
+        <Parameter Name="@user3" Type="System.String"></Parameter>
+        <Parameter Name="@user4" Type="System.String"></Parameter>
+        <Parameter Name="@user5" Type="System.String"></Parameter>
+        <Parameter Name="@user6" Type="System.String"></Parameter>
+        <Parameter Name="@user7" Type="System.String"></Parameter>
+        <Parameter Name="@user8" Type="System.String"></Parameter>
+        <ProcName>amics_sp_api_search_items</ProcName>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Grid ComponentName="gridDashboardItem1" Name="Grid 1" DataSource="sqlDataSource1" DataMember="amics_sp_api_search_items">
+      <DataItems>
+        <Dimension DataMember="description" DefaultId="DataItem0" />
+        <Dimension DataMember="itemnumber" DefaultId="DataItem1" />
+        <Dimension DataMember="uomref" DefaultId="DataItem2" />
+        <Measure DataMember="cost" DefaultId="DataItem3" />
+      </DataItems>
+      <GridColumns>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem1" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem2" />
+        </GridDimensionColumn>
+        <GridMeasureColumn>
+          <Measure DefaultId="DataItem3" />
+        </GridMeasureColumn>
+      </GridColumns>
+      <GridOptions />
+      <ColumnFilterOptions />
+    </Grid>
+    <Pie ComponentName="pieDashboardItem1" Name="Pies 1" DataSource="sqlDataSource1" DataMember="amics_sp_api_search_items">
+      <DataItems>
+        <Measure DataMember="cost" SummaryType="Count" DefaultId="DataItem0" />
+        <Dimension DataMember="uomref" DefaultId="DataItem1" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Values>
+        <Value DefaultId="DataItem0" />
+      </Values>
+    </Pie>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup>
+      <LayoutGroup Orientation="Vertical">
+        <LayoutItem DashboardItem="gridDashboardItem1" />
+        <LayoutItem DashboardItem="pieDashboardItem1" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>
