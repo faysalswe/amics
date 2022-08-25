@@ -235,47 +235,4 @@ namespace Amics.web
         }
     }
 
-
-
-    // ...
-
-    //public class MyDataSourceWizardConnectionStringsProvider : IDataSourceWizardConnectionStringsProvider
-    //    {
-    //        public Dictionary<string, string> GetConnectionDescriptions()
-    //        {
-    //            Dictionary<string, string> connections = new Dictionary<string, string>();
-
-    //            // Customize the loaded connections list.  
-    //            //connections.Add("jsonUrlConnection", "JSON URL Connection");
-    //            connections.Add("msSqlConnection", "localhost_amicsperaton_Connection");
-    //            return connections;
-    //        }
-
-    //        public DataConnectionParametersBase GetDataConnectionParameters(string name)
-    //        {
-    //            // Return custom connection parameters for the custom connection.
-    //            if (name == "jsonUrlConnection")
-    //            {
-    //                return new JsonSourceConnectionParameters()
-    //                {
-    //                    JsonSource = new UriJsonSource(
-    //                        new Uri("https://raw.githubusercontent.com/DevExpress-Examples/DataSources/master/JSON/customers.json"))
-    //                };
-    //            }
-    //            else if (name == "msSqlConnection")
-    //            {
-    //                //return new MsSqlConnectionParameters("localhost", "Northwind", "", "", MsSqlAuthorizationType.Windows);
-    //                // XpoProvider=MSSqlServer;data source=amics-us.c5yec4ayreah.us-east-2.rds.amazonaws.com,2019;user id=amicsmaster2;password=AmicsAt2017;initial catalog=amicsperaton;Persist Security Info=true
-    //                return new MsSqlConnectionParameters("amics-us.c5yec4ayreah.us-east-2.rds.amazonaws.com,2019", "amicsperaton", "amicsmaster2", "AmicsAt2017", MsSqlAuthorizationType.SqlServer); 
-    //                //return new MsSqlConnectionParameters("localhost", "Northwind", "", "", MsSqlAuthorizationType.Windows);
-    //            }
-    //            throw new System.Exception("The connection string is undefined.");
-    //        }
-
-    //        Dictionary<string, string> IDataSourceWizardConnectionStringsProvider.GetConnectionDescriptions()
-    //        {
-    //            throw new NotImplementedException();
-    //        }
-    //    }
-
 }
