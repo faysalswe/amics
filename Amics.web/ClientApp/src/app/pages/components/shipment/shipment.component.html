@@ -156,7 +156,7 @@
                               </dxi-column>
                           </dx-data-grid>                         
                         </div>
-                        <div class="separator" style="text-align: center;padding-top: 100px;" >
+                        <div class="separator" style="text-align: center;padding-top: 85px;margin-left: 10px;margin-right: 10px;" >
                             <div>
                                 <dx-button stylingMode="contained" icon="arrowright" type="default" style="width: 40px;
                                 height: 40px;" stylingMode="contained" (onClick)="moveToRight()">
@@ -185,10 +185,10 @@
         </div>
     </dxi-item>
     <dxi-item>
-        <dxi-location [row]="2" [col]="0" [colspan]="2"></dxi-location>
+        <dxi-location [row]="2" [col]="0" [colspan]="3"></dxi-location>
         <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
-            <dx-form id="form" [colCount]="5">               
-                <dxi-item [colSpan]="4" style="text-align: center;">
+            <dx-form id="form" [colCount]="3">               
+                <dxi-item [colSpan]="2" style="text-align: right;">
                     <dx-button stylingMode="contained" text="Ship" type="default"  (onClick)="ship()">
                     </dx-button> &nbsp;
                     <dx-button stylingMode="contained" text="Exit" type="default">
