@@ -54,7 +54,7 @@
             <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
               selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="height: 52vh"
               [focusStateEnabled]="true" (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom"
-              [(disabled)]="disabled" (keyDown)="onSelectionChanged($event)">
+              [(disabled)]="disabled" >
               <div *dxTemplate="let item of 'item'">
                 <div>
                   <div class="name">{{ item.mdatNum}}</div>

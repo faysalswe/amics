@@ -72,7 +72,6 @@ export class MdatComponent implements OnInit {
 
     });
     this.mdatDataTransService.selectedItemForPMDetails$.subscribe((item) => {
-      debugger
       this.mdatDetails = item;
     });
     
@@ -107,6 +106,7 @@ export class MdatComponent implements OnInit {
     debugger
     if(this.crudStatus){
       this.mdatDetails.actionFlag = BomAction.Add;
+      this.mdatDetails.status='DE8D9796-8E5D-49DC-A5D1-531A21F9925C';
     }
     else{
       this.mdatDetails.actionFlag = BomAction.Update

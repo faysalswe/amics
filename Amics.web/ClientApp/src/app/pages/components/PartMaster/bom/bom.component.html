@@ -141,7 +141,7 @@
         [height]="370" [focusStateEnabled]="true"
         (onSelectionChanged)="onSelectionChanged($event)" 
         (dblclick)="dblclick($event)"
-        (keyDown)="onSelectionChanged($event)" sc>
+        (keyDown)="onSelectionChanged($event)" >
         <div *dxTemplate="let item of 'item'">
           <div>
             <div class="name" style="font-weight:bold;">{{ item.itemNumber}}</div>
