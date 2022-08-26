@@ -59,8 +59,9 @@ namespace Amics.web
                 });
             });
             services.AddControllersWithViews();
-            services.AddControllers();
             services.AddHealthChecks();
+
+            services.AddControllers(); //Dashboard
 
             services.AddMvc().AddNewtonsoftJson();
 
@@ -79,6 +80,20 @@ namespace Amics.web
                 configurator.ConfigureWebDocumentViewer(viewerConfigurator => {
                     viewerConfigurator.UseCachedReportSourceBuilder();
                 });
+            });
+
+            services.AddCors(options => {
+                options.AddPolicy("AllowCorsPolicy", builder => {
+                    // Allow all ports on local host.
+                    builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+                    builder.WithHeaders("Content-Type");
+                });
+            });
+
+            // In production, the Angular files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
             });
 
             //var builder = WebApplication.CreateBuilder(args);
@@ -106,23 +121,6 @@ namespace Amics.web
             });
 
 
-            services.AddCors(options => {
-                options.AddPolicy("AllowCorsPolicy", builder => {
-                    // Allow all ports on local host.
-                    builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
-                    builder.WithHeaders("Content-Type");
-                    builder.AllowAnyOrigin();
-                    builder.AllowAnyMethod();
-                    builder.WithHeaders("Content-Type");
-                });
-            });
-
-            // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
-
 
         }
 
@@ -130,7 +128,7 @@ namespace Amics.web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             DevExpress.XtraReports.Configuration.Settings.Default.UserDesignerOptions.DataBindingMode = DevExpress.XtraReports.UI.DataBindingMode.Expressions;
-            DevExpress.XtraReports.Web.ClientControls.LoggerService.Initialize(new MyLoggerService());
+            //DevExpress.XtraReports.Web.ClientControls.LoggerService.Initialize(new MyLoggerService());
 
             if (env.IsDevelopment())
             {
@@ -160,19 +158,12 @@ namespace Amics.web
 
             app.UseRouting();
 
+            app.UseDevExpressControls();
+
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-            });
-
-
-            app.UseCors("CorsPolicy");
-            app.UseEndpoints(endpoints => {
-                // Maps the dashboard route.
-                EndpointRouteBuilderExtension.MapDashboardRoute(endpoints, "api/dashboard", "DefaultDashboard");
-                // Requires CORS policies.
-                endpoints.MapControllers().RequireCors("CorsPolicy");
             });
 
             app.UseAuthentication();
@@ -185,7 +176,22 @@ namespace Amics.web
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapHealthChecks("/health");
+
+                //EndpointRouteBuilderExtension.MapDashboardRoute(endpoints, "api/dashboard", "DefaultDashboard");
+                //endpoints.MapControllers().RequireCors("AllowCorsPolicy");
+
             });
+
+
+            //app.UseCors("CorsPolicy");
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    // Maps the dashboard route.
+            //    EndpointRouteBuilderExtension.MapDashboardRoute(endpoints, "api/dashboard", "DefaultDashboard");
+            //    // Requires CORS policies.
+            //    endpoints.MapControllers().RequireCors("CorsPolicy"); 
+            //});
+
 
             app.UseSpa(spa =>
             {
@@ -236,3 +242,4 @@ namespace Amics.web
     }
 
 }
+
