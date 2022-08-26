@@ -39,7 +39,7 @@ export class ReportItemslistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+    debugger
     this.Param = "?item=a";
     this.Param += "&rev=-";
     this.Param += "&description=";

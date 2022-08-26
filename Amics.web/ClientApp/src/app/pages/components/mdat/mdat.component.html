@@ -31,12 +31,12 @@
           </dxi-item>
           <br>
           <dxi-item itemType="button" type="default" stylingMode="contained" style="justify-content: center;"
-              [buttonOptions]="submitButtonOptions">
-            </dxi-item>
+            [buttonOptions]="submitButtonOptions">
+          </dxi-item>
 
           <dxi-item [colSpan]="1">
 
-            <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="mdatNum"
+            <!-- <dx-data-grid #grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="mdatNum"
               [hoverStateEnabled]="true" [showBorders]="true"
               [selectedRowKeys]="[]" height="50vh" (onSelectionChanged)="onSelectionChanged($event)">
               <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
@@ -49,7 +49,19 @@
               <dxo-pager [visible]="true" [allowedPageSizes]="[10, 20, 30]" displayMode="compact"
                 [showPageSizeSelector]="false" [showInfo]="true" [showNavigationButtons]="true">
               </dxo-pager>
-            </dx-data-grid>
+            </dx-data-grid> -->
+
+            <dx-list #grid id="gridContainer" [dataSource]="pmSearchResults" [hoverStateEnabled]="true"
+              selectionMode="single" [selectedItemKeys]="[selectedItemNumber]" height="height: 52vh"
+              [focusStateEnabled]="true" (onSelectionChanged)="onSelectionChanged($event)" pageLoadMode="scrollBottom"
+              [(disabled)]="disabled" (keyDown)="onSelectionChanged($event)">
+              <div *dxTemplate="let item of 'item'">
+                <div>
+                  <div class="name">{{ item.mdatNum}}</div>
+                  <div class="description" style="font-style: italic;font-size: small;">{{ item.description }}</div>
+                </div>
+              </div>
+            </dx-list>
           </dxi-item>
         </dx-form>
       </form>
@@ -59,20 +71,20 @@
   <dxi-item>
     <dxi-location [row]="0" [col]="1"></dxi-location>
     <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
-      <dx-form id="form" [colCount]="4" labelMode="floating">
+      <dx-form id="form" [(formData)]="mdatDetails" [colCount]="4" labelMode="floating">
 
         <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
-            [label]="'MDAT Number'">
+          <dx-text-box [(value)]="mdatDetails.mdatNum" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+            [elementAttr]="{ class: 'myclass' }" [label]="'MDAT Number'">
           </dx-text-box>
         </dxi-item>
         <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
-            [ngAddLabel]="labelMap.er_num">
+          <dx-text-box [(value)]="mdatDetails.somain" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+            [elementAttr]="{ class: 'myclass' }" [ngAddLabel]="labelMap.er_num">
           </dx-text-box>
         </dxi-item>
         <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
+          <dx-text-box [(value)]="mdatDetails.description" [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
             [label]="'ER desc'">
           </dx-text-box>
         </dxi-item>
@@ -82,24 +94,24 @@
           </dx-select-box>
         </dxi-item>
         <dxi-item [colSpan]="1" *ngDisplayLabel="100" [isRequired]="false">
-          <dx-text-box [stylingMode]="StylingMode" [labelMode]="LabelMode" [elementAttr]="{ class: 'myclass' }"
-            [label]="'Packlist Number'">
-          </dx-text-box>
+          <dx-number-box [(value)]="mdatDetails.packlistnum" [stylingMode]="StylingMode" [labelMode]="LabelMode"
+            [elementAttr]="{ class: 'myclass' }" [label]="'Packlist Number'">
+          </dx-number-box>
         </dxi-item>
         <dxi-item [colSpan]="1">
-          <dx-date-box [label]="'Submitted Date'" placeholder="Select..." [stylingMode]="StylingMode"
+          <dx-date-box [value]="mdatDetails.submitted_date" [label]="'Submitted Date'" placeholder="Select..." [stylingMode]="StylingMode"
             [labelMode]="LabelMode" style="margin-top: 10px"></dx-date-box>
         </dxi-item>
         <dxi-item [colSpan]="1">
-          <dx-date-box [label]="'Approve Date'" placeholder="Select..." [stylingMode]="StylingMode"
+          <dx-date-box [value]="mdatDetails.approved_date" [label]="'Approve Date'" placeholder="Select..." [stylingMode]="StylingMode"
             [labelMode]="LabelMode" style="margin-top: 10px"></dx-date-box>
         </dxi-item>
         <dxi-item [colSpan]="1">
-          <dx-date-box [label]="'Shipped Date'" placeholder="Select..." [stylingMode]="StylingMode"
+          <dx-date-box [value]="mdatDetails.shipped_date" [label]="'Shipped Date'" placeholder="Select..." [stylingMode]="StylingMode"
             [labelMode]="LabelMode" style="margin-top: 10px"></dx-date-box>
         </dxi-item>
         <dxi-item [colSpan]="1">
-          <dx-date-box [label]="'Cancelled Date'" placeholder="Select..." [stylingMode]="StylingMode"
+          <dx-date-box [value]="mdatDetails.cancelled_date" [label]="'Cancelled Date'" placeholder="Select..." [stylingMode]="StylingMode"
             [labelMode]="LabelMode" style="margin-top: 10px"></dx-date-box>
         </dxi-item>
       </dx-form>
@@ -108,20 +120,45 @@
   <dxi-item>
     <dxi-location [row]="1" [col]="1"></dxi-location>
     <div *dxTemplate class="details-container content-block dx-card responsive-paddings">
-      <dx-data-grid id="gridContainer" [dataSource]="customers" keyExpr="ID" height="40vh" [columns]="[
-          'Line',
-          'MDAT Number',
-          'Status',
-          'Submitted Date',
-          'Approved Date',
-          'Shipped Date'
-        ]" [showBorders]="true">
+      <dx-data-grid id="gridContainer" [dataSource]="pmSearchResults" keyExpr="mdatNum" height="52vh" [showBorders]="true">
+        <dxi-column dataField="" caption="Line"></dxi-column>
+        <dxi-column dataField="mdatNum" caption="MDAT Number"></dxi-column>
+        <dxi-column dataField="status" caption="Status"></dxi-column>
+        <dxi-column dataField="submitted_date" caption="Submitted Date"></dxi-column>
+        <dxi-column dataField="approved_date" caption="Approved Date"></dxi-column>
+        <dxi-column dataField="shipped_date" caption="Shipped Date"></dxi-column>
       </dx-data-grid>
     </div>
   </dxi-item>
 </dx-responsive-box>
 <div class="col" style="text-align: center">
   <div class="details-container content-block dx-card responsive-paddings">
-    <dx-button stylingMode="contained" text="Submit" type="default">
-    </dx-button>
+    <!-- <dx-button stylingMode="contained" text="Submit" type="default">
+    </dx-button> -->
+    <dx-box direction="row" width="100%">
+      <dxi-item [ratio]="1.0" style="align-items:center">
+        <dxi-item itemType="group" [colCount]="3">
+          <dx-button stylingMode="contained" text="Add" type="default"
+            (onClick)="mdatCRUDActionsSelectionChanged('Add')" [visible]="!saveExitVisible">
+          </dx-button> &nbsp;
+          <dx-button stylingMode="contained" text="Edit" type="default"
+            (onClick)="mdatCRUDActionsSelectionChanged('Edit')" [visible]="!saveExitVisible">
+          </dx-button> &nbsp;
+          <dx-button stylingMode="contained" text="Delete" type="default"
+            (onClick)="mdatCRUDActionsSelectionChanged('Delete')" [visible]="!saveExitVisible">
+          </dx-button> &nbsp;
+          <dx-button stylingMode="contained" text="Save" type="default"
+            (onClick)="mdatCRUDActionsSelectionChanged('Save')" [visible]="saveExitVisible">
+          </dx-button> &nbsp;
+          <dx-button stylingMode="contained" text="Cancel" type="default"
+            (onClick)="mdatCRUDActionsSelectionChanged('Cancel')" [visible]="saveExitVisible">
+          </dx-button>
+        </dxi-item>
+
+        <dx-button-group [items]="pmActions2" stylingMode="contained" type="default" selectionMode="single"
+          keyExpr="text" [visible]="saveExitVisible2" (onItemClick)="mdatCRUDActionsSelectionChanged($event)">
+        </dx-button-group>
+      </dxi-item>
+    </dx-box>
+
   </div>

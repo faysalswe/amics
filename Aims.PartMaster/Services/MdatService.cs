@@ -14,8 +14,8 @@ namespace Aims.Core.Services
 {
     public interface IMdatService {
         List<LstMdat> MdatOutSearch(string mdatNum, string er, string packlistNum, string status);
-        LstMdat MdatOutViewDetails(string mdatNum);        
-        string MdatOutUpdateDetails(LstMdat lstMdatOut);
+        LstMdat MdatOutViewDetails(string mdatNum);
+        LstMessage MdatOutUpdateDetails(LstMdat lstMdatOut);
     }
     public class MdatService: IMdatService
     {
@@ -57,7 +57,10 @@ namespace Aims.Core.Services
 
                         mdat.MdatNum = dataReader["mdat_num"].ToString();
                         mdat.Description = dataReader["description"].ToString();
-                        
+                        //mdat.Submitted_date = dataReader["submitted_date"].ToString();
+                        //mdat.Approved_date = dataReader["approved_date"].ToString();
+                        //mdat.Shipped_date = dataReader["shipped_date"].ToString();
+
                         lstMdatOut.Add(mdat);
                     }
                     dataReader.Close();
@@ -99,6 +102,7 @@ namespace Aims.Core.Services
                     var dataReader = sqlCommand.ExecuteReader();
                     if (dataReader.Read())
                     {
+                        //lstMdatOut.Id = new Guid(dataReader["id"].ToString());
                         lstMdatOut.MdatNum = dataReader["mdat_num"].ToString();
                         lstMdatOut.Somain = dataReader["somain"].ToString();
                         if (dataReader["packlistnum"].ToString() != "")
@@ -128,7 +132,7 @@ namespace Aims.Core.Services
         /// API Service to insert/update/delete Mdat details in the table inv_mdat_out
         /// </summary>
         /// <param name="LstMdat">LstMdat</param>          
-        public string MdatOutUpdateDetails(LstMdat lstMdatOut)
+        public LstMessage MdatOutUpdateDetails(LstMdat lstMdatOut)
         {
             string strMsg = "";
            
@@ -171,7 +175,7 @@ namespace Aims.Core.Services
                     conn.Close();
                 }
             }
-            return strMsg;
+            return new LstMessage() { Message = strMsg }; ;
         }
     }
 }

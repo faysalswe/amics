@@ -52,7 +52,7 @@ namespace Amics.Api.Controllers
         /// </summary>
         /// <param name="LstMdat">LstMdat</param>         
         [HttpPost, Route("UpdateMdatOutDetails")]
-        public string UpdateMdatOutDetails([FromBody] LstMdat lstMdat)
+        public LstMessage UpdateMdatOutDetails([FromBody] LstMdat lstMdat)
         {
             var mdatUpdateResult = _mdatService.MdatOutUpdateDetails(lstMdat);
 

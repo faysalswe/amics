@@ -1,4 +1,5 @@
 import { Guid } from "guid-typescript";
+import { BomAction } from "./pmBomGridDetails";
 
 export class MdatSearch {
     mdatNum: string = '';
@@ -10,17 +11,17 @@ export class MdatSearch {
 }
 
 export class mdatItemSearchResult {
-    id: Guid = Guid.createEmpty();
-    actionFlag: string = '';
+    id: string = Guid.EMPTY;
+    actionFlag: BomAction = BomAction.Add;
     mdatNum: string = '';
     somain: string = '';
     description: string = '';
     status: string = '';
-    packlistnum: string = '';
-    submitted_date: string = '';
-    approved_date: number = 0;
-    shipped_date: string = '';
-    cancelled_date: string = '';
+    packlistnum: number = 0;
+    submitted_date: Date = new Date();
+    approved_date: Date = new Date();
+    shipped_date: Date = new Date();
+    cancelled_date: Date = new Date();
     createdby: string = '';
-    shippingId: Guid = Guid.createEmpty();
+    shippingId: string = Guid.EMPTY;
 }

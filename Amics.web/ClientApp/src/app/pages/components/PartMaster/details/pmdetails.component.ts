@@ -549,7 +549,6 @@ export class PMDetailsComponent implements AfterViewInit {
 
     this.pmService.addorUpdatePMDetails(this.pmDetails, uomid).subscribe(
       (x) => {
-        debugger
         if (this.crudStatus) {
           var boms = this.copyToNewBomGridDetails(x.message);
           this.pmService.AddUpdateDeleteBomDetails(boms).subscribe(
@@ -601,7 +600,6 @@ export class PMDetailsComponent implements AfterViewInit {
   }
 
   convertToBomGridDetails(parentId: string) {
-    debugger
     let bomGridDetails: pmBomGridDetails[] = [];
 
     if (this.bomDetails.length == 0 && this.originalBomDetails.length == 0) {
@@ -664,7 +662,6 @@ export class PMDetailsComponent implements AfterViewInit {
   }
 
   copyToNewBomGridDetails(parentId: string) {
-    debugger
     let bomGridDetails: pmBomGridDetails[] = [];
 
     let newBoms = this.bomDetails.filter(
@@ -707,7 +704,6 @@ export class PMDetailsComponent implements AfterViewInit {
     this.bomDetails[toIndex].lineNum = toIndex + 1;
   }
   onDelete() {
-    debugger
     this.pmService
       .deletePMDetails(this.pmDetails.itemNumber, this.pmDetails.rev)
       .subscribe((x) => {
