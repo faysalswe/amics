@@ -21,8 +21,7 @@ export class ShipmentComponent {
   @ViewChild('shipmtLftTblVar', { static: false })  shipmtLftTblVar!: DxDataGridComponent;  
   shipmentSearch: ShipmentSearch = new ShipmentSearch();
   shipmtSearchSelected: ShipmentSelectedItem = new ShipmentSelectedItem();
-  //shipmentViewResult: ShipmentViewResult = new ShipmentViewResult();
-  
+      
   shipmtSearchResult: ShipmentSearchResult[] = [];
   shipViewGridList: ShipmentViewResult[] = [];
   shipViewLftTblDetails: ShipmentViewResult[] = [];
@@ -219,6 +218,7 @@ export class ShipmentComponent {
     let action = 1;
     let shipmentVisibleRows: ShipmentViewResult[] = [];
     let pickQtyVar=[];
+    
     if (this.selectedRowView.invType === 'BASIC'){
         let chgLocRows = this.shipmtLftTblVar.instance.getVisibleRows();              
                 
@@ -344,14 +344,18 @@ export class ShipmentComponent {
         this.shipmtService.UpdateShipment("admin", this.shipmtSearchSelected.mdatOut).subscribe(r => { 
           console.log(r);
          // this.getDetails(); 
-      });       
-      
-      alert("Successfully Shipped");
-      this.shipmtService.DeleteInvPickShip("admin").subscribe(r => { console.log(r) });
-      setTimeout(() => {
-        this.getDetails();   
-       }, 500);
+
+         alert("Successfully Shipped");
+         this.shipmtService.DeleteInvPickShip("admin").subscribe(r => { console.log(r) });
+         setTimeout(() => {
+           this.getDetails();   
+          }, 1000);
+      });      
       }
     }
   } 
+
+  onExit(){    
+    window.location.href = "/..."; 
+  }
 }
