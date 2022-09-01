@@ -58,5 +58,21 @@ namespace Amics.Api.Controllers
 
             return mdatUpdateResult;
         }
+
+        [HttpGet, Route("Somain")]
+        public IList<LstErLookup> GetSomainLookUp([FromQuery] string searchSomain, [FromQuery] string somainId, [FromQuery] string statusId)
+        {
+            var resultSomain = _mdatService.SomainLookup(searchSomain, somainId, statusId);
+
+            return resultSomain;
+        }
+
+        [HttpGet, Route("Status")]
+        public IList<LstMdatStatusLookup> GetStatusLookUp([FromQuery] string searchStatus, [FromQuery] string statusId)
+        {
+            var resultStatus = _mdatService.StatusLookup(searchStatus, statusId);
+
+            return resultStatus;
+        }
     }
 }

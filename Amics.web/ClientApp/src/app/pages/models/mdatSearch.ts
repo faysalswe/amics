@@ -18,10 +18,20 @@ export class mdatItemSearchResult {
     description: string = '';
     status: string = '';
     packlistnum: number = 0;
-    submitted_date: Date = new Date();
-    approved_date: Date = new Date();
+    submitted_date: Date;
+    approved_date: Date;
     shipped_date: Date = new Date();
-    cancelled_date: Date = new Date();
+    cancelled_date: Date;
     createdby: string = '';
     shippingId: string = Guid.EMPTY;
+}
+
+export interface SomainLookUp {
+    id: string;
+    somain: string;
+}
+
+export interface StatusLookUp {
+    id: string;
+    status: string;
 }

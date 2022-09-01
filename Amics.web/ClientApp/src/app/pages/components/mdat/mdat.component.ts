@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import notify from 'devextreme/ui/notify';
 import { ComponentType } from '../../models/componentType';
 import { LabelMap } from '../../models/Label';
-import { mdatItemSearchResult, MdatSearch } from '../../models/mdatSearch';
+import { mdatItemSearchResult, MdatSearch, SomainLookUp, StatusLookUp } from '../../models/mdatSearch';
 import { BomAction } from '../../models/pmBomGridDetails';
 import { CRUD } from '../../models/pmChildType';
 import { pmCRUDActionType } from '../../models/pmCRUDActionType';
@@ -40,6 +40,8 @@ export class MdatComponent implements OnInit {
   LabelMode: string = TextboxStyle.LabelMode;
   labelMap: typeof LabelMap;
 
+  erList: SomainLookUp[] = [];
+  statusList: StatusLookUp[] = [];
   selectedItem: any;
   saveExitVisible = false;
   pmActions1: any[] = [{ "text": "Add" }, { "text": "Edit" }, { "text": "Delete" }];
@@ -72,9 +74,31 @@ export class MdatComponent implements OnInit {
 
     });
     this.mdatDataTransService.selectedItemForPMDetails$.subscribe((item) => {
+      
       this.mdatDetails = item;
     });
+    this.mdatService.getSomainLookUp('','', '8D3DBEC0-9E7F-490B-8B49-27F7DF81A74E').subscribe((result) => {
+      this.erList = result.slice(0, 2000);
+    })
+    this.mdatService.getStatusLookUp('','').subscribe((result) => {
+      
+      this.statusList = result;
+    })
     
+  }
+
+  dateHandling(e: any, type: string){
+    switch(type){
+      case 'submitted_date':
+        this.mdatDetails.submitted_date = e?.value;
+        break;
+      case 'approved_date':
+        this.mdatDetails.approved_date = e?.value;
+        break;
+      case 'cancelled_date':
+        this.mdatDetails.cancelled_date = e?.value;
+        break;
+    }
   }
 
   onSelectionChanged(e: any) {
@@ -93,6 +117,7 @@ export class MdatComponent implements OnInit {
 
   search() {
     this.mdatService.getMdatSearchResults(this.mdatSearchInfo).subscribe(r => {
+      debugger
       this.pmSearchResults = r;
       if (this.pmSearchResults.length !== 0) {
         this.mdatDataTransService.selectedItemChanged(this.pmSearchResults[0], this.componentType);
@@ -105,8 +130,7 @@ export class MdatComponent implements OnInit {
   onSave(){
     debugger
     if(this.crudStatus){
-      this.mdatDetails.actionFlag = BomAction.Add;
-      this.mdatDetails.status='DE8D9796-8E5D-49DC-A5D1-531A21F9925C';
+      this.mdatDetails.actionFlag = BomAction.Add;  
     }
     else{
       this.mdatDetails.actionFlag = BomAction.Update

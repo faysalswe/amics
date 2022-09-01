@@ -16,6 +16,9 @@ namespace Aims.Core.Services
         List<LstMdat> MdatOutSearch(string mdatNum, string er, string packlistNum, string status);
         LstMdat MdatOutViewDetails(string mdatNum);
         LstMessage MdatOutUpdateDetails(LstMdat lstMdatOut);
+        List<LstErLookup> SomainLookup(string searchSomain, string somainId, string statusId);
+
+        List<LstMdatStatusLookup> StatusLookup(string searchStatus, string statusId);
     }
     public class MdatService: IMdatService
     {
@@ -55,11 +58,13 @@ namespace Aims.Core.Services
                     {
                         LstMdat mdat = new LstMdat();
 
+                        mdat.Id = new Guid(dataReader["id"].ToString());
                         mdat.MdatNum = dataReader["mdat_num"].ToString();
+                        mdat.Status = dataReader["status"].ToString();  
                         mdat.Description = dataReader["description"].ToString();
-                        //mdat.Submitted_date = dataReader["submitted_date"].ToString();
-                        //mdat.Approved_date = dataReader["approved_date"].ToString();
-                        //mdat.Shipped_date = dataReader["shipped_date"].ToString();
+                        mdat.Submitted_date = dataReader["submitted_date"].ToString();
+                        mdat.Approved_date = dataReader["approved_date"].ToString();
+                        mdat.Shipped_date = dataReader["shipped_date"].ToString();
 
                         lstMdatOut.Add(mdat);
                     }
@@ -102,7 +107,7 @@ namespace Aims.Core.Services
                     var dataReader = sqlCommand.ExecuteReader();
                     if (dataReader.Read())
                     {
-                        //lstMdatOut.Id = new Guid(dataReader["id"].ToString());
+                        lstMdatOut.Id = new Guid(dataReader["id"].ToString());
                         lstMdatOut.MdatNum = dataReader["mdat_num"].ToString();
                         lstMdatOut.Somain = dataReader["somain"].ToString();
                         if (dataReader["packlistnum"].ToString() != "")
@@ -112,6 +117,7 @@ namespace Aims.Core.Services
                         lstMdatOut.Submitted_date = dataReader["submitted_date"].ToString();
                         lstMdatOut.Approved_date = dataReader["approved_date"].ToString();
                         lstMdatOut.Shipped_date = dataReader["shipped_date"].ToString();
+                        lstMdatOut.Cancelled_date = dataReader["cancelled_date"].ToString();
 
                     }
                     dataReader.Close();
@@ -176,6 +182,69 @@ namespace Aims.Core.Services
                 }
             }
             return new LstMessage() { Message = strMsg }; ;
+        }
+
+        public List<LstErLookup> SomainLookup(string searchSomain, string somainId, string statusId)
+        {
+            var soId = string.IsNullOrEmpty(somainId) ? Guid.Empty : new Guid(somainId.ToString());
+            var status = string.IsNullOrEmpty(statusId) ? Guid.Empty : new Guid(statusId.ToString());
+            var name = string.IsNullOrEmpty(searchSomain) ? string.Empty : searchSomain;
+
+            var whresult = _amicsDbContext.ListErLookup
+                .FromSqlRaw($"exec amics_sp_api_somain_lookup @somainid ='{soId}',@somain = '{name}', @statusid = '{status}'")
+                .ToList();
+
+            return whresult;
+        }
+
+        public List<LstMdatStatusLookup> StatusLookup(string searchStatus, string statusId)
+        {
+            var stId = string.IsNullOrEmpty(statusId) ? Guid.Empty : new Guid(statusId.ToString());
+            var name = string.IsNullOrEmpty(searchStatus) ? string.Empty : searchStatus;
+
+
+            List<LstMdatStatusLookup> lstMdatStatus = new List<LstMdatStatusLookup>();
+
+            using (var conn = _amicsDbContext.Database.GetDbConnection())
+            using (var sqlCommand = _amicsDbContext.Database.GetDbConnection().CreateCommand())
+            {
+                try
+                {
+                    sqlCommand.CommandText = "amics_sp_api_mdat_list_status_lookup";
+                    conn.Open();
+
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.Parameters.Add(new SqlParameter("@statusid", stId));
+                    sqlCommand.Parameters.Add(new SqlParameter("@status", name));
+
+                    var dataReader = sqlCommand.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        LstMdatStatusLookup status = new LstMdatStatusLookup();
+
+                        status.Id = new Guid(dataReader["id"].ToString());
+                        status.Status = dataReader["status"].ToString();
+
+                        lstMdatStatus.Add(status);
+                    }
+                    dataReader.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                finally
+                {
+                    sqlCommand.Dispose();
+                    conn.Close();
+                }
+            }
+            return lstMdatStatus;
+
+            //var whresult = _amicsDbContext.ListErLookup
+            //    .FromSqlRaw($"exec amics_sp_api_mdat_list_status_lookup @statusid ='{stId}',@status = '{name}'")
+            //    .ToList();
+
+            //return whresult;
         }
     }
 }

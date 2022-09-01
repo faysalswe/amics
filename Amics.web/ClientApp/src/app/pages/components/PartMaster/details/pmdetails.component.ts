@@ -243,6 +243,7 @@ export class PMDetailsComponent implements AfterViewInit {
     });
 
     this.searchService.getItemType('', '').subscribe((l) => {
+      debugger
       this.itemTypeList = l;
     });
     this.searchService.getUom('', '').subscribe((l) => {

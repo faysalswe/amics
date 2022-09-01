@@ -49,5 +49,11 @@ namespace Aims.Core.Models
         public string SoMain { get; set; }      
     }
 
+    public class LstMdatStatusLookup
+    {
+        public Guid Id { get; set; }
+        public string Status { get; set; }
+    }
+
 
 }
