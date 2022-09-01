@@ -87,6 +87,8 @@ namespace Amics.Api
             services.AddScoped<IBulkTransferService, BulkTransferService>();
             services.AddScoped<IShipmentService, ShipmentService>();
             services.AddScoped<ISalesOrderService, SalesOrderService>();
+            services.AddScoped<IContractService, ContractService>();
+            
 
             services.AddHealthChecks();
             services.AddSession(options =>

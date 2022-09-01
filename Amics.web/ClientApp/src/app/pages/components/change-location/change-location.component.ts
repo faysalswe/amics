@@ -63,8 +63,8 @@ export class ChangeLocationComponent {
   selectedLocation = '';
   groupedWarehouses: any;
   groupedLocations: any;
-  pickQty :  number =0;
-  
+  pickQty :  number =0;  
+  checkboxMode: string='none';
   warehouses: Warehouse[] = [];
   
 
@@ -270,8 +270,6 @@ export class ChangeLocationComponent {
   refreshDataGrid() {
     this.chglocGridVar.instance.refresh();
   }
-
-  checkboxMode: string='none';
 
   onEditorPreparing(e: any) {
     

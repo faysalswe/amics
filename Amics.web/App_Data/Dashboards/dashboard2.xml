@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard>
+  <Title Text="New Dashboard 1" />
+  <DataSources>
+    <SqlDataSource Name="amics_sp_api_search_items" ComponentName="sqlDataSource1">
+      <Connection Name="localhost_amicsperaton_Connection" FromAppConfig="true" />
+      <Query Type="StoredProcQuery" Name="amics_sp_api_search_items">
+        <Parameter Name="@item" Type="System.String"></Parameter>
+        <Parameter Name="@rev" Type="System.String"></Parameter>
+        <Parameter Name="@description" Type="System.String"></Parameter>
+        <Parameter Name="@itemtype" Type="System.String"></Parameter>
+        <Parameter Name="@itemclass" Type="System.String"></Parameter>
+        <Parameter Name="@itemcode" Type="System.String"></Parameter>
+        <Parameter Name="@warehouse" Type="System.String"></Parameter>
+        <Parameter Name="@location" Type="System.String"></Parameter>
+        <Parameter Name="@user1" Type="System.String"></Parameter>
+        <Parameter Name="@user2" Type="System.String"></Parameter>
+        <Parameter Name="@user3" Type="System.String"></Parameter>
+        <Parameter Name="@user4" Type="System.String"></Parameter>
+        <Parameter Name="@user5" Type="System.String"></Parameter>
+        <Parameter Name="@user6" Type="System.String"></Parameter>
+        <Parameter Name="@user7" Type="System.String"></Parameter>
+        <Parameter Name="@user8" Type="System.String"></Parameter>
+        <ProcName>amics_sp_api_search_items</ProcName>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+</Dashboard>

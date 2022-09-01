@@ -92,4 +92,16 @@
     </ng-container>
   </ng-container>
 
+  <ng-container *ngSwitchCase="this.componentType.Designer">
+    <ng-container>
+      <app-dashboard-designer></app-dashboard-designer>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="this.componentType.Viewer">
+    <ng-container>
+      <app-dashboard-viewer></app-dashboard-viewer>
+    </ng-container>
+  </ng-container>
+
   <ng-container *ngSwitchDefault>Default Template</ng-container>

@@ -13,8 +13,6 @@ import { DxReportViewerComponent } from 'devexpress-reporting-angular';
     "../../../../../node_modules/@devexpress/analytics-core/dist/css/dx-analytics.common.css",
     "../../../../../node_modules/@devexpress/analytics-core/dist/css/dx-analytics.light.css",
     "../../../../../node_modules/devexpress-reporting/dist/css/dx-webdocumentviewer.css"
-
-
   ]
 })
 
@@ -29,39 +27,56 @@ export class ReportItemslistComponent implements OnInit {
   invokeAction: string = '/DXXRDV';
   Param: string;
 
+  //submitParameter() {
+  //  var parameterValue = this.paramValue.nativeElement.value;
+  //   this.viewer.bindingSender.OpenReport("ListItemsRpt" + "?parameter1=" + parameterValue + "&parameter2=et" + "&header1=H Item Number" + "&header2=H Description");
+
+  //}
+
+  ngOnInit(): void {
+
+     
+
+        //this.Param = "?item=009";
+        //this.Param += "&rev=-";
+        //this.Param += "&description=";
+        //this.Param += "&itemtype=";
+        //this.Param += "&itemclass=";
+        //this.Param += "&itemcode=";
+        //this.Param += "&warehouse=";
+        //this.Param += "&location=";
+        //this.Param += "&user1=";
+        //this.Param += "&user2=";
+        //this.Param += "&user3=";
+        //this.Param += "&user4=";
+        //this.Param += "&user5=";
+        //this.Param += "&user6=";
+        //this.Param += "&user7=";
+        //this.Param += "&user8=";
+        //this.reportUrl = "ListItemsCS" + this.Param;
+
+
+    this.Param = "?somain=TEST SHIP"; //itemCode_num  "labelMap.partNumber_num"
+    this.Param += "&lblReportid=1000";
+    this.Param += "&lblAvailable=Available";
+    this.Param += "&lblDesc=Description";
+    this.Param += "&lblLine=Line";
+    this.Param += "&lblLocation=Location";
+    this.Param += "&lblMfr=Mfr";
+    this.Param += "&lblPn=Part Number";
+    this.Param += "&lblLocqty=Quantity";
+    this.Param += "&lblSerno=Serial No.";
+    this.Param += "&lblTagno=Tag No.";
+    this.Param += "&lblTotal_qty=ER Qty";
+    this.reportUrl = "erinventory" + this.Param;
+   
+  }
+
+ 
+
   constructor(@Inject('BASE_URL') public hostUrl: string) {
     //this.viewer.bindingSender.OpenReport(this.reportUrl + "?itemnumber=" + "0092");
   }
-
-  submitParameter() {
-    var parameterValue = this.paramValue.nativeElement.value;
-    this.viewer.bindingSender.OpenReport("ListItemsRpt" + "?parameter1=" + parameterValue + "&parameter2=et" + "&header1=H Item Number" + "&header2=H Description");
-  }
-
-  ngOnInit(): void {
-    debugger
-    this.Param = "?item=a";
-    this.Param += "&rev=-";
-    this.Param += "&description=";
-    this.Param += "&itemtype=";                                                                                                                                               
-    this.Param += "&itemclass=";
-    this.Param += "&itemcode=";
-    this.Param += "&warehouse=";
-    this.Param += "&location=";
-    this.Param += "&user1=";
-    this.Param += "&user2=";
-    this.Param += "&user3=";
-    this.Param += "&user4=";
-    this.Param += "&user5=";
-    this.Param += "&user6=";
-    this.Param += "&user7=";
-    this.Param += "&user8=";
-
-    this.reportUrl = "ListItemsCS" + this.Param;
-
-  }
-
-   
 
 
   OnParametersInitialized(event) {

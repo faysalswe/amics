@@ -127,7 +127,8 @@ namespace Aims.Core.Services
                         changeLoc.Itemnumber = dataReader["itemnumber"].ToString();
                         changeLoc.Description = dataReader["description"].ToString();
                         changeLoc.ItemType = dataReader["itemtype"].ToString();
-                        changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                        int qty = Convert.ToInt32(dataReader["quantity"]);
+                        changeLoc.Quantity = Convert.ToString(qty);
                         changeLoc.ItemsId = dataReader["itemsid"].ToString();
                         changeLoc.InvType = dataReader["invtype"].ToString();
                         strInvType = dataReader["invtype"].ToString();
@@ -173,6 +174,7 @@ namespace Aims.Core.Services
                     sqlCommand.Parameters.Add(new SqlParameter("@item", itemnumber.Trim()));
                     sqlCommand.Parameters.Add(new SqlParameter("@user", userId.Trim()));
                     sqlCommand.Parameters.Add(new SqlParameter("@solinesid", soLineId.Trim()));
+                    sqlCommand.Parameters.Add(new SqlParameter("@screen", "Shipment"));
 
                     conn.Open();
                     var dataReader = sqlCommand.ExecuteReader();
@@ -186,7 +188,9 @@ namespace Aims.Core.Services
                             changeLoc.SerNo = dataReader["serno"].ToString();
                             changeLoc.TagNo = dataReader["tagno"].ToString();
                             changeLoc.InvSerialId = dataReader["serid"].ToString();
-                            changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            //changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            int qty = Convert.ToInt32(dataReader["quantity"]);
+                            changeLoc.Quantity = Convert.ToString(qty);
                             lstChangeLocSerial.Add(changeLoc);
                         }
                         else
@@ -194,7 +198,9 @@ namespace Aims.Core.Services
                             changeLoc.Warehouse = dataReader["wh"].ToString();
                             changeLoc.Location = dataReader["loc"].ToString();
                             changeLoc.InvBasicId = dataReader["basid"].ToString();
-                            changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            // changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            int qty = Convert.ToInt32(dataReader["quantity"]);
+                            changeLoc.Quantity = Convert.ToString(qty);
                             lstChangeLocSerial.Add(changeLoc);
                         }
 
@@ -255,7 +261,10 @@ namespace Aims.Core.Services
                             changeLoc.SerNo = dataReader["serno"].ToString();
                             changeLoc.TagNo = dataReader["tagno"].ToString();
                             changeLoc.InvSerialId = dataReader["invserialid"].ToString();
-                            changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            changeLoc.Quantity = dataReader["quantity"].ToString();
+                            //changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            int qty = Convert.ToInt32(dataReader["quantity"]);
+                            changeLoc.Quantity = Convert.ToString(qty);
                             lstChangeLocSelItems.Add(changeLoc);
                         }
                         else
@@ -263,7 +272,9 @@ namespace Aims.Core.Services
                             changeLoc.Warehouse = dataReader["warehouse"].ToString();
                             changeLoc.Location = dataReader["location"].ToString();
                             changeLoc.InvBasicId = dataReader["invbasicid"].ToString();
-                            changeLoc.Quantity = String.Format("{0:0." + strQty + "}", dataReader["quantity"]);
+                            //changeLoc.Quantity = String.Format("{0:0}" + strQty + "}", dataReader["quantity"]);
+                            int qty = Convert.ToInt32(dataReader["quantity"]);
+                            changeLoc.Quantity = Convert.ToString(qty);
                             lstChangeLocSelItems.Add(changeLoc);
                         }
                     }
